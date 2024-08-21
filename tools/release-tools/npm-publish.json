@@ -1,0 +1,13 @@
+// ------------------------------
+// NPM Publish group definitions
+// ------------------------------
+{
+    "repoRoot": "../../..",
+    "default": "tripwire",
+    "groups": {
+        "tripwire": [
+            "./core",
+            "./shim/chai"
+        ]
+    }
+}

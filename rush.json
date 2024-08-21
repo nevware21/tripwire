@@ -1,0 +1,21 @@
+
+{
+    "$schema": "https://developer.microsoft.com/json-schemas/rush/v5/rush.schema.json",
+  
+    "npmVersion": "8.19.4",
+    "rushVersion": "5.130.2",
+    "projectFolderMaxDepth": 4,
+    "projects": [
+      {
+        "packageName": "@nevware21/tripwire",
+        "projectFolder": "core",
+        "shouldPublish": true
+      },
+      {
+        "packageName": "@nevware21/tripwire-chai",
+        "projectFolder": "shim/chai",
+        "shouldPublish": true
+      }
+    ]
+  }
+  
