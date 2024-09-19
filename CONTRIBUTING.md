@@ -4,17 +4,17 @@ Welcome and thank you for your interest in contributing to Grunt Plugins.
 
 If making a large change we request that you open an [issue][GitHubIssue] first.
 
-[Code of Conduct](https://github.com/nevware21/ts-async/blob/main/CODE_OF_CONDUCT.md)
+[Code of Conduct](https://github.com/nevware21/tripwire/blob/main/CODE_OF_CONDUCT.md)
 
-[Contributing Guide](https://github.com/nevware21/ts-async/blob/main/CONTRIBUTING.md)
+[Contributing Guide](https://github.com/nevware21/tripwire/blob/main/CONTRIBUTING.md)
 
-[GitHub Issues](https://github.com/nevware21/ts-async/issues)
+[GitHub Issues](https://github.com/nevware21/tripwire/issues)
 
 ## Clone and setup
 
 1. Clone the repository and create a new branch
 	```
-	git clone https://github.com/nevware21/ts-async.git
+	git clone https://github.com/nevware21/tripwire.git
 	```
 
 2. Install all dependencies
