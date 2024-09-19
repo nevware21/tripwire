@@ -14,7 +14,7 @@
 
 ### Documentation
 
-[Core Typedoc](https://nevware21.github.io/tripwire/typedoc/core/index.html)
+[Chai Shim Typedoc](https://nevware21.github.io/tripwire/typedoc/core/index.html)
 
 ## Shim Chai
 

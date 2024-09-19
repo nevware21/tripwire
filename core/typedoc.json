@@ -12,7 +12,7 @@
         "instance-first"
     ],
     "basePath": "./src",
-    "sourceLinkTemplate": "https://github.com/nevware21/tripwire/blob/main/core/{path}#L{line}",
+    "sourceLinkTemplate": "https://github.com/nevware21/tripwire/blob/main/{path}#L{line}",
     "cleanOutputDir": true,
     "excludeExternals": false,
     "excludeInternal": true,
