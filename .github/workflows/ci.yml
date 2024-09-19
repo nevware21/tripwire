@@ -1,0 +1,41 @@
+# This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
+
+name: "NodeCI"
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    env:
+      NODE_OPTIONS: --max-old-space-size=8192    
+
+    strategy:
+      matrix:
+        node: [ 16, 18, 20 ]
+        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Use Node.js ${{ matrix.node }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node }}
+    - name: Update rush shrinkwrap dependencies
+      run: node common/scripts/install-run-rush.js update --full
+    - name: Npm Install
+      run: npm install
+    - name: Build
+      run: npm run build --verbose
+      timeout-minutes: 15
+    - name: Unit tests
+      run: node common/scripts/install-run-rush.js test --verbose
+      timeout-minutes: 15
+    - name: Report Coverage
+      run: npm run codecov

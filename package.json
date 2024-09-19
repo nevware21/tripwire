@@ -1,0 +1,92 @@
+{
+    "name": "@nevware21/tripwire",
+    "description": "Test support utilities, helpers assertions",
+    "version": "0.1.0",
+    "homepage": "https://github.com/nevware21/tripwire",
+    "license": "MIT",
+    "author": {
+        "name": "Nevware21 Solutions LLC",
+        "email": "github+tripwire@nevware21.com"
+    },
+    "keywords": [
+        "test",
+        "testing",
+        "assertions",
+        "helpers",
+        "utilities",
+        "tripwire"
+    ],
+    "main": "lib/dist/es5/main/tripwire.js",
+    "esnext:main": "lib/dist/es6/main/tripwire.js",
+    "module": "lib/dist/es5/mod/tripwire.js",
+    "esnext:module": "lib/dist/es6/mod/tripwire.js",
+    "types": "lib/dist/types/tripwire.d.ts",
+    "sideEffects": false,
+    "scripts": {
+        "postinstall": "node common/scripts/install-run-rush.js update --full",
+        "build": "rush build",
+        "rebuild": "rush rebuild",
+        "test": "rush test",
+        "codecov": "rush codecov",
+        "clean": "git clean -xdf && npm install",
+        "cleanBuild": "npm run clean && npm run rebuild && npm run docs",
+        "docs": "npm run docs-core && npm run docs-chai",
+        "docs-core": "cd core && npm run docs",
+        "docs-chai": "cd shim/chai && npm run docs",
+        "lint": "grunt lint lint-fix",
+        "rush-update": "rush update --recheck --purge --full",
+        "test:browser": "cd core && npm run test:browser",
+        "test:node": "cd core && npm run test:node",
+        "test:worker": "cd core && npm run test:worker",
+        "debug:browser": "cd core && npm run debug:browser",
+        "debug:worker": "cd core && npm run debug:worker",
+        "prep-release": "npm run cleanBuild && npm run npm-pack",
+        "npm-pack": "npm run npm-pack-core && npm run npm-pack-chai",
+        "npm-pack-core": "copyfiles LICENSE core && cd core && npm pack",
+        "npm-pack-chai": "copyfiles LICENSE shim/chai && cd shim/chai && npm pack",
+        "npm-publish": "cd tools/release-tools/npm-publish && npm install && cd ../../.. && npm run do-npm-publish --prefix tools/release-tools/npm-publish --",
+        "grunt": "grunt --help"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/nevware21/tripwire.git"
+    },
+    "bugs": {
+        "url": "https://github.com/nevware21/tripwire/issues"
+    },
+    "licenses": [
+        {
+            "type": "MIT",
+            "url": "https://github.com/nevware21/tripwire/blob/main/LICENSE"
+        }
+    ],
+    "engines": {
+        "node": ">= 0.8.0"
+    },
+    "dependencies": {
+        "@nevware21/ts-utils": ">= 0.11.3 < 2.x"
+    },
+    "devDependencies": {
+        "@istanbuljs/nyc-config-typescript": "^1.0.2",
+        "@microsoft/rush": "5.130.2",
+        "@nevware21/grunt-eslint-ts": "^0.5.1",
+        "@nevware21/grunt-ts-plugin": "^0.5.1",
+        "@types/eslint": "^8.56.10",
+        "@types/estree": "^1.0.0",
+        "@types/jquery": "^3.5.14",
+        "@types/mocha": "^10.0.1",
+        "@types/sinon": "^10.0.11",
+        "@typescript-eslint/eslint-plugin": "^7.14.1",
+        "@typescript-eslint/parser": "^7.14.1",
+        "codecov": "^3.8.3",
+        "copyfiles": "^2.4.1",
+        "eslint": "^8.56.0",
+        "eslint-formatter-codeframe": "^7.32.1",
+        "eslint-plugin-security": "^1.7.1",
+        "grunt": "^1.5.3",
+        "grunt-cli": "^1.4.3",
+        "nyc": "^17.0.0",
+        "typedoc": "^0.26.2",
+        "typescript": "^4.9.5"
+    }
+}
