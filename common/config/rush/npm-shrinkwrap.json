@@ -806,7 +806,7 @@
     "node_modules/@rush-temp/tripwire-chai": {
       "version": "0.0.0",
       "resolved": "file:projects/tripwire-chai.tgz",
-      "integrity": "sha512-E0NhPdL3i27xEyV/aEnn1o1ZU0mOO/9q+KaRsKPfN0Os/KV5NKg9zgwfPczHot6BAZ5KOph2jLzAL2PUPvcYGQ==",
+      "integrity": "sha512-g2LuRcvEXyZwFVvxRN7QLFCJFa2VJhGWVAUxZFBTC29QOfIkO4BxADlutOUIfNsBLPoJc1Xe3zXtcLa5/HW9vA==",
       "dependencies": {
         "@microsoft/api-extractor": "^7.34.4",
         "@nevware21/ts-async": ">= 0.5.2 < 2.x",
@@ -918,41 +918,41 @@
       }
     },
     "node_modules/@shikijs/core": {
-      "version": "1.17.7",
-      "resolved": "https://registry.npmjs.org/@shikijs/core/-/core-1.17.7.tgz",
-      "integrity": "sha512-ZnIDxFu/yvje3Q8owSHaEHd+bu/jdWhHAaJ17ggjXofHx5rc4bhpCSW+OjC6smUBi5s5dd023jWtZ1gzMu/yrw==",
+      "version": "1.18.0",
+      "resolved": "https://registry.npmjs.org/@shikijs/core/-/core-1.18.0.tgz",
+      "integrity": "sha512-VK4BNVCd2leY62Nm2JjyxtRLkyrZT/tv104O81eyaCjHq4Adceq2uJVFJJAIof6lT1mBwZrEo2qT/T+grv3MQQ==",
       "dependencies": {
-        "@shikijs/engine-javascript": "1.17.7",
-        "@shikijs/engine-oniguruma": "1.17.7",
-        "@shikijs/types": "1.17.7",
+        "@shikijs/engine-javascript": "1.18.0",
+        "@shikijs/engine-oniguruma": "1.18.0",
+        "@shikijs/types": "1.18.0",
         "@shikijs/vscode-textmate": "^9.2.2",
         "@types/hast": "^3.0.4",
-        "hast-util-to-html": "^9.0.2"
+        "hast-util-to-html": "^9.0.3"
       }
     },
     "node_modules/@shikijs/engine-javascript": {
-      "version": "1.17.7",
-      "resolved": "https://registry.npmjs.org/@shikijs/engine-javascript/-/engine-javascript-1.17.7.tgz",
-      "integrity": "sha512-wwSf7lKPsm+hiYQdX+1WfOXujtnUG6fnN4rCmExxa4vo+OTmvZ9B1eKauilvol/LHUPrQgW12G3gzem7pY5ckw==",
+      "version": "1.18.0",
+      "resolved": "https://registry.npmjs.org/@shikijs/engine-javascript/-/engine-javascript-1.18.0.tgz",
+      "integrity": "sha512-qoP/aO/ATNwYAUw1YMdaip/YVEstMZEgrwhePm83Ll9OeQPuxDZd48szZR8oSQNQBT8m8UlWxZv8EA3lFuyI5A==",
       "dependencies": {
-        "@shikijs/types": "1.17.7",
+        "@shikijs/types": "1.18.0",
         "@shikijs/vscode-textmate": "^9.2.2",
         "oniguruma-to-js": "0.4.3"
       }
     },
     "node_modules/@shikijs/engine-oniguruma": {
-      "version": "1.17.7",
-      "resolved": "https://registry.npmjs.org/@shikijs/engine-oniguruma/-/engine-oniguruma-1.17.7.tgz",
-      "integrity": "sha512-pvSYGnVeEIconU28NEzBXqSQC/GILbuNbAHwMoSfdTBrobKAsV1vq2K4cAgiaW1TJceLV9QMGGh18hi7cCzbVQ==",
+      "version": "1.18.0",
+      "resolved": "https://registry.npmjs.org/@shikijs/engine-oniguruma/-/engine-oniguruma-1.18.0.tgz",
+      "integrity": "sha512-B9u0ZKI/cud+TcmF8Chyh+R4V5qQVvyDOqXC2l2a4x73PBSBc6sZ0JRAX3eqyJswqir6ktwApUUGBYePdKnMJg==",
       "dependencies": {
-        "@shikijs/types": "1.17.7",
+        "@shikijs/types": "1.18.0",
         "@shikijs/vscode-textmate": "^9.2.2"
       }
     },
     "node_modules/@shikijs/types": {
-      "version": "1.17.7",
-      "resolved": "https://registry.npmjs.org/@shikijs/types/-/types-1.17.7.tgz",
-      "integrity": "sha512-+qA4UyhWLH2q4EFd+0z4K7GpERDU+c+CN2XYD3sC+zjvAr5iuwD1nToXZMt1YODshjkEGEDV86G7j66bKjqDdg==",
+      "version": "1.18.0",
+      "resolved": "https://registry.npmjs.org/@shikijs/types/-/types-1.18.0.tgz",
+      "integrity": "sha512-O9N36UEaGGrxv1yUrN2nye7gDLG5Uq0/c1LyfmxsvzNPqlHzWo9DI0A4+fhW2y3bGKuQu/fwS7EPdKJJCowcVA==",
       "dependencies": {
         "@shikijs/vscode-textmate": "^9.2.2",
         "@types/hast": "^3.0.4"
@@ -2401,9 +2401,9 @@
       "integrity": "sha512-WMwm9LhRUo+WUaRN+vRuETqG89IgZphVSNkdFgeb6sS/E4OrDIN7t48CAewSHXc6C8lefD8KKfr5vY61brQlow=="
     },
     "node_modules/electron-to-chromium": {
-      "version": "1.5.25",
-      "resolved": "https://registry.npmjs.org/electron-to-chromium/-/electron-to-chromium-1.5.25.tgz",
-      "integrity": "sha512-kMb204zvK3PsSlgvvwzI3wBIcAw15tRkYk+NQdsjdDtcQWTp2RABbMQ9rUBy8KNEOM+/E6ep+XC3AykiWZld4g=="
+      "version": "1.5.26",
+      "resolved": "https://registry.npmjs.org/electron-to-chromium/-/electron-to-chromium-1.5.26.tgz",
+      "integrity": "sha512-Z+OMe9M/V6Ep9n/52+b7lkvYEps26z4Yz3vjWL1V61W0q+VLF1pOHhMY17sa4roz4AWmULSI8E6SAojZA5L0YQ=="
     },
     "node_modules/elliptic": {
       "version": "6.5.7",
@@ -6376,14 +6376,14 @@
       }
     },
     "node_modules/shiki": {
-      "version": "1.17.7",
-      "resolved": "https://registry.npmjs.org/shiki/-/shiki-1.17.7.tgz",
-      "integrity": "sha512-Zf6hNtWhFyF4XP5OOsXkBTEx9JFPiN0TQx4wSe+Vqeuczewgk2vT4IZhF4gka55uelm052BD5BaHavNqUNZd+A==",
+      "version": "1.18.0",
+      "resolved": "https://registry.npmjs.org/shiki/-/shiki-1.18.0.tgz",
+      "integrity": "sha512-8jo7tOXr96h9PBQmOHVrltnETn1honZZY76YA79MHheGQg55jBvbm9dtU+MI5pjC5NJCFuA6rvVTLVeSW5cE4A==",
       "dependencies": {
-        "@shikijs/core": "1.17.7",
-        "@shikijs/engine-javascript": "1.17.7",
-        "@shikijs/engine-oniguruma": "1.17.7",
-        "@shikijs/types": "1.17.7",
+        "@shikijs/core": "1.18.0",
+        "@shikijs/engine-javascript": "1.18.0",
+        "@shikijs/engine-oniguruma": "1.18.0",
+        "@shikijs/types": "1.18.0",
         "@shikijs/vscode-textmate": "^9.2.2",
         "@types/hast": "^3.0.4"
       }
@@ -8306,7 +8306,7 @@
     },
     "@rush-temp/tripwire-chai": {
       "version": "file:projects\\tripwire-chai.tgz",
-      "integrity": "sha512-E0NhPdL3i27xEyV/aEnn1o1ZU0mOO/9q+KaRsKPfN0Os/KV5NKg9zgwfPczHot6BAZ5KOph2jLzAL2PUPvcYGQ==",
+      "integrity": "sha512-g2LuRcvEXyZwFVvxRN7QLFCJFa2VJhGWVAUxZFBTC29QOfIkO4BxADlutOUIfNsBLPoJc1Xe3zXtcLa5/HW9vA==",
       "requires": {
         "@microsoft/api-extractor": "^7.34.4",
         "@nevware21/ts-async": ">= 0.5.2 < 2.x",
@@ -8400,41 +8400,41 @@
       }
     },
     "@shikijs/core": {
-      "version": "1.17.7",
-      "resolved": "https://registry.npmjs.org/@shikijs/core/-/core-1.17.7.tgz",
-      "integrity": "sha512-ZnIDxFu/yvje3Q8owSHaEHd+bu/jdWhHAaJ17ggjXofHx5rc4bhpCSW+OjC6smUBi5s5dd023jWtZ1gzMu/yrw==",
+      "version": "1.18.0",
+      "resolved": "https://registry.npmjs.org/@shikijs/core/-/core-1.18.0.tgz",
+      "integrity": "sha512-VK4BNVCd2leY62Nm2JjyxtRLkyrZT/tv104O81eyaCjHq4Adceq2uJVFJJAIof6lT1mBwZrEo2qT/T+grv3MQQ==",
       "requires": {
-        "@shikijs/engine-javascript": "1.17.7",
-        "@shikijs/engine-oniguruma": "1.17.7",
-        "@shikijs/types": "1.17.7",
+        "@shikijs/engine-javascript": "1.18.0",
+        "@shikijs/engine-oniguruma": "1.18.0",
+        "@shikijs/types": "1.18.0",
         "@shikijs/vscode-textmate": "^9.2.2",
         "@types/hast": "^3.0.4",
-        "hast-util-to-html": "^9.0.2"
+        "hast-util-to-html": "^9.0.3"
       }
     },
     "@shikijs/engine-javascript": {
-      "version": "1.17.7",
-      "resolved": "https://registry.npmjs.org/@shikijs/engine-javascript/-/engine-javascript-1.17.7.tgz",
-      "integrity": "sha512-wwSf7lKPsm+hiYQdX+1WfOXujtnUG6fnN4rCmExxa4vo+OTmvZ9B1eKauilvol/LHUPrQgW12G3gzem7pY5ckw==",
+      "version": "1.18.0",
+      "resolved": "https://registry.npmjs.org/@shikijs/engine-javascript/-/engine-javascript-1.18.0.tgz",
+      "integrity": "sha512-qoP/aO/ATNwYAUw1YMdaip/YVEstMZEgrwhePm83Ll9OeQPuxDZd48szZR8oSQNQBT8m8UlWxZv8EA3lFuyI5A==",
       "requires": {
-        "@shikijs/types": "1.17.7",
+        "@shikijs/types": "1.18.0",
         "@shikijs/vscode-textmate": "^9.2.2",
         "oniguruma-to-js": "0.4.3"
       }
     },
     "@shikijs/engine-oniguruma": {
-      "version": "1.17.7",
-      "resolved": "https://registry.npmjs.org/@shikijs/engine-oniguruma/-/engine-oniguruma-1.17.7.tgz",
-      "integrity": "sha512-pvSYGnVeEIconU28NEzBXqSQC/GILbuNbAHwMoSfdTBrobKAsV1vq2K4cAgiaW1TJceLV9QMGGh18hi7cCzbVQ==",
+      "version": "1.18.0",
+      "resolved": "https://registry.npmjs.org/@shikijs/engine-oniguruma/-/engine-oniguruma-1.18.0.tgz",
+      "integrity": "sha512-B9u0ZKI/cud+TcmF8Chyh+R4V5qQVvyDOqXC2l2a4x73PBSBc6sZ0JRAX3eqyJswqir6ktwApUUGBYePdKnMJg==",
       "requires": {
-        "@shikijs/types": "1.17.7",
+        "@shikijs/types": "1.18.0",
         "@shikijs/vscode-textmate": "^9.2.2"
       }
     },
     "@shikijs/types": {
-      "version": "1.17.7",
-      "resolved": "https://registry.npmjs.org/@shikijs/types/-/types-1.17.7.tgz",
-      "integrity": "sha512-+qA4UyhWLH2q4EFd+0z4K7GpERDU+c+CN2XYD3sC+zjvAr5iuwD1nToXZMt1YODshjkEGEDV86G7j66bKjqDdg==",
+      "version": "1.18.0",
+      "resolved": "https://registry.npmjs.org/@shikijs/types/-/types-1.18.0.tgz",
+      "integrity": "sha512-O9N36UEaGGrxv1yUrN2nye7gDLG5Uq0/c1LyfmxsvzNPqlHzWo9DI0A4+fhW2y3bGKuQu/fwS7EPdKJJCowcVA==",
       "requires": {
         "@shikijs/vscode-textmate": "^9.2.2",
         "@types/hast": "^3.0.4"
@@ -9530,9 +9530,9 @@
       "integrity": "sha512-WMwm9LhRUo+WUaRN+vRuETqG89IgZphVSNkdFgeb6sS/E4OrDIN7t48CAewSHXc6C8lefD8KKfr5vY61brQlow=="
     },
     "electron-to-chromium": {
-      "version": "1.5.25",
-      "resolved": "https://registry.npmjs.org/electron-to-chromium/-/electron-to-chromium-1.5.25.tgz",
-      "integrity": "sha512-kMb204zvK3PsSlgvvwzI3wBIcAw15tRkYk+NQdsjdDtcQWTp2RABbMQ9rUBy8KNEOM+/E6ep+XC3AykiWZld4g=="
+      "version": "1.5.26",
+      "resolved": "https://registry.npmjs.org/electron-to-chromium/-/electron-to-chromium-1.5.26.tgz",
+      "integrity": "sha512-Z+OMe9M/V6Ep9n/52+b7lkvYEps26z4Yz3vjWL1V61W0q+VLF1pOHhMY17sa4roz4AWmULSI8E6SAojZA5L0YQ=="
     },
     "elliptic": {
       "version": "6.5.7",
@@ -12469,14 +12469,14 @@
       "integrity": "sha512-7++dFhtcx3353uBaq8DDR4NuxBetBzC7ZQOhmTQInHEd6bSrXdiEyzCvG07Z44UYdLShWUyXt5M/yhz8ekcb1A=="
     },
     "shiki": {
-      "version": "1.17.7",
-      "resolved": "https://registry.npmjs.org/shiki/-/shiki-1.17.7.tgz",
-      "integrity": "sha512-Zf6hNtWhFyF4XP5OOsXkBTEx9JFPiN0TQx4wSe+Vqeuczewgk2vT4IZhF4gka55uelm052BD5BaHavNqUNZd+A==",
+      "version": "1.18.0",
+      "resolved": "https://registry.npmjs.org/shiki/-/shiki-1.18.0.tgz",
+      "integrity": "sha512-8jo7tOXr96h9PBQmOHVrltnETn1honZZY76YA79MHheGQg55jBvbm9dtU+MI5pjC5NJCFuA6rvVTLVeSW5cE4A==",
       "requires": {
-        "@shikijs/core": "1.17.7",
-        "@shikijs/engine-javascript": "1.17.7",
-        "@shikijs/engine-oniguruma": "1.17.7",
-        "@shikijs/types": "1.17.7",
+        "@shikijs/core": "1.18.0",
+        "@shikijs/engine-javascript": "1.18.0",
+        "@shikijs/engine-oniguruma": "1.18.0",
+        "@shikijs/types": "1.18.0",
         "@shikijs/vscode-textmate": "^9.2.2",
         "@types/hast": "^3.0.4"
       }
