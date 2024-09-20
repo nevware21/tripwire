@@ -126,12 +126,9 @@ if (parseArgs()) {
         }
         
         console.log(`npm package present ${npmPackageName}`);
-        let npmArgs = ["publish", npmPackageName, "--access", "public"];
-        if (dryRun) {
-            npmArgs.push(dryRun);
-        }
-        console.log(`Running: npm ${npmArgs.join(" ")}`);
-        child_process.execFileSync("npm", npmArgs);
+        let npmCmd = `npm publish ${npmPackageName} --access public ${dryRun}`;
+        console.log(`Running: \"${npmCmd}\"`);
+        child_process.execSync(npmCmd);
     });
 } else {
     showHelp();
