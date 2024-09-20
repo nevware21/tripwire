@@ -1,0 +1,42 @@
+codecov:
+  notify:
+    require_ci_to_pass: yes
+    
+comment:
+  layout: "header, changes, diff, files"
+  behavior: default
+
+coverage:
+  status:
+    patch:
+      default:
+        target: auto
+        threshold: 1%
+        base: auto
+        branches:
+          - main
+        paths:
+          - core/src
+          - shim/chai/src
+    project:
+      core:
+        paths:
+          - core/src
+        target: 80%
+        flags:
+          - core
+      chai_shim:
+        paths:
+          - shim/chai/src
+        target: 70%
+        flags:
+          - chai_shim
+
+flags:
+  core:
+    paths:
+      - core/src
+
+  chai_shim:
+    paths:
+      - shim/chai/src
