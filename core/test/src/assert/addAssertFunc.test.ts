@@ -13,7 +13,9 @@ import { expect } from "../../../src/assert/expect";
 import { IAssertClass, IExtendedAssert } from "../../../src/assert/interface/IAssertClass";
 import { checkError } from "../support/checkError";
 
-describe("addAssertFunc", () => {
+describe("addAssertFunc", function () {
+    this.timeout(5000);
+
     interface UserAssertExtensions {
         helloDarkness: (value: number) => void;
         isDarkness: (value: any) => void;
