@@ -27,7 +27,6 @@
         "build": "rush build",
         "rebuild": "rush rebuild",
         "test": "rush test",
-        "codecov": "rush codecov",
         "clean": "git clean -xdf && npm install",
         "cleanBuild": "npm run clean && npm run rebuild && npm run docs",
         "docs": "npm run docs-core && npm run docs-chai",

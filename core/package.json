@@ -35,7 +35,6 @@
         "coverage:report": "npm run coverage:nyc && npm run coverage:merge",
         "coverage:nyc": "nyc report --reporter=json",
         "coverage:merge": "node ../tools/coverage/merge-coverage.js",
-        "codecov": "npm run coverage:report && codecov -f coverage/*.json --disable=gcov",
         "clean": "git clean -xdf && npm install",
         "cleanBuild": "npm run clean && npm run rebuild && npm run docs",
         "docs": "npx typedoc",
