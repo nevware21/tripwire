@@ -1,5 +1,11 @@
 # Chai Shim
 
+![GitHub Workflow Status (main)](https://img.shields.io/github/actions/workflow/status/nevware21/tripwire/ci.yml?branch=main)
+[![codecov](https://codecov.io/gh/nevware21/tripwire/graph/badge.svg?token=I9mMGSvfkk)](https://codecov.io/gh/nevware21/tripwire)
+[![npm version](https://badge.fury.io/js/%40nevware21%2Ftripwire-chai.svg)](https://badge.fury.io/js/%40nevware21%2Ftripwire-chai)
+[![downloads](https://img.shields.io/npm/dt/%40nevware21/tripwire-chai.svg)](https://www.npmjs.com/package/%40nevware21/tripwire-chai)
+[![downloads](https://img.shields.io/npm/dm/%40nevware21/tripwire-chai.svg)](https://www.npmjs.com/package/%40nevware21/tripwire-chai)
+
 This module is a Shim of the Chai Js assertion library which uses the [tripwire](https://github.com/nevware21/tripwire)
 
 This Shim is not designed to be a complete 1:1 replacement for Chai, it's primary focus is to provide a quicker migration option using your existing chai based `assert.*` functions.
@@ -21,13 +27,9 @@ As of the initial version not all functions are yet implemented
 - `should` (No plans to implement this)
 - plugin support
 
-## Table of Contents
+## API Documentation
 
-- Installation
-- Usage
-- Scripts
-- Contributing
-- License
+The API documentation is generated from the source code via typedoc and is located [here](https://nevware21.github.io/tripwire/index.html)
 
 ## Quickstart
 

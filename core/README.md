@@ -1,5 +1,11 @@
 # Core Module
 
+![GitHub Workflow Status (main)](https://img.shields.io/github/actions/workflow/status/nevware21/tripwire/ci.yml?branch=main)
+[![codecov](https://codecov.io/gh/nevware21/tripwire/graph/badge.svg?token=I9mMGSvfkk)](https://codecov.io/gh/nevware21/tripwire)
+[![npm version](https://badge.fury.io/js/%40nevware21%2Ftripwire.svg)](https://badge.fury.io/js/%40nevware21%2Ftripwire)
+[![downloads](https://img.shields.io/npm/dt/%40nevware21/tripwire.svg)](https://www.npmjs.com/package/%40nevware21/tripwire)
+[![downloads](https://img.shields.io/npm/dm/%40nevware21/tripwire.svg)](https://www.npmjs.com/package/%40nevware21/tripwire)
+
 This is the core module of the `tripwire` project which is designed to be used for testing your Javascript or TypeScript packages.
 
 It is designed to work in and is tested with the following environments.
@@ -15,6 +21,10 @@ It provides both `assert` and `expect` support, where the `assert` functions are
 The `assert` functions are built on-top of the underlying `expect` support, and if no assertions are thrown the result of the internal "chained" descriptive language API is returned. Which means you can mix the `expect` objects with the responses from the `assert` functions.
 
 To avoid dependency issues, this project will use the mininal set of external dependencies so that it can ensure and maintain compatibility with current (and future) runtimes.
+
+## API Documentation
+
+The API documentation is generated from the source code via typedoc and is located [here](https://nevware21.github.io/tripwire/index.html)
 
 ## Quick Start
 
