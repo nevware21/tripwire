@@ -24,9 +24,17 @@ describe("assert.equal", function () {
         }, "expected \"a\" to equal \"b\"");
 
 
-        assert.equal([1, 2], [1, 2]); // Arrays are always not equal
-        assert.equal({ a: 1 }, { a: 1 }); // Different Objects are always not equal
-        assert.equal({ a: { b: 1 } }, { a: { b: 1} }, "Objects are not equal"); // Throws AssertionError
+        checkError(function () {
+            assert.equal([1, 2], [1, 2]); // Arrays are always not equal
+        }, "expected [1,2] to equal [1,2]");
+
+        checkError(function () {
+            assert.equal({ a: 1 }, { a: 1 }); // Different Objects are always not equal
+        }, "expected {a:1} to equal {a:1}");
+
+        checkError(function () {
+            assert.equal({ a: { b: 1 } }, { a: { b: 1} }, "Objects are not equal"); // Throws AssertionError
+        }, "Objects are not equal: expected {a:{b:1}} to equal {a:{b:1}}");
 
         checkError(function () {
             assert.equal({ a: 1 }, { a: 2 }); // Throws AssertionError
@@ -83,7 +91,10 @@ describe("assert.equal", function () {
         const obj3 = { a: 1, b: 2, c: 3 };
 
         assert.equal(obj1, obj1); // Same reference
-        assert.equal(obj1, obj2, "Object mismatch"); // Same looking object
+
+        checkError(function () {
+            assert.equal(obj1, obj2, "Object mismatch"); // Same looking object but are not the same
+        }, "Object mismatch: expected {a:1,b:2} to equal {a:1,b:2}");
 
         checkError(function () {
             assert.equal(obj1, obj3, "Object mismatch");
@@ -96,7 +107,10 @@ describe("assert.equal", function () {
         const arr3 = [1, 2];
 
         assert.equal(arr1, arr1); // Same reference
-        assert.equal(arr1, arr2, "Array mismatch"); // Same content still don't match
+
+        checkError(function () {
+            assert.equal(arr1, arr2, "Array mismatch"); // Same content still don't match (loose equality)
+        }, "Array mismatch: expected [1,2,3] to equal [1,2,3]");
 
         checkError(function () {
             assert.equal(arr1, arr3, "Array mismatch");
@@ -165,7 +179,11 @@ describe("assert.equal", function () {
         const date3 = new Date(Date.UTC(2021, 1, 2, 0, 0, 0));
 
         assert.equal(date1, date1); // Same reference
-        assert.equal(date1, date2); // Same date
+        
+        checkError(function () {
+            assert.equal(date1, date2); // Same date but different reference (loose equality)
+        }, "expected [Date:\"2021-02-01T00:00:00.000Z\"] to equal [Date:\"2021-02-01T00:00:00.000Z\"]");
+
         checkError(function () {
             assert.equal(date1, date3, "Date mismatch");
         }, "expected [Date:\"2021-02-01T00:00:00.000Z\"] to equal [Date:\"2021-02-02T00:00:00.000Z\"]");
@@ -185,7 +203,10 @@ describe("assert.equal", function () {
         const reg3 = /test/i;
 
         assert.equal(reg1, reg1); // Same reference
-        assert.equal(reg1, reg2); // Same RegExp
+
+        checkError(function () {
+            assert.equal(reg1, reg2); // Same RegExp (loose equality)
+        }, "expected /test/ to equal /test/");
 
         checkError(function () {
             assert.equal(reg1, reg3);
@@ -217,9 +238,17 @@ describe("assert.equals", function () {
             assert.equals("a", "b"); // Throws AssertionError
         }, "expected \"a\" to equal \"b\"");
 
-        assert.equals([1, 2], [1, 2]); // Arrays are always not equals
-        assert.equals({ a: 1 }, { a: 1 }); // Different Objects are always not equals
-        assert.equals({ a: { b: 1 } }, { a: { b: 1} }, "Objects are not equals"); // Throws AssertionError
+        checkError(function () {
+            assert.equals([1, 2], [1, 2]); // Arrays are always not equals (simple loose equality)
+        }, "expected [1,2] to equal [1,2]");
+
+        checkError(function () {
+            assert.equals({ a: 1 }, { a: 1 }); // Different Objects are always not equals
+        }, "expected {a:1} to equal {a:1}");
+
+        checkError(function () {
+            assert.equals({ a: { b: 1 } }, { a: { b: 1} }, "Objects are not equals"); // Throws AssertionError
+        }, "Objects are not equals: expected {a:{b:1}} to equal {a:{b:1}}");
 
         checkError(function () {
             assert.equals({ a: 1 }, { a: 2 }); // Throws AssertionError
@@ -276,7 +305,10 @@ describe("assert.equals", function () {
         const obj3 = { a: 1, b: 2, c: 3 };
 
         assert.equals(obj1, obj1); // Same reference
-        assert.equals(obj1, obj2, "Object mismatch"); // Same looking object
+
+        checkError(function () {
+            assert.equals(obj1, obj2, "Object mismatch"); // Same looking object
+        }, "Object mismatch: expected {a:1,b:2} to equal {a:1,b:2}");
 
         checkError(function () {
             assert.equals(obj1, obj3, "Object mismatch");
@@ -289,7 +321,10 @@ describe("assert.equals", function () {
         const arr3 = [1, 2];
 
         assert.equals(arr1, arr1); // Same reference
-        assert.equals(arr1, arr2, "Array mismatch"); // Same content still don't match
+
+        checkError(function () {
+            assert.equals(arr1, arr2, "Array mismatch"); // Same content still don't match
+        }, "Array mismatch: expected [1,2,3] to equal [1,2,3]");
 
         checkError(function () {
             assert.equals(arr1, arr3, "Array mismatch");
@@ -302,7 +337,11 @@ describe("assert.equals", function () {
         const obj3 = { a: [1, 2] };
 
         assert.equals(obj1, obj1); // Same reference
-        assert.equals(obj1, obj2, "Object mismatch"); // Same content
+
+        checkError(function () {
+            assert.equals(obj1, obj2, "Object mismatch"); // Same content
+        }, "Object mismatch: expected {a:[1,2,3]} to equal {a:[1,2,3]}");
+
         checkError(function () {
             assert.equals(obj1, obj3, "Object mismatch");
         }, "Object mismatch: expected {a:[1,2,3]} to equal {a:[1,2]}");
@@ -364,11 +403,15 @@ describe("assert.equals", function () {
         assert.equals(0, false, "Number and boolean mismatch");
     });
 
-    it("should deeply equal when valueEntries are the same", function () {
+    it("should not equal when valueEntries are the same", function () {
         const value = new Map([["key1", "value1"], ["key2", "value2"]]);
         const expected = new Map([["key1", "value1"], ["key2", "value2"]]);
 
-        assert.equals(value, expected);
+        checkError(function () {
+            assert.equals(value, expected);
+        }, "expected [Map:{}] to equal [Map:{}]");
+
+        assert.deepEqual(value, expected);
     });
 
     it("should not deeply equal when valueEntries are different", function () {
@@ -384,7 +427,11 @@ describe("assert.equals", function () {
         const value = new Map();
         const expected = new Map();
 
-        assert.equals(value, expected);
+        checkError(function () {
+            assert.equals(value, expected);
+        }, "expected [Map:{}] to equal [Map:{}]");
+
+        assert.deepEqual(value, expected);
     });
 
     it("should not deeply equal when valueEntries have different sizes", function () {
@@ -563,6 +610,21 @@ describe("assert.strictEquals", function () {
 });
 
 describe("assert.deepEqual", function () {
+
+    it("simple types match with coersion", function () {
+        assert.deepEqual(1, 1);
+        assert.deepEqual(1, "1");
+
+        checkError(function () {
+            assert.deepEqual(1, 2, "Hello");
+        }, "Hello: expected 1 to deeply equal 2");
+    });
+
+    it("Arrays and objects match", function () {
+        assert.deepEqual([1, 2], [1, 2]); // Arrays with same loosly comparable members are equal
+        assert.deepEqual({ a: 1 }, { a: 1 }); // Different Objects that match are equal
+        assert.deepEqual({ a: { b: 1 } }, { a: { b: 1} }, "Objects are not equal"); // Different objects which looks the same match
+    });
 
     it("Nested objects match", function () {
         const obj1 = { a: 1, b: { c: 2, d: 3 } };

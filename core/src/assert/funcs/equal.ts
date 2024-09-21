@@ -8,59 +8,57 @@
 
 import { arrForEach, arrMap, asString, isDate, isFunction, isObject, isPlainObject, isPrimitive, iterForOf, objToString, strLower } from "@nevware21/ts-utils";
 import { MsgSource } from "../interface/types";
-import { DEEP } from "../internal/const";
 import { IAssertScope } from "../interface/IAssertScope";
 import { _formatValue } from "../internal/_formatValue";
 import { IScopeContext } from "../interface/IScopeContext";
 
+/**
+ * Performs a simple loose equality check (`==`) between the `actual` and `expected` values,
+ * this will attempt to coerce the values to the same type before comparing.
+ * @param this - The assert scope.
+ * @param expected - The expected value.
+ * @param evalMsg - The message to display if the values are not strictly equal.
+ * @returns - The assert scope.
+ */
 export function equalsFunc<R, T>(this: IAssertScope, expected: T, evalMsg?: MsgSource): R {
     let scope = this;
     let context = scope.context;
 
-    let options: IEqualOptions = {
-        context: context,
-        deep: context.get(DEEP),
-        strict: false,
-        matchMap: [],
-        visiting: []
-    };
-
     context.set("expected", expected);
     let theValue = context.value;
-    let isEqual = _equals(theValue, expected, options);
-    // if (isEqual === null) {
-    //     isEqual = _deepEquals(theValue, expected, options);
-    // }
 
-    context.eval(isEqual == true, evalMsg || "expected {value} to equal {expected}");
+    context.eval(theValue == expected, evalMsg || "expected {value} to equal {expected}");
 
     return scope.that;
 }
 
+/**
+ * Performs a strict equality check (`===`) between the `actual` and `expected` values.
+ * @param this - The assert scope.
+ * @param expected - The expected value.
+ * @param evalMsg - The message to display if the values are not strictly equal.
+ * @returns - The assert scope.
+ */
 export function strictEqualsFunc<R, T>(this: IAssertScope, expected: T, evalMsg?: MsgSource): R {
     let scope = this;
     let context = scope.context;
 
-    let options: IEqualOptions = {
-        context: context,
-        deep: context.get(DEEP),
-        strict: true,
-        matchMap: [],
-        visiting: []
-    };
-
     context.set("expected", expected);
     let theValue = context.value;
-    let isEqual = _equals(theValue, expected, options);
-    // if (isEqual === null) {
-    //     isEqual = _deepEquals(theValue, expected, options);
-    // }
 
-    context.eval(isEqual == true, evalMsg || "expected {value} to strictly equal {expected}");
+    context.eval(theValue === expected, evalMsg || "expected {value} to strictly equal {expected}");
 
     return scope.that;
 }
 
+/**
+ * Performs a loose deep equality check between the `actual` and `expected` value,
+ * this will coerce the values to the same type before comparing.
+ * @param this - The assert scope.
+ * @param expected - The expected value.
+ * @param evalMsg - The message to display if the values are not strictly equal.
+ * @returns - The assert scope.
+ */
 export function deepEqualsFunc<R, T>(this: IAssertScope, expected: T, evalMsg?: MsgSource): R {
     let scope = this;
     let context = scope.context;
@@ -68,7 +66,6 @@ export function deepEqualsFunc<R, T>(this: IAssertScope, expected: T, evalMsg?: 
     context.set("expected", expected);
     let options: IEqualOptions = {
         context: context,
-        deep: true,
         strict: false,
         matchMap: [],
         visiting: []
@@ -79,6 +76,13 @@ export function deepEqualsFunc<R, T>(this: IAssertScope, expected: T, evalMsg?: 
     return scope.that;
 }
 
+/**
+ * Performs a strict deep equality check between the `actual` and `expected` value.
+ * @param this - The assert scope.
+ * @param expected - The expected value.
+ * @param evalMsg - The message to display if the values are not strictly equal.
+ * @returns - The assert scope.
+ */
 export function deepStrictEqualsFunc<R, T>(this: IAssertScope, expected: T, evalMsg?: MsgSource): R {
     let scope = this;
     let context = scope.context;
@@ -86,7 +90,6 @@ export function deepStrictEqualsFunc<R, T>(this: IAssertScope, expected: T, eval
     context.set("expected", expected);
     let options: IEqualOptions = {
         context: context,
-        deep: true,
         strict: true,
         matchMap: [],
         visiting: []
@@ -168,7 +171,6 @@ interface IMatchResult {
 
 interface IEqualOptions {
     context: IScopeContext;
-    deep?: boolean;
     strict?: boolean;
     ordered?: boolean;
     matchMap: IMatchMap[];
@@ -478,41 +480,6 @@ function _objEquals(value: any, expected: any, options: IEqualOptions): boolean 
     }
 
     return false;
-}
-
-function _equals<T>(value: T, expected: T, options: IEqualOptions): boolean {
-
-    return _isChecked(value, expected, options, () => {
-        let isEquals = _isEqual(value, expected, options);
-        if (isEquals !== null) {
-            return isEquals;
-        }
-
-        if (options.strict === true) {
-            // If strict is set and we get here, then the values are not strictly equal
-            return false;
-        }
-
-        if (isPlainObject(value) && isPlainObject(expected)) {
-            return _objEquals(value, expected, options);
-        }
-
-        if (isDate(value) && isDate(expected)) {
-            return value.getTime() === expected.getTime();
-        }
-
-        let typeFn = _getTypeComparer(value);
-        if (typeFn) {
-            return typeFn(value, expected, options);
-        }
-
-        if (_getTypeComparer(expected)) {
-            // The types don't appear to match so they are not equal
-            return false;
-        }
-
-        return _objEquals(value, expected, options);
-    });
 }
 
 function _deepEquals<T>(value: T, expected: T, options: IEqualOptions): boolean {

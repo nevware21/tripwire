@@ -205,7 +205,7 @@ export interface IAssertClass<AssertInst extends IAssertInst = IAssertInst> {
      * assert.equal(1, 2); // Throws AssertionFailure
      * assert.equal("a", "a"); // Passes
      * assert.equal("a", "b"); // Throws AssertionFailure
-     * assert.equal([1, 2], [1, 2]); // Passes
+     * assert.equal([1, 2], [1, 2]); // Throws AssertionFailure
      * assert.equal({ a: 1 }, { a: 1 }); // Throws AssertionFailure
      * assert.equal({ a: 1 }, { a: 1 }, "Objects are not equal"); // Throws AssertionFailure
      * assert.equal({ a: 1 }, { a: 2 }); // Throws AssertionFailure
@@ -236,7 +236,7 @@ export interface IAssertClass<AssertInst extends IAssertInst = IAssertInst> {
      * assert.equals(1, 2); // Throws AssertionFailure
      * assert.equals("a", "a"); // Passes
      * assert.equals("a", "b"); // Throws AssertionFailure
-     * assert.equals([1, 2], [1, 2]); // Passes
+     * assert.equals([1, 2], [1, 2]); // Throws AssertionFailure
      * assert.equals({ a: 1 }, { a: 1 }); // Throws AssertionFailure
      * assert.equals({ a: 1 }, { a: 1 }, "Objects are not equal"); // Throws AssertionFailure
      * assert.equals({ a: 1 }, { a: 2 }); // Throws AssertionFailure

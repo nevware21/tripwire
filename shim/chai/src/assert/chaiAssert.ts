@@ -57,6 +57,8 @@ function _createChaiAssert(): IChaiAssert {
         isNotOk: "is.not.ok",
         notOk: "is.not.ok",
         equal: { scopeFn: createExprAdapter("equal"), nArgs: 2 },
+        equals: { scopeFn: createExprAdapter("equal"), nArgs: 2 },
+        eq: { scopeFn: createExprAdapter("equal"), nArgs: 2 },
         notEqual: { scopeFn: createExprAdapter("not.equal"), nArgs: 2 },
         strictEqual: { scopeFn: createExprAdapter("strictly.equal"), nArgs: 2 },
         notStrictEqual: { scopeFn: createExprAdapter("not.strictly.equal"), nArgs: 2 },
