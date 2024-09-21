@@ -41,15 +41,6 @@
             "enableParallelism": false,
             "ignoreMissingScript": false,
             "allowWarningsInSuccessfulBuild": true
-        },
-        {
-            "commandKind": "bulk",
-            "name": "codecov",
-            "summary": "Run all coverage for all packages",
-            "description": "Runs coverage for all projects",
-            "safeForSimultaneousRushProcesses": false,
-            "enableParallelism": true,
-            "ignoreMissingScript": false
         }
     ]
 }

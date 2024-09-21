@@ -41,9 +41,6 @@ jobs:
       run: node common/scripts/install-run-rush.js test --verbose
       timeout-minutes: 15
 
-    - name: Report Coverage
-      run: npm run codecov
-
     - name: Upload Core Coverage
       uses: codecov/codecov-action@v2
       with:
