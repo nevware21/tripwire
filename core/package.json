@@ -1,7 +1,7 @@
 {
     "name": "@nevware21/tripwire",
     "description": "Test Support utilities, helpers, tools for testing in JavaScript and TypeScript.",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "homepage": "https://github.com/nevware21/tripwire",
     "license": "MIT",
     "author": {

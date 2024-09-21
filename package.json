@@ -1,7 +1,7 @@
 {
     "name": "@nevware21/tripwire",
     "description": "Test support utilities, helpers assertions",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "homepage": "https://github.com/nevware21/tripwire",
     "license": "MIT",
     "author": {
@@ -28,7 +28,7 @@
         "rebuild": "rush rebuild",
         "test": "rush test",
         "clean": "git clean -xdf && npm install",
-        "cleanBuild": "npm run clean && npm run rebuild && npm run docs",
+        "cleanBuild": "npm run clean && npm run rebuild",
         "docs": "npm run docs-core && npm run docs-chai",
         "docs-core": "cd core && npm run docs",
         "docs-chai": "cd shim/chai && npm run docs",
