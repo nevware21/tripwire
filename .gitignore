@@ -118,3 +118,6 @@ package-lock.json
 #ignore lib Readme
 lib/README.md
 lib/LICENSE
+
+#ignore typedoc docs
+docs/typedoc/
