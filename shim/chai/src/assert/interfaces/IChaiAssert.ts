@@ -88,6 +88,26 @@ export interface IChaiAssert {
     equal<T>(actual: T, expected: T, message?: MsgSource): void;
 
     /**
+     * Asserts non-strict equality (==) of actual and expected.
+     *
+     * T   Type of the objects.
+     * @param actual   Actual value.
+     * @param expected   Potential expected value.
+     * @param message   Message to display on error.
+     */
+    equals<T>(actual: T, expected: T, message?: MsgSource): void;
+
+    /**
+     * Asserts non-strict equality (==) of actual and expected.
+     *
+     * T   Type of the objects.
+     * @param actual   Actual value.
+     * @param expected   Potential expected value.
+     * @param message   Message to display on error.
+     */
+    eq<T>(actual: T, expected: T, message?: MsgSource): void;
+
+    /**
      * Asserts non-strict inequality (!=) of actual and expected.
      *
      * T   Type of the objects.

@@ -15,10 +15,13 @@ import { EqualFn } from "../funcs/EqualFn";
 export interface IEqualOp<R> {
 
     /**
-     * Performs a loose equality check (`==`) between the `actual` and `expected` values,
-     * throwing an `AssertionFailure` with the given message when the `actual` value is not
-     * equal to the `expected` value. To perform a strict equality check (`===`), use the
-     * {@link IStrictlyOp.equal} (`strictly.equal`) operations.
+     * Performs an equality check between the `actual` and `expected` values, throwing an
+     * `AssertionFailure` with the given message when the `actual` value is not equal to
+     * the `expected` value. The default equality check is a loose (`==`) equality check,
+     * to perform a strict equality check (`===`), use the {@link IStrictlyOp.equal}
+     * (`strictly.equal`) operations and when comparing complex objects, use the deep
+     * equality operations provided by the {@link IDeepOp.equal} (`deep.equal`) operations or
+     * (`deep.strictly.equal`) for deep strict equality checks.
      * @typeParam T - The type of the expected value.
      * @param expected - The expected value.
      * @param evalMsg - The message to display if the values are not strictly equal.
@@ -42,10 +45,13 @@ export interface IEqualOp<R> {
     equal: EqualFn<R>;
 
     /**
-     * Performs a loose equality check (`==`) between the `actual` and `expected` values,
-     * throwing an `AssertionFailure` with the given message when the `actual` value is not
-     * equal to the `expected` value. To perform a strict equality check (`===`), use the
-     * {@link IStrictlyOp.equals} (`strictly.equals`) operations.
+     * Performs an equality check between the `actual` and `expected` values, throwing an
+     * `AssertionFailure` with the given message when the `actual` value is not equal to
+     * the `expected` value. The default equality check is a loose (`==`) equality check,
+     * to perform a strict equality check (`===`), use the {@link IStrictlyOp.equal}
+     * (`strictly.equal`) operations and when comparing complex objects, use the deep
+     * equality operations provided by the {@link IDeepOp.equal} (`deep.equal`) operations or
+     * (`deep.strictly.equal`) for deep strict equality checks.
      * @typeParam T - The type of the expected value.
      * @param expected - The expected value.
      * @param evalMsg - The message to display if the values are strictly equal.
@@ -69,9 +75,13 @@ export interface IEqualOp<R> {
     equals: EqualFn<R>;
     
     /**
-     * Performs a loose equality check (`==`) between the `actual` and `expected` values,
-     * throwing an `AssertionFailure` with the given message when the `actual` value is not
-     * equal to the `expected` value. To perform a strict equality check (`===`), use the
+     * Performs an equality check between the `actual` and `expected` values, throwing an
+     * `AssertionFailure` with the given message when the `actual` value is not equal to
+     * the `expected` value. The default equality check is a loose (`==`) equality check,
+     * to perform a strict equality check (`===`), use the {@link IStrictlyOp.equal}
+     * (`strictly.equal`) operations and when comparing complex objects, use the deep
+     * equality operations provided by the {@link IDeepOp.equal} (`deep.equal`) operations or
+     * (`deep.strictly.equal`) for deep strict equality checks.
      * {@link IStrictlyOp.eq} (`strictly.eq`) operations.
      * @typeParam T - The type of the expected value.
      * @param expected - The expected value.
