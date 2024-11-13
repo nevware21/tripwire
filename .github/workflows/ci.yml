@@ -42,14 +42,14 @@ jobs:
       timeout-minutes: 15
 
     - name: Upload Core Coverage
-      uses: codecov/codecov-action@v2
+      uses: codecov/codecov-action@v4
       with:
         files: ./core/coverage/coverage-final.json
         token: ${{ secrets.CODECOV_TOKEN }}
         flags: core
     
     - name: Upload Chai Shim Coverage
-      uses: codecov/codecov-action@v2
+      uses: codecov/codecov-action@v4
       with:
         files: ./shim/chai/coverage/coverage-final.json
         token: ${{ secrets.CODECOV_TOKEN }}
