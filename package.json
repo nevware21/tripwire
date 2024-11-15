@@ -70,7 +70,7 @@
         "@microsoft/rush": "5.140.1",
         "@nevware21/grunt-eslint-ts": "^0.5.1",
         "@nevware21/grunt-ts-plugin": "^0.5.1",
-        "@types/eslint": "^8.56.10",
+        "@types/eslint": "^9.6.1",
         "@types/estree": "^1.0.0",
         "@types/jquery": "^3.5.14",
         "@types/mocha": "^10.0.1",
