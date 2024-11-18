@@ -43,7 +43,7 @@
         "npm-pack": "npm run npm-pack-core && npm run npm-pack-chai",
         "npm-pack-core": "copyfiles LICENSE core && cd core && npm pack",
         "npm-pack-chai": "copyfiles LICENSE shim/chai && cd shim/chai && npm pack",
-        "npm-publish": "cd tools/release-tools/npm-publish && npm install && cd ../../.. && npm run do-npm-publish --prefix tools/release-tools/npm-publish --",
+        "npm-publish": "publish-npm",
         "grunt": "grunt --help"
     },
     "repository": {
@@ -70,6 +70,8 @@
         "@microsoft/rush": "5.140.1",
         "@nevware21/grunt-eslint-ts": "^0.5.1",
         "@nevware21/grunt-ts-plugin": "^0.5.1",
+        "@nevware21/coverage-tools": "^0.1.3",
+        "@nevware21/publish-npm": "^0.1.3",
         "@types/eslint": "^8.56.10",
         "@types/estree": "^1.0.0",
         "@types/jquery": "^3.5.14",
