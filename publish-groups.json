@@ -2,7 +2,7 @@
 // NPM Publish group definitions
 // ------------------------------
 {
-    "repoRoot": "../../..",
+    "repoRoot": ".",
     "default": "tripwire",
     "groups": {
         "tripwire": [
