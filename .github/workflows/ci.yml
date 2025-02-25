@@ -38,7 +38,7 @@ jobs:
       timeout-minutes: 15
 
     - name: Unit tests
-      run: node common/scripts/install-run-rush.js test --verbose
+      run: npm run test --verbose
       timeout-minutes: 15
 
     - name: Upload Core Coverage
