@@ -1,7 +1,7 @@
 {
     "name": "@nevware21/tripwire",
     "description": "Test support utilities, helpers assertions",
-    "version": "0.1.1",
+    "version": "0.1.2",
     "homepage": "https://github.com/nevware21/tripwire",
     "license": "MIT",
     "author": {
