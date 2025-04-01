@@ -78,6 +78,10 @@ export function globalErr<T>(fn: Function, val?: T, skipStackTest?: boolean) {
                 if (CHECK_INTERNAL_STACK_FRAME_REGEX.test(theStack)) {
                     throw new AssertionError("implementation frames not properly filtered from stack trace", err);
                 }
+                if (theStack.indexOf("globalErr") === -1) {
+                    console.error("globalErr missing - " + dumpObj(err));
+                }
+                
                 expect(theStack).contains("globalErr").not.match(
                     CHECK_INTERNAL_STACK_FRAME_REGEX,
                     "implementation frames not properly filtered from stack trace {value}"

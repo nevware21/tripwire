@@ -17,7 +17,7 @@ describe("assert.includes", () => {
     });
 
     it("should pass when the array includes the specified element", () => {
-        assert.includes([1, 2, 3], 2);
+        assert.includes([4, 5, 6], 5);
     });
 
     it("should throw AssertionFailure when the string does not include the specified substring", () => {
@@ -30,10 +30,10 @@ describe("assert.includes", () => {
 
     it("should throw AssertionFailure when the array does not include the specified element", () => {
         checkError(() => {
-            assert.includes([1, 2, 3], 4);
-        }, "expected [1,2,3] to include 4");
+            assert.includes([10, 20, 30], 4);
+        }, "expected [10,20,30] to include 4");
 
-        expect(() => assert.includes([1, 2, 3], 4)).toThrow(AssertionFailure);
+        expect(() => assert.includes([10, 20, 30], 4)).toThrow(AssertionFailure);
     });
 
     it("should throw AssertionFailure with a custom message when the value does not include the match", () => {

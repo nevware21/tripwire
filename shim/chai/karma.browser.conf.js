@@ -2,7 +2,7 @@ process.env.CHROME_BIN = require('puppeteer').executablePath();
 
 module.exports = function (config) {
     config.set({
-        browsers: [ "ChromeHeadless" ],
+        browsers: [ "Chromium_without_security" ],
         listenAddress: 'localhost',
         hostname: 'localhost',
         frameworks: [ "mocha", "karma-typescript" ],
@@ -44,6 +44,13 @@ module.exports = function (config) {
         },
 
         reporters: [ "spec", "karma-typescript" ],
+
+        customLaunchers: {
+            Chromium_without_security: {
+                base: 'ChromeHeadless',
+                flags: ['--disable-web-security', '--disable-site-isolation-trials', '--no-sandbox']
+            }
+        },
 
         logLevel: config.LOG_INFO
     })

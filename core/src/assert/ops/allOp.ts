@@ -11,39 +11,31 @@ import { IAnyOp } from "../interface/ops/IAnyOp";
 import { IAllOp } from "../interface/ops/IAllOp";
 import { allKeysFunc, anyKeysFunc } from "../funcs/keysFunc";
 import { IAssertScope } from "../interface/IAssertScope";
+import { AssertScopeFuncDefs } from "../interface/IAssertInst";
+import { allValuesFunc, anyValuesFunc } from "../funcs/valuesFunc";
 
 export function anyOp<R>(scope: IAssertScope): IAnyOp<R> {
     scope.context.set(ANY, true);
     scope.context.set(ALL, false);
 
-    return scope.createOperation<IAnyOp<R>>({
+    const props: AssertScopeFuncDefs<IAnyOp<R>> = {
         keys: { propFn: anyKeysFunc }
-    });
+    };
+
+    return scope.createOperation(props, anyValuesFunc(scope));
 }
 
 export function allOp<R>(scope: IAssertScope): IAllOp<R> {
     scope.context.set(ANY, false);
     scope.context.set(ALL, true);
 
-    return scope.createOperation<IAllOp<R>>({
+    const props: AssertScopeFuncDefs<IAllOp<R>> = {
         keys: { propFn: allKeysFunc }
-    });
+    };
+
+    return scope.createOperation(props, allValuesFunc(scope));
 }
 
-export function anyOwnOp<R>(scope: IAssertScope): IAnyOp<R> {
-    scope.context.set(ANY, true);
-    scope.context.set(ALL, false);
+export const anyOwnOp: <R>(scope: IAssertScope) => IAnyOp<R> = anyOp;
 
-    return scope.createOperation<IAnyOp<R>>({
-        keys: { propFn: anyKeysFunc }
-    });
-}
-
-export function allOwnOp<R>(scope: IAssertScope): IAllOp<R> {
-    scope.context.set(ANY, true);
-    scope.context.set(ALL, false);
-
-    return scope.createOperation<IAnyOp<R>>({
-        keys: { propFn: allKeysFunc }
-    });
-}
+export const allOwnOp: <R>(scope: IAssertScope) => IAllOp<R> = allOp;
