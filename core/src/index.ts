@@ -37,6 +37,7 @@ import { IHasOp } from "./assert/interface/ops/IHasOp";
 import { IIsTypeOp } from "./assert/interface/ops/ITypeOp";
 import { KeysFn } from "./assert/interface/funcs/KeysFn";
 import { IncludeFn } from "./assert/interface/funcs/IncludeFn";
+import { ValuesFn } from "./assert/interface/funcs/ValuesFn";
 import { IAssertScope } from "./assert/interface/IAssertScope";
 import { EqualFn } from "./assert/interface/funcs/EqualFn";
 import { AssertFn } from "./assert/interface/funcs/AssertFn";
@@ -114,6 +115,7 @@ export {
     EvalFn,
     IncludeFn,
     KeysFn,
+    ValuesFn,
     MsgSource,
     AssertScopeFuncDefs,
     SymbolFn,

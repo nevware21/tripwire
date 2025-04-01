@@ -156,8 +156,8 @@ function _createChaiAssert(): IChaiAssert {
         includeDeepOrderedMembers: notImplemented,
         notIncludeDeepOrderedMembers: notImplemented,
 
-        includeMembers: notImplemented,
-        notIncludeMembers: notImplemented,
+        includeMembers: { scopeFn: createExprAdapter("includes.all"), nArgs: 2 },
+        notIncludeMembers: { scopeFn: createExprAdapter("not.includes.all"), nArgs: 2 },
 
         includeDeepMembers: notImplemented,
         notIncludeDeepMembers: notImplemented,

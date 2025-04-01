@@ -199,7 +199,7 @@ function _pruneStack(stackDetail: IParsedStack, newStack: IParsedStack, funcName
         }
 
         // Each stack doesn't contain the other, so we need to compare the sizes
-        if (newStack.lines.length < stackDetail.lines.length) {
+        if (newStack.lines.length > 0 && newStack.lines.length < stackDetail.lines.length) {
             // The new stack is smaller than the current stack
             return newStack;
         }

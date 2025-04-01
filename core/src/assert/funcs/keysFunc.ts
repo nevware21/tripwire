@@ -6,7 +6,7 @@
  * Licensed under the MIT license.
  */
 
-import { arrForEach, arrSlice, asString, isArray, isObject, isStrictNullOrUndefined, objKeys } from "@nevware21/ts-utils";
+import { arrForEach, arrSlice, asString, isArray, isObject, isStrictNullOrUndefined, isString, objKeys } from "@nevware21/ts-utils";
 import { IAssertScope } from "../interface/IAssertScope";
 import { KeysFn } from "../interface/funcs/KeysFn";
 import { EMPTY_STRING } from "../internal/const";
@@ -37,6 +37,8 @@ function _formatKeys(keys: string[]): string {
         }
         if (key || isStrictNullOrUndefined(key)) {
             formattedKeys += asString(key);
+        } else if (!isString(key)) {
+            formattedKeys += asString(key);
         } else {
             // special case for empty string keys
             formattedKeys += "\"\"";
@@ -57,7 +59,7 @@ function _getValueKeys(scope: IAssertScope, value: any): string[] {
 
 function _getArgKeys(scope: IAssertScope, theArgs: any[]): string[] {
     let theKeys: string[] = theArgs;
-    if (theArgs && (isArray(theArgs[0]) || isObject(theArgs[0]))) {
+    if (theArgs && (isArray(theArgs[0]) || isObject(theArgs[0])) && !isString(theArgs[0])) {
         if (theArgs.length > 1) {
             scope.context.set("fatal", theArgs);
             scope.fatal("expected only one argument of type Array or Object - {fatal}");

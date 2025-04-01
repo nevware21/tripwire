@@ -6,7 +6,7 @@ module.exports = function (config) {
     const commonjs = require("@rollup/plugin-commonjs");
     const istanbul = require("rollup-plugin-istanbul");
     config.set({
-        browsers: [ "ChromeHeadless" ],
+        browsers: [ "Chromium_without_security" ],
         listenAddress: 'localhost',
         hostname: 'localhost',
         frameworks: [ "mocha-webworker" ],
@@ -53,6 +53,13 @@ module.exports = function (config) {
             ]
         },
         reporters: ["spec", "coverage" ],
+
+        customLaunchers: {
+            Chromium_without_security: {
+                base: 'ChromeHeadless',
+                flags: ['--disable-web-security', '--disable-site-isolation-trials', '--no-sandbox']
+            }
+        },
 
         logLevel: config.LOG_DEBUG
     })

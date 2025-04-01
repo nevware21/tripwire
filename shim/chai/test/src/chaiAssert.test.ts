@@ -1314,7 +1314,7 @@ describe("assert", function () {
 
         err(function(){
             assert.hasAllKeys({ foo: 1 }, [], "blah");
-        }, "blah: expected at least one key to be provided []");
+        }, "blah: expected at least one key to be provided []", true);
 
         err(function(){
             assert.containsAllKeys({ foo: 1 }, [], "blah");
@@ -2097,28 +2097,28 @@ describe("assert", function () {
     //     }, "blah: expected [ { a: 1 }, { b: 2 }, { c: 3 } ] to not have the same ordered members as [ { a: 1 }, { b: 2 }, { c: 3 } ]");
     // });
 
-    // it("includeMembers", function() {
-    //     assert.includeMembers([1, 2, 3], [2, 3, 2]);
-    //     assert.includeMembers([1, 2, 3], []);
-    //     assert.includeMembers([1, 2, 3], [3]);
+    it("includeMembers", function() {
+        assert.includeMembers([1, 2, 3], [2, 3, 2]);
+        assert.includeMembers([1, 2, 3], []);
+        assert.includeMembers([1, 2, 3], [3]);
 
-    //     err(function() {
-    //         assert.includeMembers([5, 6], [7, 8], "blah");
-    //     }, "blah: expected [ 5, 6 ] to be a superset of [ 7, 8 ]");
+        err(function() {
+            assert.includeMembers([5, 6], [7, 8], "blah");
+        }, "blah: expected all values: [7,8], missing: [7,8], found: [5,6]");
 
-    //     err(function() {
-    //         assert.includeMembers([5, 6], [5, 6, 0]);
-    //     }, "expected [ 5, 6 ] to be a superset of [ 5, 6, +0 ]");
-    // });
+        err(function() {
+            assert.includeMembers([5, 6], [5, 6, 0]);
+        }, "expected all values: [5,6,0], missing: [0], found: [5,6]");
+    });
 
-    // it("notIncludeMembers", function() {
-    //     assert.notIncludeMembers([1, 2, 3], [5, 1]);
-    //     assert.notIncludeMembers([{a: 1}], [{a: 1}]);
+    it("notIncludeMembers", function() {
+        assert.notIncludeMembers([1, 2, 3], [5, 1]);
+        assert.notIncludeMembers([{a: 1}], [{a: 1}]);
 
-    //     err(function() {
-    //         assert.notIncludeMembers([1, 2, 3], [2, 1], "blah");
-    //     }, "blah: not expected [ 1, 2, 3 ] to be a superset of [ 2, 1 ]");
-    // });
+        err(function() {
+            assert.notIncludeMembers([1, 2, 3], [2, 1], "blah");
+        }, "blah: not expected all values: [2,1], missing: [], found: [1,2,3]");
+    });
 
     // it("includeDeepMembers", function() {
     //     assert.includeDeepMembers([{a:1}, {b:2}, {c:3}], [{c:3}, {b:2}]);

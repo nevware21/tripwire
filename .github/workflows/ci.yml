@@ -12,7 +12,7 @@ on:
 jobs:
   build:
 
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     env:
       NODE_OPTIONS: --max-old-space-size=8192    
 
@@ -27,12 +27,15 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: ${{ matrix.node }}
+
     - name: Update rush shrinkwrap dependencies
       run: node common/scripts/install-run-rush.js update --full
       
     - name: Npm Install
       run: npm install
 
+    - run: node common/scripts/install-run-rush.js check
+    
     - name: Build
       run: npm run build --verbose
       timeout-minutes: 15
