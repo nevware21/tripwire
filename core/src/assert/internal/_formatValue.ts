@@ -8,7 +8,7 @@
 
 import {
     arrForEach, arrIndexOf, asString, dumpObj, isArray, isError, isFunction, isPlainObject, isPrimitive,
-    isRegExp, isStrictNullOrUndefined, isString, isSymbol, objForEachKey, objGetPrototypeOf
+    isRegExp, isStrictNullOrUndefined, isString, isSymbol, objForEachKey, objGetOwnPropertySymbols, objGetPrototypeOf
 } from "@nevware21/ts-utils";
 import { EMPTY_STRING } from "./const";
 
@@ -24,18 +24,12 @@ function _getObjKeys<T>(target: T): (keyof T)[] {
             }
         });
 
-        try {
-            if (Object.getOwnPropertySymbols) {
-                let symbols = Object.getOwnPropertySymbols(currentObj);
-                arrForEach(symbols, (symbol) => {
-                    if (arrIndexOf(keys, symbol) === -1) {
-                        keys.push(symbol);
-                    }
-                });
+        let symbols = objGetOwnPropertySymbols(currentObj);
+        arrForEach(symbols, (symbol) => {
+            if (arrIndexOf(keys, symbol) === -1) {
+                keys.push(symbol);
             }
-        } catch (e) {
-            // ignore
-        }
+        });
         
         let newObj = objGetPrototypeOf(currentObj);
         if (newObj === currentObj) {

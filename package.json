@@ -63,7 +63,7 @@
         "node": ">= 0.8.0"
     },
     "dependencies": {
-        "@nevware21/ts-utils": ">= 0.11.8 < 2.x"
+        "@nevware21/ts-utils": ">= 0.12.2 < 2.x"
     },
     "devDependencies": {
         "@istanbuljs/nyc-config-typescript": "^1.0.2",
@@ -88,7 +88,8 @@
         "grunt-cli": "^1.4.3",
         "nyc": "^17.0.0",
         "puppeteer": "^24.4.0",
-        "typedoc": "^0.26.2",
-        "typescript": "^4.9.5"
+        "typedoc": "^0.28.2",
+        "typedoc-github-theme": "^0.3.0",
+        "typescript": "~5.2.2"
     }
 }

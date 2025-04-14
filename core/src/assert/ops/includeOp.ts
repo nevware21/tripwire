@@ -14,6 +14,33 @@ import { IIncludeOp } from "../interface/ops/IIncludeOp";
 import { IAssertScope } from "../interface/IAssertScope";
 
 /**
+ * Helper function to check if an array contains a deep equal item
+ * @param haystack - The array to search in
+ * @param needle - The item to search for
+ * @returns True if the item is found, false otherwise
+ */
+function _deepIncludesArray(haystack: any[], needle: any[]): boolean {
+    for (let i = 0; i < haystack.length; i++) {
+        const item = haystack[i];
+        if (item.length === needle.length) {
+            let allEqual = true;
+            for (let j = 0; j < item.length; j++) {
+                if (item[j] !== needle[j]) {
+                    allEqual = false;
+                    break;
+                }
+            }
+
+            if (allEqual) {
+                return true;
+            }
+        }
+    }
+    
+    return false;
+}
+
+/**
  * Creates the include assertion operation using the given scope.
  * This includes the primary include function and any additional properties
  * as identified by the {@link IncludeOpProps} interface.
@@ -72,7 +99,7 @@ export function deepIncludeOp<R>(scope: IAssertScope): IIncludeOp<R> {
         if (isString(context.value)) {
             context.eval(value.indexOf(match) > -1, evalMsg || "expected {value} to include {match}");
         } else if (isArray(context.value)) {
-            context.eval(arrIndexOf(value, match) > -1, evalMsg || "expected {value} to include {match}");
+            context.eval(_deepIncludesArray(value, match), evalMsg || "expected {value} to include {match}");
         } else if (value && isFunction(value.has)) {
             // Looks like a set or map
             context.eval(value.has(match), evalMsg || "expected {value} to include {match}");

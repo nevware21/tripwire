@@ -72,40 +72,40 @@ describe("assert", function () {
 
     it("isOk / ok", function () {
         ["isOk", "ok"].forEach(function (isOk) {
-            assert[isOk](true);
-            assert[isOk](1);
-            assert[isOk]("test");
+            (assert as any)[isOk](true);
+            (assert as any)[isOk](1);
+            (assert as any)[isOk]("test");
 
             err(function () {
-                assert[isOk](false, "blah");
+                (assert as any)[isOk](false, "blah");
             }, "blah: expected false to be truthy");
 
             err(function () {
-                assert[isOk](0);
+                (assert as any)[isOk](0);
             }, "expected 0 to be truthy");
 
             err(function () {
-                assert[isOk]("");
+                (assert as any)[isOk]("");
             }, "expected \"\" to be truthy");
         });
     });
 
     it("isNotOk, notOk", function () {
         ["isNotOk", "notOk"].forEach(function (isNotOk) {
-            assert[isNotOk](false);
-            assert[isNotOk](0);
-            assert[isNotOk]("");
+            (assert as any)[isNotOk](false);
+            (assert as any)[isNotOk](0);
+            (assert as any)[isNotOk]("");
 
             err(function () {
-                assert[isNotOk](true, "blah");
+                (assert as any)[isNotOk](true, "blah");
             }, "blah: not expected true to be truthy");
 
             err(function () {
-                assert[isNotOk](1);
+                (assert as any)[isNotOk](1);
             }, "not expected 1 to be truthy");
 
             err(function () {
-                assert[isNotOk]("test");
+                (assert as any)[isNotOk]("test");
             }, "not expected \"test\" to be truthy");
         });
     });
@@ -1052,7 +1052,7 @@ describe("assert", function () {
         var enumProp1 = "enumProp1"
             , enumProp2 = "enumProp2"
             , nonEnumProp = "nonEnumProp"
-            , obj = {};
+            , obj: any = {};
 
         obj[enumProp1] = "enumProp1";
         obj[enumProp2] = "enumProp2";
@@ -1069,7 +1069,7 @@ describe("assert", function () {
             , sym2 = Symbol("sym2")
             , sym3 = Symbol("sym3")
             , str = "str"
-            , obj = {};
+            , obj: any = {};
 
         obj[sym1] = "sym1";
         obj[sym2] = "sym2";
@@ -1648,101 +1648,101 @@ describe("assert", function () {
         class CustomError extends Error {}
 
         ["throws", "throw", "Throw"].forEach(function (throws) {
-            assert[throws](function() {
+            (assert as any)[throws](function() {
                 throw new Error("foo");
             });
-            assert[throws](function() {
+            (assert as any)[throws](function() {
                 throw new Error("");
             }, "");
-            assert[throws](function() {
+            (assert as any)[throws](function() {
                 throw new Error("bar");
             }, "bar");
-            assert[throws](function() {
+            (assert as any)[throws](function() {
                 throw new Error("bar");
             }, /bar/);
-            assert[throws](function() {
+            (assert as any)[throws](function() {
                 throw new Error("bar");
             }, Error);
-            assert[throws](function() {
+            (assert as any)[throws](function() {
                 throw new Error("bar");
             }, Error, "bar");
-            assert[throws](function() {
+            (assert as any)[throws](function() {
                 throw new Error("");
             }, Error, "");
-            assert[throws](function() {
+            (assert as any)[throws](function() {
                 throw new Error("foo")
             }, "");
-            assert[throws](function() {
+            (assert as any)[throws](function() {
                 throw "";
             }, "");
-            assert[throws](function() {
+            (assert as any)[throws](function() {
                 throw "";
             }, /^$/);
-            assert[throws](function() {
+            (assert as any)[throws](function() {
                 throw new Error("");
             }, /^$/);
-            assert[throws](function() {
+            (assert as any)[throws](function() {
                 throw undefined;
             });
-            assert[throws](function() {
+            (assert as any)[throws](function() {
                 throw new CustomError("foo");
             });
-            assert[throws](function() {
+            (assert as any)[throws](function() {
                 throw (() => {});
             });
 
-            var thrownErr = assert[throws](function() {
+            var thrownErr = (assert as any)[throws](function() {
                 throw new Error("foo");
             });
             assert(thrownErr instanceof Error, "assert." + throws + " returns error");
             assert(thrownErr.message === "foo", "assert." + throws + " returns error message");
 
             err(function () {
-                assert[throws](function() {
+                (assert as any)[throws](function() {
                     throw new Error("foo")
                 }, TypeError);
             }, "expected [Function] to throw an error of type TypeError() but threw [Error:\"foo\"]")
 
             err(function () {
-                assert[throws](function() {
+                (assert as any)[throws](function() {
                     throw new Error("foo")
                 }, "bar");
             }, "expected [Function] to throw an error with a message containing \"bar\" but it was \"foo\"")
 
             err(function () {
-                assert[throws](function() {
+                (assert as any)[throws](function() {
                     throw new Error("foo")
                 }, Error, "bar", "blah");
             }, "blah: expected [Function] to throw an error of type Error() with a message containing \"bar\" but [Error:\"foo\"] was thrown")
 
             err(function () {
-                assert[throws](function() {
+                (assert as any)[throws](function() {
                     throw new Error("foo")
                 }, TypeError, "bar", "blah");
             }, "blah: expected [Function] to throw an error of type TypeError() with a message containing \"bar\" but [Error:\"foo\"] was thrown")
 
             err(function () {
-                assert[throws](function() {});
+                (assert as any)[throws](function() {});
             }, "expected [Function] to throw an error");
 
             err(function () {
-                assert[throws](function() {
+                (assert as any)[throws](function() {
                     throw new Error("")
                 }, "bar");
             }, " expected [Function] to throw an error with a message containing \"bar\" but it was \"\"");
 
             err(function () {
-                assert[throws](function() {
+                (assert as any)[throws](function() {
                     throw new Error("")
                 }, /bar/);
             }, "expected [Function] to throw an error with a message matching /bar/ but it was \"\"");
 
             err(function () {
-                assert[throws]({});
+                (assert as any)[throws]({});
             }, "expected {} to be a function");
 
             err(function () {
-                assert[throws]({}, Error, "testing", "blah");
+                (assert as any)[throws]({}, Error, "testing", "blah");
             }, "blah: expected {} to be a function");
         });
     });
@@ -2610,32 +2610,32 @@ describe("assert", function () {
         ["isExtensible", "extensible"].forEach(function (isExtensible) {
             var nonExtensibleObject = Object.preventExtensions({});
 
-            assert[isExtensible]({});
+            (assert as any)[isExtensible]({});
 
             err(function() {
-                assert[isExtensible](nonExtensibleObject, "blah");
+                (assert as any)[isExtensible](nonExtensibleObject, "blah");
             }, "blah: expected {} to be extensible");
 
             // Making sure ES6-like Object.isExtensible response is respected for all primitive types
 
             err(function() {
-                assert[isExtensible](42);
+                (assert as any)[isExtensible](42);
             }, "expected 42 to be extensible");
 
             err(function() {
-                assert[isExtensible](null);
+                (assert as any)[isExtensible](null);
             }, "expected null to be extensible");
 
             err(function() {
-                assert[isExtensible]("foo");
+                (assert as any)[isExtensible]("foo");
             }, "expected \"foo\" to be extensible");
 
             err(function() {
-                assert[isExtensible](false);
+                (assert as any)[isExtensible](false);
             }, "expected false to be extensible");
 
             err(function() {
-                assert[isExtensible](undefined);
+                (assert as any)[isExtensible](undefined);
             }, "expected undefined to be extensible");
 
             var proxy = new Proxy({}, {
@@ -2646,7 +2646,7 @@ describe("assert", function () {
 
             err(function() {
                 // isExtensible should not suppress errors, thrown in proxy traps
-                assert[isExtensible](proxy);
+                (assert as any)[isExtensible](proxy);
             }, { name: "TypeError" }, true);
         });
     });
@@ -2655,20 +2655,20 @@ describe("assert", function () {
         ["isNotExtensible", "notExtensible"].forEach(function (isNotExtensible) {
             var nonExtensibleObject = Object.preventExtensions({});
 
-            assert[isNotExtensible](nonExtensibleObject);
+            (assert as any)[isNotExtensible](nonExtensibleObject);
 
             err(function() {
-                assert[isNotExtensible]({}, "blah");
+                (assert as any)[isNotExtensible]({}, "blah");
             }, "blah: not expected {} to be extensible");
 
             // Making sure ES6-like Object.isExtensible response is respected for all primitive types
 
-            assert[isNotExtensible](42);
-            assert[isNotExtensible](null);
-            assert[isNotExtensible]("foo");
-            assert[isNotExtensible](false);
-            assert[isNotExtensible](undefined);
-            assert[isNotExtensible](Symbol());
+            (assert as any)[isNotExtensible](42);
+            (assert as any)[isNotExtensible](null);
+            (assert as any)[isNotExtensible]("foo");
+            (assert as any)[isNotExtensible](false);
+            (assert as any)[isNotExtensible](undefined);
+            (assert as any)[isNotExtensible](Symbol());
 
             var proxy = new Proxy({}, {
                 isExtensible: function() {
@@ -2678,7 +2678,7 @@ describe("assert", function () {
 
             err(function() {
                 // isNotExtensible should not suppress errors, thrown in proxy traps
-                assert[isNotExtensible](proxy);
+                (assert as any)[isNotExtensible](proxy);
             }, { name: "TypeError" }, true);
         });
     });
@@ -2687,20 +2687,20 @@ describe("assert", function () {
         ["isSealed", "sealed"].forEach(function (isSealed) {
             var sealedObject = Object.seal({});
 
-            assert[isSealed](sealedObject);
+            (assert as any)[isSealed](sealedObject);
 
             err(function() {
-                assert[isSealed]({}, "blah");
+                (assert as any)[isSealed]({}, "blah");
             }, "blah: expected {} to be sealed");
 
             // Making sure ES6-like Object.isSealed response is respected for all primitive types
 
-            assert[isSealed](42);
-            assert[isSealed](null);
-            assert[isSealed]("foo");
-            assert[isSealed](false);
-            assert[isSealed](undefined);
-            assert[isSealed](Symbol());
+            (assert as any)[isSealed](42);
+            (assert as any)[isSealed](null);
+            (assert as any)[isSealed]("foo");
+            (assert as any)[isSealed](false);
+            (assert as any)[isSealed](undefined);
+            (assert as any)[isSealed](Symbol());
 
             var proxy = new Proxy({}, {
                 ownKeys: function() {
@@ -2713,7 +2713,7 @@ describe("assert", function () {
 
             err(function() {
                 // isSealed should not suppress errors, thrown in proxy traps
-                assert[isSealed](proxy);
+                (assert as any)[isSealed](proxy);
             }, { name: "TypeError" }, true);
         });
     });
@@ -2722,32 +2722,32 @@ describe("assert", function () {
         ["isNotSealed", "notSealed"].forEach(function (isNotSealed) {
             var sealedObject = Object.seal({});
 
-            assert[isNotSealed]({});
+            (assert as any)[isNotSealed]({});
 
             err(function() {
-                assert[isNotSealed](sealedObject, "blah");
+                (assert as any)[isNotSealed](sealedObject, "blah");
             }, "blah: not expected {} to be sealed");
 
             // Making sure ES6-like Object.isSealed response is respected for all primitive types
 
             err(function() {
-                assert[isNotSealed](42);
+                (assert as any)[isNotSealed](42);
             }, "not expected 42 to be sealed");
 
             err(function() {
-                assert[isNotSealed](null);
+                (assert as any)[isNotSealed](null);
             }, "not expected null to be sealed");
 
             err(function() {
-                assert[isNotSealed]("foo");
+                (assert as any)[isNotSealed]("foo");
             }, "not expected \"foo\" to be sealed");
 
             err(function() {
-                assert[isNotSealed](false);
+                (assert as any)[isNotSealed](false);
             }, "not expected false to be sealed");
 
             err(function() {
-                assert[isNotSealed](undefined);
+                (assert as any)[isNotSealed](undefined);
             }, "not expected undefined to be sealed");
 
             var proxy = new Proxy({}, {
@@ -2761,7 +2761,7 @@ describe("assert", function () {
 
             err(function() {
                 // isNotSealed should not suppress errors, thrown in proxy traps
-                assert[isNotSealed](proxy);
+                (assert as any)[isNotSealed](proxy);
             }, { name: "TypeError" }, true);
         });
     });
@@ -2770,20 +2770,20 @@ describe("assert", function () {
         ["isFrozen", "frozen"].forEach(function (isFrozen) {
             var frozenObject = Object.freeze({});
 
-            assert[isFrozen](frozenObject);
+            (assert as any)[isFrozen](frozenObject);
 
             err(function() {
-                assert[isFrozen]({}, "blah");
+                (assert as any)[isFrozen]({}, "blah");
             }, "blah: expected {} to be frozen");
 
             // Making sure ES6-like Object.isFrozen response is respected for all primitive types
 
-            assert[isFrozen](42);
-            assert[isFrozen](null);
-            assert[isFrozen]("foo");
-            assert[isFrozen](false);
-            assert[isFrozen](undefined);
-            assert[isFrozen](Symbol());
+            (assert as any)[isFrozen](42);
+            (assert as any)[isFrozen](null);
+            (assert as any)[isFrozen]("foo");
+            (assert as any)[isFrozen](false);
+            (assert as any)[isFrozen](undefined);
+            (assert as any)[isFrozen](Symbol());
 
             var proxy = new Proxy({}, {
                 ownKeys: function() {
@@ -2796,7 +2796,7 @@ describe("assert", function () {
 
             err(function() {
                 // isFrozen should not suppress errors, thrown in proxy traps
-                assert[isFrozen](proxy);
+                (assert as any)[isFrozen](proxy);
             }, { name: "TypeError" }, true);
         });
     });
@@ -2805,32 +2805,32 @@ describe("assert", function () {
         ["isNotFrozen", "notFrozen"].forEach(function (isNotFrozen) {
             var frozenObject = Object.freeze({});
 
-            assert[isNotFrozen]({});
+            (assert as any)[isNotFrozen]({});
 
             err(function() {
-                assert[isNotFrozen](frozenObject, "blah");
+                (assert as any)[isNotFrozen](frozenObject, "blah");
             }, "blah: not expected {} to be frozen", true);
 
             // Making sure ES6-like Object.isFrozen response is respected for all primitive types
 
             err(function() {
-                assert[isNotFrozen](42);
+                (assert as any)[isNotFrozen](42);
             }, "not expected 42 to be frozen");
 
             err(function() {
-                assert[isNotFrozen](null);
+                (assert as any)[isNotFrozen](null);
             }, "not expected null to be frozen");
 
             err(function() {
-                assert[isNotFrozen]("foo");
+                (assert as any)[isNotFrozen]("foo");
             }, "not expected \"foo\" to be frozen");
 
             err(function() {
-                assert[isNotFrozen](false);
+                (assert as any)[isNotFrozen](false);
             }, "not expected false to be frozen");
 
             err(function() {
-                assert[isNotFrozen](undefined);
+                (assert as any)[isNotFrozen](undefined);
             }, "not expected undefined to be frozen");
 
             var proxy = new Proxy({}, {
@@ -2844,7 +2844,7 @@ describe("assert", function () {
 
             err(function() {
                 // isNotFrozen should not suppress errors, thrown in proxy traps
-                assert[isNotFrozen](proxy);
+                (assert as any)[isNotFrozen](proxy);
             }, { name: "TypeError" }, true);
         });
     });
@@ -2854,89 +2854,89 @@ describe("assert", function () {
             const FakeArgs: any = function (this: any) {}
             FakeArgs.prototype.length = 0;
 
-            assert[isEmpty]("");
-            assert[isEmpty]([]);
-            assert[isEmpty](new FakeArgs());
-            assert[isEmpty]({});
+            (assert as any)[isEmpty]("");
+            (assert as any)[isEmpty]([]);
+            (assert as any)[isEmpty](new FakeArgs());
+            (assert as any)[isEmpty]({});
 
             // err(function(){
-            //     assert[isEmpty](new WeakMap(), "blah");
+            //     (assert as any)[isEmpty](new WeakMap(), "blah");
             // }, "blah: .empty was passed a weak collection");
 
             // err(function(){
-            //     assert[isEmpty](new WeakSet(), "blah");
+            //     (assert as any)[isEmpty](new WeakSet(), "blah");
             // }, "blah: .empty was passed a weak collection");
 
-            assert[isEmpty](new Map());
+            (assert as any)[isEmpty](new Map());
 
             var map = new Map() as any;
             map.key = "val";
-            assert[isEmpty](map);
-            assert[isEmpty](new Set());
+            (assert as any)[isEmpty](map);
+            (assert as any)[isEmpty](new Set());
 
             var set = new Set() as any;
             set.key = "val";
-            assert[isEmpty](set);
+            (assert as any)[isEmpty](set);
 
             err(function(){
-                assert[isEmpty]("foo", "blah");
+                (assert as any)[isEmpty]("foo", "blah");
             }, "blah: expected \"foo\" to be empty");
 
             err(function(){
-                assert[isEmpty](["foo"]);
+                (assert as any)[isEmpty](["foo"]);
             }, "expected [\"foo\"] to be empty");
 
             err(function(){
-                assert[isEmpty]({arguments: 0});
+                (assert as any)[isEmpty]({arguments: 0});
             }, "expected {arguments:0} to be empty");
 
             err(function(){
-                assert[isEmpty]({foo: "bar"});
+                (assert as any)[isEmpty]({foo: "bar"});
             }, "expected {foo:\"bar\"} to be empty");
 
             err(function(){
-                assert[isEmpty](null, "blah");
+                (assert as any)[isEmpty](null, "blah");
             }, "blah: unsupported primitive null");
 
             err(function(){
-                assert[isEmpty](undefined);
+                (assert as any)[isEmpty](undefined);
             }, "unsupported primitive undefined");
 
             err(function(){
-                assert[isEmpty]();
+                (assert as any)[isEmpty]();
             }, "unsupported primitive undefined");
 
             err(function(){
-                assert[isEmpty](0);
+                (assert as any)[isEmpty](0);
             }, "unsupported primitive 0");
 
             err(function(){
-                assert[isEmpty](1);
+                (assert as any)[isEmpty](1);
             }, "unsupported primitive 1");
 
             err(function(){
-                assert[isEmpty](true);
+                (assert as any)[isEmpty](true);
             }, "unsupported primitive true");
 
             err(function(){
-                assert[isEmpty](false);
+                (assert as any)[isEmpty](false);
             }, "unsupported primitive false");
 
             err(function(){
-                assert[isEmpty](Symbol());
+                (assert as any)[isEmpty](Symbol());
             }, "unsupported primitive [Symbol()]");
 
             err(function(){
-                assert[isEmpty](Symbol.iterator);
+                (assert as any)[isEmpty](Symbol.iterator);
             }, "unsupported primitive [Symbol(Symbol.iterator)]");
 
             err(function(){
-                assert[isEmpty](function() {}, "blah");
+                (assert as any)[isEmpty](function() {}, "blah");
             }, "blah: unsupported [Function]");
 
             if (FakeArgs.name === "FakeArgs") {
                 err(function(){
-                    assert[isEmpty](FakeArgs);
+                    (assert as any)[isEmpty](FakeArgs);
                 }, "unsupported [Function:FakeArgs]");
             }
         });
@@ -2950,94 +2950,94 @@ describe("assert", function () {
             }
             FakeArgs.prototype.length = 0;
 
-            assert[isNotEmpty]("foo");
-            assert[isNotEmpty](["foo"]);
-            assert[isNotEmpty]({arguments: 0});
-            assert[isNotEmpty]({foo: "bar"});
+            (assert as any)[isNotEmpty]("foo");
+            (assert as any)[isNotEmpty](["foo"]);
+            (assert as any)[isNotEmpty]({arguments: 0});
+            (assert as any)[isNotEmpty]({foo: "bar"});
 
             // err(function(){
-            //     assert[isNotEmpty](new WeakMap(), "blah");
+            //     (assert as any)[isNotEmpty](new WeakMap(), "blah");
             // }, "blah: .empty was passed a weak collection");
 
             // err(function(){
-            //     assert[isNotEmpty](new WeakSet(), "blah");
+            //     (assert as any)[isNotEmpty](new WeakSet(), "blah");
             // }, "blah: .empty was passed a weak collection");
 
             var map = new Map();
             map.set("a", 1);
-            assert[isNotEmpty](map);
+            (assert as any)[isNotEmpty](map);
 
             err(function(){
-                assert[isNotEmpty](new Map());
+                (assert as any)[isNotEmpty](new Map());
             }, "not expected [Map:{}] to be empty");
 
             var set = new Set();
             set.add(1);
-            assert[isNotEmpty](set);
+            (assert as any)[isNotEmpty](set);
 
             err(function(){
-                assert[isNotEmpty](new Set());
+                (assert as any)[isNotEmpty](new Set());
             }, "not expected [Set:{}] to be empty");
 
             err(function(){
-                assert[isNotEmpty]("", "blah");
+                (assert as any)[isNotEmpty]("", "blah");
             }, "blah: not expected \"\" to be empty");
 
             err(function(){
-                assert[isNotEmpty]([]);
+                (assert as any)[isNotEmpty]([]);
             }, "not expected [] to be empty");
 
             err(function(){
-                assert[isNotEmpty]((new FakeArgs()) as any);
+                (assert as any)[isNotEmpty]((new FakeArgs()) as any);
             }, "not expected [FakeArgs:{}] to be empty");
 
             err(function(){
-                assert[isNotEmpty]({});
+                (assert as any)[isNotEmpty]({});
             }, "not expected {} to be empty");
 
             err(function(){
-                assert[isNotEmpty](null, "blah");
+                (assert as any)[isNotEmpty](null, "blah");
             }, "blah: unsupported primitive null");
 
             err(function(){
-                assert[isNotEmpty](undefined);
+                (assert as any)[isNotEmpty](undefined);
             }, "unsupported primitive undefined");
 
             err(function(){
-                assert[isNotEmpty]();
+                (assert as any)[isNotEmpty]();
             }, "unsupported primitive undefined");
 
             err(function(){
-                assert[isNotEmpty](0);
+                (assert as any)[isNotEmpty](0);
             }, "unsupported primitive 0");
 
             err(function(){
-                assert[isNotEmpty](1);
+                (assert as any)[isNotEmpty](1);
             }, "unsupported primitive 1");
 
             err(function(){
-                assert[isNotEmpty](true);
+                (assert as any)[isNotEmpty](true);
             }, "unsupported primitive true");
 
             err(function(){
-                assert[isNotEmpty](false);
+                (assert as any)[isNotEmpty](false);
             }, "unsupported primitive false");
 
             err(function(){
-                assert[isNotEmpty](Symbol());
+                (assert as any)[isNotEmpty](Symbol());
             }, "unsupported primitive [Symbol()]");
 
             err(function(){
-                assert[isNotEmpty](Symbol.iterator);
+                (assert as any)[isNotEmpty](Symbol.iterator);
             }, "unsupported primitive [Symbol(Symbol.iterator)]");
 
             err(function(){
-                assert[isNotEmpty](function() {}, "blah");
+                (assert as any)[isNotEmpty](function() {}, "blah");
             }, "blah: unsupported [Function]");
 
             if (FakeArgs.name === "FakeArgs") {
                 err(function(){
-                    assert[isNotEmpty](FakeArgs);
+                    (assert as any)[isNotEmpty](FakeArgs);
                 }, "unsupported [Function:FakeArgs]");
             }
         });
