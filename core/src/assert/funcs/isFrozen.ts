@@ -6,13 +6,14 @@
  * Licensed under the MIT license.
  */
 
+import { objIsFrozen } from "@nevware21/ts-utils";
 import { IAssertScope } from "../interface/IAssertScope";
 import { MsgSource } from "../interface/types";
 
 export function isFrozenFunc<R>(this: IAssertScope, evalMsg?: MsgSource): R{
     let scope = this;
     let context = scope.context;
-    context.eval(Object.isFrozen(context.value), evalMsg || "expected {value} to be frozen");
+    context.eval(objIsFrozen(context.value), evalMsg || "expected {value} to be frozen");
 
     return scope.that;
 }

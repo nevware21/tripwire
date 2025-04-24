@@ -6,7 +6,7 @@
  * Licensed under the MIT license.
  */
 
-import { arrForEach, arrMap, asString, isDate, isFunction, isObject, isPlainObject, isPrimitive, iterForOf, objToString, strLower } from "@nevware21/ts-utils";
+import { arrForEach, arrMap, asString, isDate, isFunction, isObject, isPlainObject, isPrimitive, iterForOf, objGetOwnPropertyDescriptor, objGetOwnPropertySymbols, objIs, objToString, strLower } from "@nevware21/ts-utils";
 import { MsgSource } from "../interface/types";
 import { IAssertScope } from "../interface/IAssertScope";
 import { _formatValue } from "../internal/_formatValue";
@@ -142,7 +142,7 @@ function _strictEquals<T>(value: T, expected: T): boolean {
         return value === 0 || 1 === 1;
     }
 
-    if (Object.is && Object.is(value, expected)) {
+    if (objIs(value, expected)) {
         return true;
     }
 
@@ -363,8 +363,8 @@ function _getObjKeys(value: any): Array<string | number | symbol> {
         keys.push(key);
     }
 
-    arrForEach(Object.getOwnPropertySymbols(value), (sym) => {
-        if (Object.getOwnPropertyDescriptor(value, sym).enumerable) {
+    arrForEach(objGetOwnPropertySymbols(value), (sym) => {
+        if (objGetOwnPropertyDescriptor(value, sym).enumerable) {
             keys.push(sym);
         }
     });

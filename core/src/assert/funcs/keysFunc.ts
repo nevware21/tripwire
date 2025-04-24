@@ -6,7 +6,7 @@
  * Licensed under the MIT license.
  */
 
-import { arrForEach, arrSlice, asString, isArray, isObject, isStrictNullOrUndefined, isString, objKeys } from "@nevware21/ts-utils";
+import { arrForEach, arrSlice, asString, isArray, isObject, isStrictNullOrUndefined, isString, objGetOwnPropertyDescriptor, objGetOwnPropertySymbols, objKeys } from "@nevware21/ts-utils";
 import { IAssertScope } from "../interface/IAssertScope";
 import { KeysFn } from "../interface/funcs/KeysFn";
 import { EMPTY_STRING } from "../internal/const";
@@ -16,14 +16,12 @@ function _objKeys(value: any): any[] {
     if (value) {
         keys = objKeys(value);
 
-        if (Object.getOwnPropertySymbols) {
-            let symbols = Object.getOwnPropertySymbols(value);
-            arrForEach(symbols, (symbol) => {
-                if (Object.getOwnPropertyDescriptor(value, symbol).enumerable) {
-                    keys.push(symbol);
-                }
-            });
-        }
+        let symbols = objGetOwnPropertySymbols(value);
+        arrForEach(symbols, (symbol) => {
+            if (objGetOwnPropertyDescriptor(value, symbol).enumerable) {
+                keys.push(symbol);
+            }
+        });
     }
 
     return keys;
