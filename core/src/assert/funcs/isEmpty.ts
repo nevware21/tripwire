@@ -6,7 +6,7 @@
  * Licensed under the MIT license.
  */
 
-import { getLength, isArray, isFunction, isObject, isPrimitive, isString, objKeys, safeGet } from "@nevware21/ts-utils";
+import { getLength, isArray, isFunction, isObject, isPrimitive, isString, isWeakMap, isWeakSet, objKeys, safeGet } from "@nevware21/ts-utils";
 import { MsgSource } from "../interface/types";
 import { IAssertScope } from "../interface/IAssertScope";
 
@@ -31,6 +31,9 @@ export function isEmptyFunc<R>(this: IAssertScope, evalMsg: MsgSource): R {
         this.fail(evalMsg || "unsupported {value}");
     } else if (safeGet(() => "size" in value, false)) {
         isEmpty = value.size === 0;
+    } else if (isWeakMap(value) || isWeakSet(value)) {
+        // WeakMap and WeakSet do not have a size property, so we cannot check for emptiness directly.
+        this.fail(evalMsg || "unsupported type {value}");
     } else if (isObject(value)) {
         isEmpty = objKeys(value).length === 0;
     } else {

@@ -532,13 +532,13 @@ describe("assert", function () {
         }, "blah: expected null to be undefined");
     });
 
-    // it("isDefined", function() {
-    //     assert.isDefined(null);
+    it("isDefined", function() {
+        assert.isDefined(null);
 
-    //     err(function () {
-    //         assert.isDefined(undefined, "blah");
-    //     }, "blah: expected undefined to not equal undefined");
-    // });
+        err(function () {
+            assert.isDefined(undefined, "blah");
+        }, "blah: not expected undefined to be undefined");
+    });
 
     // it("isCallable", function() {
     //     var func = function() {};
@@ -2859,13 +2859,13 @@ describe("assert", function () {
             (assert as any)[isEmpty](new FakeArgs());
             (assert as any)[isEmpty]({});
 
-            // err(function(){
-            //     (assert as any)[isEmpty](new WeakMap(), "blah");
-            // }, "blah: .empty was passed a weak collection");
+            err(function(){
+                (assert as any)[isEmpty](new WeakMap(), "blah");
+            }, "blah: unsupported type [WeakMap:{}]");
 
-            // err(function(){
-            //     (assert as any)[isEmpty](new WeakSet(), "blah");
-            // }, "blah: .empty was passed a weak collection");
+            err(function(){
+                (assert as any)[isEmpty](new WeakSet(), "blah");
+            }, "blah: unsupported type [WeakSet:{}]");
 
             (assert as any)[isEmpty](new Map());
 
@@ -2955,13 +2955,13 @@ describe("assert", function () {
             (assert as any)[isNotEmpty]({arguments: 0});
             (assert as any)[isNotEmpty]({foo: "bar"});
 
-            // err(function(){
-            //     (assert as any)[isNotEmpty](new WeakMap(), "blah");
-            // }, "blah: .empty was passed a weak collection");
+            err(function(){
+                (assert as any)[isNotEmpty](new WeakMap(), "blah");
+            }, "blah: unsupported type [WeakMap:{}]");
 
-            // err(function(){
-            //     (assert as any)[isNotEmpty](new WeakSet(), "blah");
-            // }, "blah: .empty was passed a weak collection");
+            err(function(){
+                (assert as any)[isNotEmpty](new WeakSet(), "blah");
+            }, "blah: unsupported type [WeakSet:{}]");
 
             var map = new Map();
             map.set("a", 1);
