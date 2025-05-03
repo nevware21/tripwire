@@ -83,7 +83,7 @@ function _createChaiAssert(): IChaiAssert {
         exists: notImplemented,
         notExists: notImplemented,
         isUndefined: "is.undefined",
-        isDefined: notImplemented,
+        isDefined: "is.not.undefined",
         isFunction: "is.function",
         isNotFunction: "is.not.function",
         isCallable: notImplemented,
