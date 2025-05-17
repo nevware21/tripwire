@@ -29,7 +29,7 @@ export function isEmptyFunc<R>(this: IAssertScope, evalMsg: MsgSource): R {
         this.fail(evalMsg || "unsupported primitive {value}");
     } else if (isFunction(value)) {
         this.fail(evalMsg || "unsupported {value}");
-    } else if (safeGet(() => "size" in value, false)) {
+    } else if (safeGet<boolean>(() => "size" in value, false)) {
         isEmpty = value.size === 0;
     } else if (isWeakMap(value) || isWeakSet(value)) {
         // WeakMap and WeakSet do not have a size property, so we cannot check for emptiness directly.

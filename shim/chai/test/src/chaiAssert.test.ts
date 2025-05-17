@@ -540,33 +540,33 @@ describe("assert", function () {
         }, "blah: not expected undefined to be undefined");
     });
 
-    // it("isCallable", function() {
-    //     var func = function() {};
-    //     assert.isCallable(func);
+    it("isCallable", function() {
+        var func = function() {};
+        assert.isCallable(func);
 
-    //     var func1 = async function() {};
-    //     assert.isCallable(func1);
+        var func1 = async function() {};
+        assert.isCallable(func1);
 
-    //     var func2 = function* () {}
-    //     assert.isCallable(func2);
+        var func2 = function* () {}
+        assert.isCallable(func2);
 
-    //     var func3 = async function* () {}
-    //     assert.isCallable(func3);
+        var func3 = async function* () {}
+        assert.isCallable(func3);
 
-    //     err(function () {
-    //         assert.isCallable({}, "blah");
-    //     }, "blah: expected {} to be a callable function");
-    // });
+        err(function () {
+            assert.isCallable({}, "blah");
+        }, "blah: expected {} to be a function");
+    });
   
-    // it("isNotCallable", function() {
-    //     assert.isNotCallable(false);
-    //     assert.isNotCallable(10);
-    //     assert.isNotCallable("string");
+    it("isNotCallable", function() {
+        assert.isNotCallable(false);
+        assert.isNotCallable(10);
+        assert.isNotCallable("string");
 
-    //     err(function () {
-    //         assert.isNotCallable(function() {}, "blah");
-    //     }, "blah: not expected [Function] to be a callable function");
-    // });
+        err(function () {
+            assert.isNotCallable(function() {}, "blah");
+        }, "blah: not expected [Function] to be a function");
+    });
 
     it("isFunction", function() {
         var func = function() {};
