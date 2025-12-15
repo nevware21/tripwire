@@ -6,7 +6,8 @@
  * Licensed under the MIT license.
  */
 
-import { isObject, isRegExp, isString, objForEachKey, strSubstr, strLeft, strRepeat } from "@nevware21/ts-utils";
+import { brightGreen, brightRed, dim, gray, green, normal, red, white, yellow } from "@nevware21/chromacon";
+import { isObject, isRegExp, isString, objForEachKey, strSubstr, strLeft, strRepeat, asString } from "@nevware21/ts-utils";
 import { expect } from "../../../src/assert/expect";
 import { AssertionError } from "../../../src/assert/assertionError";
 import { assert } from "../../../src/assert/assertClass";
@@ -29,7 +30,7 @@ function _showStringDifference(expected: string, actual: string): string {
     }
 
     if (startOffset > 0) {
-        result = "\x1b[2m\x1b[33m" + strRepeat(".", startOffset) + "\x1b[22m";
+        result = dim(yellow + strRepeat(".", startOffset));
     }
 
     let lp = 0;
@@ -40,13 +41,13 @@ function _showStringDifference(expected: string, actual: string): string {
 
         if (char1 === char2) {
             if (match !== 0) {
-                result += "\x1b[2m\x1b[92m";
+                result += dim + brightGreen;
                 match = 0;
             }
             result += ".";
         } else {
             if (match !== 1) {
-                result += "\x1b[22m\x1b[91m";
+                result += normal + brightRed;
                 match = 1;
             }
             result += char1;
@@ -56,18 +57,18 @@ function _showStringDifference(expected: string, actual: string): string {
 
     if (lp < expected.length) {
         if (match !== 1) {
-            result += "\x1b[31m";
+            result += red;
         }
         result += strSubstr(expected, lp);
     }
 
-    result += "\x1b[22m\x1b[90m";
+    result += normal;
 
-    return result;
+    return gray(result);
 }
 
 function _colorizeActual(actual: string, expected: string): string {
-    let result = EMPTY_STRING;
+    let result: string = EMPTY_STRING;
 
     let startOffset = 0;
     if (expected.length > 5) {
@@ -78,7 +79,7 @@ function _colorizeActual(actual: string, expected: string): string {
     }
 
     if (startOffset > 0) {
-        result = "\x1b[22m\x1b[32m" + strLeft(actual, startOffset);
+        result = normal + green + strLeft(actual, startOffset);
     }
 
     let lp = 0;
@@ -89,13 +90,13 @@ function _colorizeActual(actual: string, expected: string): string {
 
         if (char1 === char2) {
             if (match !== 0) {
-                result += "\x1b[22m\x1b[92m";
+                result += normal + brightGreen;
                 match = 0;
             }
             result += char1;
         } else {
             if (match !== 1) {
-                result += "\x1b[22m\x1b[91m";
+                result += normal + brightRed;
                 match = 1;
             }
             result += char1;
@@ -105,14 +106,14 @@ function _colorizeActual(actual: string, expected: string): string {
 
     if (lp < actual.length) {
         if (match !== 1) {
-            result += "\x1b[22m\x1b[32m";
+            result += normal + green;
         }
         result += strSubstr(actual, lp);
     }
 
-    result += "\x1b[22m\x1b[90m";
+    result += normal;
 
-    return result;
+    return gray(result);
 }
 
 export function checkError(fn: () => void, match?: string | RegExp | Object, checkFrames?: boolean): void {
@@ -131,11 +132,11 @@ export function checkError(fn: () => void, match?: string | RegExp | Object, che
 
         if (isString(match)) {
             if (e.message.indexOf(match) === -1) {
-                newErr = new AssertionError(`expected error message to contain [\x1b[37m${match}\x1b[90m]\n - got [${_colorizeActual(e.message, match)}]\n - diff\x1b[90m[${_showStringDifference(match, e.message)}\x1b[90m]`, e, null, stackStart);
+                newErr = new AssertionError(gray(`expected error message to contain [${white(match)}]\n - got [${_colorizeActual(e.message, match)}]\n - diff[${_showStringDifference(match, e.message)}]`), e, null, stackStart);
             }
         } else if (isRegExp(match)) {
             if (!match.test(e.message)) {
-                newErr = new AssertionError(`expected error message to match [\x1b[37m${match}\x1b[90m]\n - got [\x1b[32m${e.message}\x1b[90m]\n - diff\x1b[90m[${_showStringDifference(match.source, e.message)}\x1b[90m]`, e, null, stackStart);
+                newErr = new AssertionError(gray(`expected error message to match [${white(asString(match))}]\n - got [${green(e.message)}]\n - diff[${_showStringDifference(match.source, e.message)}]`), e, null, stackStart);
             }
         } else if (isObject(match)) {
             objForEachKey(match, (key, value) => {
