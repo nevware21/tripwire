@@ -1,21 +1,18 @@
-
 {
-    "$schema": "https://developer.microsoft.com/json-schemas/rush/v5/rush.schema.json",
-  
-    "npmVersion": "9.9.4",
-    "rushVersion": "5.163.0",
-    "projectFolderMaxDepth": 4,
-    "projects": [
-      {
-        "packageName": "@nevware21/tripwire",
-        "projectFolder": "core",
-        "shouldPublish": true
-      },
-      {
-        "packageName": "@nevware21/tripwire-chai",
-        "projectFolder": "shim/chai",
-        "shouldPublish": true
-      }
-    ]
-  }
-  
+  "$schema": "https://developer.microsoft.com/json-schemas/rush/v5/rush.schema.json",
+  "npmVersion": "9.9.4",
+  "rushVersion": "5.164.0",
+  "projectFolderMaxDepth": 4,
+  "projects": [
+    {
+      "packageName": "@nevware21/tripwire",
+      "projectFolder": "core",
+      "shouldPublish": true
+    },
+    {
+      "packageName": "@nevware21/tripwire-chai",
+      "projectFolder": "shim/chai",
+      "shouldPublish": true
+    }
+  ]
+}
