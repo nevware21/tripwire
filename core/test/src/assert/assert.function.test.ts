@@ -8,10 +8,21 @@
 
 import { assert } from "../../../src/assert/assertClass";
 import { AssertionFailure } from "../../../src/assert/assertionError";
+import { assertConfig } from "../../../src/assert/config";
 import { expect } from "../../../src/assert/expect";
 import { checkError } from "../support/checkError";
 
 describe("assert.isFunction", () => {
+
+    beforeEach(() => {
+        // Setup code if needed
+        assertConfig.reset();
+    });
+
+    afterEach(() => {
+        // Teardown code if needed
+    });
+
     it("should pass when the value is an arrow function", () => {
         assert.isFunction(() => {});
     });

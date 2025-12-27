@@ -8,6 +8,7 @@
 
 import { AssertClassDef, assert, addAssertFunc, addAssertFuncs, createAssert } from "./assert/assertClass";
 import { AssertionError, AssertionErrorConstructor, AssertionFailure, AssertionFailureConstructor, AssertionFatal, AssertionFatalConstructor } from "./assert/assertionError";
+import { useScope, _getGlobalScopeContext } from "./assert/useScope";
 import { addAssertInstFuncDefs, addAssertInstFunc, addAssertInstFuncDef } from "./assert/assertInst";
 import { expect } from "./assert/expect";
 import { IAssertClass, IExtendedAssert } from "./assert/interface/IAssertClass";
@@ -44,14 +45,16 @@ import { AssertFn } from "./assert/interface/funcs/AssertFn";
 import { ErrorLikeFn } from "./assert/interface/funcs/ErrorLikeFn";
 import { assertConfig } from "./assert/config";
 import { IAssertConfig, IAssertConfigDefaults } from "./assert/interface/IAssertConfig";
+import { IFormatCtx, IFormatter, IFormattedValue, IFormatterOptions, eFormatResult } from "./assert/interface/IFormatter";
 import { createEvalAdapter, EvalFn } from "./assert/adapters/evalAdapter";
 import { IPropertyResultOp } from "./assert/interface/ops/IPropertyResultOp";
 import { createExprAdapter } from "./assert/adapters/exprAdapter";
 import { createAssertScope } from "./assert/assertScope";
 import { AssertInstHandlers, IAssertInstHandlers } from "./assert/interface/IAssertInstHandlers";
 import { CHECK_INTERNAL_STACK_FRAME_REGEX } from "./assert/const";
-import { getScopeContext } from "./assert/scopeContext";
+import { getScopeContext, createContext } from "./assert/scopeContext";
 import { SymbolFn } from "./assert/interface/funcs/SymbolFn";
+import { IRemovable } from "./assert/interface/IRemovable";
 
 /**
  * Export the Error classes
@@ -76,6 +79,10 @@ export {
     IAssertConfigDefaults,
     IScopeContext,
     IScopeContextOverrides,
+    IFormatCtx,
+    IFormattedValue,
+    IFormatter,
+    IFormatterOptions,
     IAssertClassDef,
     IAssertScope,
     IAssertInst,
@@ -99,7 +106,8 @@ export {
     IStrictlyOp,
     IThrowOp,
     IToOp,
-    IIsTypeOp
+    IIsTypeOp,
+    IRemovable
 };
 
 /**
@@ -123,6 +131,13 @@ export {
 };
 
 /**
+ * Export the enums
+ */
+export {
+    eFormatResult
+};
+
+/**
  * Export the functions (and global `assert`)
  */
 export {
@@ -138,7 +153,10 @@ export {
     createEvalAdapter,
     createExprAdapter,
     createAssertScope,
-    getScopeContext
+    createContext,
+    getScopeContext,
+    useScope,
+    _getGlobalScopeContext
 };
 
 /**
@@ -146,4 +164,4 @@ export {
  */
 export {
     CHECK_INTERNAL_STACK_FRAME_REGEX
-}
+};

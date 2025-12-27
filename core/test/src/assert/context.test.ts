@@ -23,7 +23,7 @@ describe("context", () => {
         assert.equal(ctx.value, 1, "value should be 1");
         assert.equal(ctx.getMessage(), "first", "message should be first");
         assert.equal(ctx.getDetails().actual, 1, "actual should be 1");
-        assert.equal(objKeys(ctx.getDetails()).length, 1, "details should have 1 key");
+        assert.equal(objKeys(ctx.getDetails()).length, 1, "details should have 1 key - " + JSON.stringify(ctx.getDetails()));
     });
 
     it("new child value", () => {
@@ -61,7 +61,7 @@ describe("context", () => {
             let ctx = createContext(1, "first");
 
             checkError(() => {
-                ctx.eval(false)
+                ctx.eval(false);
             }, "first");
 
             assert.equal(ctx.getMessage(), "first", "message should be first");
@@ -127,7 +127,7 @@ describe("context", () => {
                 });
                     
                 assert.equal(ctx.getMessage(), "darkness");
-                assert.equal(ctx.value, 1)
+                assert.equal(ctx.value, 1);
                 assert.equal(newCtx.getMessage(), "hello darkness");
                 assert.equal(newCtx.value, "newCtx");
                 assert.equal(subCtx.getMessage(), "hello darkness, my old friend");
@@ -155,7 +155,7 @@ describe("context", () => {
                 let newDetails = newCtx.getDetails();
                 
                 assert.equal(newDetails.actual, 2, "actual should be 2");
-                assert.equal(objKeys(newDetails).length, 2, "details should have 1 key");
+                assert.equal(objKeys(newDetails).length, 2, "details should have 2 keys");
                 checkError(() => {
                     assert.deepEqual(newDetails, { actual: 1, hello: "darkness" }, "details should be { actual: 1, hello: darkness }");
                 }, "details should be { actual: 1, hello: darkness }: expected {hello:\"darkness\",actual:2} to deeply equal {actual:1,hello:\"darkness\"}");

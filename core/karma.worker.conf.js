@@ -27,12 +27,17 @@ module.exports = function (config) {
                 }),
                 //commonjs(),
                 istanbul({
-                    exclude: [ "**/test/**", "**/node_modules/**" ]
+                    exclude: [ 
+                        "**/index.ts",
+                        "**/test/**",
+                        "**/checkError.ts",
+                        "**/node_modules/**"
+                    ]
                 })
             ],
             output: {
                 format: "iife",
-                dir: "../test-dist",
+                dir: "./test-dist",
                 sourcemap: true
             }
         },

@@ -7,6 +7,7 @@
  */
 
 import { assert } from "../../../src/assert/assertClass";
+import { assertConfig } from "../../../src/assert/config";
 import { checkError } from "../support/checkError";
 
 describe("assert.equal", function () {
@@ -740,11 +741,105 @@ describe("assert.deepEqual", function () {
         bObj.field = bObj;
 
         assert.deepEqual(aObj, bObj);
+        let circular =  assertConfig.circularMsg?.();
 
         checkError(function() {
             bObj.field2 = bObj;
             assert.deepEqual(aObj, bObj);
-        }, "expected {field:{field:(c)}} to deeply equal {field:{field:(c),field2:(c)},field2:{field:(c),field2:(c)}}");
+        }, "expected {field:{field:" + circular + "}} to deeply equal {field:{field:" + circular + ",field2:" + circular + "},field2:{field:" + circular + ",field2:" + circular + "}}");
+    });
+
+    it("should use custom circularMsg", function() {
+        const originalMsg = assertConfig.circularMsg;
+        
+        try {
+            // Set custom message
+            assertConfig.circularMsg = () => "[CUSTOM_CIRCULAR]";
+            
+            let aObj = {} as any;
+            aObj.field = aObj;
+            
+            checkError(function() {
+                aObj.mismatch = true;
+                assert.deepEqual(aObj, { field: {} });
+            }, "expected {field:{field:[CUSTOM_CIRCULAR],mismatch:true},mismatch:true} to deeply equal {field:{}}");
+
+            // Change custom message
+            assertConfig.circularMsg = () => "[ANOTHER_CUSTOM]";
+            checkError(function() {
+                aObj.mismatch = true;
+                assert.deepEqual(aObj, { field: {} });
+            }, "expected {field:{field:[ANOTHER_CUSTOM],mismatch:true},mismatch:true} to deeply equal {field:{}}");
+            
+        } finally {
+            assertConfig.circularMsg = originalMsg;
+        }
+    });
+
+    it("should reset circularMsg to default with null", function() {
+        const originalMsg = assertConfig.circularMsg;
+        
+        try {
+            // Set custom message
+            assertConfig.circularMsg = () => "[CUSTOM]";
+            
+            let aObj = {} as any;
+            aObj.field = aObj;
+            
+            checkError(function() {
+                aObj.mismatch = true;
+                assert.deepEqual(aObj, { field: {} });
+            }, "expected {field:{field:[CUSTOM],mismatch:true},mismatch:true} to deeply equal {field:{}}");
+
+            // Reset to default by setting to null
+            assertConfig.circularMsg = null as any;
+            
+            let defaultCircular = assertConfig.circularMsg?.();
+            assert.equal(defaultCircular, originalMsg?.());
+
+            aObj = {} as any;
+            aObj.field = aObj;
+
+            checkError(function() {
+                aObj.extra = 1;
+                assert.deepEqual(aObj, { field: {} });
+            }, "expected {field:{field:" + defaultCircular + ",extra:1},extra:1} to deeply equal {field:{}}");
+        } finally {
+            assertConfig.circularMsg = originalMsg;
+        }
+    });
+
+    it("should reset circularMsg to default with undefined", function() {
+        const originalMsg = assertConfig.circularMsg;
+        
+        try {
+            // Set custom message
+            assertConfig.circularMsg = () => "[ANOTHER_CUSTOM]";
+            
+            let aObj = {} as any;
+            aObj.field = aObj;
+            
+            checkError(function() {
+                aObj.mismatch = true;
+                assert.deepEqual(aObj, { field: {} });
+            }, "expected {field:{field:[ANOTHER_CUSTOM],mismatch:true},mismatch:true} to deeply equal {field:{}}");
+
+            // Reset to default by setting to undefined
+            assertConfig.circularMsg = undefined as any;
+            
+            let defaultCircular = assertConfig.circularMsg?.();
+            assert.equal(defaultCircular, originalMsg?.());
+
+            aObj = {} as any;
+            aObj.field = aObj;
+
+            checkError(function() {
+                aObj.prop = "test";
+                assert.deepEqual(aObj, { field: {} });
+            }, "expected {field:{field:" + defaultCircular + ",prop:\"test\"},prop:\"test\"} to deeply equal {field:{}}");
+        } finally {
+            assertConfig.circularMsg = originalMsg;
+        }
     });
 });
 

@@ -4,7 +4,8 @@
  * default operation of the original chai `assert` function.
  */
 
-import { assert } from "../../src/index"
+import { assertConfig } from "@nevware21/tripwire";
+import { assert } from "../../src/index";
 import { globalErr as err } from "./bootstrap/globalErr";
 
 describe("assert", function () {
@@ -424,10 +425,11 @@ describe("assert", function () {
 
         assert.deepEqual(circularObject, secondCircularObject);
 
+        let circularMsg = assertConfig.circularMsg?.();
         err(function() {
             secondCircularObject.field2 = secondCircularObject;
             assert.deepEqual(circularObject, secondCircularObject);
-        }, "expected {field:{field:(c)}} to deeply equal {field:{field:(c),field2:(c)},field2:{field:(c),field2:(c)}}");
+        }, "expected {field:{field:" + circularMsg + "}} to deeply equal {field:{field:" + circularMsg + ",field2:" + circularMsg + "},field2:{field:" + circularMsg + ",field2:" + circularMsg + "}}");
     });
 
     it("notDeepEqual", function() {
@@ -446,10 +448,11 @@ describe("assert", function () {
 
         assert.notDeepEqual(circularObject, secondCircularObject);
 
+        let circularMsg = assertConfig.circularMsg?.();
         err(function() {
             delete secondCircularObject.tea;
             assert.notDeepEqual(circularObject, secondCircularObject);
-        }, "not expected {field:{field:(c)}} to deeply equal {field:{field:(c)}}");
+        }, "not expected {field:{field:" + circularMsg + "}} to deeply equal {field:{field:" + circularMsg + "}}");
     });
 
     it("isNull", function() {
@@ -547,10 +550,10 @@ describe("assert", function () {
         var func1 = async function() {};
         assert.isCallable(func1);
 
-        var func2 = function* () {}
+        var func2 = function* () {};
         assert.isCallable(func2);
 
-        var func3 = async function* () {}
+        var func3 = async function* () {};
         assert.isCallable(func3);
 
         err(function () {
@@ -1670,7 +1673,7 @@ describe("assert", function () {
                 throw new Error("");
             }, Error, "");
             (assert as any)[throws](function() {
-                throw new Error("foo")
+                throw new Error("foo");
             }, "");
             (assert as any)[throws](function() {
                 throw "";
@@ -1699,27 +1702,27 @@ describe("assert", function () {
 
             err(function () {
                 (assert as any)[throws](function() {
-                    throw new Error("foo")
+                    throw new Error("foo");
                 }, TypeError);
-            }, "expected [Function] to throw an error of type TypeError() but threw [Error:\"foo\"]")
+            }, "expected [Function] to throw an error of type TypeError() but threw [Error:\"foo\"]");
 
             err(function () {
                 (assert as any)[throws](function() {
-                    throw new Error("foo")
+                    throw new Error("foo");
                 }, "bar");
-            }, "expected [Function] to throw an error with a message containing \"bar\" but it was \"foo\"")
+            }, "expected [Function] to throw an error with a message containing \"bar\" but it was \"foo\"");
 
             err(function () {
                 (assert as any)[throws](function() {
-                    throw new Error("foo")
+                    throw new Error("foo");
                 }, Error, "bar", "blah");
-            }, "blah: expected [Function] to throw an error of type Error() with a message containing \"bar\" but [Error:\"foo\"] was thrown")
+            }, "blah: expected [Function] to throw an error of type Error() with a message containing \"bar\" but [Error:\"foo\"] was thrown");
 
             err(function () {
                 (assert as any)[throws](function() {
-                    throw new Error("foo")
+                    throw new Error("foo");
                 }, TypeError, "bar", "blah");
-            }, "blah: expected [Function] to throw an error of type TypeError() with a message containing \"bar\" but [Error:\"foo\"] was thrown")
+            }, "blah: expected [Function] to throw an error of type TypeError() with a message containing \"bar\" but [Error:\"foo\"] was thrown");
 
             err(function () {
                 (assert as any)[throws](function() {});
@@ -1727,13 +1730,13 @@ describe("assert", function () {
 
             err(function () {
                 (assert as any)[throws](function() {
-                    throw new Error("")
+                    throw new Error("");
                 }, "bar");
             }, " expected [Function] to throw an error with a message containing \"bar\" but it was \"\"");
 
             err(function () {
                 (assert as any)[throws](function() {
-                    throw new Error("")
+                    throw new Error("");
                 }, /bar/);
             }, "expected [Function] to throw an error with a message matching /bar/ but it was \"\"");
 
@@ -2851,7 +2854,7 @@ describe("assert", function () {
 
     it("isEmpty / empty", function() {
         ["isEmpty", "empty"].forEach(function (isEmpty) {
-            const FakeArgs: any = function (this: any) {}
+            const FakeArgs: any = function (this: any) {};
             FakeArgs.prototype.length = 0;
 
             (assert as any)[isEmpty]("");

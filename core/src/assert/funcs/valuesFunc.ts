@@ -76,7 +76,7 @@ function _getArgValues(scope: IAssertScope, theArgs: any[]): any[] {
         }
     }
 
-    return theValues
+    return theValues;
 }
 
 export function anyValuesFunc<R>(_scope: IAssertScope): ValuesFn<R> {
@@ -88,7 +88,7 @@ export function anyValuesFunc<R>(_scope: IAssertScope): ValuesFn<R> {
         let expectedValues = _getArgValues(scope, args);
         let theValue = context.value;
         let checkValue: any = theValue;
-        let checkLength: number = 1
+        let checkLength: number = 1;
         let compareFn: (theArray: any, searchElement: any) => number;
         if (isString(theValue)) {
             compareFn = strIndexOf;
@@ -100,7 +100,7 @@ export function anyValuesFunc<R>(_scope: IAssertScope): ValuesFn<R> {
         } else {
             compareFn = (value: any, match: any) => {
                 return value === match ? 0 : -1;
-            }
+            };
         }
 
         // if (expectedValues.length === 0) {
@@ -134,8 +134,8 @@ export function allValuesFunc<R>(_scope: IAssertScope): ValuesFn<R> {
         let expectedValues = _getArgValues(scope, args);
         let theValue = context.value;
         let checkValue: any = theValue;
-        let checkLength: number = 1
-        let compareFn: (theArray: any, searchElement: any) => number = strIndexOf
+        let checkLength: number = 1;
+        let compareFn: (theArray: any, searchElement: any) => number = strIndexOf;
         if (isString(theValue)) {
             compareFn = strIndexOf;
         } else if (isArray(theValue) || isObject(theValue)) {
@@ -146,7 +146,7 @@ export function allValuesFunc<R>(_scope: IAssertScope): ValuesFn<R> {
         } else {
             compareFn = (value: any, match: any) => {
                 return value === match ? 0 : -1;
-            }
+            };
         }
 
         // if (expectedValues.length === 0) {

@@ -26,7 +26,7 @@ describe("anyKeyFilter", () => {
         const keysOp = anyKeyFilterOp(scope);
 
         checkError(() => {
-            keysOp.keys.call(scope, "hello")
+            keysOp.keys.call(scope, "hello");
         }, "expected any key: [hello], found: []");
 
         expect(() => expect(null).has.any.keys("hello")).to.throw();
@@ -38,7 +38,7 @@ describe("anyKeyFilter", () => {
         const keysOp = anyKeyFilterOp(scope);
 
         checkError(() => {
-            keysOp.keys.call(scope, "hello")
+            keysOp.keys.call(scope, "hello");
         }, "expected any key: [hello], found: []");
 
         expect(() => expect(undefined).has.any.keys("hello")).to.throw();
@@ -50,7 +50,7 @@ describe("anyKeyFilter", () => {
         const keysOp = anyKeyFilterOp(scope);
 
         checkError(() => {
-            keysOp.keys.call(scope, "hello")
+            keysOp.keys.call(scope, "hello");
         }, "expected any key: [hello], found: []");
 
         expect(() => expect({}).has.any.keys("hello")).to.throw();
@@ -116,14 +116,14 @@ describe("anyKeyFilter", () => {
         const keysOp = anyKeyFilterOp(scope);
 
         // Passing cases
-        keysOp.keys.call(scope, "hello")
-        keysOp.keys.call(scope, "my")
+        keysOp.keys.call(scope, "hello");
+        keysOp.keys.call(scope, "my");
         expect(() => expect(obj).has.any.keys("hello")).to.not.throw();
         expect(() => expect(obj).has.any.keys("my")).to.not.throw();
 
         // Failing cases
         checkError(() => {
-            keysOp.keys.call(scope, "darkness")
+            keysOp.keys.call(scope, "darkness");
         }, /expected any key: \[darkness\], found: \[.*\]/);
 
         expect(() => expect({}).has.any.keys("darkness")).to.throw();
@@ -158,7 +158,7 @@ describe("allKeyFilter", () => {
         const keysOp = allKeyFilterOp(scope);
 
         checkError(() => {
-            keysOp.keys.call(scope, "hello")
+            keysOp.keys.call(scope, "hello");
         }, "expected all keys: [hello], missing: [hello], found: []");
 
         expect(() => expect(null).has.any.keys("hello")).to.throw();
@@ -170,7 +170,7 @@ describe("allKeyFilter", () => {
         const keysOp = allKeyFilterOp(scope);
 
         checkError(() => {
-            keysOp.keys.call(scope, "hello")
+            keysOp.keys.call(scope, "hello");
         }, "expected all keys: [hello], missing: [hello], found: []");
 
         expect(() => expect(undefined).has.any.keys("hello")).to.throw();
@@ -182,7 +182,7 @@ describe("allKeyFilter", () => {
         const keysOp = allKeyFilterOp(scope);
 
         checkError(() => {
-            keysOp.keys.call(scope, "hello")
+            keysOp.keys.call(scope, "hello");
         }, "expected all keys: [hello], missing: [hello], found: []");
 
         expect(() => expect({}).has.any.keys("hello")).to.throw();
@@ -247,14 +247,14 @@ describe("allKeyFilter", () => {
         const keysOp = allKeyFilterOp(scope);
 
         // Passing cases
-        keysOp.keys.call(scope, "hello")
-        keysOp.keys.call(scope, "my")
+        keysOp.keys.call(scope, "hello");
+        keysOp.keys.call(scope, "my");
         expect(() => expect(obj).has.any.keys("hello")).to.not.throw();
         expect(() => expect(obj).has.any.keys("my")).to.not.throw();
 
         // Failing cases
         checkError(() => {
-            keysOp.keys.call(scope, "darkness")
+            keysOp.keys.call(scope, "darkness");
         }, /expected all keys: \[darkness\], missing: \[darkness\], found: \[.*\]/);
 
         expect(() => expect({}).has.any.keys("darkness")).to.throw();

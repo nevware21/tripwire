@@ -203,7 +203,7 @@ function _isErrorMessageCompatible(errorValue: Error, msgMatch: string | RegExp)
         return {
             result: message == msgMatch || strIndexOf(message, msgMatch) >= 0,
             matchError: MatchError.MessageContains
-        }
+        };
     }
 
     if (isRegExp(msgMatch)) {

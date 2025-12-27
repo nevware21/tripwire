@@ -19,6 +19,7 @@ import { assertConfig } from "./config";
 import { IAssertConfig } from "./interface/IAssertConfig";
 import { _getAssertScope, _isAssertInst } from "./internal/_instCreator";
 import { _formatValue } from "./internal/_formatValue";
+import { useScope } from "./useScope";
 
 const cScopeContextTag = newSymbol("@nevware21/tripwire#IScopeContext");
 
@@ -147,7 +148,7 @@ export function createContext<T>(value?: T, initMsg?: MsgSource, stackStart?: Fu
                 }
 
                 if (hasToken) {
-                    let prefix = strLeft(message, open) + _formatValue(value);
+                    let prefix = strLeft(message, open) + _formatValue(context, value);
                     message = prefix + strSubstring(message, close + 1);
                     start = prefix.length;
                 } else {
@@ -201,9 +202,9 @@ export function createContext<T>(value?: T, initMsg?: MsgSource, stackStart?: Fu
         
             return _this;
         },
-        fail: function (msg: MsgSource, details: any, stackStart?: Function | Function[], causedBy?: Error) {
+        fail: function (msg: MsgSource, details: any, stackStart?: Function | Function[], causedBy?: Error): never {
             let _this = this;
-            let theStack = null;
+            let theStack: Function[] = null;
             
             if (!theOptions.v.fullStack) {
                 theStack = _createStackTracker(_this._$stackFn);
@@ -218,7 +219,10 @@ export function createContext<T>(value?: T, initMsg?: MsgSource, stackStart?: Fu
                 }
             }
 
-            throw new AssertionFailure(_this.getMessage(msg), causedBy, details || _this.getDetails(), theStack);
+            // Use the scope context during error throwing
+            return useScope(_this, () => {
+                throw new AssertionFailure(_this.getMessage(msg), causedBy, details || _this.getDetails(), theStack);
+            });
         },
         setOp: function (opName: string) {
             let _this = this;

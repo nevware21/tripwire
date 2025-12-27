@@ -6,11 +6,13 @@
  * Licensed under the MIT license.
  */
 
-import { arrMap, arrSlice, asString, createCustomError, CustomErrorConstructor, getLazy, isArray, isError, newSymbol, objDefine, objDefineProps, objForEachKey, objKeys, strTrim } from "@nevware21/ts-utils"
+import { arrMap, arrSlice, asString, createCustomError, CustomErrorConstructor, getLazy, isArray, isError, newSymbol, objDefine, objDefineProps, objForEachKey, objKeys, strTrim } from "@nevware21/ts-utils";
 import { EMPTY_STRING } from "./internal/const";
 import { _formatValue } from "./internal/_formatValue";
 import { IParsedStack, parseStack } from "../internal/parseStack";
 import { captureStack } from "../internal/captureStack";
+import { IScopeContext } from "./interface/IScopeContext";
+import { _getGlobalScopeContext } from "./useScope";
 
 const cStackDetail = newSymbol("@nevware21/tripwire#_$stackDetail");
 
@@ -120,11 +122,13 @@ export interface AssertionErrorConstructor<T> extends CustomErrorConstructor<Ass
  * Formats the properties of the error for display.
  *
  * @param props - The properties to format.
+ * @param ctx - The format context to use for formatting values, or null if not available.
  * @returns A formatted string representation of the properties.
  */
-function _formatProps(props: any): string {
-    if (props) {
+function _formatProps(ctx: IScopeContext | null, props: any): string {
+    if (props && ctx) {
         let formatted = " ::: ";
+        
         if (props.operation || isArray(props.opPath)) {
             let thePath = EMPTY_STRING;
             let lastOp = props.operation || EMPTY_STRING;
@@ -136,15 +140,15 @@ function _formatProps(props: any): string {
                         thePath = props.opPath.join("->") + "->" + lastOp;
                     }
                 } else {
-                    thePath = _formatValue(props.opPath) + "->" + lastOp;
+                    thePath = _formatValue(ctx, props.opPath) + "->" + lastOp;
                 }
             } else {
-                thePath = _formatValue(props.opPath);
+                thePath = _formatValue(ctx, props.opPath);
             }
 
             formatted += "running \"" + thePath + "\"";
             if (props.actual) {
-                formatted += " with (" + _formatValue(props.actual) + ")";
+                formatted += " with (" + _formatValue(ctx, props.actual) + ")";
             }
             let leftOver: any = {};
             objForEachKey(props, (key, value) => {
@@ -167,7 +171,7 @@ function _formatProps(props: any): string {
             }
         }
 
-        return formatted
+        return formatted;
     }
 
     return EMPTY_STRING;
@@ -240,7 +244,9 @@ function _setMessage(theError: Error, message: string) {
                 let theMessage = message || EMPTY_STRING;
 
                 if ((theError as any).props) {
-                    theMessage += _formatProps((theError as any).props)
+                    let props = (theError as any).props;
+                    // Get format context from global scope context if available
+                    theMessage += _formatProps(_getGlobalScopeContext(), props);
                 }
 
                 // If we have an inner exception, then we need to add the inner exception stack

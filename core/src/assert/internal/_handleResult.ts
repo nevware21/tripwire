@@ -35,7 +35,7 @@ function _createResultAdapter(scope: IAssertScope, target: any, key: string | nu
         }
 
         return _handleResult(theResult, scope, funcName);
-    }
+    };
 }
 
 export function _handleResult<T>(result: T, scope: IAssertScope, funcName?: string): T {
@@ -46,7 +46,7 @@ export function _handleResult<T>(result: T, scope: IAssertScope, funcName?: stri
         return scope.that as any;
     }
 
-    scope.that = result
+    scope.that = result;
 
     if (_isAssertInst(result)) {
         return result;

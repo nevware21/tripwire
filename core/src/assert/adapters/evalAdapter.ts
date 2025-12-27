@@ -53,9 +53,9 @@ export function createEvalAdapter(evalFn: EvalFn, evalMsg?: MsgSource, funcName?
         }
     
         theArgs.unshift(context.value);
-        context.eval(evalFn.apply(scope.that || scope, theArgs), evalMsg)
+        context.eval(evalFn.apply(scope.that || scope, theArgs), evalMsg);
     
-        return scope.that
+        return scope.that;
     }
 
     return _blockLength(_evalFn, funcName, [], _evalFn);

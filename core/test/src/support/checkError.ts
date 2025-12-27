@@ -6,7 +6,7 @@
  * Licensed under the MIT license.
  */
 
-import { brightGreen, brightRed, dim, gray, green, normal, red, white, yellow } from "@nevware21/chromacon";
+import { brightGreen, brightRed, cyan, dim, gray, green, normal, white, yellow } from "@nevware21/chromacon";
 import { isObject, isRegExp, isString, objForEachKey, strSubstr, strLeft, strRepeat, asString } from "@nevware21/ts-utils";
 import { expect } from "../../../src/assert/expect";
 import { AssertionError } from "../../../src/assert/assertionError";
@@ -17,13 +17,23 @@ import { _formatValue } from "../../../src/assert/internal/_formatValue";
 import { assertConfig } from "../../../src/assert/config";
 import { CHECK_INTERNAL_STACK_FRAME_REGEX } from "../../../src/assert/const";
 import { parseStack } from "../../../src/internal/parseStack";
+import { getScopeContext } from "../../../src/assert/scopeContext";
 
-function _showStringDifference(expected: string, actual: string): string {
+function _isNonPrintableChar(char: string): boolean {
+    const code = char.charCodeAt(0);
+    return code < 32 || code > 126;
+}
+
+function _showStringDifference(expected: string, actual: string, escape: boolean = true): string {
     let result = EMPTY_STRING;
+    let inAnsi = false;
+
+    // expected = stripAnsi(expected);
+    // actual = stripAnsi(actual);
 
     let startOffset = 0;
-    if (expected.length > 5) {
-        startOffset = actual.indexOf(expected.substring(0, 5));
+    if (expected.length > 8) {
+        startOffset = actual.indexOf(expected.substring(0, 8));
         if (startOffset === -1) {
             startOffset = 0;
         }
@@ -39,6 +49,12 @@ function _showStringDifference(expected: string, actual: string): string {
         const char1 = expected[lp];
         const char2 = actual[lp + startOffset];
 
+        // If we look like we are starting an ANSI escape sequence, set the inAnsi flag
+        if (char1 === "\x1b" && !inAnsi && (lp + startOffset + 1) < actual.length && actual[lp + startOffset + 1] === "[") {
+            inAnsi = true;
+            result += cyan;
+        }
+
         if (char1 === char2) {
             if (match !== 0) {
                 result += dim + brightGreen;
@@ -50,14 +66,32 @@ function _showStringDifference(expected: string, actual: string): string {
                 result += normal + brightRed;
                 match = 1;
             }
-            result += char1;
+
+            if (_isNonPrintableChar(char1)) {
+                let msg = "\\x" + char1.charCodeAt(0).toString(16).padStart(2, "0");
+                if (!inAnsi) {
+                    result += cyan(msg) + brightRed;
+                } else {
+                    result += msg;
+                }
+            } else if (escape && char1 === "\\") {
+                result += "\\\\";
+            } else {
+                result += char1;
+            }
         }
+
+        if (inAnsi && char1 === "m") {
+            inAnsi = false;
+            result += match === 0 ? brightGreen : brightRed;
+        }
+
         lp++;
     }
 
     if (lp < expected.length) {
         if (match !== 1) {
-            result += red;
+            result += cyan;
         }
         result += strSubstr(expected, lp);
     }
@@ -69,6 +103,10 @@ function _showStringDifference(expected: string, actual: string): string {
 
 function _colorizeActual(actual: string, expected: string): string {
     let result: string = EMPTY_STRING;
+    let inAnsi = false;
+
+    // actual = stripAnsi(actual);
+    // expected = stripAnsi(expected);
 
     let startOffset = 0;
     if (expected.length > 5) {
@@ -79,36 +117,72 @@ function _colorizeActual(actual: string, expected: string): string {
     }
 
     if (startOffset > 0) {
-        result = normal + green + strLeft(actual, startOffset);
+        result = normal + yellow + strLeft(actual, startOffset);
     }
 
     let lp = 0;
     let match = -1;
     while (lp < expected.length && (lp + startOffset) < actual.length) {
-        const char1 = expected[lp];
-        const char2 = actual[lp + startOffset];
+        const char1 = actual[lp + startOffset];
+        const char2 = expected[lp];
+
+        // If we look like we are starting an ANSI escape sequence, set the inAnsi flag
+        if (char1 === "\x1b" && !inAnsi && (lp + startOffset + 1) < actual.length && actual[lp + startOffset + 1] === "[") {
+            inAnsi = true;
+            result += cyan;
+        }
 
         if (char1 === char2) {
             if (match !== 0) {
                 result += normal + brightGreen;
                 match = 0;
             }
-            result += char1;
+
+            if (_isNonPrintableChar(char1)) {
+                let msg = "\\x" + char1.charCodeAt(0).toString(16).padStart(2, "0");
+                if (!inAnsi) {
+                    result += cyan(msg) + brightGreen;
+                } else {
+                    result += msg;
+                }
+            } else if (char1 === "\\") {
+                result += "\\\\";
+            } else {
+                result += char1;
+            }
         } else {
             if (match !== 1) {
                 result += normal + brightRed;
                 match = 1;
             }
-            result += char1;
+
+            if (_isNonPrintableChar(char1)) {
+                let msg = "\\x" + char1.charCodeAt(0).toString(16).padStart(2, "0");
+                if (!inAnsi) {
+                    result += cyan(msg) + brightRed;
+                } else {
+                    result += msg;
+                }
+            } else if (char1 === "\\") {
+                result += "\\\\";
+            } else {
+                result += char1;
+            }
         }
+
+        if (inAnsi && char1 === "m") {
+            inAnsi = false;
+            result += match === 0 ? brightGreen : brightRed;
+        }
+
         lp++;
     }
 
-    if (lp < actual.length) {
+    if (lp + startOffset < actual.length) {
         if (match !== 1) {
             result += normal + green;
         }
-        result += strSubstr(actual, lp);
+        result += strSubstr(actual, lp + startOffset);
     }
 
     result += normal;
@@ -132,11 +206,11 @@ export function checkError(fn: () => void, match?: string | RegExp | Object, che
 
         if (isString(match)) {
             if (e.message.indexOf(match) === -1) {
-                newErr = new AssertionError(gray(`expected error message to contain [${white(match)}]\n - got [${_colorizeActual(e.message, match)}]\n - diff[${_showStringDifference(match, e.message)}]`), e, null, stackStart);
+                newErr = new AssertionError(gray(`expected error message to contain [${cyan(match)}]\n - got [${_colorizeActual(e.message, match)}]\n - diff[${_showStringDifference(match, e.message)}]`), e, null, stackStart);
             }
         } else if (isRegExp(match)) {
             if (!match.test(e.message)) {
-                newErr = new AssertionError(gray(`expected error message to match [${white(asString(match))}]\n - got [${green(e.message)}]\n - diff[${_showStringDifference(match.source, e.message)}]`), e, null, stackStart);
+                newErr = new AssertionError(gray(`expected error message to match [${white(asString(match))}]\n - got [${_colorizeActual(e.message, e.message)}]\n - diff[${_showStringDifference(match.source, e.message, false)}] (regex)`), e, null, stackStart);
             }
         } else if (isObject(match)) {
             objForEachKey(match, (key, value) => {
@@ -152,9 +226,10 @@ export function checkError(fn: () => void, match?: string | RegExp | Object, che
             
         if (checkFrames !== false) {
             let theStack = parseStack(e.stack).removeInnerStack().formatStack(99);
-            expect(theStack).is.string()
+            expect(theStack).is.string();
             if (CHECK_INTERNAL_STACK_FRAME_REGEX.test(theStack)) {
-                throw new AssertionError("expected error stack to not contain internal frames - " + _formatValue(theStack), e, null, stackStart);
+                let scope = preContext || getScopeContext(assert);
+                throw new AssertionError("expected error stack to not contain internal frames - " + _formatValue(scope, theStack), e, null, stackStart);
             }
         }
 

@@ -23,6 +23,7 @@ import { hasPropertyFunc } from "./funcs/hasProperty";
 import { AssertionError, AssertionFailure } from "./assertionError";
 import { createContext } from "./scopeContext";
 import { createAssertScope } from "./assertScope";
+import { assertConfig } from "./config";
 import { IScopeFn } from "./interface/IScopeFuncs";
 import { createExprAdapter } from "./adapters/exprAdapter";
 import { isSealedFunc } from "./funcs/isSealed";
@@ -344,7 +345,7 @@ function _createAliasFunc(alias: string) {
 
 function _createProxyFunc(theAssert: IAssertClass, assertName: string, def: IAssertClassDef, internalErrorStackStart: Function, responseHandler: (result: any) => any): IScopeFn {
     // let steps: IStepDef[];
-    let scopeFn: IScopeFn = def.scopeFn
+    let scopeFn: IScopeFn = def.scopeFn;
     let mIdx: number = def.mIdx || -1;
     let numArgs: number = isNullOrUndefined(def.nArgs) ? 1 : def.nArgs;
 
@@ -370,7 +371,7 @@ function _createProxyFunc(theAssert: IAssertClass, assertName: string, def: IAss
 
         // Create the initial scope `expect(value, initMsg)` and run any defined steps
         // Using either the current alias entry point or the current function
-        let newScope = createAssertScope(createContext(actualValue, initMsg, _aliasStackStart || _assertFunc, orgArgs));
+        let newScope = createAssertScope(createContext(actualValue, initMsg, _aliasStackStart || _assertFunc, orgArgs, assertConfig));
         newScope.context._$stackFn.push(_aliasStackStart || _assertFunc);
 
         newScope.context.setOp(assertName + "()");

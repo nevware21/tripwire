@@ -4,6 +4,7 @@ module.exports = function (config) {
     const typescript = require("@rollup/plugin-typescript");
     const plugin = require("@rollup/plugin-node-resolve");
     const commonjs = require("@rollup/plugin-commonjs");
+    
     config.set({
         browsers: ["Chromium_without_security"],
         listenAddress: 'localhost',
@@ -21,9 +22,9 @@ module.exports = function (config) {
                 typescript({
                     tsconfig: "./test/tsconfig.worker.karma.json"
                 }),
-                // plugin.nodeResolve({
-                //     browser: true
-                // }),
+                plugin.nodeResolve({
+                    browser: true
+                })
                 // commonjs()
             ],
             output: {

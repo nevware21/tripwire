@@ -15,7 +15,7 @@ describe("assert.isEmpty", () => {
     it("should pass when the value is an empty string", () => {
         assert.isEmpty("");
 
-        expect("").is.empty()
+        expect("").is.empty();
     });
 
     it("should pass when the value is an empty array", () => {

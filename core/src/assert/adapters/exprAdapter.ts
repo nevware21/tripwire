@@ -136,7 +136,7 @@ function _runExpr(theAssert: any, scope: IAssertScope, steps: IStepDef[], scopeF
 
         if (!(step.name in scope.that)) {
             throw new AssertionError(
-                `${idx} Invalid step: ${step.name} for [${steps.map(s => s.name).join("->")}] available steps: [${objKeys(scope.that).join(";")}] - ${_formatValue(scope.that)}`,
+                `${idx} Invalid step: ${step.name} for [${steps.map(s => s.name).join("->")}] available steps: [${objKeys(scope.that).join(";")}] - ${_formatValue(scope.context, scope.that)}`,
                 null,
                 context._$stackFn);
         }
@@ -176,7 +176,7 @@ function _processFn(scope: IAssertScope, scopeFn: IScopeFn, theArgs: any[], theR
     if (scopeFn) {
         // Track the operation path and set the stack start position
         if (scope.context.opts.isVerbose) {
-            let theScopeName = scopeFn.name || (scopeFn as any)["displayName"] || "anonymous"
+            let theScopeName = scopeFn.name || (scopeFn as any)["displayName"] || "anonymous";
             scope.context.setOp("[[" + theScopeName + "]]");
         }
 

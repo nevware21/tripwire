@@ -15,7 +15,7 @@ describe("symbol check", () => {
 
     // Test case: null object
     it("Should fail for null object", () => {
-        const knownIterator = getKnownSymbol(WellKnownSymbols.iterator)
+        const knownIterator = getKnownSymbol(WellKnownSymbols.iterator);
 
         assert.strictEqual(knownIterator, Symbol.iterator);
     });
