@@ -22,7 +22,7 @@ export function propertyResultOp<V>(scope: IAssertScope, value: V): IPropertyRes
     let newInst = scope.newInst();
 
     function valueOp(scope: IAssertScope): IAssertInst {
-        scope.that = scope.newInst(value)
+        scope.that = scope.newInst(value);
 
         return scope.that;
     }

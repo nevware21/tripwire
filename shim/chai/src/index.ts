@@ -20,4 +20,4 @@ export {
 export {
     chaiAssert as assert,
     chaiExpect as expect
-}
+};

@@ -221,7 +221,7 @@ export function hasPropertyDescriptorFunc(this: IAssertScope, name: string | sym
         scope.newScope(desc).exec(deepEqualsFunc, [ descriptor, evalMsg || "expected {value} to equal property descriptor {descriptor}" ]);
     }
 
-    return propertyResultOp(scope, desc)
+    return propertyResultOp(scope, desc);
 }
 
 /**
@@ -245,5 +245,5 @@ export function hasOwnPropertyDescriptorFunc(this: IAssertScope, name: string | 
         scope.newScope(desc).exec(deepEqualsFunc, [ descriptor, evalMsg  || "expected {value} to equal property descriptor {descriptor}"]);
     }
 
-    return propertyResultOp(scope, desc)
+    return propertyResultOp(scope, desc);
 }

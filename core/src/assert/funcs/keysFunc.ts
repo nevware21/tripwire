@@ -70,7 +70,7 @@ function _getArgKeys(scope: IAssertScope, theArgs: any[]): string[] {
         }
     }
 
-    return theKeys
+    return theKeys;
 }
 
 export function anyKeysFunc<R>(_scope: IAssertScope): KeysFn<R> {

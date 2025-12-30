@@ -105,7 +105,7 @@ export function parseStack(stack: string | undefined): IParsedStack {
         trailMessage: {
             g: () => {
                 _parseStackDetail();
-                return trailingMessage || EMPTY_STRING
+                return trailingMessage || EMPTY_STRING;
             },
             s: (value: string) => {
                 _parseStackDetail();
@@ -125,7 +125,7 @@ export function parseStack(stack: string | undefined): IParsedStack {
             g: () => {
                 return function (maxLines?: number) {
                     return _formatStack(this.message, this.lines, this.trailMessage, maxLines);
-                }
+                };
             }
         },
         trimStack: {
@@ -156,7 +156,7 @@ export function parseStack(stack: string | undefined): IParsedStack {
                         }
                     }
 
-                    return parsedStack
+                    return parsedStack;
                 };
             }
         }
@@ -177,7 +177,7 @@ function _formatStack(message: string, lines: string[], trailMessage: string, ma
         formattedStack += trailMessage;
     }
 
-    return formattedStack
+    return formattedStack;
 }
 
 /**

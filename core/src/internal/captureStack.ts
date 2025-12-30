@@ -33,7 +33,7 @@ export function captureStack(func: Function): IParsedStack {
             }
         }
 
-        return parsedStack
+        return parsedStack;
     } finally {
         // Restore the stack trace limit
         if ("stackTraceLimit" in Error) {

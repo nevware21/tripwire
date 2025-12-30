@@ -27,6 +27,7 @@
         "no-trailing-spaces": [ "warn", { "skipBlankLines": true }],// Enabled for auto fixing
         "no-const-assign": "error",
         "comma-dangle": [ "error", "never" ],                       // Enabled for auto fixing
+        "semi": [ "error", "always" ],                              // Enabled for auto fixing
         "security/detect-object-injection": "off",                  // Suppress Warning -- need to Review Later
         "@typescript-eslint/ban-types": "off",
         "@typescript-eslint/no-unused-vars": [ "warn", { "vars": "all", "args": "none", "argsIgnorePattern": "^_", "ignoreRestSiblings": true } ],

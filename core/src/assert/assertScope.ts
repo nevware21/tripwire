@@ -18,6 +18,7 @@ import { AssertInstHandlers } from "./interface/IAssertInstHandlers";
 import { _createLazyInstHandler, _setAssertScope } from "./internal/_instCreator";
 import { _tripwireAssertHandlers } from "./internal/_tripwireInst";
 import { _failFn, _fatalFn } from "./internal/_failFn";
+import { useScope } from "./useScope";
 
 
 /**
@@ -103,7 +104,7 @@ export function createAssertScope(context: IScopeContext, handlerCreator?: Asser
      */
     function updateCtx<T>(value: T, overrides?: IScopeContextOverrides): IAssertScope {
         if (value !== _context.value || overrides) {
-            _context = _context.new(value, overrides)
+            _context = _context.new(value, overrides);
         }
     
         return theScope;
@@ -125,7 +126,9 @@ export function createAssertScope(context: IScopeContext, handlerCreator?: Asser
         _context.set(EXEC, theFuncName);
         _context._$stackFn.push(_exec);
 
-        return fn.apply(theScope, args);
+        return useScope(_context, () => {
+            return fn.apply(theScope, args);
+        });
     }
 
     function fail(failMsg: MsgSource, details?: any): never;

@@ -14,8 +14,91 @@ updates:
     directory: "/" # Location of package manifests
     schedule:
       interval: "daily"
+    open-pull-requests-limit: 5
+    groups:
+      nevware21:
+        patterns:
+          - "@nevware21/*"
+      types:
+        patterns:
+          - "@types/*"
+      grunt:
+        patterns:
+          - "grunt*"
+      puppeteer:
+        patterns:
+          - "puppeteer"
+      rollup:
+        patterns:
+          - "rollup*"
+          - "@rollup/*"
+      typescript:
+        patterns:
+          - "typescript*"
+          - "typedoc"
+          - "karma-typescript"
+          - "nyc"
+          - "@istanbuljs/nyc-config-typescript"
+          - "*mocha*"
 
   - package-ecosystem: "npm" # See documentation for possible values
-    directory: "/lib" # Location of package manifests
+    directory: "/core" # Location of package manifests
     schedule:
       interval: "daily"
+    open-pull-requests-limit: 5
+    groups:
+      nevware21:
+        patterns:
+          - "@nevware21/*"
+      types:
+        patterns:
+          - "@types/*"
+      grunt:
+        patterns:
+          - "grunt*"
+      puppeteer:
+        patterns:
+          - "puppeteer"
+      rollup:
+        patterns:
+          - "rollup*"
+          - "@rollup/*"
+      typescript:
+        patterns:
+          - "typescript*"
+          - "typedoc"
+          - "karma-typescript"
+          - "nyc"
+          - "@istanbuljs/nyc-config-typescript"
+          - "*mocha*"
+
+  - package-ecosystem: "npm" # See documentation for possible values
+    directory: "/shim" # Location of package manifests
+    schedule:
+      interval: "daily"
+    open-pull-requests-limit: 5
+    groups:
+      nevware21:
+        patterns:
+          - "@nevware21/*"
+      types:
+        patterns:
+          - "@types/*"
+      grunt:
+        patterns:
+          - "grunt*"
+      puppeteer:
+        patterns:
+          - "puppeteer"
+      rollup:
+        patterns:
+          - "rollup*"
+          - "@rollup/*"
+      typescript:
+        patterns:
+          - "typescript*"
+          - "typedoc"
+          - "karma-typescript"
+          - "nyc"
+          - "@istanbuljs/nyc-config-typescript"
+          - "*mocha*"

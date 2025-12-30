@@ -11,7 +11,8 @@ module.exports = function (config) {
             { pattern: "test/src/**/*.ts" }
         ],
         preprocessors: {
-            "**/*.ts": [ "karma-typescript" ]
+            "src/**/*.ts": [ "karma-typescript" ],
+            "test/src/**/*.ts": [ "karma-typescript" ]
         },
         karmaTypescriptConfig: {
             tsconfig: "./test/tsconfig.browser.karma.json",

@@ -271,7 +271,7 @@ function _isVisiting<T>(value: any, options: IEqualOptions, cb: () => T): T {
     let tracking = false;
     try {
         if (!isPrimitive(value)) {
-            let visitCount = 0
+            let visitCount = 0;
             arrForEach(options.visiting, (visitValue) => {
                 if (_strictEquals(visitValue, value) === true) {
                     visitCount++;
@@ -279,7 +279,7 @@ function _isVisiting<T>(value: any, options: IEqualOptions, cb: () => T): T {
             });
 
             if (visitCount > 10) {
-                options.context.fail("Unresolvable Circular reference detected for " + _formatValue(options.visiting[0]) + " @ depth " + options.visiting.length + " reference count: " + visitCount);
+                options.context.fail("Unresolvable Circular reference detected for " + _formatValue(options.context, options.visiting[0]) + " @ depth " + options.visiting.length + " reference count: " + visitCount);
             }
 
             options.visiting.push(value);
