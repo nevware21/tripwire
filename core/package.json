@@ -92,10 +92,10 @@
         "rollup-plugin-minify-es": "^1.1.1",
         "rollup-plugin-istanbul": "^4.0.0",
         "rollup-plugin-cleanup": "^3.2.1",
-        "ts-mocha": "^10.0.0",
+        "ts-mocha": "^11.0.0",
         "typedoc": "^0.28.2",
         "typedoc-github-theme": "^0.3.0",
-        "typescript": "~5.2.2",
+        "typescript": "~5.8.3",
         "uglify-js": "^3.15.5",
         "copyfiles": "^2.4.1"
     }
