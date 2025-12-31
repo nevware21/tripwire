@@ -16,7 +16,7 @@ concurrency:
 jobs:
   auto-approve:
     runs-on: ubuntu-latest
-    if: github.actor == 'dependabot[bot]' || github.actor == 'nev21'
+    if: github.actor == 'dependabot[bot]' || github.actor == 'nev21' || github.actor == 'dependabot-sync[bot]'
     steps:
       - name: Wait for status checks
         uses: lewagon/wait-on-check-action@v1.4.1
