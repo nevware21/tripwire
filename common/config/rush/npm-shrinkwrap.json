@@ -22,7 +22,7 @@
         "@rush-temp/tripwire": "file:./projects/tripwire.tgz",
         "@rush-temp/tripwire-chai": "file:./projects/tripwire-chai.tgz",
         "@types/mocha": "^10.0.1",
-        "@types/node": "^24.10.1",
+        "@types/node": "^25.0.3",
         "codecov": "^3.8.3",
         "copyfiles": "^2.4.1",
         "cross-env": "^7.0.3",
@@ -886,7 +886,7 @@
     "node_modules/@rush-temp/tripwire": {
       "version": "0.0.0",
       "resolved": "file:projects/tripwire.tgz",
-      "integrity": "sha512-IO1jtdRkD4p/HbB6jwViqeGbMZ1X6XgJhQ1TLd1/6ZcgKnboQF9i7qGrNbzKoF7wvcMKavk/yN2gpWu7+Ij6pw==",
+      "integrity": "sha512-w9SB4VH6fT+K3hA2GZD8qtsNMMWPK79v0z7jM6E4hFTsVXi10HZDabjpP3sCV7AoLG2DvV4aYx4Dg4UZeXx7Dw==",
       "dependencies": {
         "@microsoft/api-extractor": "^7.34.4",
         "@nevware21/chromacon": ">= 0.1.3 < 2.x",
@@ -900,7 +900,7 @@
         "@rollup/plugin-strip": "^3.0.2",
         "@rollup/plugin-typescript": "^11.0.0",
         "@types/mocha": "^10.0.1",
-        "@types/node": "^24.10.1",
+        "@types/node": "^25.0.3",
         "codecov": "^3.8.3",
         "copyfiles": "^2.4.1",
         "cross-env": "^7.0.3",
@@ -1153,9 +1153,9 @@
       "integrity": "sha512-xPyYSz1cMPnJQhl0CLMH68j3gprKZaTjG3s5Vi+fDgx+uhG9NOXwbVt52eFS8ECyXhyKcjDLCBEqBExKuiZb7Q=="
     },
     "node_modules/@types/node": {
-      "version": "24.10.4",
-      "resolved": "https://registry.npmjs.org/@types/node/-/node-24.10.4.tgz",
-      "integrity": "sha512-vnDVpYPMzs4wunl27jHrfmwojOGKya0xyM3sH+UE5iv5uPS6vX7UIoh6m+vQc5LGBq52HBKPIn/zcSZVzeDEZg==",
+      "version": "25.0.3",
+      "resolved": "https://registry.npmjs.org/@types/node/-/node-25.0.3.tgz",
+      "integrity": "sha512-W609buLVRVmeW693xKfzHeIV6nJGGz98uCPfeXI1ELMLXVeKYZ9m15fAMSaUPBHYLGFsVRcMmSCksQOrZV9BYA==",
       "dependencies": {
         "undici-types": "~7.16.0"
       }
