@@ -2,7 +2,7 @@
  * @nevware21/tripwire
  * https://github.com/nevware21/tripwire
  *
- * Copyright (c) 2024 NevWare21 Solutions LLC
+ * Copyright (c) 2024-2026 NevWare21 Solutions LLC
  * Licensed under the MIT license.
  */
 
@@ -40,24 +40,42 @@ const DEFAULT_CONFIG: IAssertConfig = (/* $__PURE__ */{
 });
 
 function _mergeConfig(target: any, source: any) {
-    objForEachKey(source, (key: string) => {
-        if (isArray(source[key])) {
-            target[key] = arrSlice(source[key], 0)
-        } else if (isObject(source[key])) {
-            if (!isObject(target[key])) {
-                target[key] = {};
-            }
+    if (!isNullOrUndefined(source)) {
+        objForEachKey(source, (key: string) => {
+            if (isArray(source[key])) {
+                target[key] = arrSlice(source[key], 0);
+            } else if (isObject(source[key])) {
+                if (!isObject(target[key])) {
+                    target[key] = {};
+                }
 
-            _mergeConfig(target[key], source[key]);
-        } else {
-            target[key] = source[key];
-        }
-    });
+                _mergeConfig(target[key], source[key]);
+            } else {
+                target[key] = source[key];
+            }
+        });
+    }
 
     return target;
 }
 
 function _defineProp(target: any, values: any, defaults: any, key: string) {
+    let theDefaults = defaults[key];
+
+    if (isArray(theDefaults)) {
+        values[key] = arrSlice(theDefaults, 0);
+    } else if (isObject(theDefaults)) {
+        // Create a new target object by merging the defaults and the current values
+        let newTarget = _mergeConfig({}, theDefaults);
+        values[key] = newTarget;
+
+        // Iterate over each key in the merged sub-target and define properties recursively
+        objForEachKey(newTarget, (subKey: string) => {
+            _defineProp(newTarget, values, theDefaults, subKey);
+        });
+    }
+
+    // Define a property with getter and setter for non-array, non-object values
     objDefine(target, key, {
         g: () => values[key],
         s: (value) => {
@@ -70,6 +88,7 @@ function _defineProp(target: any, values: any, defaults: any, key: string) {
             }
         }
     });
+
 }
 
 export const assertConfig: IAssertConfigDefaults = (/* #__PURE__*/function() {
