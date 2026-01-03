@@ -1189,7 +1189,7 @@
     "node_modules/@rush-temp/tripwire-chai": {
       "version": "0.0.0",
       "resolved": "file:projects/tripwire-chai.tgz",
-      "integrity": "sha512-TrMfWhYBsFRnt2TsaG/7bOzlFnTU1/2tJAWOhZhoEBZJrgrwm8kPRhaEiRAwuuPakCs+8Dls3Rf4pUsJAmfAjA==",
+      "integrity": "sha512-E3oJtMydEEMhpG3Bcs7LUDR6B4jmfJmwjZC8FVa8HeSStpeTXaN0zFC/W6+LAhghCt0mDk+cyN55LEjAD1eanA==",
       "dependencies": {
         "@microsoft/api-extractor": "^7.34.4",
         "@nevware21/coverage-tools": "^0.1.3",

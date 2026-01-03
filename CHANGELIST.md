@@ -1,3 +1,27 @@
+# v0.1.3 January 2nd, 2026
+
+## Changelog
+
+- [#186](https://github.com/nevware21/tripwire/pull/186) feat: Add finalize option for post-processing formatted output
+  - Add new `finalize` and `finalizeFn` options to `IFormatterOptions` interface to control post-processing of formatted assertion error messages
+  - When `finalize: true` is set without a custom `finalizeFn`, automatically uses `escapeAnsi` from @nevware21/chromacon to escape ANSI codes for display as literal characters
+  - Finalization is applied once to the complete formatted output string in `_formatValue()` for consistent processing
+  - Enables powerful use cases:
+    - Escape ANSI codes for proper terminal display without interpreting color codes
+    - Colorize escaped ANSI sequences (e.g., display in gray) for better readability
+    - Convert output to HTML-safe format for web-based test runners and reports
+    - Wrap or decorate formatted messages with custom styling or metadata
+    - Apply any custom transformation to final assertion error output
+  - Updated `assertConfig` defaults to include the new finalization options
+  - Reduced karma worker log level from DEBUG to INFO for faster test startup times
+- [#105](https://github.com/nevware21/tripwire/pull/105) Add WeakSet and WeakMap checks
+  - Add support for WeakMap and WeakSet in equality comparison operations using strict equality checks
+  - Add `isEmpty` validation for WeakMap and WeakSet collections
+  - Note: WeakMap and WeakSet do not expose a size property, so emptiness cannot be determined directly - the implementation handles these special cases appropriately
+  - Enables proper testing of code using ES6 weak collections
+
+For full details see [v0.1.2...v0.1.3](https://github.com/nevware21/tripwire/compare/v0.1.2...v0.1.3)
+
 # v0.1.2 March 31st, 2025
 
 ## Changelog
