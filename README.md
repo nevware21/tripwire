@@ -63,7 +63,7 @@ Install the npm packare: `npm install @nevware21/tripwire --save-dev`
 > It is suggested / recommended that you use the following definition in your `package.json` so that you are compatible with any future releases as they become available
 > we do not intend to make ANY known breaking changes moving forward until v2.x 
 > ```json
-> "@nevware21/tripwire": ">= 0.1.2 < 2.x"
+> "@nevware21/tripwire": ">= 0.1.3 < 2.x"
 > ```
 
 ## Usage
