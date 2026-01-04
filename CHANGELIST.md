@@ -1,3 +1,16 @@
+# v0.1.4 January 3rd, 2026
+
+## Changelog
+
+- Fix TypeScript compilation errors in test files for stricter type checking
+  - Fixed possibly undefined `error.stack` and `error.props` references with non-null assertions
+  - Fixed `null` arguments in AssertionError constructors - use `undefined` instead
+  - Fixed missing property initialization in test class constructors
+  - Fixed missing required arguments in hasPropertyDescriptor test cases
+  - All tests now compile cleanly with TypeScript ~5.2.2
+
+For full details see [v0.1.3...v0.1.4](https://github.com/nevware21/tripwire/compare/v0.1.3...v0.1.4)
+
 # v0.1.3 January 2nd, 2026
 
 ## Changelog
