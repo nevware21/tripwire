@@ -352,7 +352,7 @@ describe("assert", function () {
 
         err(function () {
             assert.strictEqual("5", 5 as any, "blah");
-        }, " blah: expected \"5\" to strictly equal 5");
+        }, "blah: expected \"5\" to strictly equal 5");
     });
 
     it("notStrictEqual", function() {
@@ -1732,7 +1732,7 @@ describe("assert", function () {
                 (assert as any)[throws](function() {
                     throw new Error("");
                 }, "bar");
-            }, " expected [Function] to throw an error with a message containing \"bar\" but it was \"\"");
+            }, "expected [Function] to throw an error with a message containing \"bar\" but it was \"\"");
 
             err(function () {
                 (assert as any)[throws](function() {

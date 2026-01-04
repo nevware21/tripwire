@@ -2,7 +2,7 @@
  * @nevware21/tripwire
  * https://github.com/nevware21/tripwire
  *
- * Copyright (c) 2024 NevWare21 Solutions LLC
+ * Copyright (c) 2024-2026 NevWare21 Solutions LLC
  * Licensed under the MIT license.
  */
 
@@ -295,6 +295,7 @@ function _captureStackTrace(theError: Error, orgStackDetail: IParsedStack, stack
 
     if (stackDetail !== orgStackDetail) {
         // Ensure that we have the original message and trailing message
+        stackDetail.name = orgStackDetail.name;
         stackDetail.message = orgStackDetail.message;
         stackDetail.trailMessage = orgStackDetail.trailMessage;
     }

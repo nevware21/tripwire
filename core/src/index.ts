@@ -2,13 +2,13 @@
  * @nevware21/tripwire
  * https://github.com/nevware21/tripwire
  *
- * Copyright (c) 2024 NevWare21 Solutions LLC
+ * Copyright (c) 2024-2026 NevWare21 Solutions LLC
  * Licensed under the MIT license.
  */
 
 import { AssertClassDef, assert, addAssertFunc, addAssertFuncs, createAssert } from "./assert/assertClass";
 import { AssertionError, AssertionErrorConstructor, AssertionFailure, AssertionFailureConstructor, AssertionFatal, AssertionFatalConstructor } from "./assert/assertionError";
-import { useScope, _getGlobalScopeContext } from "./assert/useScope";
+import { useScope } from "./assert/useScope";
 import { addAssertInstFuncDefs, addAssertInstFunc, addAssertInstFuncDef } from "./assert/assertInst";
 import { expect } from "./assert/expect";
 import { IAssertClass, IExtendedAssert } from "./assert/interface/IAssertClass";
@@ -60,74 +60,28 @@ import { IRemovable } from "./assert/interface/IRemovable";
  * Export the Error classes
  */
 export {
-    AssertionError,
-    AssertionErrorConstructor,
-    AssertionFailure,
-    AssertionFailureConstructor,
-    AssertionFatal,
-    AssertionFatalConstructor
+    AssertionError, AssertionErrorConstructor, AssertionFailure, AssertionFailureConstructor,
+    AssertionFatal, AssertionFatalConstructor
 };
 
 /**
  * Export the interfaces
  */
 export {
-    IAllOp,
-    IAnyOp,
-    IAssertClass,
-    IAssertConfig,
-    IAssertConfigDefaults,
-    IScopeContext,
-    IScopeContextOverrides,
-    IFormatCtx,
-    IFormattedValue,
-    IFormatter,
-    IFormatterOptions,
-    IAssertClassDef,
-    IAssertScope,
-    IAssertInst,
-    IAssertInstCore,
-    IAssertInstHandlers,
-    IDeepOp,
-    IEqualOp,
-    IExtendedAssert,
-    IExtendedAssertInst,
-    IHasOp,
-    IIncludeOp,
-    IScopePropFn,
-    IIsOp,
-    IKeysOp,
-    INotOp,
-    IOwnOp,
-    PropertyDescriptorFn,
-    PropertyFn,
-    IPropertyResultOp,
-    IAssertScopeFuncDef,
-    IStrictlyOp,
-    IThrowOp,
-    IToOp,
-    IIsTypeOp,
-    IRemovable
+    IAllOp, IAnyOp, IAssertClass, IAssertClassDef, IAssertConfig, IAssertConfigDefaults,
+    IAssertInst, IAssertInstCore, IAssertInstHandlers, IAssertScope, IAssertScopeFuncDef,
+    IDeepOp, IEqualOp, IExtendedAssert, IExtendedAssertInst, IFormatCtx, IFormattedValue,
+    IFormatter, IFormatterOptions, IHasOp, IIncludeOp, IIsOp, IIsTypeOp, IKeysOp, INotOp,
+    IOwnOp, IPropertyResultOp, IRemovable, IScopeContext, IScopeContextOverrides, IScopePropFn,
+    IStrictlyOp, IThrowOp, IToOp, PropertyDescriptorFn, PropertyFn
 };
 
 /**
  * Export the types
  */
 export {
-    AssertClassDef,
-    AssertFn,
-    AssertInstHandlers,
-    IScopeFn,
-    ErrorLikeFn,
-    EqualFn,
-    EvalFn,
-    IncludeFn,
-    KeysFn,
-    ValuesFn,
-    MsgSource,
-    AssertScopeFuncDefs,
-    SymbolFn,
-    ThrowFn
+    AssertClassDef, AssertFn, AssertInstHandlers, AssertScopeFuncDefs, EqualFn, ErrorLikeFn,
+    EvalFn, IncludeFn, IScopeFn, KeysFn, MsgSource, SymbolFn, ThrowFn, ValuesFn
 };
 
 /**
@@ -141,22 +95,9 @@ export {
  * Export the functions (and global `assert`)
  */
 export {
-    assert,
-    assertConfig,
-    addAssertFunc,
-    addAssertFuncs,
-    createAssert,
-    expect,
-    addAssertInstFuncDef,
-    addAssertInstFuncDefs,
-    addAssertInstFunc,
-    createEvalAdapter,
-    createExprAdapter,
-    createAssertScope,
-    createContext,
-    getScopeContext,
-    useScope,
-    _getGlobalScopeContext
+    addAssertFunc, addAssertFuncs, addAssertInstFunc, addAssertInstFuncDef, addAssertInstFuncDefs,
+    assert, assertConfig, createAssert, createAssertScope, createContext, createEvalAdapter,
+    createExprAdapter, expect, getScopeContext, useScope
 };
 
 /**

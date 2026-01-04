@@ -2,11 +2,11 @@
  * @nevware21/tripwire
  * https://github.com/nevware21/tripwire
  *
- * Copyright (c) 2024 NevWare21 Solutions LLC
+ * Copyright (c) 2024-2026 NevWare21 Solutions LLC
  * Licensed under the MIT license.
  */
 
-import { arrSlice, isString, objDefineProps, strTrim } from "@nevware21/ts-utils";
+import { arrSlice, isString, objDefineProps, strIndexOf, strSubstring, strTrim } from "@nevware21/ts-utils";
 import { EMPTY_STRING } from "../assert/internal/const";
 
 // eslint-disable-next-line security/detect-unsafe-regex
@@ -16,6 +16,7 @@ const rInnerException = /Inner Exception.*/;
 
 export interface IParsedStack {
     readonly stack: string;
+    name: string;
     message: string;
     trailMessage: string;
     readonly lines: string[];
@@ -33,6 +34,7 @@ export interface IParsedStack {
 export function parseStack(stack: string | undefined): IParsedStack {
     let theStack = stack;
     let theMessage: string = null;
+    let theName: string = null;
     let trailingMessage: string = null;
     let stackLines: string[] = [];
     let isParsed = false;
@@ -74,6 +76,15 @@ export function parseStack(stack: string | undefined): IParsedStack {
             }
 
             isParsed = true;
+
+            let nameIdx = strIndexOf(theMessage, ": ");
+            if (nameIdx >= 0) {
+                // Simple validation to ensure we really have a leading "name"
+                if (/^\w*:\s/.test(theMessage.substring(0, nameIdx + 2))) {
+                    theName = strSubstring(theMessage, 0, nameIdx);
+                    theMessage = strSubstring(theMessage, nameIdx + 2);
+                }
+            }
         }
     }
 
@@ -82,11 +93,24 @@ export function parseStack(stack: string | undefined): IParsedStack {
         stack: {
             g: () => {
                 if (regnStack) {
-                    theStack = _formatStack(theMessage, stackLines, trailingMessage, 99);
+                    theStack = _formatStack(theName, theMessage, stackLines, trailingMessage, 99);
                     regnStack = false;
                 }
 
                 return theStack;
+            }
+        },
+        name: {
+            g: () => {
+                _parseStackDetail();
+                return theName || "<unknown>";
+            },
+            s: (value: string) => {
+                _parseStackDetail();
+                if (value !== theName) {
+                    theName = value;
+                    regnStack = true;
+                }
             }
         },
         message: {
@@ -124,7 +148,8 @@ export function parseStack(stack: string | undefined): IParsedStack {
         formatStack: {
             g: () => {
                 return function (maxLines?: number) {
-                    return _formatStack(this.message, this.lines, this.trailMessage, maxLines);
+                    _parseStackDetail();
+                    return _formatStack(theName, theMessage, stackLines || [], trailingMessage || EMPTY_STRING, maxLines);
                 };
             }
         },
@@ -163,8 +188,8 @@ export function parseStack(stack: string | undefined): IParsedStack {
     });
 }
 
-function _formatStack(message: string, lines: string[], trailMessage: string, maxLines?: number): string {
-    let formattedStack = message;
+function _formatStack(name: string, message: string, lines: string[], trailMessage: string, maxLines?: number): string {
+    let formattedStack = name ? name + ": " + message : message;
     let numLines = maxLines || Error.stackTraceLimit || 10;
     let theLines = arrSlice(lines, 0, numLines);
     if (formattedStack && theLines.length > 0) {

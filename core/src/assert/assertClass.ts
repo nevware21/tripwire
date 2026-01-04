@@ -2,7 +2,7 @@
  * @nevware21/tripwire
  * https://github.com/nevware21/tripwire
  *
- * Copyright (c) 2024 NevWare21 Solutions LLC
+ * Copyright (c) 2024-2026 NevWare21 Solutions LLC
  * Licensed under the MIT license.
  */
 
@@ -287,6 +287,8 @@ export function addAssertFuncs(target: any, funcs: { [key: string]: AssertClassD
             theDef = {
                 scopeFn: def
             };
+        } else if (!def) {
+            throw new AssertionError(`Invalid definition for ${name}: ${def}`, null, addAssertFuncs);
         } else {
             theDef = def;
         }
