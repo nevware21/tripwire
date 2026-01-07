@@ -6,7 +6,7 @@
  * Licensed under the MIT license.
  */
 
-import { arrForEach, arrMap, asString, isDate, isFunction, isObject, isPlainObject, isPrimitive, iterForOf, objGetOwnPropertyDescriptor, objGetOwnPropertySymbols, objIs, objToString, strLower } from "@nevware21/ts-utils";
+import { arrForEach, arrMap, asString, isDate, isFunction, isObject, isPlainObject, isPrimitive, isSymbol, iterForOf, objGetOwnPropertyDescriptor, objGetOwnPropertySymbols, objIs, objToString, strLower } from "@nevware21/ts-utils";
 import { MsgSource } from "../interface/types";
 import { IAssertScope } from "../interface/IAssertScope";
 import { _formatValue } from "../internal/_formatValue";
@@ -519,7 +519,7 @@ function _deepEquals<T>(value: T, expected: T, options: IEqualOptions): boolean 
 
 function _mapKeys(values: Array<string | number | symbol>): Array<string|number> {
     return arrMap(values, (key) => {
-        if (typeof key === "symbol") {
+        if (isSymbol(key)) {
             return key.toString();
         }
         

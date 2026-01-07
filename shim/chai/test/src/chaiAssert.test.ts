@@ -645,30 +645,30 @@ describe("assert", function () {
         }, "blah: not expected 4 to be a number");
     });
 
-    // it("isFinite", function() {
-    //     assert.isFinite(4);
-    //     assert.isFinite(-10);
+    it("isFinite", function() {
+        assert.isFinite(4);
+        assert.isFinite(-10);
 
-    //     err(function(){
-    //         assert.isFinite(NaN, "blah");
-    //     }, "blah: expected NaN to be a finite number");
+        err(function(){
+            assert.isFinite(NaN, "blah");
+        }, "blah: expected NaN to be finite");
 
-    //     err(function(){
-    //         assert.isFinite(Infinity);
-    //     }, "expected Infinity to be a finite number");
+        err(function(){
+            assert.isFinite(Infinity);
+        }, "expected Infinity to be finite");
 
-    //     err(function(){
-    //         assert.isFinite("foo");
-    //     }, "expected \"foo\" to be a finite number");
+        err(function(){
+            assert.isFinite("foo");
+        }, "expected \"foo\" to be finite");
 
-    //     err(function(){
-    //         assert.isFinite([]);
-    //     }, "expected [] to be a finite number");
+        err(function(){
+            assert.isFinite([]);
+        }, "expected [] to be finite");
 
-    //     err(function(){
-    //         assert.isFinite({});
-    //     }, "expected {} to be a finite number");
-    // })
+        err(function(){
+            assert.isFinite({});
+        }, "expected {} to be finite");
+    });
 
     it("isBoolean", function() {
         assert.isBoolean(true);

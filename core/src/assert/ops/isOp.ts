@@ -8,7 +8,7 @@
 
 import { IIsOp } from "../interface/ops/IIsOp";
 import {
-    isArrayFunc, isBooleanFunc, isFalseFunc, isFunctionFunc, isNaNFunc, isNullFunc, isNumberFunc,
+    isArrayFunc, isBooleanFunc, isFalseFunc, isFunctionFunc, isNaNFunc, isFiniteFunc, isNullFunc, isNumberFunc,
     isObjectFunc, isPlainObjectFunc, isStringFunc, isTrueFunc, isTruthyFunc, isUndefinedFunc
 } from "../funcs/is";
 import { isErrorFunc } from "../funcs/throws";
@@ -57,6 +57,7 @@ export function isOp<R>(scope: IAssertScope): IIsOp<R> {
         extensible: { scopeFn: isExtensibleFunc },
         iterable: { scopeFn: hasSymbolFunc(Symbol.iterator) },
         nan: { scopeFn: isNaNFunc },
+        finite: { scopeFn: isFiniteFunc },
 
         // Numeric comparison operations
         above: { scopeFn: aboveFunc },
