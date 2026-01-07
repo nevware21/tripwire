@@ -184,4 +184,12 @@ export interface IIsTypeOp<R> {
      * @throws {@link AssertionFailure} - If the assertion fails.
      */
     nan: AssertFn<R>;
+
+    /**
+     * Asserts that the value is a finite number (not NaN, not Infinity, not -Infinity).
+     * @param evalMsg - The custom message to display on evaluation.
+     * @returns The current {@link IAssertScope.that} object.
+     * @throws {@link AssertionFailure} - If the assertion fails.
+     */
+    finite: AssertFn<R>;
 }

@@ -207,6 +207,10 @@ export function createAssert(): IAssertClass {
         isNaN: createExprAdapter("is.nan"),
         isNotNaN: createExprAdapter("not.is.nan"),
             
+
+        isFinite: createExprAdapter("is.finite"),
+        isNotFinite: createExprAdapter("not.is.finite"),
+            
         throws: { scopeFn: throwsFunc, nArgs: 3 },
 
         match: { scopeFn: matchFunc, nArgs: 2 },

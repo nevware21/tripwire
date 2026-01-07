@@ -208,7 +208,22 @@ export function isNaNFunc<R>(this: IAssertScope, evalMsg?: MsgSource): R {
     let context = this.context;
     let value = context.value;
 
-    context.eval(typeof value === "number" && isNaN(value), evalMsg || "expected {value} to be NaN");
+    context.eval(isNumber(value) && isNaN(value), evalMsg || "expected {value} to be NaN");
+
+    return this.that;
+}
+
+/**
+ * Is the current value a finite number (not NaN, not Infinity, not -Infinity)
+ * @param this - The current {@link IAssertScope} object
+ * @param evalMsg - The message to display if the value is not a finite number
+ * @returns The current {@link IAssertScope.that} (`this`) object
+ */
+export function isFiniteFunc<R>(this: IAssertScope, evalMsg?: MsgSource): R {
+    let context = this.context;
+    let value = context.value;
+
+    context.eval(isNumber(value) && isFinite(value), evalMsg || "expected {value} to be finite");
 
     return this.that;
 }
