@@ -1089,6 +1089,47 @@ export interface IAssertClass<AssertInst extends IAssertInst = IAssertInst> {
     isNotNaN(value: any, initMsg?: MsgSource): AssertInst;
 
     /**
+     * Asserts that the given value is a finite number (not NaN, not Infinity, not -Infinity).
+     * @param value - The value to check.
+     * @param initMsg - The custom message to display if the assertion fails.
+     * @throws {AssertionError} If the value is not a finite number.
+     * @example
+     * ```typescript
+     * assert.isFinite(123); // Passes
+     * assert.isFinite(0); // Passes
+     * assert.isFinite(-456.789); // Passes
+     * assert.isFinite(NaN); // Throws AssertionError
+     * assert.isFinite(Infinity); // Throws AssertionError
+     * assert.isFinite(-Infinity); // Throws AssertionError
+     * assert.isFinite("123"); // Throws AssertionError
+     * assert.isFinite(null); // Throws AssertionError
+     * assert.isFinite(undefined); // Throws AssertionError
+     * ```
+     */
+    isFinite(value: any, initMsg?: MsgSource): AssertInst;
+
+    /**
+     * Asserts that the given value is not a finite number (e.g., NaN, Infinity, -Infinity, or non-numeric).
+     * @param value - The value to check.
+     * @param initMsg - The custom message to display if the assertion fails.
+     * @throws {AssertionError} If the value is a finite number.
+     * @example
+     * ```typescript
+     * assert.isNotFinite(NaN); // Passes
+     * assert.isNotFinite(Infinity); // Passes
+     * assert.isNotFinite(-Infinity); // Passes
+     * assert.isNotFinite("123"); // Passes
+     * assert.isNotFinite(null); // Passes
+     * assert.isNotFinite(undefined); // Passes
+     * assert.isNotFinite({}); // Passes
+     * assert.isNotFinite(123); // Throws AssertionError
+     * assert.isNotFinite(0); // Throws AssertionError
+     * assert.isNotFinite(-456.789); // Throws AssertionError
+     * ```
+     */
+    isNotFinite(value: any, initMsg?: MsgSource): AssertInst;
+
+    /**
      * Asserts that the given function throws an error that matches the specified error constructor,
      * error instance, and / or the message includes the content or matches the regex pattern.
      * If the function does not throw an error, or if the thrown error does not

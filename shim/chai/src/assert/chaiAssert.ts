@@ -96,7 +96,7 @@ function _createChaiAssert(): IChaiAssert {
         isNotString: "is.not.string",
         isNumber: "is.number",
         isNotNumber: "is.not.number",
-        isFinite: notImplemented, // TODO: Implement isFinite in tripwire core
+        isFinite: "is.finite",
         isBoolean: "is.boolean",
         isNotBoolean: "is.not.boolean",
         typeOf: notImplemented, // TODO: Implement typeOf in tripwire core
