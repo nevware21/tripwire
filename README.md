@@ -21,6 +21,17 @@ To avoid dependency issues, this project will use the mininal set of external de
 
 As part of the Mono-Repo it also provides some shim implementations which are designed to be a drop in replacement for your basic usages of older frameworks which might no longer be working for you due to dependency or runtime issues. Which is exactly how and why this library cam into existence as with the moving environment of dependency updates causing some our the other projects to grind to a halt due to breakages caused by other frameworks that where not fixed, specifically for testing in a Worker environment.
 
+## Key Features
+
+### Comprehensive Assertion Library
+- Type checking (object, array, string, number, boolean, null, undefined, etc.)
+- Equality assertions (equal, strictEqual, deepEqual)
+- Property checking (has, hasOwn, hasDeep)
+- Collection operations (include, keys, members)
+- **Numeric comparisons** (above, below, within, etc.)
+- Error/exception testing
+- Custom error messages
+- Full `not` operator support
 
 ## API Documentation
 

@@ -31,6 +31,7 @@ import { isFrozenFunc } from "./funcs/isFrozen";
 import { isExtensibleFunc } from "./funcs/isExtensible";
 import { isIterableFunc } from "./funcs/isIterable";
 import { deepEqualsFunc, deepStrictEqualsFunc, equalsFunc, strictEqualsFunc } from "./funcs/equal";
+import { aboveFunc, belowFunc, leastFunc, mostFunc, withinFunc } from "./ops/numericOp";
 
 /**
  * @internal
@@ -208,7 +209,19 @@ export function createAssert(): IAssertClass {
         match: { scopeFn: matchFunc, nArgs: 2 },
 
         hasProperty: { scopeFn: hasPropertyFunc, nArgs: 3 },
-        hasOwnProperty: { scopeFn: createExprAdapter("own.property"), nArgs: 3 }
+        hasOwnProperty: { scopeFn: createExprAdapter("own.property"), nArgs: 3 },
+
+        // Numeric comparison operations
+        isAbove: { scopeFn: aboveFunc, nArgs: 2 },
+        isNotAbove: { scopeFn: createExprAdapter("not", aboveFunc), nArgs: 2 },
+        isAtLeast: { scopeFn: leastFunc, nArgs: 2 },
+        isNotAtLeast: { scopeFn: createExprAdapter("not", leastFunc), nArgs: 2 },
+        isBelow: { scopeFn: belowFunc, nArgs: 2 },
+        isNotBelow: { scopeFn: createExprAdapter("not", belowFunc), nArgs: 2 },
+        isAtMost: { scopeFn: mostFunc, nArgs: 2 },
+        isNotAtMost: { scopeFn: createExprAdapter("not", mostFunc), nArgs: 2 },
+        isWithin: { scopeFn: withinFunc, nArgs: 3 },
+        isNotWithin: { scopeFn: createExprAdapter("not", withinFunc), nArgs: 3 }
     };
 
     addAssertFuncs(assert, assertFuncs);

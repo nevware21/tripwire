@@ -1169,6 +1169,202 @@ export interface IAssertClass<AssertInst extends IAssertInst = IAssertInst> {
      * ```
      */
     hasOwnProperty<T>(target: T, name: string, value?: T[keyof T] | undefined, initMsg?: MsgSource): AssertInst;
+
+    /**
+     * Asserts that the given value is greater than the expected value.
+     *
+     * This method checks if the provided value is numerically greater than the expected value.
+     * Works with both numbers and Date objects.
+     *
+     * @param value - The value to check.
+     * @param expected - The expected value to compare against.
+     * @param initMsg - The message to display if the assertion fails.
+     * @asserts That `value` is greater than `expected` and throws {@link AssertionFailure} if it is not.
+     * @example
+     * ```typescript
+     * assert.isAbove(5, 4); // Passes
+     * assert.isAbove(4, 5); // Throws AssertionFailure
+     * assert.isAbove(new Date(2024, 1, 2), new Date(2024, 1, 1)); // Passes
+     * ```
+     */
+    isAbove(value: number | Date, expected: number | Date, initMsg?: MsgSource): AssertInst;
+
+    /**
+     * Asserts that the given value is not greater than the expected value.
+     *
+     * This method checks if the provided value is not numerically greater than the expected value.
+     * Works with both numbers and Date objects. This is the inverse of {@link isAbove}.
+     *
+     * @param value - The value to check.
+     * @param expected - The expected value to compare against.
+     * @param initMsg - The message to display if the assertion fails.
+     * @asserts That `value` is not greater than `expected` and throws {@link AssertionFailure} if it is.
+     * @example
+     * ```typescript
+     * assert.isNotAbove(4, 5); // Passes
+     * assert.isNotAbove(5, 5); // Passes
+     * assert.isNotAbove(5, 4); // Throws AssertionFailure
+     * ```
+     */
+    isNotAbove(value: number | Date, expected: number | Date, initMsg?: MsgSource): AssertInst;
+
+    /**
+     * Asserts that the given value is greater than or equal to the expected value.
+     *
+     * This method checks if the provided value is numerically greater than or equal to the expected value.
+     * Works with both numbers and Date objects.
+     *
+     * @param value - The value to check.
+     * @param expected - The expected value to compare against.
+     * @param initMsg - The message to display if the assertion fails.
+     * @asserts That `value` is greater than or equal to `expected` and throws {@link AssertionFailure} if it is not.
+     * @example
+     * ```typescript
+     * assert.isAtLeast(5, 4); // Passes
+     * assert.isAtLeast(5, 5); // Passes
+     * assert.isAtLeast(4, 5); // Throws AssertionFailure
+     * ```
+     */
+    isAtLeast(value: number | Date, expected: number | Date, initMsg?: MsgSource): AssertInst;
+
+    /**
+     * Asserts that the given value is not greater than or equal to the expected value.
+     *
+     * This method checks if the provided value is not numerically greater than or equal to the expected value.
+     * Works with both numbers and Date objects. This is the inverse of {@link isAtLeast}.
+     *
+     * @param value - The value to check.
+     * @param expected - The expected value to compare against.
+     * @param initMsg - The message to display if the assertion fails.
+     * @asserts That `value` is not greater than or equal to `expected` and throws {@link AssertionFailure} if it is.
+     * @example
+     * ```typescript
+     * assert.isNotAtLeast(4, 5); // Passes
+     * assert.isNotAtLeast(5, 5); // Throws AssertionFailure
+     * assert.isNotAtLeast(5, 4); // Throws AssertionFailure
+     * ```
+     */
+    isNotAtLeast(value: number | Date, expected: number | Date, initMsg?: MsgSource): AssertInst;
+
+    /**
+     * Asserts that the given value is less than the expected value.
+     *
+     * This method checks if the provided value is numerically less than the expected value.
+     * Works with both numbers and Date objects.
+     *
+     * @param value - The value to check.
+     * @param expected - The expected value to compare against.
+     * @param initMsg - The message to display if the assertion fails.
+     * @asserts That `value` is less than `expected` and throws {@link AssertionFailure} if it is not.
+     * @example
+     * ```typescript
+     * assert.isBelow(4, 5); // Passes
+     * assert.isBelow(5, 4); // Throws AssertionFailure
+     * ```
+     */
+    isBelow(value: number | Date, expected: number | Date, initMsg?: MsgSource): AssertInst;
+
+    /**
+     * Asserts that the given value is not less than the expected value.
+     *
+     * This method checks if the provided value is not numerically less than the expected value.
+     * Works with both numbers and Date objects. This is the inverse of {@link isBelow}.
+     *
+     * @param value - The value to check.
+     * @param expected - The expected value to compare against.
+     * @param initMsg - The message to display if the assertion fails.
+     * @asserts That `value` is not less than `expected` and throws {@link AssertionFailure} if it is.
+     * @example
+     * ```typescript
+     * assert.isNotBelow(5, 4); // Passes
+     * assert.isNotBelow(5, 5); // Passes
+     * assert.isNotBelow(4, 5); // Throws AssertionFailure
+     * ```
+     */
+    isNotBelow(value: number | Date, expected: number | Date, initMsg?: MsgSource): AssertInst;
+
+    /**
+     * Asserts that the given value is less than or equal to the expected value.
+     *
+     * This method checks if the provided value is numerically less than or equal to the expected value.
+     * Works with both numbers and Date objects.
+     *
+     * @param value - The value to check.
+     * @param expected - The expected value to compare against.
+     * @param initMsg - The message to display if the assertion fails.
+     * @asserts That `value` is less than or equal to `expected` and throws {@link AssertionFailure} if it is not.
+     * @example
+     * ```typescript
+     * assert.isAtMost(4, 5); // Passes
+     * assert.isAtMost(5, 5); // Passes
+     * assert.isAtMost(5, 4); // Throws AssertionFailure
+     * ```
+     */
+    isAtMost(value: number | Date, expected: number | Date, initMsg?: MsgSource): AssertInst;
+
+    /**
+     * Asserts that the given value is not less than or equal to the expected value.
+     *
+     * This method checks if the provided value is not numerically less than or equal to the expected value.
+     * Works with both numbers and Date objects. This is the inverse of {@link isAtMost}.
+     *
+     * @param value - The value to check.
+     * @param expected - The expected value to compare against.
+     * @param initMsg - The message to display if the assertion fails.
+     * @asserts That `value` is not less than or equal to `expected` and throws {@link AssertionFailure} if it is.
+     * @example
+     * ```typescript
+     * assert.isNotAtMost(5, 4); // Passes
+     * assert.isNotAtMost(5, 5); // Throws AssertionFailure
+     * assert.isNotAtMost(4, 5); // Throws AssertionFailure
+     * ```
+     */
+    isNotAtMost(value: number | Date, expected: number | Date, initMsg?: MsgSource): AssertInst;
+
+    /**
+     * Asserts that the given value is within the specified range (inclusive).
+     *
+     * This method checks if the provided value is between the start and finish values (inclusive).
+     * Works with both numbers and Date objects.
+     *
+     * @param value - The value to check.
+     * @param start - The start of the range (inclusive).
+     * @param finish - The end of the range (inclusive).
+     * @param initMsg - The message to display if the assertion fails.
+     * @asserts That `value` is within the range `[start, finish]` and throws {@link AssertionFailure} if it is not.
+     * @example
+     * ```typescript
+     * assert.isWithin(5, 1, 10); // Passes
+     * assert.isWithin(5, 5, 10); // Passes
+     * assert.isWithin(5, 1, 5); // Passes
+     * assert.isWithin(0, 1, 10); // Throws AssertionFailure
+     * assert.isWithin(11, 1, 10); // Throws AssertionFailure
+     * ```
+     */
+    isWithin(value: number | Date, start: number | Date, finish: number | Date, initMsg?: MsgSource): AssertInst;
+
+    /**
+     * Asserts that the given value is not within the specified range (inclusive).
+     *
+     * This method checks if the provided value is not within the given range.
+     * The range is inclusive, meaning the start and finish values are included.
+     * Works with both numbers and Date objects. This is the inverse of {@link isWithin}.
+     *
+     * @param value - The value to check.
+     * @param start - The start of the range (inclusive).
+     * @param finish - The end of the range (inclusive).
+     * @param initMsg - The message to display if the assertion fails.
+     * @asserts That `value` is not within `start..finish` and throws {@link AssertionFailure} if it is.
+     * @example
+     * ```typescript
+     * assert.isNotWithin(0, 1, 10); // Passes
+     * assert.isNotWithin(11, 1, 10); // Passes
+     * assert.isNotWithin(5, 1, 10); // Throws AssertionFailure
+     * assert.isNotWithin(1, 1, 10); // Throws AssertionFailure
+     * assert.isNotWithin(10, 1, 10); // Throws AssertionFailure
+     * ```
+     */
+    isNotWithin(value: number | Date, start: number | Date, finish: number | Date, initMsg?: MsgSource): AssertInst;
 }
 
 export type IExtendedAssert<T = any> = IAssertClass<IAssertInst & T> & T;

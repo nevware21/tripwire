@@ -2,7 +2,7 @@
  * @nevware21/tripwire
  * https://github.com/nevware21/tripwire
  *
- * Copyright (c) 2024 NevWare21 Solutions LLC
+ * Copyright (c) 2024-2026 NevWare21 Solutions LLC
  * Licensed under the MIT license.
  */
 
@@ -23,6 +23,7 @@ import { noopOp } from "./noopOp";
 import { IAssertScope } from "../interface/IAssertScope";
 import { isExtensibleFunc } from "../funcs/isExtensible";
 import { hasSymbolFunc } from "../funcs/hasSymbol";
+import { aboveFunc, belowFunc, leastFunc, mostFunc, withinFunc } from "./numericOp";
 
 export function isOp<R>(scope: IAssertScope): IIsOp<R> {
     let props:  AssertScopeFuncDefs<IIsOp<R>> = {
@@ -54,7 +55,22 @@ export function isOp<R>(scope: IAssertScope): IIsOp<R> {
         frozen: { scopeFn: isFrozenFunc },
         error: { scopeFn: isErrorFunc },
         extensible: { scopeFn: isExtensibleFunc },
-        iterable: { scopeFn: hasSymbolFunc(Symbol.iterator) }
+        iterable: { scopeFn: hasSymbolFunc(Symbol.iterator) },
+
+        // Numeric comparison operations
+        above: { scopeFn: aboveFunc },
+        gt: { scopeFn: aboveFunc },
+        greaterThan: { scopeFn: aboveFunc },
+        least: { scopeFn: leastFunc },
+        gte: { scopeFn: leastFunc },
+        greaterThanOrEqual: { scopeFn: leastFunc },
+        below: { scopeFn: belowFunc },
+        lt: { scopeFn: belowFunc },
+        lessThan: { scopeFn: belowFunc },
+        most: { scopeFn: mostFunc },
+        lte: { scopeFn: mostFunc },
+        lessThanOrEqual: { scopeFn: mostFunc },
+        within: { scopeFn: withinFunc }
     };
     
     return scope.createOperation(props);
