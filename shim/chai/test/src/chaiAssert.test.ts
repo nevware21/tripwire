@@ -471,36 +471,36 @@ describe("assert", function () {
         }, "blah: not expected null to be null");
     });
 
-    // it("isNaN", function() {
-    //     assert.isNaN(NaN);
+    it("isNaN", function() {
+        assert.isNaN(NaN);
 
-    //     err(function (){
-    //         assert.isNaN(Infinity, "blah");
-    //     }, "blah: expected Infinity to be NaN");
+        err(function (){
+            assert.isNaN(Infinity, "blah");
+        }, "blah: expected Infinity to be NaN");
 
-    //     err(function (){
-    //         assert.isNaN(undefined);
-    //     }, "expected undefined to be NaN");
+        err(function (){
+            assert.isNaN(undefined);
+        }, "expected undefined to be NaN");
 
-    //     err(function (){
-    //         assert.isNaN({});
-    //     }, "expected {} to be NaN");
+        err(function (){
+            assert.isNaN({});
+        }, "expected {} to be NaN");
 
-    //     err(function (){
-    //         assert.isNaN(4);
-    //     }, "expected 4 to be NaN");
-    // });
+        err(function (){
+            assert.isNaN(4);
+        }, "expected 4 to be NaN");
+    });
 
-    // it("isNotNaN", function() {
-    //     assert.isNotNaN(4);
-    //     assert.isNotNaN(Infinity);
-    //     assert.isNotNaN(undefined);
-    //     assert.isNotNaN({});
+    it("isNotNaN", function() {
+        assert.isNotNaN(4);
+        assert.isNotNaN(Infinity);
+        assert.isNotNaN(undefined);
+        assert.isNotNaN({});
 
-    //     err(function (){
-    //         assert.isNotNaN(NaN, "blah");
-    //     }, "blah: not expected NaN to be NaN");
-    // });
+        err(function (){
+            assert.isNotNaN(NaN, "blah");
+        }, "blah: not expected NaN to be NaN");
+    });
 
     // it("exists", function() {
     //     var meeber = "awesome";
