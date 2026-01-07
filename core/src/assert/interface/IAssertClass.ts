@@ -1046,6 +1046,49 @@ export interface IAssertClass<AssertInst extends IAssertInst = IAssertInst> {
      isNotIterable(value: any, initMsg?: MsgSource): AssertInst;
 
     /**
+     * Asserts that the given value is NaN.
+     *
+     * This method checks if the provided value is the special numeric value NaN (Not-a-Number).
+     * Note that this only passes for actual NaN values, not for non-numeric types.
+     *
+     * @param value - The value to check.
+     * @param initMsg - The message to display if the assertion fails.
+     * @asserts That the `value` is NaN and throws {@link AssertionFailure} if it is not.
+     * @example
+     * ```typescript
+     * assert.isNaN(NaN); // Passes
+     * assert.isNaN(Number.NaN); // Passes
+     * assert.isNaN(0 / 0); // Passes
+     * assert.isNaN(123); // Throws AssertionFailure
+     * assert.isNaN("hello"); // Throws AssertionFailure
+     * assert.isNaN(undefined); // Throws AssertionFailure
+     * assert.isNaN(null); // Throws AssertionFailure
+     * ```
+     */
+    isNaN(value: any, initMsg?: MsgSource): AssertInst;
+
+    /**
+     * Asserts that the given value is not NaN.
+     *
+     * This method checks if the provided value is not the special numeric value NaN (Not-a-Number).
+     *
+     * @param value - The value to check.
+     * @param initMsg - The message to display if the assertion fails.
+     * @asserts That the `value` is not NaN and throws {@link AssertionFailure} if it is.
+     * @example
+     * ```typescript
+     * assert.isNotNaN(123); // Passes
+     * assert.isNotNaN(0); // Passes
+     * assert.isNotNaN("hello"); // Passes
+     * assert.isNotNaN(undefined); // Passes
+     * assert.isNotNaN(null); // Passes
+     * assert.isNotNaN(NaN); // Throws AssertionFailure
+     * assert.isNotNaN(Number.NaN); // Throws AssertionFailure
+     * ```
+     */
+    isNotNaN(value: any, initMsg?: MsgSource): AssertInst;
+
+    /**
      * Asserts that the given function throws an error that matches the specified error constructor,
      * error instance, and / or the message includes the content or matches the regex pattern.
      * If the function does not throw an error, or if the thrown error does not

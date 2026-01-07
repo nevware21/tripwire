@@ -176,4 +176,12 @@ export interface IIsTypeOp<R> {
      * @throws {@link AssertionFailure} - If the assertion fails.
      */
     iterable: AssertFn<R>,
+
+    /**
+     * Asserts that the value is NaN.
+     * @param evalMsg - The custom message to display on evaluation.
+     * @returns The current {@link IAssertScope.that} object.
+     * @throws {@link AssertionFailure} - If the assertion fails.
+     */
+    nan: AssertFn<R>;
 }

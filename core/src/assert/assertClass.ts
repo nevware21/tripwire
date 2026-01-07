@@ -203,6 +203,9 @@ export function createAssert(): IAssertClass {
 
         isIterable: isIterableFunc,
         isNotIterable: createExprAdapter("not", isIterableFunc),
+
+        isNaN: createExprAdapter("is.nan"),
+        isNotNaN: createExprAdapter("not.is.nan"),
             
         throws: { scopeFn: throwsFunc, nArgs: 3 },
 

@@ -197,3 +197,18 @@ export function isStrictFalseFunc<R>(this: IAssertScope, evalMsg?: MsgSource): R
 
     return this.that;
 }
+
+/**
+ * Is the current value NaN
+ * @param this - The current {@link IAssertScope} object
+ * @param evalMsg - The message to display if the value is not NaN
+ * @returns The current {@link IAssertScope.that} (`this`) object
+ */
+export function isNaNFunc<R>(this: IAssertScope, evalMsg?: MsgSource): R {
+    let context = this.context;
+    let value = context.value;
+
+    context.eval(typeof value === "number" && isNaN(value), evalMsg || "expected {value} to be NaN");
+
+    return this.that;
+}
