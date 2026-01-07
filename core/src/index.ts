@@ -36,6 +36,9 @@ import { ThrowFn } from "./assert/interface/funcs/ThrowFn";
 import { INotOp } from "./assert/interface/ops/INotOp";
 import { IHasOp } from "./assert/interface/ops/IHasOp";
 import { IIsTypeOp } from "./assert/interface/ops/ITypeOp";
+import { INumericOp } from "./assert/interface/ops/INumericOp";
+import { NumberFn } from "./assert/interface/funcs/NumericFn";
+import { WithinFn } from "./assert/interface/funcs/WithinFn";
 import { KeysFn } from "./assert/interface/funcs/KeysFn";
 import { IncludeFn } from "./assert/interface/funcs/IncludeFn";
 import { ValuesFn } from "./assert/interface/funcs/ValuesFn";
@@ -72,8 +75,8 @@ export {
     IAssertInst, IAssertInstCore, IAssertInstHandlers, IAssertScope, IAssertScopeFuncDef,
     IDeepOp, IEqualOp, IExtendedAssert, IExtendedAssertInst, IFormatCtx, IFormattedValue,
     IFormatter, IFormatterOptions, IHasOp, IIncludeOp, IIsOp, IIsTypeOp, IKeysOp, INotOp,
-    IOwnOp, IPropertyResultOp, IRemovable, IScopeContext, IScopeContextOverrides, IScopePropFn,
-    IStrictlyOp, IThrowOp, IToOp, PropertyDescriptorFn, PropertyFn
+    INumericOp, IOwnOp, IPropertyResultOp, IRemovable, IScopeContext, IScopeContextOverrides,
+    IScopePropFn, IStrictlyOp, IThrowOp, IToOp, PropertyDescriptorFn, PropertyFn
 };
 
 /**
@@ -81,7 +84,8 @@ export {
  */
 export {
     AssertClassDef, AssertFn, AssertInstHandlers, AssertScopeFuncDefs, EqualFn, ErrorLikeFn,
-    EvalFn, IncludeFn, IScopeFn, KeysFn, MsgSource, SymbolFn, ThrowFn, ValuesFn
+    EvalFn, IncludeFn, IScopeFn, KeysFn, MsgSource, NumberFn, SymbolFn, ThrowFn, ValuesFn,
+    WithinFn
 };
 
 /**

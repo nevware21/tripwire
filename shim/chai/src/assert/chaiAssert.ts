@@ -66,10 +66,10 @@ function _createChaiAssert(): IChaiAssert {
         notDeepEqual: { scopeFn: createExprAdapter("not.deep.equal"), nArgs: 2 },
         deepStrictEqual: { scopeFn: createExprAdapter("deep.equal"), nArgs: 2 },
 
-        isAbove: notImplemented,
-        isAtLeast: notImplemented,
-        isBelow: notImplemented,
-        isAtMost: notImplemented,
+        isAbove: { scopeFn: createExprAdapter("is.above"), nArgs: 2 },
+        isAtLeast: { scopeFn: createExprAdapter("is.least"), nArgs: 2 },
+        isBelow: { scopeFn: createExprAdapter("is.below"), nArgs: 2 },
+        isAtMost: { scopeFn: createExprAdapter("is.most"), nArgs: 2 },
         isIterable: "is.iterable",
         isTrue: "is.strictly.true",
         isFalse: "is.strictly.false",
@@ -77,11 +77,11 @@ function _createChaiAssert(): IChaiAssert {
         isNotFalse: "is.strictly.not.false",
         isNull: "is.null",
         isNotNull: "is.not.null",
-        isNaN: notImplemented,
-        isNotNaN: notImplemented,
+        isNaN: notImplemented, // TODO: Implement isNaN in tripwire core
+        isNotNaN: notImplemented, // TODO: Implement isNotNaN in tripwire core
 
-        exists: notImplemented,
-        notExists: notImplemented,
+        exists: notImplemented, // TODO: Implement exists in tripwire core
+        notExists: notImplemented, // TODO: Implement notExists in tripwire core
         isUndefined: "is.undefined",
         isDefined: "is.not.undefined",
         isFunction: "is.function",
@@ -96,13 +96,13 @@ function _createChaiAssert(): IChaiAssert {
         isNotString: "is.not.string",
         isNumber: "is.number",
         isNotNumber: "is.not.number",
-        isFinite: notImplemented,
+        isFinite: notImplemented, // TODO: Implement isFinite in tripwire core
         isBoolean: "is.boolean",
         isNotBoolean: "is.not.boolean",
-        typeOf: notImplemented,
-        notTypeOf: notImplemented,
-        instanceOf: notImplemented,
-        notInstanceOf: notImplemented,
+        typeOf: notImplemented, // TODO: Implement typeOf in tripwire core
+        notTypeOf: notImplemented, // TODO: Implement notTypeOf in tripwire core
+        instanceOf: notImplemented, // TODO: Implement instanceOf in tripwire core
+        notInstanceOf: notImplemented, // TODO: Implement notInstanceOf in tripwire core
         include: { scopeFn: createExprAdapter("include"), nArgs: 2 },
         notInclude: { scopeFn: createExprAdapter("not.include"), nArgs: 2 },
         deepInclude: { scopeFn: createExprAdapter("deep.include"), nArgs: 2 },

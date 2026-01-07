@@ -2,19 +2,20 @@
  * @nevware21/tripwire
  * https://github.com/nevware21/tripwire
  *
- * Copyright (c) 2024 NevWare21 Solutions LLC
+ * Copyright (c) 2024-2026 NevWare21 Solutions LLC
  * Licensed under the MIT license.
  */
 
 import { IEqualOp } from "./IEqualOp";
 import { INotOp } from "./INotOp";
 import { IIsTypeOp } from "./ITypeOp";
+import { INumericOp } from "./INumericOp";
 
 /**
  * Represents an interface for operations on an assertion scope confirming the type of a value.
  * @template R - The type of the result of the operation.
  */
-export interface IIsOp<R> extends INotOp<IIsOp<R>>, IEqualOp<R>, IIsTypeOp<R> {
+export interface IIsOp<R> extends INotOp<IIsOp<R>>, IEqualOp<R>, IIsTypeOp<R>, INumericOp<R> {
 
     /**
      * A decorative / alias operation which returns the current instance, useful for

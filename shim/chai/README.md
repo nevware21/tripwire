@@ -6,7 +6,9 @@
 [![downloads](https://img.shields.io/npm/dt/%40nevware21/tripwire-chai.svg)](https://www.npmjs.com/package/%40nevware21/tripwire-chai)
 [![downloads](https://img.shields.io/npm/dm/%40nevware21/tripwire-chai.svg)](https://www.npmjs.com/package/%40nevware21/tripwire-chai)
 
-This module is a Shim of the Chai Js assertion library which uses the [tripwire](https://github.com/nevware21/tripwire)
+This module is a Shim of the Chai.js assertion library which uses the [tripwire](https://github.com/nevware21/tripwire) assertion engine.
+
+> **Chai Version Compatibility:** This shim is designed to be compatible with the Chai v5.x API (as documented at [chaijs.com](https://www.chaijs.com/)).
 
 This Shim is not designed to be a complete 1:1 replacement for Chai, it's primary focus is to provide a quicker migration option using your existing chai based `assert.*` functions.
 
@@ -16,16 +18,33 @@ As of the initial version not all functions are yet implemented
 
 ### Incomplete Shim implementation
 
-- Several `assert` functions
-  - Numeric Range, Nested assertions, property value, operator, instance
-  - The unsupported assertions will return a AssertionFatal exception with text indicating that it's not implemented.
+**As of version 0.1.4:**
 
-### Missing functionality
+#### Implemented
 
-- `expect`
-- `use`
-- `should` (No plans to implement this)
-- plugin support
+- **`assert` API** - Most assert functions are now implemented
+  - Basic assertions: `equal`, `strictEqual`, `deepEqual`, `notEqual`, etc.
+  - Type checking: `isObject`, `isArray`, `isString`, `isNumber`, `isBoolean`, `isFunction`, etc.
+  - Comparison: `isAbove`, `isAtLeast`, `isBelow`, `isAtMost`
+  - Property checking: `property`, `ownProperty`, `deepProperty`, `nestedProperty`, etc.
+  - Property values: `propertyVal`, `ownPropertyVal`, `deepPropertyVal`, `nestedPropertyVal`, etc.
+  - Inclusion: `include`, `deepInclude`, `ownInclude`, `nestedInclude`, etc.
+  - Members: `sameMembers`, `includeMembers`, `sameDeepMembers`, `includeOrderedMembers`, etc.
+  - Keys: `hasAnyKeys`, `hasAllKeys`, `hasAnyDeepKeys`, `hasAllDeepKeys`, etc.
+  - Exception handling: `throw`, `throws`, `doesNotThrow`
+  - Value changes: `changes`, `increases`, `decreases` and their variants
+  - Object state: `isExtensible`, `isSealed`, `isFrozen`, `isEmpty`
+  - And many more!
+
+#### Not Yet Implemented
+
+- **`expect` API** - The BDD-style chainable expect API is not implemented
+  - `expect(value).to.be.equal(...)` syntax is **not available**
+  - Use `assert.*` functions or tripwire core instead
+- **`should` API** - No plans to implement this
+- **`use` function** - Plugin support is not available
+
+The unsupported assertions will return an AssertionError with text indicating that it's not implemented.
 
 ## API Documentation
 
