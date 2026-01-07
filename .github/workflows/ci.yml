@@ -18,7 +18,7 @@ jobs:
 
     strategy:
       matrix:
-        node: [ 16, 18, 20 ]
+        node: [ 16, 18, 20, 22, 24 ]
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
@@ -45,6 +45,7 @@ jobs:
       timeout-minutes: 15
 
     - name: Upload Core Coverage
+      if: matrix.node == 22
       uses: codecov/codecov-action@v5
       with:
         files: ./core/coverage/coverage-final.json
@@ -52,6 +53,7 @@ jobs:
         flags: core
     
     - name: Upload Chai Shim Coverage
+      if: matrix.node == 22
       uses: codecov/codecov-action@v5
       with:
         files: ./shim/chai/coverage/coverage-final.json

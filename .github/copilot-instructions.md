@@ -156,7 +156,7 @@ expect(() => { doSomething(); }).to.not.throw();
 ## CI/CD
 
 The project uses GitHub Actions for CI:
-- Runs on Node.js versions 16, 18, and 20
+- Runs on Node.js versions 16, 18, 20, 22 and 24
 - Builds all modules
 - Runs full test suite (node, browser, worker)
 - Uploads coverage to Codecov
