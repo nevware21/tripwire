@@ -22,7 +22,7 @@ export interface WithinFn<R> {
      * @param evalMsg - The message to evaluate
      * @returns The result of the operation, which will generally be the existing
      * {@link IAssertScope.that} object.
-     * @throws {@link AssertionFailure} - If the assertion fails
+     * @throws An {@link AssertionFailure} if the assertion fails
      */
     (start: number, finish: number, evalMsg?: MsgSource): R;
 
@@ -33,7 +33,7 @@ export interface WithinFn<R> {
      * @param evalMsg - The message to evaluate
      * @returns The result of the operation, which will generally be the existing
      * {@link IAssertScope.that} object.
-     * @throws {@link AssertionFailure} - If the assertion fails
+     * @throws An {@link AssertionFailure} if the assertion fails
      */
     (start: Date, finish: Date, evalMsg?: MsgSource): R;
 }

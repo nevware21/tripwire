@@ -23,7 +23,7 @@ export interface IStrictlyOp<R> extends INotOp<IStrictlyOp<R>>, IEqualOp<R> {
      * @param evalMsg - Optional. The message to display if the assertion fails.
      * @returns The result of the operation, which will generally be the existing
      * {@link IAssertScope.that} object.
-     * @throws {@link AssertionFailure} - If the current {@link IScopeContext.value}
+     * @throws An {@link AssertionFailure} if the current {@link IScopeContext.value}
      * is not strictly equal to `true`.
      */
     true: AssertFn<R>;
@@ -34,7 +34,7 @@ export interface IStrictlyOp<R> extends INotOp<IStrictlyOp<R>>, IEqualOp<R> {
      * @param evalMsg - Optional. The message to display if the assertion fails.
      * @returns The result of the operation, which will generally be the existing
      * {@link IAssertScope.that} object.
-     * @throws {@link AssertionFailure} - If the current {@link IScopeContext.value}
+     * @throws An {@link AssertionFailure} if the current {@link IScopeContext.value}
      * is not strictly equal to `false`.
      */
     false: AssertFn<R>;

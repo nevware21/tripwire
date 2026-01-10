@@ -910,13 +910,13 @@ export interface IAssertClass<AssertInst extends IAssertInst = IAssertInst> {
      * Asserts that the value is a string.
      * @param value - The value to check.
      * @param initMsg - The custom message to display if the assertion fails.
-     * @throws {AssertionError} If the value is not a string.
+     * @throws An {@link AssertionFailure} if the value is not a string.
      * @example
      * ```typescript
      * assert.isString("hello"); // Passes
-     * assert.isString(123); // Throws AssertionError
-     * assert.isString(null); // Throws AssertionError
-     * assert.isString(undefined); // Throws AssertionError
+     * assert.isString(123); // Throws AssertionFailure
+     * assert.isString(null); // Throws AssertionFailure
+     * assert.isString(undefined); // Throws AssertionFailure
      * ```
      */
     isString(value: any, initMsg?: MsgSource): AssertInst;
@@ -925,12 +925,12 @@ export interface IAssertClass<AssertInst extends IAssertInst = IAssertInst> {
      * Asserts that the value is not a string.
      * @param value - The value to check.
      * @param initMsg - The custom message to display if the assertion fails.
-     * @throws {AssertionError} If the value is a string.
+     * @throws An {@link AssertionFailure} if the value is a string.
      * @example
      * ```typescript
      * assert.isNotString(123); // Passes
      * assert.isNotString({}); // Passes
-     * assert.isNotString("hello"); // Throws AssertionError
+     * assert.isNotString("hello"); // Throws AssertionFailure
      * assert.isNotString(null); // Passes
      * assert.isNotString(undefined); // Passes
      * ```
@@ -941,14 +941,14 @@ export interface IAssertClass<AssertInst extends IAssertInst = IAssertInst> {
      * Asserts that the value is an array.
      * @param value - The value to check.
      * @param initMsg - The custom message to display if the assertion fails.
-     * @throws {AssertionError} If the value is not a number.
+     * @throws An {@link AssertionFailure} if the value is not a number.
      * @example
      * ```typescript
      * assert.isArray([]); // Passes
      * assert.isArray([1, 2, 3]); // Passes
-     * assert.isArray({}); // Throws AssertionError
-     * assert.isArray(null); // Throws AssertionError
-     * assert.isArray(undefined); // Throws AssertionError
+     * assert.isArray({}); // Throws AssertionFailure
+     * assert.isArray(null); // Throws AssertionFailure
+     * assert.isArray(undefined); // Throws AssertionFailure
      * ```
      */
     isArray(value: any, initMsg?: MsgSource): AssertInst;
@@ -957,7 +957,7 @@ export interface IAssertClass<AssertInst extends IAssertInst = IAssertInst> {
      * Asserts that the value is not an array.
      * @param value - The value to check.
      * @param initMsg - The custom message to display if the assertion fails.
-     * @throws {AssertionError} If the value is an array.
+     * @throws An {@link AssertionFailure} if the value is an array.
      * @example
      * ```typescript
      * assert.isNotArray({}); // Passes
@@ -965,8 +965,8 @@ export interface IAssertClass<AssertInst extends IAssertInst = IAssertInst> {
      * assert.isNotArray("hello"); // Passes
      * assert.isNotArray(null); // Passes
      * assert.isNotArray(undefined); // Passes
-     * assert.isNotArray([]); // Throws AssertionError
-     * assert.isNotArray([1, 2, 3]); // Throws AssertionError
+     * assert.isNotArray([]); // Throws AssertionFailure
+     * assert.isNotArray([1, 2, 3]); // Throws AssertionFailure
      * ```
      */
     isNotArray(value: any, initMsg?: MsgSource): AssertInst;
@@ -977,14 +977,14 @@ export interface IAssertClass<AssertInst extends IAssertInst = IAssertInst> {
      * Primive values are not extensible.
      * @param value - The value to check.
      * @param initMsg - The custom message to display if the assertion fails.
-     * @throws {AssertionError} If the value is not extensible.
+     * @throws An {@link AssertionFailure} if the value is not extensible.
      * @example
      * ```typescript
      * assert.isExtensible({}); // Passes
      * assert.isExtensible([]); // Passes
      * assert.isExtensible(Object.create(null)); // Passes
-     * assert.isExtensible(Object.freeze({})); // Throws AssertionError
-     * assert.isExtensible(Object.seal({})); // Throws AssertionError
+     * assert.isExtensible(Object.freeze({})); // Throws AssertionFailure
+     * assert.isExtensible(Object.seal({})); // Throws AssertionFailure
      * ```
      */
     isExtensible(value: any, initMsg?: MsgSource): AssertInst;
@@ -995,14 +995,14 @@ export interface IAssertClass<AssertInst extends IAssertInst = IAssertInst> {
      * Primive values are not extensible.
      * @param value - The value to check.
      * @param initMsg - The custom message to display if the assertion fails
-     * @throws {AssertionError} If the value is extensible.
+     * @throws An {@link AssertionFailure} if the value is extensible.
      * @example
      * ```typescript
      * assert.isNotExtensible(Object.freeze({})); // Passes
      * assert.isNotExtensible(Object.seal({})); // Passes
-     * assert.isNotExtensible({}); // Throws AssertionError
-     * assert.isNotExtensible([]); // Throws AssertionError
-     * assert.isNotExtensible(Object.create(null)); // Throws AssertionError
+     * assert.isNotExtensible({}); // Throws AssertionFailure
+     * assert.isNotExtensible([]); // Throws AssertionFailure
+     * assert.isNotExtensible(Object.create(null)); // Throws AssertionFailure
      * ```
      */
     isNotExtensible(value: any, initMsg?: MsgSource): AssertInst;
@@ -1012,16 +1012,16 @@ export interface IAssertClass<AssertInst extends IAssertInst = IAssertInst> {
      * Symbol.iterator property.
      * @param value - The value to check.
      * @param initMsg - The custom message to display if the assertion fails.
-     * @throws {AssertionError} If the value is not an iterable.
+     * @throws An {@link AssertionFailure} if the value is not an iterable.
      * @example
      * ```typescript
      * assert.isIterable([]); // Passes
      * assert.isIterable(new Map()); // Passes
      * assert.isIterable(new Set()); // Passes
      * assert.isIterable({ [Symbol.iterator]: () => {} }); // Passes
-     * assert.isIterable({}); // Throws AssertionError
-     * assert.isIterable(null); // Throws AssertionError
-     * assert.isIterable(undefined); // Throws AssertionError
+     * assert.isIterable({}); // Throws AssertionFailure
+     * assert.isIterable(null); // Throws AssertionFailure
+     * assert.isIterable(undefined); // Throws AssertionFailure
      * ```
      */
     isIterable(value: any, initMsg?: MsgSource): AssertInst;
@@ -1031,16 +1031,16 @@ export interface IAssertClass<AssertInst extends IAssertInst = IAssertInst> {
      * Symbol.iterator property.
      * @param value - The value to check.
      * @param initMsg - The custom message to display if the assertion fails.
-     * @throws {AssertionError} If the value is an iterable.
+     * @throws An {@link AssertionFailure} if the value is an iterable.
      * @example
      * ```typescript
      * assert.isNotIterable({}); // Passes
      * assert.isNotIterable(null); // Passes
      * assert.isNotIterable(undefined); // Passes
-     * assert.isNotIterable([]); // Throws AssertionError
-     * assert.isNotIterable(new Map()); // Throws AssertionError
-     * assert.isNotIterable(new Set()); // Throws AssertionError
-     * assert.isNotIterable({ [Symbol.iterator]: () => {} }); // Throws AssertionError
+     * assert.isNotIterable([]); // Throws AssertionFailure
+     * assert.isNotIterable(new Map()); // Throws AssertionFailure
+     * assert.isNotIterable(new Set()); // Throws AssertionFailure
+     * assert.isNotIterable({ [Symbol.iterator]: () => {} }); // Throws AssertionFailure
      * ```
      */
      isNotIterable(value: any, initMsg?: MsgSource): AssertInst;
@@ -1054,6 +1054,7 @@ export interface IAssertClass<AssertInst extends IAssertInst = IAssertInst> {
      * @param value - The value to check.
      * @param initMsg - The message to display if the assertion fails.
      * @asserts That the `value` is NaN and throws {@link AssertionFailure} if it is not.
+     * @since 0.1.5
      * @example
      * ```typescript
      * assert.isNaN(NaN); // Passes
@@ -1075,6 +1076,7 @@ export interface IAssertClass<AssertInst extends IAssertInst = IAssertInst> {
      * @param value - The value to check.
      * @param initMsg - The message to display if the assertion fails.
      * @asserts That the `value` is not NaN and throws {@link AssertionFailure} if it is.
+     * @since 0.1.5
      * @example
      * ```typescript
      * assert.isNotNaN(123); // Passes
@@ -1092,18 +1094,19 @@ export interface IAssertClass<AssertInst extends IAssertInst = IAssertInst> {
      * Asserts that the given value is a finite number (not NaN, not Infinity, not -Infinity).
      * @param value - The value to check.
      * @param initMsg - The custom message to display if the assertion fails.
-     * @throws {AssertionError} If the value is not a finite number.
+     * @throws An {@link AssertionFailure} if the value is not a finite number.
+     * @since 0.1.5
      * @example
      * ```typescript
      * assert.isFinite(123); // Passes
      * assert.isFinite(0); // Passes
      * assert.isFinite(-456.789); // Passes
-     * assert.isFinite(NaN); // Throws AssertionError
-     * assert.isFinite(Infinity); // Throws AssertionError
-     * assert.isFinite(-Infinity); // Throws AssertionError
-     * assert.isFinite("123"); // Throws AssertionError
-     * assert.isFinite(null); // Throws AssertionError
-     * assert.isFinite(undefined); // Throws AssertionError
+     * assert.isFinite(NaN); // Throws AssertionFailure
+     * assert.isFinite(Infinity); // Throws AssertionFailure
+     * assert.isFinite(-Infinity); // Throws AssertionFailure
+     * assert.isFinite("123"); // Throws AssertionFailure
+     * assert.isFinite(null); // Throws AssertionFailure
+     * assert.isFinite(undefined); // Throws AssertionFailure
      * ```
      */
     isFinite(value: any, initMsg?: MsgSource): AssertInst;
@@ -1112,7 +1115,8 @@ export interface IAssertClass<AssertInst extends IAssertInst = IAssertInst> {
      * Asserts that the given value is not a finite number (e.g., NaN, Infinity, -Infinity, or non-numeric).
      * @param value - The value to check.
      * @param initMsg - The custom message to display if the assertion fails.
-     * @throws {AssertionError} If the value is a finite number.
+     * @throws An {@link AssertionFailure} if the value is a finite number.
+     * @since 0.1.5
      * @example
      * ```typescript
      * assert.isNotFinite(NaN); // Passes
@@ -1122,9 +1126,9 @@ export interface IAssertClass<AssertInst extends IAssertInst = IAssertInst> {
      * assert.isNotFinite(null); // Passes
      * assert.isNotFinite(undefined); // Passes
      * assert.isNotFinite({}); // Passes
-     * assert.isNotFinite(123); // Throws AssertionError
-     * assert.isNotFinite(0); // Throws AssertionError
-     * assert.isNotFinite(-456.789); // Throws AssertionError
+     * assert.isNotFinite(123); // Throws AssertionFailure
+     * assert.isNotFinite(0); // Throws AssertionFailure
+     * assert.isNotFinite(-456.789); // Throws AssertionFailure
      * ```
      */
     isNotFinite(value: any, initMsg?: MsgSource): AssertInst;
@@ -1141,12 +1145,18 @@ export interface IAssertClass<AssertInst extends IAssertInst = IAssertInst> {
      * - "symbol"
      * - "undefined"
      * - "object" (includes null, arrays, and objects)
-     * - "function"
+     * - "null"
+     * - "array"
+     * - "function" (includes async, generator, and async generator functions)
+     * - "asyncfunction"
+     * - "generatorfunction"
+     * - "asyncgeneratorfunction"
      *
      * @param value - The value to check.
      * @param type - The expected type string (e.g., "string", "number", "function").
      * @param initMsg - The message to display if the assertion fails.
      * @asserts That the `value` is of the specified type and throws {@link AssertionFailure} if it is not.
+     * @since 0.1.5
      * @example
      * ```typescript
      * assert.typeOf("hello", "string"); // Passes
@@ -1175,12 +1185,18 @@ export interface IAssertClass<AssertInst extends IAssertInst = IAssertInst> {
      * - "symbol"
      * - "undefined"
      * - "object" (includes null, arrays, and objects)
-     * - "function"
+     * - "null"
+     * - "array"
+     * - "function" (includes async, generator, and async generator functions)
+     * - "asyncfunction"
+     * - "generatorfunction"
+     * - "asyncgeneratorfunction"
      *
      * @param value - The value to check.
      * @param type - The type string that the value should not match.
      * @param initMsg - The message to display if the assertion fails.
      * @asserts That the `value` is not of the specified type and throws {@link AssertionFailure} if it is.
+     * @since 0.1.5
      * @example
      * ```typescript
      * assert.notTypeOf("hello", "number"); // Passes
@@ -1192,6 +1208,52 @@ export interface IAssertClass<AssertInst extends IAssertInst = IAssertInst> {
      * ```
      */
     notTypeOf(value: any, type: string, initMsg?: MsgSource): AssertInst;
+
+    /**
+     * Asserts that the given value is an instance of the specified constructor.
+     * Uses the JavaScript `instanceof` operator to check if the value is an instance of the constructor.
+     *
+     * @param value - The value to check.
+     * @param constructor - The constructor function to check against (e.g., Array, Date, Error, custom class).
+     * @param initMsg - The message to display if the assertion fails.
+     * @throws An {@link AssertionFailure} if the value is not an instance of the constructor.
+     * @since 0.1.5
+     * @example
+     * ```typescript
+     * assert.isInstanceOf(new Date(), Date); // Passes
+     * assert.isInstanceOf([], Array); // Passes
+     * assert.isInstanceOf(new Error(), Error); // Passes
+     * assert.isInstanceOf({}, Object); // Passes
+     * class MyClass {}
+     * assert.isInstanceOf(new MyClass(), MyClass); // Passes
+     * assert.isInstanceOf("hello", String); // Throws AssertionFailure
+     * assert.isInstanceOf(123, Number); // Throws AssertionFailure
+     * assert.isInstanceOf([], Object); // Passes (arrays are objects)
+     * assert.isInstanceOf({}, Array); // Throws AssertionFailure
+     * ```
+     */
+    isInstanceOf(value: any, constructor: Function, initMsg?: MsgSource): AssertInst;
+
+    /**
+     * Asserts that the given value is not an instance of the specified constructor.
+     * Uses the JavaScript `instanceof` operator to check if the value is not an instance of the constructor.
+     *
+     * @param value - The value to check.
+     * @param constructor - The constructor function to check against (e.g., Array, Date, Error, custom class).
+     * @param initMsg - The message to display if the assertion fails.
+     * @throws An {@link AssertionFailure} if the value is an instance of the constructor.
+     * @since 0.1.5
+     * @example
+     * ```typescript
+     * assert.isNotInstanceOf("hello", Number); // Passes
+     * assert.isNotInstanceOf(123, String); // Passes
+     * assert.isNotInstanceOf({}, Array); // Passes
+     * assert.isNotInstanceOf([], Date); // Passes
+     * assert.isNotInstanceOf(new Date(), Date); // Throws AssertionFailure
+     * assert.isNotInstanceOf([], Array); // Throws AssertionFailure
+     * ```
+     */
+    isNotInstanceOf(value: any, constructor: Function, initMsg?: MsgSource): AssertInst;
 
     /**
      * Asserts that the given function throws an error that matches the specified error constructor,
@@ -1266,6 +1328,7 @@ export interface IAssertClass<AssertInst extends IAssertInst = IAssertInst> {
      * a string, array, or any other type that supports the `includes` method. If the
      * value does not include the match, it throws an {@link AssertionFailure} with the given message.
      *
+     * @since 0.1.2
      * @param value - The value to evaluate.
      * @param match - The value to check for inclusion.
      * @param initMsg - The message to display if the assertion fails.
@@ -1324,6 +1387,7 @@ export interface IAssertClass<AssertInst extends IAssertInst = IAssertInst> {
      * This method checks if the provided value is numerically greater than the expected value.
      * Works with both numbers and Date objects.
      *
+     * @since 0.1.5
      * @param value - The value to check.
      * @param expected - The expected value to compare against.
      * @param initMsg - The message to display if the assertion fails.
@@ -1343,6 +1407,7 @@ export interface IAssertClass<AssertInst extends IAssertInst = IAssertInst> {
      * This method checks if the provided value is not numerically greater than the expected value.
      * Works with both numbers and Date objects. This is the inverse of {@link isAbove}.
      *
+     * @since 0.1.5
      * @param value - The value to check.
      * @param expected - The expected value to compare against.
      * @param initMsg - The message to display if the assertion fails.
@@ -1362,6 +1427,7 @@ export interface IAssertClass<AssertInst extends IAssertInst = IAssertInst> {
      * This method checks if the provided value is numerically greater than or equal to the expected value.
      * Works with both numbers and Date objects.
      *
+     * @since 0.1.5
      * @param value - The value to check.
      * @param expected - The expected value to compare against.
      * @param initMsg - The message to display if the assertion fails.
@@ -1381,6 +1447,7 @@ export interface IAssertClass<AssertInst extends IAssertInst = IAssertInst> {
      * This method checks if the provided value is not numerically greater than or equal to the expected value.
      * Works with both numbers and Date objects. This is the inverse of {@link isAtLeast}.
      *
+     * @since 0.1.5
      * @param value - The value to check.
      * @param expected - The expected value to compare against.
      * @param initMsg - The message to display if the assertion fails.
@@ -1400,6 +1467,7 @@ export interface IAssertClass<AssertInst extends IAssertInst = IAssertInst> {
      * This method checks if the provided value is numerically less than the expected value.
      * Works with both numbers and Date objects.
      *
+     * @since 0.1.5
      * @param value - The value to check.
      * @param expected - The expected value to compare against.
      * @param initMsg - The message to display if the assertion fails.
@@ -1418,6 +1486,7 @@ export interface IAssertClass<AssertInst extends IAssertInst = IAssertInst> {
      * This method checks if the provided value is not numerically less than the expected value.
      * Works with both numbers and Date objects. This is the inverse of {@link isBelow}.
      *
+     * @since 0.1.5
      * @param value - The value to check.
      * @param expected - The expected value to compare against.
      * @param initMsg - The message to display if the assertion fails.
@@ -1437,6 +1506,7 @@ export interface IAssertClass<AssertInst extends IAssertInst = IAssertInst> {
      * This method checks if the provided value is numerically less than or equal to the expected value.
      * Works with both numbers and Date objects.
      *
+     * @since 0.1.5
      * @param value - The value to check.
      * @param expected - The expected value to compare against.
      * @param initMsg - The message to display if the assertion fails.
@@ -1456,6 +1526,7 @@ export interface IAssertClass<AssertInst extends IAssertInst = IAssertInst> {
      * This method checks if the provided value is not numerically less than or equal to the expected value.
      * Works with both numbers and Date objects. This is the inverse of {@link isAtMost}.
      *
+     * @since 0.1.5
      * @param value - The value to check.
      * @param expected - The expected value to compare against.
      * @param initMsg - The message to display if the assertion fails.
@@ -1475,6 +1546,7 @@ export interface IAssertClass<AssertInst extends IAssertInst = IAssertInst> {
      * This method checks if the provided value is between the start and finish values (inclusive).
      * Works with both numbers and Date objects.
      *
+     * @since 0.1.5
      * @param value - The value to check.
      * @param start - The start of the range (inclusive).
      * @param finish - The end of the range (inclusive).
@@ -1498,6 +1570,7 @@ export interface IAssertClass<AssertInst extends IAssertInst = IAssertInst> {
      * The range is inclusive, meaning the start and finish values are included.
      * Works with both numbers and Date objects. This is the inverse of {@link isWithin}.
      *
+     * @since 0.1.5
      * @param value - The value to check.
      * @param start - The start of the range (inclusive).
      * @param finish - The end of the range (inclusive).

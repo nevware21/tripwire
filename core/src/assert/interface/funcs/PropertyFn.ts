@@ -21,8 +21,8 @@ export interface PropertyFn {
      * @param value - The expected value of the property.
      * @param evalMsg - The evaluation message source.
      * @returns A new assertion instance `this` with the value of the property.
-     * @throws {@link AssertionFailure} if the property does not exist.
-     * @throws {@link AssertionFailure} if the property value does not match the expected value.
+     * @throws An {@link AssertionFailure} if the property does not exist.
+     * @throws An {@link AssertionFailure} if the property value does not match the expected value.
      */
     <T>(name: string | symbol | number, value?: T, evalMsg?: MsgSource): IPropertyResultOp;
 }
@@ -37,8 +37,8 @@ export interface PropertyDescriptorFn {
      * @param descriptor - The property descriptor to validate.
      * @param evalMsg - The evaluation message source.
      * @returns A new assertion instance `this` with the value of the property.
-     * @throws {@link AssertionFailure} if no property descriptor is found.
-     * @throws {@link AssertionFailure} if the property descriptor does not match the expected descriptor.
+     * @throws An {@link AssertionFailure} if no property descriptor is found.
+     * @throws An {@link AssertionFailure} if the property descriptor does not match the expected descriptor.
      */
     (name: string | symbol | number, descriptor?: PropertyDescriptor, evalMsg?: MsgSource): IPropertyResultOp;
 }

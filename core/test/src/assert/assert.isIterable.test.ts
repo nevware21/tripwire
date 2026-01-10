@@ -6,10 +6,9 @@
  * Licensed under the MIT license.
  */
 
-import { getKnownSymbol } from "@nevware21/ts-utils";
+import { getKnownSymbol, WellKnownSymbols } from "@nevware21/ts-utils";
 import { assert } from "../../../src/assert/assertClass";
 import { checkError } from "../support/checkError";
-import { WellKnownSymbols } from "@nevware21/ts-utils";
 
 describe("assert.isIterable", function () {
     it("examples", function () {

@@ -18,7 +18,7 @@ export interface IDeltaOp<R> {
      * @param delta - The delta to compare against
      * @param evalMsg - The message to evaluate
      * @returns The result of the operation
-     * @throws {@link AssertionFailure} - If the assertion fails
+     * @throws An {@link AssertionFailure} if the assertion fails
      */
     by: DeltaFn<R>;
 }

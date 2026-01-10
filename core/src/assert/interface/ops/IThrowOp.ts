@@ -21,9 +21,9 @@ export interface IThrowOp {
      * @param msgMatch - Optional. The message to match.
      * @param evalMsg - Optional. The message to display if the assertion fails.
      * @returns The result of the operation.
-     * @throws {@link AssertionFailure} - If the function does not throw an error.
-     * @throws {@link AssertionError} - If the error thrown does not match the expected error.
-     * @throws {@link AssertionError} - If the error message does not match the expected message.
+     * @throws An {@link AssertionFailure} if the function does not throw an error.
+     * @throws An {@link AssertionError} if the error thrown does not match the expected error.
+     * @throws An {@link AssertionError} if the error message does not match the expected message.
      */
     throws: ThrowFn;
 }

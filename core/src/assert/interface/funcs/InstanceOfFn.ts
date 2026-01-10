@@ -11,6 +11,7 @@ import { MsgSource } from "../types";
 /**
  * Represents a function that performs an instance of check.
  * @template R - The type of the result of the operation.
+ * @since 0.1.5
  */
 export interface InstanceOfFn<R> {
 
@@ -20,6 +21,7 @@ export interface InstanceOfFn<R> {
      * @param evalMsg - The optional message source for evaluation.
      * @returns The result of the operation, which will generally be the existing
      * {@link IAssertScope.that} object.
+     * @since 0.1.5
      */
     (constructor: any, evalMsg?: MsgSource): R;
 }

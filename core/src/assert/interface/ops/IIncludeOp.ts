@@ -12,6 +12,7 @@ import { IncludeFn } from "../funcs/IncludeFn";
 
 /**
  * Represents the include operations for the assertion scope.
+ * @since 0.1.2
  * @template R - The type of the result of the operation.
  */
 export interface IIncludeOp<R> extends IncludeFn<R> {

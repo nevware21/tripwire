@@ -9,6 +9,9 @@
 import { NumberFn } from "../funcs/NumericFn";
 import { WithinFn } from "../funcs/WithinFn";
 
+/**
+ * @since 0.1.5
+ */
 export interface INumericOp<R> {
     above: NumberFn<R>;
     gt: NumberFn<R>;

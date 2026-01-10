@@ -46,6 +46,7 @@ import { IAssertScope } from "./assert/interface/IAssertScope";
 import { EqualFn } from "./assert/interface/funcs/EqualFn";
 import { AssertFn } from "./assert/interface/funcs/AssertFn";
 import { ErrorLikeFn } from "./assert/interface/funcs/ErrorLikeFn";
+import { InstanceOfFn } from "./assert/interface/funcs/InstanceOfFn";
 import { assertConfig } from "./assert/config";
 import { IAssertConfig, IAssertConfigDefaults } from "./assert/interface/IAssertConfig";
 import { IFormatCtx, IFormatter, IFormattedValue, IFormatterOptions, eFormatResult } from "./assert/interface/IFormatter";
@@ -84,8 +85,8 @@ export {
  */
 export {
     AssertClassDef, AssertFn, AssertInstHandlers, AssertScopeFuncDefs, EqualFn, ErrorLikeFn,
-    EvalFn, IncludeFn, IScopeFn, KeysFn, MsgSource, NumberFn, SymbolFn, ThrowFn, ValuesFn,
-    WithinFn
+    EvalFn, IncludeFn, InstanceOfFn, IScopeFn, KeysFn, MsgSource, NumberFn, SymbolFn, ThrowFn,
+    ValuesFn, WithinFn
 };
 
 /**
