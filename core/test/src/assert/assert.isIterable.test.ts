@@ -6,8 +6,10 @@
  * Licensed under the MIT license.
  */
 
+import { getKnownSymbol } from "@nevware21/ts-utils";
 import { assert } from "../../../src/assert/assertClass";
 import { checkError } from "../support/checkError";
+import { WellKnownSymbols } from "@nevware21/ts-utils";
 
 describe("assert.isIterable", function () {
     it("examples", function () {
@@ -15,6 +17,7 @@ describe("assert.isIterable", function () {
         assert.isIterable(new Map());
         assert.isIterable(new Set());
         assert.isIterable({ [Symbol.iterator]: () => {} });
+        assert.isIterable({ [Symbol.asyncIterator]: () => {} });
 
         checkError(function () {
             assert.isIterable({});
@@ -65,8 +68,20 @@ describe("assert.isNotIterable", function () {
         }, "not expected [Set:{}] to be an iterable");
 
         checkError(function () {
-            assert.isNotIterable({ [Symbol.iterator]: () => {} });
-        }, "not expected {[Symbol(Symbol.iterator)]:[Function]} to be an iterable");
+            let symIterator = getKnownSymbol(WellKnownSymbols.iterator);
+            let iter = {
+                [symIterator]: () => {}
+            };
+            assert.isNotIterable(iter);
+        }, /not expected \{\[Symbol\(Symbol\.iterator\)\]:\[Function.*\]\} to be an iterable/);
+
+        checkError(function () {
+            let symAsyncIterator = getKnownSymbol(WellKnownSymbols.asyncIterator);
+            let iter = {
+                [symAsyncIterator]: () => {}
+            };
+            assert.isNotIterable(iter);
+        }, /not expected \{\[Symbol\(Symbol\.asyncIterator\)\]:\[Function.*\]\} to be an iterable/);
     });
 
     it("check primitives", function () {

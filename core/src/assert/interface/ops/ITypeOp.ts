@@ -9,6 +9,7 @@
 import { IStrictlyOp } from "./IStrictlyOp";
 import { AssertFn } from "../funcs/AssertFn";
 import { ErrorLikeFn } from "../funcs/ErrorLikeFn";
+import { MsgSource } from "../types";
 
 /**
  * Represents an interface for operations to assert the type of a value.
@@ -192,4 +193,32 @@ export interface IIsTypeOp<R> {
      * @throws {@link AssertionFailure} - If the assertion fails.
      */
     finite: AssertFn<R>;
+
+    /**
+     * Asserts that the value's type matches the expected type string.
+     * Uses the JavaScript `typeof` operator for type comparison.
+     *
+     * Valid type strings include:
+     * - "string"
+     * - "number"
+     * - "bigint"
+     * - "boolean"
+     * - "symbol"
+     * - "undefined"
+     * - "object" (includes null, arrays, and objects)
+     * - "function"
+     *
+     * @param type - The expected type string (e.g., "string", "number", "function")
+     * @param evalMsg - The custom message to display on evaluation.
+     * @returns The current {@link IAssertScope.that} object.
+     * @throws {@link AssertionFailure} - If the assertion fails.
+     * @example
+     * ```typescript
+     * expect("hello").is.typeof("string");
+     * expect(123).to.be.typeof("number");
+     * expect({}).is.typeof("object");
+     * expect(() => {}).to.be.typeof("function");
+     * ```
+     */
+    typeOf(type: string, evalMsg?: MsgSource): R;
 }

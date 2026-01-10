@@ -24,6 +24,7 @@ import { IAssertScope } from "../interface/IAssertScope";
 import { isExtensibleFunc } from "../funcs/isExtensible";
 import { hasSymbolFunc } from "../funcs/hasSymbol";
 import { aboveFunc, belowFunc, leastFunc, mostFunc, withinFunc } from "./numericOp";
+import { typeOfFunc } from "../funcs/typeOf";
 
 export function isOp<R>(scope: IAssertScope): IIsOp<R> {
     let props:  AssertScopeFuncDefs<IIsOp<R>> = {
@@ -72,7 +73,10 @@ export function isOp<R>(scope: IAssertScope): IIsOp<R> {
         most: { scopeFn: mostFunc },
         lte: { scopeFn: mostFunc },
         lessThanOrEqual: { scopeFn: mostFunc },
-        within: { scopeFn: withinFunc }
+        within: { scopeFn: withinFunc },
+
+        // Type checking
+        typeOf: { scopeFn: typeOfFunc }
     };
     
     return scope.createOperation(props);

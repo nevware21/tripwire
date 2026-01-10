@@ -32,6 +32,7 @@ import { isExtensibleFunc } from "./funcs/isExtensible";
 import { isIterableFunc } from "./funcs/isIterable";
 import { deepEqualsFunc, deepStrictEqualsFunc, equalsFunc, strictEqualsFunc } from "./funcs/equal";
 import { aboveFunc, belowFunc, leastFunc, mostFunc, withinFunc } from "./ops/numericOp";
+import { typeOfFunc } from "./funcs/typeOf";
 
 /**
  * @internal
@@ -206,6 +207,9 @@ export function createAssert(): IAssertClass {
 
         isNaN: createExprAdapter("is.nan"),
         isNotNaN: createExprAdapter("not.is.nan"),
+
+        typeOf: { scopeFn: typeOfFunc, nArgs: 2 },
+        notTypeOf: { scopeFn: createExprAdapter("not", typeOfFunc), nArgs: 2 },
             
 
         isFinite: createExprAdapter("is.finite"),

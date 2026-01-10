@@ -99,8 +99,8 @@ function _createChaiAssert(): IChaiAssert {
         isFinite: "is.finite",
         isBoolean: "is.boolean",
         isNotBoolean: "is.not.boolean",
-        typeOf: notImplemented, // TODO: Implement typeOf in tripwire core
-        notTypeOf: notImplemented, // TODO: Implement notTypeOf in tripwire core
+        typeOf: { scopeFn: createExprAdapter("is.typeOf"), nArgs: 2 },
+        notTypeOf: { scopeFn: createExprAdapter("is.not.typeOf"), nArgs: 2 },
         instanceOf: notImplemented, // TODO: Implement instanceOf in tripwire core
         notInstanceOf: notImplemented, // TODO: Implement notInstanceOf in tripwire core
         include: { scopeFn: createExprAdapter("include"), nArgs: 2 },

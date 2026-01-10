@@ -6,7 +6,7 @@
  * Licensed under the MIT license.
  */
 
-import { arrMap, arrSlice, asString, createCustomError, CustomErrorConstructor, getLazy, isArray, isError, newSymbol, objDefine, objDefineProps, objForEachKey, objKeys, strTrim } from "@nevware21/ts-utils";
+import { arrMap, arrSlice, asString, createCustomError, CustomErrorConstructor, getLazy, isArray, isError, isUndefined, newSymbol, objDefine, objDefineProps, objForEachKey, objKeys, strTrim } from "@nevware21/ts-utils";
 import { EMPTY_STRING } from "./internal/const";
 import { _formatValue } from "./internal/_formatValue";
 import { IParsedStack, parseStack } from "../internal/parseStack";
@@ -38,6 +38,16 @@ export interface AssertionError<T> extends Error {
      * Additional properties that are included in the error.
      */
     readonly props?: T;
+
+    /**
+     * The actual value that was seen
+     */
+    readonly actual?: any;
+
+    /**
+     * The value that was expected
+     */
+    readonly expected?: any;
 }
 
 /**
@@ -358,6 +368,22 @@ export const AssertionError = createCustomError<AssertionErrorConstructor<any>>(
     let stackStart: Function[] = lp < len && args[lp] ? (isArray(args[lp]) ? arrSlice(args[lp++]) : [args[lp++]]) : [];
 
     let _fullStack = self.stack;
+
+    if (self.props) {
+        objDefine(self, "actual", {
+            g: () => {
+                return self.props ? self.props.actual : undefined;
+            }
+        });
+        
+        if(!isUndefined(self.props.expected)) {
+            objDefine(self, "expected",{
+                g: () => {
+                    return self.props ? self.props.expected : undefined;
+                }
+            });
+        }
+    }
 
     objDefineProps(self, {
         fullStack: {
