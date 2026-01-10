@@ -7,6 +7,16 @@
 import { assertConfig } from "@nevware21/tripwire";
 import { assert } from "../../src/index";
 import { globalErr as err } from "./bootstrap/globalErr";
+import { createCustomError, CustomErrorConstructor as TsCustomErrorConstructor } from "@nevware21/ts-utils";
+
+export interface CustomError extends Error {
+}
+
+export interface CustomErrorConstructor extends TsCustomErrorConstructor<CustomError> {
+
+}
+
+let CustomError = createCustomError<CustomErrorConstructor>("CustomError");
 
 describe("assert", function () {
 
@@ -143,48 +153,48 @@ describe("assert", function () {
         }, "blah: expected 1 to equal 2");
     });
 
-    // it("typeof", function () {
-    //     assert.typeOf("test", "string");
-    //     assert.typeOf(true, "boolean");
-    //     assert.typeOf(5, "number");
+    it("typeOf", function () {
+        assert.typeOf("test", "string");
+        assert.typeOf(true, "boolean");
+        assert.typeOf(5, "number");
     
-    //     assert.typeOf(() => {}, "function");
-    //     assert.typeOf(function() {}, "function");
-    //     assert.typeOf(async function() {}, "asyncfunction");
-    //     assert.typeOf(function*() {}, "generatorfunction");
-    //     assert.typeOf(async function*() {}, "asyncgeneratorfunction");
-    //     assert.typeOf(Symbol(), "symbol");
+        assert.typeOf(() => {}, "function");
+        assert.typeOf(function() {}, "function");
+        assert.typeOf(async function() {}, "asyncfunction");
+        assert.typeOf(function*() {}, "generatorfunction");
+        assert.typeOf(async function*() {}, "asyncgeneratorfunction");
+        assert.typeOf(Symbol(), "symbol");
     
-    //     err(function () {
-    //         assert.typeOf(5, "function", "blah");
-    //     }, "blah: expected 5 to be a function");
+        err(function () {
+            assert.typeOf(5, "function", "blah");
+        }, "blah: expected 5 to be of type function but got number");
     
-    //     err(function () {
-    //         assert.typeOf(function() {}, "asyncfunction", "blah");
-    //     }, "blah: expected [Function] to be an asyncfunction");
+        err(function () {
+            assert.typeOf(function() {}, "asyncfunction", "blah");
+        }, "blah: expected [Function] to be of type asyncfunction but got function");
 
-    //     err(function () {
-    //         assert.typeOf(5, "string", "blah");
-    //     }, "blah: expected 5 to be a string");
-    // });
+        err(function () {
+            assert.typeOf(5, "string", "blah");
+        }, "blah: expected 5 to be of type string but got number");
+    });
 
-    // it("notTypeOf", function () {
-    //     assert.notTypeOf("test", "number");
+    it("notTypeOf", function () {
+        assert.notTypeOf("test", "number");
     
-    //     assert.notTypeOf(() => {}, "string");
-    //     assert.notTypeOf(function() {}, "string");
-    //     assert.notTypeOf(async function() {}, "string");
-    //     assert.notTypeOf(function*() {}, "string");
-    //     assert.notTypeOf(async function*() {}, "string");
+        assert.notTypeOf(() => {}, "string");
+        assert.notTypeOf(function() {}, "string");
+        assert.notTypeOf(async function() {}, "string");
+        assert.notTypeOf(function*() {}, "string");
+        assert.notTypeOf(async function*() {}, "string");
 
-    //     err(function () {
-    //         assert.notTypeOf(5, "number", "blah");
-    //     }, "blah: not expected 5 to be a number");
+        err(function () {
+            assert.notTypeOf(5, "number", "blah");
+        }, "blah: not expected 5 to be of type number");
     
-    //     err(function () {
-    //         assert.notTypeOf(() => {}, "function", "blah");
-    //     }, "blah: not expected [Function] to be a function");
-    // });
+        err(function () {
+            assert.notTypeOf(() => {}, "function", "blah");
+        }, "blah: not expected [Function] to be of type function");
+    });
 
     // it("instanceOf", function() {
     //     class Foo {}
@@ -1648,8 +1658,6 @@ describe("assert", function () {
     // });
 
     it("throws / throw / Throw", function() {
-        class CustomError extends Error {}
-
         ["throws", "throw", "Throw"].forEach(function (throws) {
             (assert as any)[throws](function() {
                 throw new Error("foo");
@@ -1751,17 +1759,6 @@ describe("assert", function () {
     });
 
     it("doesNotThrow", function() {
-        class CustomError {
-            name: string;
-            message: string;
-            
-            constructor (message: string) {
-                this.name = "CustomError";
-                this.message = message;
-            }
-        }
-        CustomError.prototype = Object.create(Error.prototype);
-
         assert.doesNotThrow(function a() { });
         assert.doesNotThrow(function b() { }, "foo");
         assert.doesNotThrow(function c() { }, "");
@@ -1804,7 +1801,8 @@ describe("assert", function () {
             assert.doesNotThrow(function() {
                 throw (new CustomError("foo")) as any;
             });
-        }, "not expected [Function] to throw an error but [CustomError:\"foo\"] was thrown");
+        }, /not expected \[Function\] to throw an error but \[CustomError:.*/);
+        //  not expected [Function] to throw an error but [Error:"foo"] was thrown
 
         err(function () {
             assert.doesNotThrow(function() {
@@ -1816,7 +1814,7 @@ describe("assert", function () {
             assert.doesNotThrow(function() {
                 throw new CustomError("foo");
             }, CustomError as any);
-        }, "not expected [Function] to throw an error of type CustomError() but threw [CustomError:\"foo\"]");
+        }, /not expected \[Function\] to throw .*CustomError.*\[CustomError:.*\"foo\".*\].*/);
 
         err(function () {
             assert.doesNotThrow(function() {
@@ -1840,7 +1838,7 @@ describe("assert", function () {
             assert.doesNotThrow(function() {
                 throw new CustomError("foo");
             }, CustomError as any, "foo", "blah");
-        }, "blah: not expected [Function] to throw an error of type CustomError() with a message containing \"foo\" but [CustomError:\"foo\"] was thrown");
+        }, /blah\: not expected \[Function\] to throw .*CustomError.*\"foo\".*/);
 
         err(function () {
             assert.doesNotThrow(function() {

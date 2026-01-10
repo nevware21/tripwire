@@ -1130,6 +1130,70 @@ export interface IAssertClass<AssertInst extends IAssertInst = IAssertInst> {
     isNotFinite(value: any, initMsg?: MsgSource): AssertInst;
 
     /**
+     * Asserts that the given value's type matches the expected type string.
+     * Uses the JavaScript `typeof` operator for type comparison.
+     *
+     * Valid type strings include:
+     * - "string"
+     * - "number"
+     * - "bigint"
+     * - "boolean"
+     * - "symbol"
+     * - "undefined"
+     * - "object" (includes null, arrays, and objects)
+     * - "function"
+     *
+     * @param value - The value to check.
+     * @param type - The expected type string (e.g., "string", "number", "function").
+     * @param initMsg - The message to display if the assertion fails.
+     * @asserts That the `value` is of the specified type and throws {@link AssertionFailure} if it is not.
+     * @example
+     * ```typescript
+     * assert.typeOf("hello", "string"); // Passes
+     * assert.typeOf(123, "number"); // Passes
+     * assert.typeOf(() => {}, "function"); // Passes
+     * assert.typeOf({}, "object"); // Passes
+     * assert.typeOf(true, "boolean"); // Passes
+     * assert.typeOf(Symbol(), "symbol"); // Passes
+     * assert.typeOf(BigInt(123), "bigint"); // Passes
+     * assert.typeOf(undefined, "undefined"); // Passes
+     * assert.typeOf("hello", "number"); // Throws AssertionFailure
+     * assert.typeOf(123, "string"); // Throws AssertionFailure
+     * ```
+     */
+    typeOf(value: any, type: string, initMsg?: MsgSource): AssertInst;
+
+    /**
+     * Asserts that the given value's type does not match the expected type string.
+     * Uses the JavaScript `typeof` operator for type comparison.
+     *
+     * Valid type strings include:
+     * - "string"
+     * - "number"
+     * - "bigint"
+     * - "boolean"
+     * - "symbol"
+     * - "undefined"
+     * - "object" (includes null, arrays, and objects)
+     * - "function"
+     *
+     * @param value - The value to check.
+     * @param type - The type string that the value should not match.
+     * @param initMsg - The message to display if the assertion fails.
+     * @asserts That the `value` is not of the specified type and throws {@link AssertionFailure} if it is.
+     * @example
+     * ```typescript
+     * assert.notTypeOf("hello", "number"); // Passes
+     * assert.notTypeOf(123, "string"); // Passes
+     * assert.notTypeOf(() => {}, "object"); // Passes
+     * assert.notTypeOf({}, "function"); // Passes
+     * assert.notTypeOf("hello", "string"); // Throws AssertionFailure
+     * assert.notTypeOf(123, "number"); // Throws AssertionFailure
+     * ```
+     */
+    notTypeOf(value: any, type: string, initMsg?: MsgSource): AssertInst;
+
+    /**
      * Asserts that the given function throws an error that matches the specified error constructor,
      * error instance, and / or the message includes the content or matches the regex pattern.
      * If the function does not throw an error, or if the thrown error does not

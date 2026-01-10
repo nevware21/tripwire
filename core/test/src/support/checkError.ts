@@ -203,14 +203,27 @@ export function checkError(fn: () => void, match?: string | RegExp | Object, che
         fn();
     } catch (e) {
         let newErr: Error | null = null;
+        let theMessage: string = (e as Error).message;
 
         if (isString(match)) {
-            if (e.message.indexOf(match) === -1) {
-                newErr = new AssertionError(gray(`expected error message to contain [${cyan(match)}]\n - got [${_colorizeActual(e.message, match)}]\n - diff[${_showStringDifference(match, e.message)}]`), e, null, stackStart);
+            if (theMessage.indexOf(match) === -1) {
+                newErr = new AssertionError(gray(`expected error message to contain [${cyan(match)}]\n - got [${_colorizeActual(theMessage, match)}]\n - diff[${_showStringDifference(match, theMessage)}]`),
+                    e,
+                    {
+                        actual: theMessage,
+                        expected: match
+                    },
+                    stackStart);
             }
         } else if (isRegExp(match)) {
-            if (!match.test(e.message)) {
-                newErr = new AssertionError(gray(`expected error message to match [${white(asString(match))}]\n - got [${_colorizeActual(e.message, e.message)}]\n - diff[${_showStringDifference(match.source, e.message, false)}] (regex)`), e, null, stackStart);
+            if (!match.test(theMessage)) {
+                newErr = new AssertionError(gray(`expected error message to match [${white(asString(match))}]\n - got [${_colorizeActual(theMessage, theMessage)}]\n - diff[${_showStringDifference(match.source, theMessage, false)}] (regex)`),
+                    e,
+                    {
+                        actual: theMessage,
+                        expected: match
+                    },
+                    stackStart);
             }
         } else if (isObject(match)) {
             objForEachKey(match, (key, value) => {

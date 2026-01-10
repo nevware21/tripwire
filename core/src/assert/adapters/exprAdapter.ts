@@ -137,7 +137,10 @@ function _runExpr(theAssert: any, scope: IAssertScope, steps: IStepDef[], scopeF
         if (!(step.name in scope.that)) {
             throw new AssertionError(
                 `${idx} Invalid step: ${step.name} for [${steps.map(s => s.name).join("->")}] available steps: [${objKeys(scope.that).join(";")}] - ${_formatValue(scope.context, scope.that)}`,
-                null,
+                {
+                    expected: step.name,
+                    actual: objKeys(scope.that).join(";")
+                },
                 context._$stackFn);
         }
 
