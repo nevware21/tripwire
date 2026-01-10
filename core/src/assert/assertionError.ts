@@ -376,8 +376,8 @@ export const AssertionError = createCustomError<AssertionErrorConstructor<any>>(
             }
         });
         
-        if(!isUndefined(self.props.expected)) {
-            objDefine(self, "expected",{
+        if (!isUndefined(self.props.expected)) {
+            objDefine(self, "expected", {
                 g: () => {
                     return self.props ? self.props.expected : undefined;
                 }

@@ -112,8 +112,8 @@ export function _assertHasOwnProperty(context: IScopeContext, name: string | sym
  * @param value - The expected value of the property.
  * @param evalMsg - The message to display if the assertion fails.
  * @returns The new "instance" (object) to be used as the `this` for the chained operations.
- * @throws {@link AssertionFailure} if the current value does not have the specified property.
- * @throws {@link AssertionFailure} if the property value does not match the expected value.
+ * @throws An {@link AssertionFailure} if the current value does not have the specified property.
+ * @throws An {@link AssertionFailure} if the property value does not match the expected value.
  */
 export function hasPropertyFunc(this: IAssertScope, name: string | symbol | number, value?: any, evalMsg?: MsgSource): IPropertyResultOp {
     let scope = this;
@@ -136,8 +136,8 @@ export function hasPropertyFunc(this: IAssertScope, name: string | symbol | numb
  * @param value - The expected value of the property.
  * @param evalMsg - The message to display if the assertion fails.
  * @returns The new "instance" (object) to be used as the `this` for the chained operations.
- * @throws {@link AssertionFailure} if the current value does not have the specified own property.
- * @throws {@link AssertionFailure} if the property value does not match the expected value.
+ * @throws An {@link AssertionFailure} if the current value does not have the specified own property.
+ * @throws An {@link AssertionFailure} if the property value does not match the expected value.
  */
 export function hasOwnPropertyFunc(this: IAssertScope, name: string | symbol | number, value?: any, evalMsg?: MsgSource): IPropertyResultOp {
     let scope = this;
@@ -160,8 +160,8 @@ export function hasOwnPropertyFunc(this: IAssertScope, name: string | symbol | n
  * @param value - The expected value of the property.
  * @param evalMsg - The message to display if the assertion fails.
  * @returns The new "instance" (object) to be used as the `this` for the chained operations.
- * @throws {@link AssertionFailure} if the current value does not have the specified property.
- * @throws {@link AssertionFailure} if the property value does not match the expected value.
+ * @throws An {@link AssertionFailure} if the current value does not have the specified property.
+ * @throws An {@link AssertionFailure} if the property value does not match the expected value.
  */
 export function hasDeepPropertyFunc(this: IAssertScope, name: string | symbol | number, value?: any, evalMsg?: MsgSource): IPropertyResultOp {
     let scope = this;
@@ -184,8 +184,8 @@ export function hasDeepPropertyFunc(this: IAssertScope, name: string | symbol | 
  * @param value - The expected value of the property.
  * @param evalMsg - The message to display if the assertion fails.
  * @returns The new "instance" (object) to be used as the `this` for the chained operations.
- * @throws {@link AssertionFailure} if the current value does not have the specified own property.
- * @throws {@link AssertionFailure} if the property value does not match the expected value.
+ * @throws An {@link AssertionFailure} if the current value does not have the specified own property.
+ * @throws An {@link AssertionFailure} if the property value does not match the expected value.
  */
 export function hasDeepOwnPropertyFunc(this: IAssertScope, name: string | symbol | number, value?: any, evalMsg?: MsgSource): IPropertyResultOp {
     let scope = this;
@@ -207,8 +207,8 @@ export function hasDeepOwnPropertyFunc(this: IAssertScope, name: string | symbol
  * @param descriptor - The expected property descriptor.
  * @param evalMsg - The message to display if the assertion fails.
  * @returns The new "instance" (object) to be used as the `this` for the chained operations.
- * @throws {@link AssertionFailure} if the current value does not have the specified property descriptor.
- * @throws {@link AssertionFailure} if the property descriptor does not match the expected descriptor.
+ * @throws An {@link AssertionFailure} if the current value does not have the specified property descriptor.
+ * @throws An {@link AssertionFailure} if the property descriptor does not match the expected descriptor.
  */
 export function hasPropertyDescriptorFunc(this: IAssertScope, name: string | symbol | number, descriptor: PropertyDescriptor, evalMsg?: MsgSource): IPropertyResultOp {
     let scope = this;
@@ -231,8 +231,8 @@ export function hasPropertyDescriptorFunc(this: IAssertScope, name: string | sym
  * @param descriptor - The expected property descriptor.
  * @param evalMsg - The message to display if the assertion fails.
  * @returns The new "instance" (object) to be used as the `this` for the chained operations.
- * @throws {@link AssertionFailure} if the current value does not have the specified own property descriptor.
- * @throws {@link AssertionFailure} if the property descriptor does not match the expected descriptor.
+ * @throws An {@link AssertionFailure} if the current value does not have the specified own property descriptor.
+ * @throws An {@link AssertionFailure} if the property descriptor does not match the expected descriptor.
  */
 export function hasOwnPropertyDescriptorFunc(this: IAssertScope, name: string | symbol | number, descriptor: PropertyDescriptor,evalMsg?: MsgSource): IPropertyResultOp {
     let scope = this;

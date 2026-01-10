@@ -170,7 +170,7 @@ export interface IScopeContextOverrides {
      * Throws an `AssertionFailure` with the given message.
      * @param msg - The message to display.
      * @param details - The details (props) to include in the error
-     * @throws AssertionError
+     * @throws An {@link AssertionError} always
      */
     fail?: (parent: IScopeContext, msg: string, details: any, causedBy: Error) => void | never;
 }

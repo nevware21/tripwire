@@ -33,6 +33,7 @@ import { isIterableFunc } from "./funcs/isIterable";
 import { deepEqualsFunc, deepStrictEqualsFunc, equalsFunc, strictEqualsFunc } from "./funcs/equal";
 import { aboveFunc, belowFunc, leastFunc, mostFunc, withinFunc } from "./ops/numericOp";
 import { typeOfFunc } from "./funcs/typeOf";
+import { instanceOfFunc } from "./funcs/instanceOf";
 
 /**
  * @internal
@@ -80,7 +81,7 @@ export type AssertClassDef = IAssertClassDef | IScopeFn | string | string[];
  * The `assert` object is also a function that can be called directly with the following parameters:
  * @param expr - The expression to evaluate.
  * @param initMsg - The message to display if the assertion fails. This can be a string or a function that returns a string.
- * @throws {@link AssertionFailure} - If the expression is false.
+ * @throws An {@link AssertionFailure} if the expression is false.
  * @example
  * ```typescript
  * import { assert } from "@nevware21/tripwire";
@@ -214,6 +215,15 @@ export function createAssert(): IAssertClass {
 
         isFinite: createExprAdapter("is.finite"),
         isNotFinite: createExprAdapter("not.is.finite"),
+
+        /**
+         * @since 0.1.5
+         */
+        isInstanceOf: { scopeFn: instanceOfFunc, nArgs: 2 },
+        /**
+         * @since 0.1.5
+         */
+        isNotInstanceOf: { scopeFn: createExprAdapter("not", instanceOfFunc), nArgs: 2 },
             
         throws: { scopeFn: throwsFunc, nArgs: 3 },
 
@@ -246,7 +256,7 @@ export function createAssert(): IAssertClass {
  * @param fnDef - The definition of the function to add, this can be a string (`is.object`),
  * an array of strings (`["is", "obejct"]`) which identify the sequence of operations to perform
  * or a {@link IScopeFn} function, or an {@link IAssertClassDef} object.
- * @throws {@link AssertionError} - If the definition is invalid.
+ * @throws An {@link AssertionError} if the definition is invalid.
  * @example
  * ```typescript
  * addAssertFunc("isPositive", (value) => this._context.eval(value > 0, "Expected a positive number"));
@@ -273,7 +283,7 @@ export function addAssertFunc(target: any, name: string, fnDef: AssertClassDef, 
  *
  * @param target - The instance to add the functions to.
  * @param funcs - An object where the keys are the names of the functions to add, and the values are their definitions.
- * @throws {@link AssertionError} - If any of the definitions are invalid.
+ * @throws An {@link AssertionError} if any of the definitions are invalid.
  * @example
  * ```typescript
  * addAssertFuncs({

@@ -33,6 +33,7 @@ import { isArray, isFunction, strLower } from "@nevware21/ts-utils";
  * @param type - The expected type string (e.g., "string", "number", "function")
  * @param evalMsg - The message to display if the value's type doesn't match
  * @returns The current {@link IAssertScope.that} (`this`) object
+ * @since 0.1.5
  */
 export function typeOfFunc<R>(this: IAssertScope, type: string, evalMsg?: MsgSource): R {
     let context = this.context;

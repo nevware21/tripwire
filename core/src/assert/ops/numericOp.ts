@@ -46,6 +46,7 @@ function _checkTypes(context: IScopeContext, value: unknown, expected: unknown, 
  * @param n - The value to compare against.
  * @param evalMsg - The message to display if the assertion fails.
  * @returns - The assert scope.
+ * @since 0.1.5
  */
 export function aboveFunc<R>(this: IAssertScope, n: number | Date, evalMsg?: MsgSource): R {
     let scope = this;
@@ -70,6 +71,7 @@ export function aboveFunc<R>(this: IAssertScope, n: number | Date, evalMsg?: Msg
  * @param n - The value to compare against.
  * @param evalMsg - The message to display if the assertion fails.
  * @returns - The assert scope.
+ * @since 0.1.5
  */
 export function leastFunc<R>(this: IAssertScope, n: number | Date, evalMsg?: MsgSource): R {
     let scope = this;
@@ -94,6 +96,7 @@ export function leastFunc<R>(this: IAssertScope, n: number | Date, evalMsg?: Msg
  * @param n - The value to compare against.
  * @param evalMsg - The message to display if the assertion fails.
  * @returns - The assert scope.
+ * @since 0.1.5
  */
 export function belowFunc<R>(this: IAssertScope, n: number | Date, evalMsg?: MsgSource): R {
     let scope = this;
@@ -118,6 +121,7 @@ export function belowFunc<R>(this: IAssertScope, n: number | Date, evalMsg?: Msg
  * @param n - The value to compare against.
  * @param evalMsg - The message to display if the assertion fails.
  * @returns - The assert scope.
+ * @since 0.1.5
  */
 export function mostFunc<R>(this: IAssertScope, n: number | Date, evalMsg?: MsgSource): R {
     let scope = this;
@@ -143,6 +147,7 @@ export function mostFunc<R>(this: IAssertScope, n: number | Date, evalMsg?: MsgS
  * @param finish - The end of the range.
  * @param evalMsg - The message to display if the assertion fails.
  * @returns - The assert scope.
+ * @since 0.1.5
  */
 export function withinFunc<R>(this: IAssertScope, start: number | Date, finish: number | Date, evalMsg?: MsgSource): R {
     let scope = this;

@@ -82,6 +82,7 @@ export interface IToOp<R> extends INotOp<IToOp<R>> {
      * This operation allows you to assert that the target value includes the specified value(s).
      * It is useful for verifying that an array, string, or object contains certain elements or properties.
      *
+     * @since 0.1.2
      * @alias include
      * @example
      * ```typescript
@@ -172,7 +173,7 @@ export interface IToOp<R> extends INotOp<IToOp<R>> {
      * that when executed will throw an error.
      * @param evalMsg - Optional. The message to display if the assertion fails.
      * @returns The result of the operation.
-     * @throws {@link AssertionFailure} - If the function does not throw an error.
+     * @throws An {@link AssertionFailure} if the function does not throw an error.
      */
     throw: ThrowFn;
 

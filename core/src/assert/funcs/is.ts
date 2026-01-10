@@ -203,6 +203,7 @@ export function isStrictFalseFunc<R>(this: IAssertScope, evalMsg?: MsgSource): R
  * @param this - The current {@link IAssertScope} object
  * @param evalMsg - The message to display if the value is not NaN
  * @returns The current {@link IAssertScope.that} (`this`) object
+ * @since 0.1.5
  */
 export function isNaNFunc<R>(this: IAssertScope, evalMsg?: MsgSource): R {
     let context = this.context;
@@ -218,6 +219,7 @@ export function isNaNFunc<R>(this: IAssertScope, evalMsg?: MsgSource): R {
  * @param this - The current {@link IAssertScope} object
  * @param evalMsg - The message to display if the value is not a finite number
  * @returns The current {@link IAssertScope.that} (`this`) object
+ * @since 0.1.5
  */
 export function isFiniteFunc<R>(this: IAssertScope, evalMsg?: MsgSource): R {
     let context = this.context;

@@ -10,6 +10,7 @@ import { MsgSource } from "../types";
 
 /**
  * Represents a function that asserts whether the value includes a matching value and an optional evaluation message.
+ * @since 0.1.2
  * @template R - The type of the result of the operation.
  * @param match - The single value to check if it is included within the value.
  * @param evalMsg - The optional evaluation message.

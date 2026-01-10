@@ -21,7 +21,7 @@ export interface TypeFn<R> {
      * @param evalMsg - The optional evaluation message.
      * @returns The result of the operation, which will generally be the existing
      * {@link IAssertScope.that} object.
-     * @throws {@link AssertionFailure} - If the value is not of the specified type.
+     * @throws An {@link AssertionFailure} if the value is not of the specified type.
      */
     (type: string, evalMsg?: MsgSource): R;
 }

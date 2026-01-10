@@ -25,7 +25,7 @@ export interface IEqualOp<R> {
      * @typeParam T - The type of the expected value.
      * @param expected - The expected value.
      * @param evalMsg - The message to display if the values are not strictly equal.
-     * @throws AssertionFailure - If the `expected` and `actual` values are not strictly equal.
+     * @throws An {@link AssertionFailure} if the `expected` and `actual` values are not strictly equal.
      * @example
      * assert.equal(1, 1); // Passes
      * assert.equal("a", "a"); // Passes
@@ -55,7 +55,7 @@ export interface IEqualOp<R> {
      * @typeParam T - The type of the expected value.
      * @param expected - The expected value.
      * @param evalMsg - The message to display if the values are strictly equal.
-     * @throws AssertionFailure - If the `expected` and `actual` values are strictly equal.
+     * @throws An {@link AssertionFailure} if the `expected` and `actual` values are strictly equal.
      * @example
      * assert.equals(1, 1); // Passes
      * assert.equals("a", "a"); // Passes
@@ -86,7 +86,7 @@ export interface IEqualOp<R> {
      * @typeParam T - The type of the expected value.
      * @param expected - The expected value.
      * @param evalMsg - The message to display if the values are strictly equal.
-     * @throws AssertionFailure - If the `expected` and `actual` values are strictly equal.
+     * @throws An {@link AssertionFailure} if the `expected` and `actual` values are strictly equal.
      * @example
      * assert.eq(1, 1); // Passes
      * assert.eq("a", "a"); // Passes

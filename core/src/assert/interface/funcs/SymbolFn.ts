@@ -21,8 +21,8 @@ export interface SymbolFn {
      * @template T - The type of the property value.
      * @param evalMsg - The evaluation message source.
      * @returns A new assertion instance `this` with the value of the property.
-     * @throws {@link AssertionFailure} if the symbol property does not exist.
-     * @throws {@link AssertionFailure} if the symbol property value does not match the expected value.
+     * @throws An {@link AssertionFailure} if the symbol property does not exist.
+     * @throws An {@link AssertionFailure} if the symbol property value does not match the expected value.
      */
     (this: IAssertScope, evalMsg?: MsgSource): IPropertyResultOp;
 }

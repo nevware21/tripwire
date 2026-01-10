@@ -19,7 +19,7 @@ export interface DeltaFn<R> {
      * @param evalMsg - The message to evaluate
      * @returns The result of the operation, which will generally be the existing
      * {@link IAssertScope.that} object.
-     * @throws {@link AssertionFailure} - If the assertion fails
+     * @throws An {@link AssertionFailure} if the assertion fails
      */
     (delta: number, evalMsg?: MsgSource): R;
 }

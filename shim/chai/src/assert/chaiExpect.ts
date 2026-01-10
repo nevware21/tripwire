@@ -22,7 +22,7 @@ import { IChaiAssert } from "./interfaces/IChaiAssert";
  *
  * @param value The value to create the context object with.
  * @param initMsg The message to create the context object with.
- * @throws {AssertionError} Always throws indicating the feature is not implemented.
+ * @throws An {@link AssertionError} always throws indicating the feature is not implemented.
  * @see chaiAssert for the implemented assert-style API
  */
 export function chaiExpect<T>(value: T, initMsg?: string): IChaiAssert {

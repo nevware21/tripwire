@@ -101,8 +101,8 @@ function _createChaiAssert(): IChaiAssert {
         isNotBoolean: "is.not.boolean",
         typeOf: { scopeFn: createExprAdapter("is.typeOf"), nArgs: 2 },
         notTypeOf: { scopeFn: createExprAdapter("is.not.typeOf"), nArgs: 2 },
-        instanceOf: notImplemented, // TODO: Implement instanceOf in tripwire core
-        notInstanceOf: notImplemented, // TODO: Implement notInstanceOf in tripwire core
+        instanceOf: { scopeFn: createExprAdapter("is.instanceOf"), nArgs: 2 },
+        notInstanceOf: { scopeFn: createExprAdapter("is.not.instanceOf"), nArgs: 2 },
         include: { scopeFn: createExprAdapter("include"), nArgs: 2 },
         notInclude: { scopeFn: createExprAdapter("not.include"), nArgs: 2 },
         deepInclude: { scopeFn: createExprAdapter("deep.include"), nArgs: 2 },

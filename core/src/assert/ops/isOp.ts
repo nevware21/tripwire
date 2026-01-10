@@ -25,6 +25,7 @@ import { isExtensibleFunc } from "../funcs/isExtensible";
 import { hasSymbolFunc } from "../funcs/hasSymbol";
 import { aboveFunc, belowFunc, leastFunc, mostFunc, withinFunc } from "./numericOp";
 import { typeOfFunc } from "../funcs/typeOf";
+import { instanceOfFunc } from "../funcs/instanceOf";
 
 export function isOp<R>(scope: IAssertScope): IIsOp<R> {
     let props:  AssertScopeFuncDefs<IIsOp<R>> = {
@@ -59,6 +60,44 @@ export function isOp<R>(scope: IAssertScope): IIsOp<R> {
         iterable: { scopeFn: hasSymbolFunc(Symbol.iterator) },
         nan: { scopeFn: isNaNFunc },
         finite: { scopeFn: isFiniteFunc },
+        
+        /**
+         * Asserts that the value is an instance of the specified constructor.
+         * This is an alias for `instanceOf` to support the JavaScript `instanceof` keyword style.
+         *
+         * @since 0.1.5
+         * @example
+         * ```typescript
+         * expect(new Date()).is.instanceof(Date);
+         * expect([]).is.instanceof(Array);
+         * expect(new Error()).is.instanceof(Error);
+         * expect({}).is.instanceof(Object);
+         * ```
+         */
+        instanceof: { scopeFn: instanceOfFunc },
+        
+        /**
+         * Asserts that the value is an instance of the specified constructor.
+         * Uses the JavaScript `instanceof` operator for type checking.
+         *
+         * @since 0.1.5
+         * @example
+         * ```typescript
+         * expect(new Date()).is.instanceOf(Date);
+         * expect([]).to.be.instanceOf(Array);
+         * expect(new Error()).is.instanceOf(Error);
+         * expect({}).to.be.an.instanceOf(Object);
+         *
+         * // With negation
+         * expect("hello").is.not.instanceOf(Number);
+         * expect(123).to.not.be.instanceOf(String);
+         *
+         * // Custom classes
+         * class MyClass {}
+         * expect(new MyClass()).is.instanceOf(MyClass);
+         * ```
+         */
+        instanceOf: { scopeFn: instanceOfFunc },
 
         // Numeric comparison operations
         above: { scopeFn: aboveFunc },

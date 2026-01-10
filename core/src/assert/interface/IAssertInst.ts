@@ -161,6 +161,7 @@ export interface IAssertInst extends INotOp<IAssertInst>, IAssertInstCore, IEqua
      * This operation allows you to assert that the target value includes the specified value(s).
      * It is useful for verifying that an array, string, or object contains certain elements or properties.
      *
+     * @since 0.1.2
      * @alias include
      * @example
      * ```typescript

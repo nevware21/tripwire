@@ -19,7 +19,7 @@ import { isStrictNullOrUndefined, objHasOwnProperty } from "@nevware21/ts-utils"
  * @param this - The current {@link IAssertScope} assertion scope.
  * @param theSymbol - The symbol property to check.
  * @returns The new "instance" (object) to be used as the `this` for the chained operations.
- * @throws {@link AssertionFailure} if the current value does not have the specified symbol property.
+ * @throws An {@link AssertionFailure} if the current value does not have the specified symbol property.
  */
 export function hasSymbolFunc(theSymbol: symbol): SymbolFn {
     return function (this: IAssertScope, evalMsg?: MsgSource): IPropertyResultOp {
@@ -41,8 +41,8 @@ export function hasSymbolFunc(theSymbol: symbol): SymbolFn {
  * @param value - The expected value of the property.
  * @param evalMsg - The message to display if the assertion fails.
  * @returns The new "instance" (object) to be used as the `this` for the chained operations.
- * @throws {@link AssertionFailure} if the current value does not have the specified own property.
- * @throws {@link AssertionFailure} if the property value does not match the expected value.
+ * @throws An {@link AssertionFailure} if the current value does not have the specified own property.
+ * @throws An {@link AssertionFailure} if the property value does not match the expected value.
  */
 export function hasOwnSymbolFunc(theSymbol: symbol): SymbolFn {
     return function (this: IAssertScope, evalMsg?: MsgSource): IPropertyResultOp {
