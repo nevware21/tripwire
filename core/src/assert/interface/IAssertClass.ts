@@ -1382,42 +1382,167 @@ export interface IAssertClass<AssertInst extends IAssertInst = IAssertInst> {
     includes<T>(value: T, match: any, initMsg?: MsgSource): AssertInst;
 
     /**
-     * Asserts that the provided value has the specified property. If the value does
-     * not have the property, it throws an {@link AssertionFailure} with the given message.
+     * Asserts that the provided value has the specified property. Optionally checks the property value
+     * using loose equality (==). If the value does not have the property or the value doesn't match,
+     * it throws an {@link AssertionFailure} with the given message.
      *
      * @param target - The value to evaluate.
      * @param name - The name of the property to check for.
+     * @param value - Optional. The expected value of the property (uses loose equality).
      * @param initMsg - The message to display if the assertion fails.
      * @asserts That the `value` has the specified property and throws {@link AssertionFailure} if it does not.
+     * @since 0.1.0 - Property existence check. 0.1.5 - Added optional value parameter.
      * @example
      * ```typescript
      * assert.hasProperty({ a: 1, b: 2 }, "a"); // Passes
-     * assert.hasProperty({ a: 1, b: 2 }, "b"); // Passes
      * assert.hasProperty({ a: 1, b: 2 }, "c"); // Throws AssertionFailure
-     * assert.hasProperty([1, 2, 3], "length"); // Passes
-     * assert.hasProperty([1, 2, 3], "nomatch"); // Throws AssertionFailure
+     * assert.hasProperty({ a: 1 }, "a", 1); // Passes
+     * assert.hasProperty({ a: 1 }, "a", "1"); // Passes (loose equality)
+     * assert.hasProperty({ a: 1 }, "a", 2); // Throws AssertionFailure
      * ```
      */
-    hasProperty<T>(target: T, name: string, value?: T[keyof T] | undefined, initMsg?: MsgSource): AssertInst;
+    hasProperty<T>(target: T, name: string, value?: any, initMsg?: MsgSource): AssertInst;
 
     /**
      * Asserts that the provided value has the specified own property (i.e., a
-     * property that is not inherited). If the value does not have the own property,
+     * property that is not inherited). Optionally checks the property value using
+     * loose equality (==). If the value does not have the own property or the value
+     * doesn't match, it throws an {@link AssertionFailure} with the given message.
+     *
+     * @param target - The value to evaluate.
+     * @param name - The name of the own property to check for.
+     * @param value - Optional. The expected value of the property (uses loose equality).
+     * @param initMsg - The message to display if the assertion fails.
+     * @asserts That the `value` has the specified own property and throws {@link AssertionFailure} if it does not.
+     * @since 0.1.0 - Property existence check. 0.1.5 - Added optional value parameter.
+     * @example
+     * ```typescript
+     * assert.hasOwnProperty({ a: 1, b: 2 }, "a"); // Passes
+     * assert.hasOwnProperty({ a: 1, b: 2 }, "c"); // Throws AssertionFailure
+     * assert.hasOwnProperty(Object.create({ a: 1 }), "a"); // Throws AssertionFailure
+     * assert.hasOwnProperty({ a: 1 }, "a", 1); // Passes
+     * assert.hasOwnProperty({ a: 1 }, "a", 2); // Throws AssertionFailure
+     * ```
+     */
+    hasOwnProperty<T>(target: T, name: string, value?: any, initMsg?: MsgSource): AssertInst;
+
+    /**
+     * Asserts that the provided value does NOT have the specified property, or if a value is provided,
+     * that the property value does NOT match using loose equality (==).
+     *
+     * @param target - The value to evaluate.
+     * @param name - The name of the property to check for.
+     * @param value - Optional. The value that should NOT match (uses loose equality).
+     * @param initMsg - The message to display if the assertion fails.
+     * @asserts That the `value` does not have the specified property (or value doesn't match) and throws {@link AssertionFailure} if it does.
+     * @since 0.1.5
+     * @example
+     * ```typescript
+     * assert.notHasProperty({ a: 1 }, "b"); // Passes
+     * assert.notHasProperty({ a: 1 }, "a"); // Throws AssertionFailure
+     * assert.notHasProperty({ a: 1 }, "a", 2); // Passes
+     * assert.notHasProperty({ a: 1 }, "a", 1); // Throws AssertionFailure
+     * ```
+     */
+    notHasProperty<T>(target: T, name: string, value?: any, initMsg?: MsgSource): AssertInst;
+
+    /**
+     * Asserts that the provided value does NOT have the specified own property, or if a value is provided,
+     * that the own property value does NOT match using loose equality (==).
+     *
+     * @param target - The value to evaluate.
+     * @param name - The name of the own property to check for.
+     * @param value - Optional. The value that should NOT match (uses loose equality).
+     * @param initMsg - The message to display if the assertion fails.
+     * @asserts That the `value` does not have the specified own property (or value doesn't match) and throws {@link AssertionFailure} if it does.
+     * @since 0.1.5
+     * @example
+     * ```typescript
+     * assert.notHasOwnProperty({ a: 1 }, "b"); // Passes
+     * assert.notHasOwnProperty({ a: 1 }, "a"); // Throws AssertionFailure
+     * assert.notHasOwnProperty({ a: 1 }, "a", 2); // Passes
+     * assert.notHasOwnProperty({ a: 1 }, "a", 1); // Throws AssertionFailure
+     * ```
+     */
+    notHasOwnProperty<T>(target: T, name: string, value?: any, initMsg?: MsgSource): AssertInst;
+
+    /**
+     * Asserts that the provided value has the specified property with a value that matches
+     * using deep equality. If the value does not have the property or the deep value doesn't match,
+     * it throws an {@link AssertionFailure} with the given message.
+     *
+     * @param target - The value to evaluate.
+     * @param name - The name of the property to check for.
+     * @param value - The expected value of the property (uses deep equality).
+     * @param initMsg - The message to display if the assertion fails.
+     * @asserts That the `value` has the specified property with matching deep value and throws {@link AssertionFailure} if it does not.
+     * @since 0.1.5
+     * @example
+     * ```typescript
+     * assert.hasDeepProperty({ a: { b: 1 } }, "a", { b: 1 }); // Passes
+     * assert.hasDeepProperty({ arr: [1, 2, 3] }, "arr", [1, 2, 3]); // Passes
+     * assert.hasDeepProperty({ a: { b: 1 } }, "a", { b: 2 }); // Throws AssertionFailure
+     * ```
+     */
+    hasDeepProperty<T>(target: T, name: string, value: any, initMsg?: MsgSource): AssertInst;
+
+    /**
+     * Asserts that the provided value does NOT have the specified property with a value that matches
+     * using deep equality.
+     *
+     * @param target - The value to evaluate.
+     * @param name - The name of the property to check for.
+     * @param value - The value that should NOT match (uses deep equality).
+     * @param initMsg - The message to display if the assertion fails.
+     * @asserts That the `value` does not have the specified property with matching deep value and throws {@link AssertionFailure} if it does.
+     * @since 0.1.5
+     * @example
+     * ```typescript
+     * assert.notHasDeepProperty({ a: { b: 1 } }, "c", { b: 2 }); // Passes
+     * assert.notHasDeepProperty({ a: { b: 1 } }, "a", { b: 2 }); // Passes
+     * assert.notHasDeepProperty({ a: { b: 1 } }, "a", { b: 1 }); // Throws AssertionFailure
+     * ```
+     */
+    notHasDeepProperty<T>(target: T, name: string, value: any, initMsg?: MsgSource): AssertInst;
+
+    /**
+     * Asserts that the provided value has the specified own property with a value that matches
+     * using deep equality. If the value does not have the own property or the deep value doesn't match,
      * it throws an {@link AssertionFailure} with the given message.
      *
      * @param target - The value to evaluate.
      * @param name - The name of the own property to check for.
+     * @param value - The expected value of the property (uses deep equality).
      * @param initMsg - The message to display if the assertion fails.
-     * @asserts That the `value` has the specified own property and throws {@link AssertionFailure} if it does not.
+     * @asserts That the `value` has the specified own property with matching deep value and throws {@link AssertionFailure} if it does not.
+     * @since 0.1.5
      * @example
      * ```typescript
-     * assert.hasOwnProperty({ a: 1, b: 2 }, "a"); // Passes
-     * assert.hasOwnProperty({ a: 1, b: 2 }, "b"); // Passes
-     * assert.hasOwnProperty({ a: 1, b: 2 }, "c"); // Throws AssertionFailure
-     * assert.hasOwnProperty(Object.create({ a: 1 }), "a"); // Throws AssertionFailure
+     * assert.hasDeepOwnProperty({ a: { b: 1 } }, "a", { b: 1 }); // Passes
+     * assert.hasDeepOwnProperty({ arr: [1, 2, 3] }, "arr", [1, 2, 3]); // Passes
+     * assert.hasDeepOwnProperty(Object.create({ a: 1 }), "a", { b: 1 }); // Throws AssertionFailure
      * ```
      */
-    hasOwnProperty<T>(target: T, name: string, value?: T[keyof T] | undefined, initMsg?: MsgSource): AssertInst;
+    hasDeepOwnProperty<T>(target: T, name: string, value: any, initMsg?: MsgSource): AssertInst;
+
+    /**
+     * Asserts that the provided value does NOT have the specified own property with a value that matches
+     * using deep equality.
+     *
+     * @param target - The value to evaluate.
+     * @param name - The name of the own property to check for.
+     * @param value - The value that should NOT match (uses deep equality).
+     * @param initMsg - The message to display if the assertion fails.
+     * @asserts That the `value` does not have the specified own property with matching deep value and throws {@link AssertionFailure} if it does.
+     * @since 0.1.5
+     * @example
+     * ```typescript
+     * assert.notHasDeepOwnProperty({ a: { b: 1 } }, "c", { b: 1 }); // Passes
+     * assert.notHasDeepOwnProperty({ a: { b: 1 } }, "a", { b: 2 }); // Passes
+     * assert.notHasDeepOwnProperty({ a: { b: 1 } }, "a", { b: 1 }); // Throws AssertionFailure
+     * ```
+     */
+    notHasDeepOwnProperty<T>(target: T, name: string, value: any, initMsg?: MsgSource): AssertInst;
 
     /**
      * Asserts that the given value is greater than the expected value.

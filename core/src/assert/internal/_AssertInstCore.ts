@@ -15,16 +15,16 @@ import { _AssertInstBase } from "./_AssertInstBase";
 /**
  * @internal
  * @ignore
- * Flag to ensure that the core instance class has dynamically had it's
- * functions added to it's prototype.
+ * Flag to ensure that the core instance class has dynamically had its
+ * functions added to its prototype.
  */
 let _assertCoreFuncsAdded = false;
 
 /**
  * @internal
  * @ignore
- * Flag to ensure that the empty instance class has dynamically had it's
- * functions added to it's prototype.
+ * Flag to ensure that the empty instance class has dynamically had its
+ * functions added to its prototype.
  */
 // let _assertEmptyFuncsAdded = false;
 

@@ -51,7 +51,7 @@ describe("expect.has", () => {
 
         checkError(() => {
             expect({ a: 1, b: 2 }).has.own.property("c");
-        }, "expected {a:1,b:2} to have it's own \"c\" property");
+        }, "expected {a:1,b:2} to have its own \"c\" property");
     });
 });
 

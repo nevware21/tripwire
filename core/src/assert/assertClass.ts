@@ -19,7 +19,7 @@ import { isEmptyFunc } from "./funcs/isEmpty";
 import { IAssertClassDef } from "./interface/IAssertClassDef";
 import { matchFunc } from "./funcs/match";
 import { isErrorFunc, throwsFunc } from "./funcs/throws";
-import { hasPropertyFunc } from "./funcs/hasProperty";
+import { hasPropertyFunc, hasOwnPropertyFunc, hasDeepPropertyFunc, hasDeepOwnPropertyFunc } from "./funcs/hasProperty";
 import { AssertionError, AssertionFailure } from "./assertionError";
 import { createContext } from "./scopeContext";
 import { createAssertScope } from "./assertScope";
@@ -227,7 +227,13 @@ export function createAssert(): IAssertClass {
         match: { scopeFn: matchFunc, nArgs: 2 },
 
         hasProperty: { scopeFn: hasPropertyFunc, nArgs: 3 },
-        hasOwnProperty: { scopeFn: createExprAdapter("own.property"), nArgs: 3 },
+        hasOwnProperty: { scopeFn: hasOwnPropertyFunc, nArgs: 3 },
+        notHasProperty: { scopeFn: createExprAdapter("not", hasPropertyFunc), nArgs: 3 },
+        notHasOwnProperty: { scopeFn: createExprAdapter("not", hasOwnPropertyFunc), nArgs: 3 },
+        hasDeepProperty: { scopeFn: hasDeepPropertyFunc, nArgs: 3 },
+        notHasDeepProperty: { scopeFn: createExprAdapter("not", hasDeepPropertyFunc), nArgs: 3 },
+        hasDeepOwnProperty: { scopeFn: hasDeepOwnPropertyFunc, nArgs: 3 },
+        notHasDeepOwnProperty: { scopeFn: createExprAdapter("not", hasDeepOwnPropertyFunc), nArgs: 3 },
 
         // Numeric comparison operations
         isAbove: { scopeFn: aboveFunc, nArgs: 2 },
@@ -339,7 +345,7 @@ export function addAssertFuncs(target: any, funcs: { [key: string]: AssertClassD
 }
 
 function _extractInitMsg(theArgs: any[], numArgs?: number, mIdx?: number): string {
-    // Extract the message if it's present to be passed to the scope context
+    // Extract the message if its present to be passed to the scope context
     let msg: string;
     if (!isUndefined(mIdx)) {
         if (mIdx >= 0) {

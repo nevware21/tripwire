@@ -798,7 +798,7 @@ export interface IChaiAssert {
     notProperty<T>(object: T, property: string, /* keyof T */ message?: MsgSource): void;
 
     /**
-     * Asserts that object does not have it's own property named by property.
+     * Asserts that object does not have its own property named by property.
      *
      * T   Type of object.
      * @param object   Container object.
@@ -842,7 +842,7 @@ export interface IChaiAssert {
     propertyVal<T, V>(object: T, property: string, /* keyof T */ value: V, message?: MsgSource): void;
 
     /**
-     * Asserts that object has it's own property named by property with value given by value.
+     * Asserts that object has its own property named by property with value given by value.
      *
      * T   Type of object.
      * V   Type of value.
@@ -870,7 +870,7 @@ export interface IChaiAssert {
     notDeepOwnPropertyVal<T, V>(object: T, property: string, value: V, message?: MsgSource): void;
     
     /**
-     * Asserts that object does not have it's own property named by property with value given by value.
+     * Asserts that object does not have its own property named by property with value given by value.
      *
      * T   Type of object.
      * V   Type of value.
