@@ -80,8 +80,8 @@ function _createChaiAssert(): IChaiAssert {
         isNaN: "is.nan",
         isNotNaN: "is.not.nan",
 
-        exists: notImplemented, // TODO: Implement exists in tripwire core
-        notExists: notImplemented, // TODO: Implement notExists in tripwire core
+        exists: "to.exist",
+        notExists: "to.not.exist",
         isUndefined: "is.undefined",
         isDefined: "is.not.undefined",
         isFunction: "is.function",

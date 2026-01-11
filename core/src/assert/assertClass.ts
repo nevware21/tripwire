@@ -216,13 +216,10 @@ export function createAssert(): IAssertClass {
         isFinite: createExprAdapter("is.finite"),
         isNotFinite: createExprAdapter("not.is.finite"),
 
-        /**
-         * @since 0.1.5
-         */
+        exists: createExprAdapter("to.exist"),
+        notExists: createExprAdapter("not.to.exist"),
+
         isInstanceOf: { scopeFn: instanceOfFunc, nArgs: 2 },
-        /**
-         * @since 0.1.5
-         */
         isNotInstanceOf: { scopeFn: createExprAdapter("not", instanceOfFunc), nArgs: 2 },
             
         throws: { scopeFn: throwsFunc, nArgs: 3 },
