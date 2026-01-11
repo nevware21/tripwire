@@ -201,14 +201,14 @@ function _pruneStack(stackDetail: IParsedStack, newStack: IParsedStack, funcName
 
             if (pos != -1) {
                 // The first line of the current stack exists in the new stack
-                // Therefore we can use the current stack as it's a subset of the new stack
+                // Therefore we can use the current stack as its a subset of the new stack
                 return stackDetail;
             }
         }
 
         if (newStack.lines.length > 0 && stackDetail.lines.indexOf(newStack.lines[0]) != -1) {
             // The first line of the new stack exists in the current stack
-            // Therefore we can use the new stack as it's a subset of the current stack
+            // Therefore we can use the new stack as its a subset of the current stack
             return newStack;
         }
 

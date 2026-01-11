@@ -39,7 +39,7 @@ export interface IAssertClassDef {
      * (to the assert class function) are expected so that the next argument (if present) can
      * be treated as the `initMsg` value which is assigned to the underlying `expect`
      * {@link IAssertScope} instance as this provides for a more descriptive error message on
-     * assertion failure as the underlying evaluation function can provide it's own "default"
+     * assertion failure as the underlying evaluation function can provide its own "default"
      * message.  If the number of arguments is less then the `nArgs` value then all arguments
      * are passed to the {@link IScopeFn} `scopeFn`.
      *

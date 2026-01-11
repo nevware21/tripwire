@@ -46,6 +46,21 @@ function _isPropertyDescriptor(value: any): value is PropertyDescriptor {
     return result;
 }
 
+function _checkPropertyExists(target: any, name: string | symbol | number): boolean {
+    if (isArray(target) || isObject(target)) {
+        return name in target;
+    } else if (isPrimitive(target) || isStrictNullOrUndefined(target)) {
+        return false;
+    }
+
+    try {
+        return name in target;
+    } catch {
+        // if target is a primitive that cannot be boxed, e.g. a symbol
+        return false;
+    }
+}
+
 export function _assertHasProperty(context: IScopeContext, name: string | symbol | number, evalMsg: MsgSource): void {
     let value = context.value;
 
@@ -77,7 +92,7 @@ function _assertHasOwnPropertyDescriptor(context: IScopeContext, name: string | 
 
     let desc = !isStrictNullOrUndefined(value) ? objGetOwnPropertyDescriptor(value, name) : null;
 
-    context.eval(!!desc, evalMsg || "expected {value} to have it's own {propertyDescriptor} property descriptor");
+    context.eval(!!desc, evalMsg || "expected {value} to have its own {propertyDescriptor} property descriptor");
 
     return desc;
 }
@@ -101,7 +116,7 @@ function _assertHasPropertyDescriptor(context: IScopeContext, name: string | sym
  */
 export function _assertHasOwnProperty(context: IScopeContext, name: string | symbol | number, evalMsg: MsgSource): void {
     context.set("property", name);
-    context.eval(objHasOwnProperty(context.value, name), evalMsg || "expected {value} to have it's own {property} property");
+    context.eval(objHasOwnProperty(context.value, name), evalMsg || "expected {value} to have its own {property} property");
 }
 
 /**
@@ -119,10 +134,30 @@ export function hasPropertyFunc(this: IAssertScope, name: string | symbol | numb
     let scope = this;
     let context = scope.context;
 
-    _assertHasProperty(context, name, evalMsg);
     if (arguments.length > 1) {
-        // Check the value
-        scope.newScope(context.value[name]).exec(equalsFunc, [ value, evalMsg ]);
+        // When a value is provided, we need to check both property existence AND value equality
+        // as a single atomic operation. This ensures that negation works correctly:
+        // - Positive: property exists AND value equals expected
+        // - Negated: property doesn't exist OR value doesn't equal expected
+        context.set("property", name);
+        if (!(isString(name) || isSymbol(name) || isNumber(name))) {
+            context.fail("expected {property} to be a string, symbol, or number");
+        }
+        
+        // First check if property exists (but don't fail the assertion yet)
+        let target = context.value;
+        let exists = _checkPropertyExists(target, name);
+        
+        if (exists) {
+            // Property exists - check the value using the negation-aware scope
+            scope.newScope(target[name]).exec(equalsFunc, [ value, evalMsg ]);
+        } else {
+            // Property doesn't exist - fail the assertion
+            context.eval(false, evalMsg || "expected {value} to have a {property} property");
+        }
+    } else {
+        // No value provided, just check property existence
+        _assertHasProperty(context, name, evalMsg);
     }
 
     return propertyResultOp(scope, context.value[name]);
@@ -143,10 +178,21 @@ export function hasOwnPropertyFunc(this: IAssertScope, name: string | symbol | n
     let scope = this;
     let context = scope.context;
 
-    _assertHasOwnProperty(context, name, evalMsg);
     if (arguments.length > 1) {
-        // Check the value
-        scope.newScope(context.value[name]).exec(equalsFunc, [ value, evalMsg ]);
+        // When a value is provided, check both property existence AND value equality atomically
+        context.set("property", name);
+        let exists = objHasOwnProperty(context.value, name);
+        
+        if (exists) {
+            // Own property exists - check the value using the negation-aware scope
+            scope.newScope(context.value[name]).exec(equalsFunc, [ value, evalMsg ]);
+        } else {
+            // Own property doesn't exist - fail the assertion
+            context.eval(false, evalMsg || "expected {value} to have its own {property} property");
+        }
+    } else {
+        // No value provided, just check own property existence
+        _assertHasOwnProperty(context, name, evalMsg);
     }
 
     return propertyResultOp(scope, context.value[name]);
@@ -167,10 +213,26 @@ export function hasDeepPropertyFunc(this: IAssertScope, name: string | symbol | 
     let scope = this;
     let context = scope.context;
 
-    _assertHasProperty(context, name, evalMsg);
     if (arguments.length > 1) {
-        // Check the value
-        scope.newScope(context.value[name]).exec(deepEqualsFunc, [ value, evalMsg ]);
+        // When a value is provided, check property existence first without failing
+        context.set("property", name);
+        if (!(isString(name) || isSymbol(name) || isNumber(name))) {
+            context.fail("expected {property} to be a string, symbol, or number");
+        }
+        
+        let target = context.value;
+        let exists = _checkPropertyExists(target, name);
+        
+        if (exists) {
+            // Property exists - check the value using deep equality with negation-aware scope
+            scope.newScope(target[name]).exec(deepEqualsFunc, [ value, evalMsg ]);
+        } else {
+            // Property doesn't exist - fail the assertion
+            context.eval(false, evalMsg || "expected {value} to have a {property} property");
+        }
+    } else {
+        // No value provided, just check property existence
+        _assertHasProperty(context, name, evalMsg);
     }
 
     return propertyResultOp(scope, context.value[name]);
@@ -191,10 +253,21 @@ export function hasDeepOwnPropertyFunc(this: IAssertScope, name: string | symbol
     let scope = this;
     let context = scope.context;
 
-    _assertHasOwnProperty(context, name, evalMsg);
     if (arguments.length > 1) {
-        // Check the value
-        scope.newScope(context.value[name]).exec(deepEqualsFunc, [ value, evalMsg ]);
+        // When a value is provided, check own property existence first without failing
+        context.set("property", name);
+        let exists = objHasOwnProperty(context.value, name);
+        
+        if (exists) {
+            // Own property exists - check the value using deep equality with negation-aware scope
+            scope.newScope(context.value[name]).exec(deepEqualsFunc, [ value, evalMsg ]);
+        } else {
+            // Own property doesn't exist - fail the assertion
+            context.eval(false, evalMsg || "expected {value} to have its own {property} property");
+        }
+    } else {
+        // No value provided, just check own property existence
+        _assertHasOwnProperty(context, name, evalMsg);
     }
 
     return propertyResultOp(scope, context.value[name]);

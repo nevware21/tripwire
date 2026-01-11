@@ -126,7 +126,7 @@ describe("hasOwnPropertyFunc", () => {
 
         checkError(() => {
             hasOwnPropertyFunc.call(scope, "hello");
-        }, "expected null to have it's own \"hello\" property");
+        }, "expected null to have its own \"hello\" property");
     });
 
     it("undefined", () => {
@@ -135,7 +135,7 @@ describe("hasOwnPropertyFunc", () => {
 
         checkError(() => {
             hasOwnPropertyFunc.call(scope, "darkness");
-        }, "expected undefined to have it's own \"darkness\" property");
+        }, "expected undefined to have its own \"darkness\" property");
     });
 });
 
@@ -214,7 +214,7 @@ describe("hasDeepOwnPropertyFunc", () => {
 
         checkError(() => {
             hasDeepOwnPropertyFunc.call(scope, "hello");
-        }, "expected null to have it's own \"hello\" property");
+        }, "expected null to have its own \"hello\" property");
     });
 
     it("undefined", () => {
@@ -223,6 +223,6 @@ describe("hasDeepOwnPropertyFunc", () => {
 
         checkError(() => {
             hasDeepOwnPropertyFunc.call(scope, "darkness");
-        }, "expected undefined to have it's own \"darkness\" property");
+        }, "expected undefined to have its own \"darkness\" property");
     });
 });
