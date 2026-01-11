@@ -508,30 +508,30 @@ describe("assert", function () {
         }, "blah: not expected NaN to be NaN");
     });
 
-    // it("exists", function() {
-    //     var meeber = "awesome";
-    //     var iDoNotExist: any;
+    it("exists", function() {
+        var meeber = "awesome";
+        var iDoNotExist: any;
 
-    //     assert.exists(meeber);
-    //     assert.exists(0);
-    //     assert.exists(false);
-    //     assert.exists("");
+        assert.exists(meeber);
+        assert.exists(0);
+        assert.exists(false);
+        assert.exists("");
 
-    //     err(function (){
-    //         assert.exists(iDoNotExist, "blah");
-    //     }, "blah: expected undefined to exist");
-    // });
+        err(function (){
+            assert.exists(iDoNotExist, "blah");
+        }, "blah: expected undefined to exist");
+    });
 
-    // it("notExists", function() {
-    //     var meeber = "awesome";
-    //     var iDoNotExist: any;
+    it("notExists", function() {
+        var meeber = "awesome";
+        var iDoNotExist: any;
 
-    //     assert.notExists(iDoNotExist);
+        assert.notExists(iDoNotExist);
 
-    //     err(function (){
-    //         assert.notExists(meeber, "blah");
-    //     }, "blah: expected \"awesome\" to not exist");
-    // });
+        err(function (){
+            assert.notExists(meeber, "blah");
+        }, "blah: not expected \"awesome\" to exist");
+    });
 
     it("isUndefined", function() {
         assert.isUndefined(undefined);

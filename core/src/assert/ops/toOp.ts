@@ -17,6 +17,7 @@ import { matchFunc } from "../funcs/match";
 import { includeOp } from "./includeOp";
 import { strictlyOp } from "./strictlyOp";
 import { deepOp } from "./deepOp";
+import { existsFunc } from "../funcs/exists";
 
 export function toOp<R>(scope: IAssertScope): IToOp<R> {
 
@@ -31,7 +32,8 @@ export function toOp<R>(scope: IAssertScope): IToOp<R> {
         contains: { propFn: includeOp },
         strictly: { propFn: strictlyOp },
         match: { scopeFn: matchFunc },
-        throw: { scopeFn: throwsFunc }
+        throw: { scopeFn: throwsFunc },
+        exist: { scopeFn: existsFunc }
     };
     
     return scope.createOperation(props);

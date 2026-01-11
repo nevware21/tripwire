@@ -14,6 +14,7 @@ import { IIncludeOp } from "./IIncludeOp";
 import { IIsOp } from "./IIsOp";
 import { INotOp } from "./INotOp";
 import { IStrictlyOp } from "./IStrictlyOp";
+import { AssertFn } from "../funcs/AssertFn";
 
 /**
  * Represents an interface for operations that can be performed on an assertion scope.
@@ -22,6 +23,21 @@ import { IStrictlyOp } from "./IStrictlyOp";
  * @template R - The type of the result of the operation.
  */
 export interface IToOp<R> extends INotOp<IToOp<R>> {
+
+    /**
+     * Asserts that the target exists (is not null and not undefined).
+     *
+     * @since 0.1.5
+     * @example
+     * ```typescript
+     * expect(0).to.exist();          // Passes - 0 is not null or undefined
+     * expect("").to.exist();         // Passes - empty string exists
+     * expect(false).to.exist();      // Passes - false exists
+     * expect(null).to.not.exist();   // Passes - null does not exist
+     * expect(undefined).to.not.exist(); // Passes - undefined does not exist
+     * ```
+     */
+    exist: AssertFn<R>;
 
     /**
      * Provides access to operations that can be performed on the assertion scope,

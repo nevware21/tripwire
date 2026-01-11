@@ -1134,6 +1134,44 @@ export interface IAssertClass<AssertInst extends IAssertInst = IAssertInst> {
     isNotFinite(value: any, initMsg?: MsgSource): AssertInst;
 
     /**
+     * Asserts that the given value exists (is not null and not undefined).
+     *
+     * @since 0.1.5
+     * @param value - The value to check.
+     * @param initMsg - The message to display if the assertion fails.
+     * @asserts That the `value` is not null and not undefined and throws {@link AssertionFailure} if it is.
+     * @example
+     * ```typescript
+     * assert.exists(0); // Passes - 0 is not null or undefined
+     * assert.exists(""); // Passes - empty string exists
+     * assert.exists(false); // Passes - false exists
+     * assert.exists([]); // Passes - arrays exist
+     * assert.exists({}); // Passes - objects exist
+     * assert.exists(null); // Throws AssertionFailure
+     * assert.exists(undefined); // Throws AssertionFailure
+     * ```
+     */
+    exists(value: any, initMsg?: MsgSource): AssertInst;
+
+    /**
+     * Asserts that the given value does not exist (is null or undefined).
+     *
+     * @since 0.1.5
+     * @param value - The value to check.
+     * @param initMsg - The message to display if the assertion fails.
+     * @asserts That the `value` is null or undefined and throws {@link AssertionFailure} if it is not.
+     * @example
+     * ```typescript
+     * assert.notExists(null); // Passes
+     * assert.notExists(undefined); // Passes
+     * assert.notExists(0); // Throws AssertionFailure
+     * assert.notExists(""); // Throws AssertionFailure
+     * assert.notExists(false); // Throws AssertionFailure
+     * ```
+     */
+    notExists(value: any, initMsg?: MsgSource): AssertInst;
+
+    /**
      * Asserts that the given value's type matches the expected type string.
      * Uses the JavaScript `typeof` operator for type comparison.
      *
