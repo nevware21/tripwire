@@ -1545,6 +1545,157 @@ export interface IAssertClass<AssertInst extends IAssertInst = IAssertInst> {
     notHasDeepOwnProperty<T>(target: T, name: string, value: any, initMsg?: MsgSource): AssertInst;
 
     /**
+     * Asserts that the provided value has the specified nested property using dot notation
+     * (e.g., "a.b.c"). Optionally checks the property value using loose equality (==).
+     * If the value does not have the nested property or the value doesn't match,
+     * it throws an {@link AssertionFailure} with the given message.
+     *
+     * @param target - The value to evaluate.
+     * @param path - The dot-separated path to the property (e.g., "a.b.c").
+     * @param value - Optional. The expected value of the property (uses loose equality).
+     * @param initMsg - The message to display if the assertion fails.
+     * @asserts That the `value` has the specified nested property and throws {@link AssertionFailure} if it does not.
+     * @since 0.1.5
+     * @example
+     * ```typescript
+     * assert.nestedProperty({ a: { b: { c: 1 } } }, "a.b.c"); // Passes
+     * assert.nestedProperty({ a: { b: 2 } }, "a.b.c"); // Throws AssertionFailure
+     * assert.nestedProperty({ a: { b: { c: 1 } } }, "a.b.c", 1); // Passes
+     * assert.nestedProperty({ a: { b: { c: 1 } } }, "a.b.c", "1"); // Passes (loose equality)
+     * assert.nestedProperty({ a: { b: { c: 1 } } }, "a.b.c", 2); // Throws AssertionFailure
+     * ```
+     */
+    nestedProperty<T>(target: T, path: string, value?: any, initMsg?: MsgSource): AssertInst;
+
+    /**
+     * Asserts that the provided value does NOT have the specified nested property using dot notation,
+     * or if a value is provided, that the nested property value does NOT match using loose equality (==).
+     *
+     * @param target - The value to evaluate.
+     * @param path - The dot-separated path to the property (e.g., "a.b.c").
+     * @param value - Optional. The value that should NOT match (uses loose equality).
+     * @param initMsg - The message to display if the assertion fails.
+     * @asserts That the `value` does not have the specified nested property (or value doesn't match) and throws {@link AssertionFailure} if it does.
+     * @since 0.1.5
+     * @example
+     * ```typescript
+     * assert.notNestedProperty({ a: { b: 2 } }, "a.b.c"); // Passes
+     * assert.notNestedProperty({ a: { b: { c: 1 } } }, "a.b.c"); // Throws AssertionFailure
+     * assert.notNestedProperty({ a: { b: { c: 1 } } }, "a.b.c", 2); // Passes
+     * assert.notNestedProperty({ a: { b: { c: 1 } } }, "a.b.c", 1); // Throws AssertionFailure
+     * ```
+     */
+    notNestedProperty<T>(target: T, path: string, value?: any, initMsg?: MsgSource): AssertInst;
+
+    /**
+     * Asserts that the provided value has the specified nested property with a value that matches
+     * using deep equality.
+     *
+     * @param target - The value to evaluate.
+     * @param path - The dot-separated path to the property (e.g., "a.b.c").
+     * @param value - Optional. The expected value of the property (uses deep equality).
+     * @param initMsg - The message to display if the assertion fails.
+     * @asserts That the `value` has the specified nested property with matching deep value and throws {@link AssertionFailure} if it does not.
+     * @since 0.1.5
+     * @example
+     * ```typescript
+     * assert.deepNestedProperty({ a: { b: { c: { d: 1 } } } }, "a.b.c"); // Passes
+     * assert.deepNestedProperty({ a: { b: { c: { d: 1 } } } }, "a.b.c", { d: 1 }); // Passes
+     * assert.deepNestedProperty({ a: { b: { c: [1, 2, 3] } } }, "a.b.c", [1, 2, 3]); // Passes
+     * assert.deepNestedProperty({ a: { b: { c: { d: 1 } } } }, "a.b.c", { d: 2 }); // Throws AssertionFailure
+     * ```
+     */
+    deepNestedProperty<T>(target: T, path: string, value?: any, initMsg?: MsgSource): AssertInst;
+
+    /**
+     * Asserts that the provided value does NOT have the specified nested property with a value that matches
+     * using deep equality.
+     *
+     * @param target - The value to evaluate.
+     * @param path - The dot-separated path to the property (e.g., "a.b.c").
+     * @param value - Optional. The value that should NOT match (uses deep equality).
+     * @param initMsg - The message to display if the assertion fails.
+     * @asserts That the `value` does not have the specified nested property with matching deep value and throws {@link AssertionFailure} if it does.
+     * @since 0.1.5
+     * @example
+     * ```typescript
+     * assert.notDeepNestedProperty({ a: { b: { c: { d: 1 } } } }, "a.b.d"); // Passes (property doesn't exist)
+     * assert.notDeepNestedProperty({ a: { b: { c: { d: 1 } } } }, "a.b.d", { d: 1 }); // Passes (property doesn't exist)
+     * assert.notDeepNestedProperty({ a: { b: { c: { d: 1 } } } }, "a.b.c", { d: 2 }); // Passes (value doesn't match)
+     * assert.notDeepNestedProperty({ a: { b: { c: { d: 1 } } } }, "a.b.c", { d: 1 }); // Throws AssertionFailure
+     * ```
+     */
+    notDeepNestedProperty<T>(target: T, path: string, value?: any, initMsg?: MsgSource): AssertInst;
+
+    /**
+     * Asserts that the value contains the expected using nested property matching.
+     * Each property in the expected is matched against the value using dot notation.
+     *
+     * @param value - The object to search in.
+     * @param expected - The object with properties to match (can use dot notation for keys).
+     * @param initMsg - The message to display if the assertion fails.
+     * @asserts That the `value` contains the `expected` using nested property matching and throws {@link AssertionFailure} if it does not.
+     * @since 0.1.5
+     * @example
+     * ```typescript
+     * assert.nestedInclude({ a: { b: { c: 1 } } }, { 'a.b.c': 1 }); // Passes
+     * assert.nestedInclude({ a: { b: { c: 1 } }, d: 2 }, { 'a.b': { c: 1 } }); // Passes
+     * assert.nestedInclude({ a: { b: { c: 1 } } }, { 'a.b.c': 2 }); // Throws AssertionFailure
+     * ```
+     */
+    nestedInclude<T>(value: T, expected: any, initMsg?: MsgSource): AssertInst;
+
+    /**
+     * Asserts that the value does NOT contain the expected using nested property matching.
+     *
+     * @param value - The object to search in.
+     * @param expected - The object with properties to match (can use dot notation for keys).
+     * @param initMsg - The message to display if the assertion fails.
+     * @asserts That the `value` does not contain the `expected` using nested property matching and throws {@link AssertionFailure} if it does.
+     * @since 0.1.5
+     * @example
+     * ```typescript
+     * assert.notNestedInclude({ a: { b: { c: 1 } } }, { 'a.b.c': 2 }); // Passes
+     * assert.notNestedInclude({ a: { b: { c: 1 } } }, { 'a.b.c': 1 }); // Throws AssertionFailure
+     * ```
+     */
+    notNestedInclude<T>(value: T, expected: any, initMsg?: MsgSource): AssertInst;
+
+    /**
+     * Asserts that the value contains the expected using deep nested property matching.
+     * Each property in the expected is deeply compared against the value.
+     *
+     * @param value - The object to search in.
+     * @param expected - The object with properties to match (can use dot notation for keys).
+     * @param initMsg - The message to display if the assertion fails.
+     * @asserts That the `value` contains the `match` using deep nested property matching and throws {@link AssertionFailure} if it does not.
+     * @since 0.1.5
+     * @example
+     * ```typescript
+     * assert.deepNestedInclude({ a: { b: { c: { d: 1 } } } }, { 'a.b.c': { d: 1 } }); // Passes
+     * assert.deepNestedInclude({ a: { b: { c: [1, 2, 3] } } }, { 'a.b.c': [1, 2, 3] }); // Passes
+     * assert.deepNestedInclude({ a: { b: { c: { d: 1 } } } }, { 'a.b.c': { d: 2 } }); // Throws AssertionFailure
+     * ```
+     */
+    deepNestedInclude<T>(value: T, expected: any, initMsg?: MsgSource): AssertInst;
+
+    /**
+     * Asserts that the value does NOT contain the expected using deep nested property matching.
+     *
+     * @param value - The object to search in.
+     * @param expected - The object with properties to match (can use dot notation for keys).
+     * @param initMsg - The message to display if the assertion fails.
+     * @asserts That the `value` does not contain the `expected` using deep nested property matching and throws {@link AssertionFailure} if it does.
+     * @since 0.1.5
+     * @example
+     * ```typescript
+     * assert.notDeepNestedInclude({ a: { b: { c: { d: 1 } } } }, { 'a.b.c': { d: 2 } }); // Passes
+     * assert.notDeepNestedInclude({ a: { b: { c: { d: 1 } } } }, { 'a.b.c': { d: 1 } }); // Throws AssertionFailure
+     * ```
+     */
+    notDeepNestedInclude<T>(value: T, expected: any, initMsg?: MsgSource): AssertInst;
+
+    /**
      * Asserts that the given value is greater than the expected value.
      *
      * This method checks if the provided value is numerically greater than the expected value.

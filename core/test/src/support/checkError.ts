@@ -190,7 +190,7 @@ function _colorizeActual(actual: string, expected: string): string {
     return gray(result);
 }
 
-export function checkError(fn: () => void, match?: string | RegExp | Object, checkFrames?: boolean): void {
+export function checkError(fn: () => void, match: string | RegExp | Object, checkFrames?: boolean): void {
     let stackStart: Function | undefined = undefined;
     if (!assertConfig.fullStack) {
         stackStart = checkError;

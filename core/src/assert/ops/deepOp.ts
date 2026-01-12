@@ -16,6 +16,7 @@ import { deepStrictlyOp } from "./strictlyOp";
 import { hasDeepPropertyFunc, hasPropertyDescriptorFunc } from "../funcs/hasProperty";
 import { AssertScopeFuncDefs } from "../interface/IAssertInst";
 import { IAssertScope } from "../interface/IAssertScope";
+import { deepNestedOp } from "./nestedOp";
 
 export function deepOp<R>(scope: IAssertScope): IDeepOp<R> {
     scope.context.set(DEEP, true);
@@ -32,7 +33,8 @@ export function deepOp<R>(scope: IAssertScope): IDeepOp<R> {
         contains: { propFn: includeOp },
         property: { scopeFn: hasDeepPropertyFunc },
         propertyDescriptor: { scopeFn: hasPropertyDescriptorFunc },
-        own: { propFn: ownDeepOp }
+        own: { propFn: ownDeepOp },
+        nested: { propFn: deepNestedOp }
     };
 
     return scope.createOperation(props);

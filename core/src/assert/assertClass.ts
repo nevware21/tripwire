@@ -20,6 +20,7 @@ import { IAssertClassDef } from "./interface/IAssertClassDef";
 import { matchFunc } from "./funcs/match";
 import { isErrorFunc, throwsFunc } from "./funcs/throws";
 import { hasPropertyFunc, hasOwnPropertyFunc, hasDeepPropertyFunc, hasDeepOwnPropertyFunc } from "./funcs/hasProperty";
+import { hasNestedPropertyFunc, hasDeepNestedPropertyFunc, nestedIncludeFunc, deepNestedIncludeFunc } from "./funcs/nested";
 import { AssertionError, AssertionFailure } from "./assertionError";
 import { createContext } from "./scopeContext";
 import { createAssertScope } from "./assertScope";
@@ -234,6 +235,16 @@ export function createAssert(): IAssertClass {
         notHasDeepProperty: { scopeFn: createExprAdapter("not", hasDeepPropertyFunc), nArgs: 3 },
         hasDeepOwnProperty: { scopeFn: hasDeepOwnPropertyFunc, nArgs: 3 },
         notHasDeepOwnProperty: { scopeFn: createExprAdapter("not", hasDeepOwnPropertyFunc), nArgs: 3 },
+
+        // Nested property operations
+        nestedProperty: { scopeFn: hasNestedPropertyFunc, nArgs: 3 },
+        notNestedProperty: { scopeFn: createExprAdapter("not", hasNestedPropertyFunc), nArgs: 3 },
+        deepNestedProperty: { scopeFn: hasDeepNestedPropertyFunc, nArgs: 3 },
+        notDeepNestedProperty: { scopeFn: createExprAdapter("not", hasDeepNestedPropertyFunc), nArgs: 3 },
+        nestedInclude: { scopeFn: nestedIncludeFunc, nArgs: 2 },
+        notNestedInclude: { scopeFn: createExprAdapter("not", nestedIncludeFunc), nArgs: 2 },
+        deepNestedInclude: { scopeFn: deepNestedIncludeFunc, nArgs: 2 },
+        notDeepNestedInclude: { scopeFn: createExprAdapter("not", deepNestedIncludeFunc), nArgs: 2 },
 
         // Numeric comparison operations
         isAbove: { scopeFn: aboveFunc, nArgs: 2 },

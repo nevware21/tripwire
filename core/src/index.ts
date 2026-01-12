@@ -33,6 +33,7 @@ import { IAnyOp } from "./assert/interface/ops/IAnyOp";
 import { IThrowOp } from "./assert/interface/ops/IThrowOp";
 import { IToOp } from "./assert/interface/ops/IToOp";
 import { ThrowFn } from "./assert/interface/funcs/ThrowFn";
+import { INestedOp } from "./assert/interface/ops/INestedOp";
 import { INotOp } from "./assert/interface/ops/INotOp";
 import { IHasOp } from "./assert/interface/ops/IHasOp";
 import { IIsTypeOp } from "./assert/interface/ops/ITypeOp";
@@ -75,9 +76,10 @@ export {
     IAllOp, IAnyOp, IAssertClass, IAssertClassDef, IAssertConfig, IAssertConfigDefaults,
     IAssertInst, IAssertInstCore, IAssertInstHandlers, IAssertScope, IAssertScopeFuncDef,
     IDeepOp, IEqualOp, IExtendedAssert, IExtendedAssertInst, IFormatCtx, IFormattedValue,
-    IFormatter, IFormatterOptions, IHasOp, IIncludeOp, IIsOp, IIsTypeOp, IKeysOp, INotOp,
-    INumericOp, IOwnOp, IPropertyResultOp, IRemovable, IScopeContext, IScopeContextOverrides,
-    IScopePropFn, IStrictlyOp, IThrowOp, IToOp, PropertyDescriptorFn, PropertyFn
+    IFormatter, IFormatterOptions, IHasOp, IIncludeOp, IIsOp, IIsTypeOp, IKeysOp, INestedOp,
+    INotOp, INumericOp, IOwnOp, IPropertyResultOp, IRemovable, IScopeContext,
+    IScopeContextOverrides, IScopePropFn, IStrictlyOp, IThrowOp, IToOp, PropertyDescriptorFn,
+    PropertyFn
 };
 
 /**

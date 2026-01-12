@@ -11,6 +11,7 @@ import { SymbolFn } from "../funcs/SymbolFn";
 import { IAllOp } from "./IAllOp";
 import { IAnyOp } from "./IAnyOp";
 import { IOwnOp } from "./IOwnOp";
+import { INestedOp } from "./INestedOp";
 
 /**
  * Provides the 'has' operation for the assert scope.
@@ -61,6 +62,16 @@ export interface IHasOp<R> {
      * ```
      */
     own: IOwnOp<R>;
+
+    /**
+     * Provides nested property operations using dot notation.
+     * @example
+     * ```typescript
+     * expect({ a: { b: { c: 1 } } }).has.nested.property('a.b.c');
+     * expect({ a: { b: { c: 1 } } }).to.have.nested.property('a.b.c', 1);
+     * ```
+     */
+    nested: INestedOp<R>;
 
     /**
      * Asserts that the object has the [Symbol.iterator](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol/iterator)

@@ -12,6 +12,7 @@ import { IStrictlyOp } from "./IStrictlyOp";
 import { IEqualOp } from "./IEqualOp";
 import { IIncludeOp } from "./IIncludeOp";
 import { INotOp } from "./INotOp";
+import { INestedOp } from "./INestedOp";
 
 
 /**
@@ -64,4 +65,9 @@ export interface IDeepOp<R> extends INotOp<IDeepOp<R>>, IEqualOp<R> {
      * by the current assertion context value.
      */
     own: IOwnOp<R>;
+
+    /**
+     * Provides nested property operations using dot notation with deep equality.
+     */
+    nested: INestedOp<R>;
 }

@@ -107,10 +107,10 @@ function _createChaiAssert(): IChaiAssert {
         notInclude: { scopeFn: createExprAdapter("not.include"), nArgs: 2 },
         deepInclude: { scopeFn: createExprAdapter("deep.include"), nArgs: 2 },
         notDeepInclude: { scopeFn: createExprAdapter("not.deep.include"), nArgs: 2 },
-        nestedInclude: notImplemented,
-        notNestedInclude: notImplemented,
-        deepNestedInclude: notImplemented,
-        notDeepNestedInclude: notImplemented,
+        nestedInclude: { scopeFn: createExprAdapter("has.nested.include"), nArgs: 2 },
+        notNestedInclude: { scopeFn: createExprAdapter("not.has.nested.include"), nArgs: 2 },
+        deepNestedInclude: { scopeFn: createExprAdapter("deep.nested.include"), nArgs: 2 },
+        notDeepNestedInclude: { scopeFn: createExprAdapter("not.deep.nested.include"), nArgs: 2 },
         ownInclude: notImplemented, //{ scopeFn: createExprAdapter("own.include"), nArgs: 2 },
         notOwnInclude: notImplemented, //{ scopeFn: createExprAdapter("not.own.include"), nArgs: 2 },
         deepOwnInclude: notImplemented, //{ scopeFn: createExprAdapter("deep.own.include"), nArgs: 2 },
@@ -214,12 +214,12 @@ function _createChaiAssert(): IChaiAssert {
         doesNotHaveAnyDeepKeys: notImplemented,
         doesNotHaveAllDeepKeys: notImplemented,
 
-        nestedProperty: notImplemented,
-        notNestedProperty: notImplemented,
-        nestedPropertyVal: notImplemented,
-        notNestedPropertyVal: notImplemented,
-        deepNestedPropertyVal: notImplemented,
-        notDeepNestedPropertyVal: notImplemented
+        nestedProperty: { scopeFn: createExprAdapter("has.nested.property"), nArgs: 2 },
+        notNestedProperty: { scopeFn: createExprAdapter("not.has.nested.property"), nArgs: 2 },
+        nestedPropertyVal: { scopeFn: createExprAdapter("has.nested.property"), nArgs: 3 },
+        notNestedPropertyVal: { scopeFn: createExprAdapter("not.has.nested.property"), nArgs: 3 },
+        deepNestedPropertyVal: { scopeFn: createExprAdapter("deep.nested.property"), nArgs: 3 },
+        notDeepNestedPropertyVal: { scopeFn: createExprAdapter("not.deep.nested.property"), nArgs: 3 }
     };
 
     function chaiResponseHandler(response: any) {

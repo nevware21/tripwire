@@ -36,7 +36,8 @@ const DEFAULT_CONFIG: IAssertConfig = (/* $__PURE__ */{
         finalizeFn: undefined,
         formatters: []
     },
-    circularMsg: () => cyan("[<Circular>]")
+    circularMsg: () => cyan("[<Circular>]"),
+    showDiff: true
 });
 
 function _mergeConfig(target: any, source: any) {
