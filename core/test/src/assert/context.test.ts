@@ -23,7 +23,7 @@ describe("context", () => {
         assert.equal(ctx.value, 1, "value should be 1");
         assert.equal(ctx.getMessage(), "first", "message should be first");
         assert.equal(ctx.getDetails().actual, 1, "actual should be 1");
-        assert.equal(objKeys(ctx.getDetails()).length, 1, "details should have 1 key - " + JSON.stringify(ctx.getDetails()));
+        assert.equal(objKeys(ctx.getDetails()).length, 2, "details should have 2 keys - " + JSON.stringify(ctx.getDetails()));
     });
 
     it("new child value", () => {
@@ -33,12 +33,12 @@ describe("context", () => {
         assert.equal(ctx.value, 1, "value should be 1");
         assert.equal(ctx.getMessage(), "first", "message should be first");
         assert.equal(ctx.getDetails().actual, 1, "actual should be 1");
-        assert.equal(objKeys(ctx.getDetails()).length, 1, "details should have 1 key");
+        assert.equal(objKeys(ctx.getDetails()).length, 2, "details should have 2 keys - " + JSON.stringify(ctx.getDetails()));
 
         assert.equal(ctx2.value, 2, "value should be 2");
         assert.equal(ctx2.getMessage(), "first", "message should be first");
         assert.equal(ctx2.getDetails().actual, 2, "actual should be 2");
-        assert.equal(objKeys(ctx2.getDetails()).length, 1, "details should have 1 key");
+        assert.equal(objKeys(ctx2.getDetails()).length, 2, "details should have 2 keys - " + JSON.stringify(ctx2.getDetails()));
     });
 
     it("getDetails", () => {
@@ -46,8 +46,8 @@ describe("context", () => {
         let details = ctx.getDetails();
         
         assert.equal(details.actual, 1, "actual should be 1");
-        assert.equal(objKeys(details).length, 1, "details should have 1 key");
-        assert.deepEqual(details, { actual: 1 }, "details should be { actual: 1 }");
+        assert.equal(objKeys(details).length, 2, "details should have 2 keys - " + JSON.stringify(details));
+        assert.deepEqual(details, { actual: 1, showDiff: true });
     });
 
     describe("eval", () => {
@@ -149,19 +149,17 @@ describe("context", () => {
                 let details = ctx.getDetails();
                 
                 assert.equal(details.actual, 1, "actual should be 1");
-                assert.equal(objKeys(details).length, 1, "details should have 1 key");
-                assert.deepEqual(details, { actual: 1 }, "details should be { actual: 1 }");
+                assert.equal(objKeys(details).length, 2, "details should have 2 keys");
+                assert.deepEqual(details, { actual: 1, showDiff: true });
     
                 let newDetails = newCtx.getDetails();
                 
                 assert.equal(newDetails.actual, 2, "actual should be 2");
-                assert.equal(objKeys(newDetails).length, 2, "details should have 2 keys");
+                assert.equal(objKeys(newDetails).length, 3, "details should have 3 keys");
                 checkError(() => {
                     assert.deepEqual(newDetails, { actual: 1, hello: "darkness" }, "details should be { actual: 1, hello: darkness }");
-                }, "details should be { actual: 1, hello: darkness }: expected {hello:\"darkness\",actual:2} to deeply equal {actual:1,hello:\"darkness\"}");
+                }, "details should be { actual: 1, hello: darkness }: expected {hello:\"darkness\",actual:2,showDiff:true} to deeply equal {actual:1,hello:\"darkness\"}");
             });
-        
-        
         });
     });
 });

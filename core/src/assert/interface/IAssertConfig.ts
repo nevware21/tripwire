@@ -108,6 +108,14 @@ export interface IAssertConfig {
      * ```
      */
     circularMsg?: () => string;
+
+    /**
+     * Indicates whether to show the difference between expected and actual values
+     * in the error message.
+     * @default true
+     * @since 0.1.5
+     */
+    showDiff?: boolean;
 }
 
 export interface IAssertConfigDefaults extends IAssertConfig {

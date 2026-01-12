@@ -196,6 +196,108 @@ describe("AssertionFailure", () => {
         assert.deepEqual(error.props.actual, [1, 2, 3]);
         assert.deepEqual(error.props.nested.array, [{ a: 1 }, { b: 2 }]);
     });
+
+    describe("readonly properties", () => {
+        it("should have readonly actual property", () => {
+            let error = new AssertionFailure("Test", { actual: 5, expected: 10 });
+            assert.equal(error.actual, 5);
+            // Verify it's accessible
+            assert.ok(error.actual !== undefined);
+        });
+
+        it("should have readonly expected property", () => {
+            let error = new AssertionFailure("Test", { actual: 5, expected: 10 });
+            assert.equal(error.expected, 10);
+            // Verify it's accessible
+            assert.ok(error.expected !== undefined);
+        });
+
+        it("should have readonly operator property", () => {
+            let error = new AssertionFailure("Test", { operator: "equal" });
+            assert.equal(error.operator, "equal");
+        });
+
+        it("should have readonly showDiff property", () => {
+            let error = new AssertionFailure("Test", { showDiff: true });
+            assert.equal(error.showDiff, true);
+        });
+
+        it("should handle undefined actual", () => {
+            let error = new AssertionFailure("Test", { expected: 10 });
+            assert.equal(error.actual, undefined);
+        });
+
+        it("should handle undefined expected", () => {
+            let error = new AssertionFailure("Test", { actual: 5 });
+            assert.equal(error.expected, undefined);
+        });
+
+        it("should handle undefined operator", () => {
+            let error = new AssertionFailure("Test", { actual: 5, expected: 10 });
+            assert.equal(error.operator, undefined);
+        });
+
+        it("should handle undefined showDiff", () => {
+            let error = new AssertionFailure("Test", { actual: 5, expected: 10 });
+            assert.equal(error.showDiff, undefined);
+        });
+
+        it("should preserve actual when null", () => {
+            let error = new AssertionFailure("Test", { actual: null, expected: "something" });
+            assert.equal(error.actual, null);
+        });
+
+        it("should preserve expected when null", () => {
+            let error = new AssertionFailure("Test", { actual: "something", expected: null });
+            assert.equal(error.expected, null);
+        });
+
+        it("should handle showDiff as false", () => {
+            let error = new AssertionFailure("Test", { showDiff: false });
+            assert.equal(error.showDiff, false);
+        });
+
+        it("should handle all properties together", () => {
+            let error = new AssertionFailure("Test", {
+                actual: { a: 1 },
+                expected: { a: 2 },
+                operator: "deepEqual",
+                showDiff: true
+            });
+            assert.deepEqual(error.actual, { a: 1 });
+            assert.deepEqual(error.expected, { a: 2 });
+            assert.equal(error.operator, "deepEqual");
+            assert.equal(error.showDiff, true);
+        });
+
+        it("should handle properties with primitive values", () => {
+            let error = new AssertionFailure("Test", {
+                actual: 42,
+                expected: "42",
+                operator: "strictEqual",
+                showDiff: true
+            });
+            assert.equal(error.actual, 42);
+            assert.equal(error.expected, "42");
+            assert.equal(error.operator, "strictEqual");
+            assert.equal(error.showDiff, true);
+        });
+
+        it("should handle properties with complex objects", () => {
+            let actualObj = { nested: { value: [1, 2, 3] } };
+            let expectedObj = { nested: { value: [1, 2, 4] } };
+            let error = new AssertionFailure("Test", {
+                actual: actualObj,
+                expected: expectedObj,
+                operator: "deepStrictEqual",
+                showDiff: true
+            });
+            assert.deepEqual(error.actual, actualObj);
+            assert.deepEqual(error.expected, expectedObj);
+            assert.equal(error.operator, "deepStrictEqual");
+            assert.equal(error.showDiff, true);
+        });
+    });
 });
 
 describe("AssertionFatal", () => {

@@ -150,7 +150,7 @@ export function hasPropertyFunc(this: IAssertScope, name: string | symbol | numb
         
         if (exists) {
             // Property exists - check the value using the negation-aware scope
-            scope.newScope(target[name]).exec(equalsFunc, [ value, evalMsg ]);
+            scope.newScope(target[name]).exec(equalsFunc, [ value, evalMsg || "expected {property} value {value} to equal {expected}" ]);
         } else {
             // Property doesn't exist - fail the assertion
             context.eval(false, evalMsg || "expected {value} to have a {property} property");
@@ -185,7 +185,7 @@ export function hasOwnPropertyFunc(this: IAssertScope, name: string | symbol | n
         
         if (exists) {
             // Own property exists - check the value using the negation-aware scope
-            scope.newScope(context.value[name]).exec(equalsFunc, [ value, evalMsg ]);
+            scope.newScope(context.value[name]).exec(equalsFunc, [ value, evalMsg || "expected {property} value {value} to equal {expected}" ]);
         } else {
             // Own property doesn't exist - fail the assertion
             context.eval(false, evalMsg || "expected {value} to have its own {property} property");
@@ -225,7 +225,7 @@ export function hasDeepPropertyFunc(this: IAssertScope, name: string | symbol | 
         
         if (exists) {
             // Property exists - check the value using deep equality with negation-aware scope
-            scope.newScope(target[name]).exec(deepEqualsFunc, [ value, evalMsg ]);
+            scope.newScope(target[name]).exec(deepEqualsFunc, [ value, evalMsg || "expected {property} value {value} to deeply equal {expected}" ]);
         } else {
             // Property doesn't exist - fail the assertion
             context.eval(false, evalMsg || "expected {value} to have a {property} property");
@@ -260,7 +260,7 @@ export function hasDeepOwnPropertyFunc(this: IAssertScope, name: string | symbol
         
         if (exists) {
             // Own property exists - check the value using deep equality with negation-aware scope
-            scope.newScope(context.value[name]).exec(deepEqualsFunc, [ value, evalMsg ]);
+            scope.newScope(context.value[name]).exec(deepEqualsFunc, [ value, evalMsg || "expected {property} value {value} to deeply equal {expected}" ]);
         } else {
             // Own property doesn't exist - fail the assertion
             context.eval(false, evalMsg || "expected {value} to have its own {property} property");

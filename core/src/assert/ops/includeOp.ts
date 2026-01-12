@@ -15,17 +15,17 @@ import { IAssertScope } from "../interface/IAssertScope";
 
 /**
  * Helper function to check if an array contains a deep equal item
- * @param haystack - The array to search in
- * @param needle - The item to search for
+ * @param items - The array to search in
+ * @param expected - The item to search for
  * @returns True if the item is found, false otherwise
  */
-function _deepIncludesArray(haystack: any[], needle: any[]): boolean {
-    for (let i = 0; i < haystack.length; i++) {
-        const item = haystack[i];
-        if (item.length === needle.length) {
+function _deepIncludesArray(items: any[], expected: any[]): boolean {
+    for (let i = 0; i < items.length; i++) {
+        const item = items[i];
+        if (item.length === expected.length) {
             let allEqual = true;
             for (let j = 0; j < item.length; j++) {
-                if (item[j] !== needle[j]) {
+                if (item[j] !== expected[j]) {
                     allEqual = false;
                     break;
                 }

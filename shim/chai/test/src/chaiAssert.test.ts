@@ -921,57 +921,54 @@ describe("assert", function () {
     //     }, "blah: expected { foo: { a: 1 }, bar: { b: 2 } } to not have deep property \"foo\" of { a: 1 }");
     // });
 
-    // it("nestedInclude and notNestedInclude", function() {
-    //     assert.nestedInclude({a: {b: ["x", "y"]}}, {"a.b[1]": "y"});
-    //     assert.notNestedInclude({a: {b: ["x", "y"]}}, {"a.b[1]": "x"});
-    //     assert.notNestedInclude({a: {b: ["x", "y"]}}, {"a.c": "y"});
+    it("nestedInclude and notNestedInclude", function() {
+        assert.nestedInclude({a: {b: ["x", "y"]}}, {"a.b[1]": "y"});
+        assert.notNestedInclude({a: {b: ["x", "y"]}}, {"a.b[1]": "x"});
+        assert.notNestedInclude({a: {b: ["x", "y"]}}, {"a.c": "y"});
 
-    //     assert.notNestedInclude({a: {b: [{x: 1}]}}, {"a.b[0]": {x: 1}});
+        assert.notNestedInclude({a: {b: [{x: 1}]}}, {"a.b[0]": {x: 1}});
 
-    //     assert.nestedInclude({".a": {"[b]": "x"}}, {"\\.a.\\[b\\]": "x"});
-    //     assert.notNestedInclude({".a": {"[b]": "x"}}, {"\\.a.\\[b\\]": "y"});
+        assert.nestedInclude({".a": {"[b]": "x"}}, {"\\.a.\\[b\\]": "x"});
+        assert.notNestedInclude({".a": {"[b]": "x"}}, {"\\.a.\\[b\\]": "y"});
 
-    //     err(function () {
-    //         assert.nestedInclude({a: {b: ["x", "y"]}}, {"a.b[1]": "x"}, "blah");
-    //     }, "blah: expected {a:{b:[\"x\",\"y\"]}} to have nested property 'a.b[1]' of \"x\", but got \"y\"");
+        err(function () {
+            assert.nestedInclude({a: {b: ["x", "y"]}}, {"a.b[1]": "x"}, "blah");
+        }, "blah: expected {a:{b:[\"x\",\"y\"]}} to have a nested property \"a.b[1]\" equal \"x\", but got \"y\"");
 
-    //     err(function () {
-    //         assert.nestedInclude({a: {b: ["x", "y"]}}, {"a.b[1]": "x"}, "blah");
-    //     }, "blah: expected {a:{b:[\"x\",\"y\"]}} to have nested property 'a.b[1]' of \"x\", but got \"y\"");
+        err(function () {
+            assert.nestedInclude({a: {b: ["x", "y"]}}, {"a.b[1]": "x"}, "blah");
+        }, "blah: expected {a:{b:[\"x\",\"y\"]}} to have a nested property \"a.b[1]\" equal \"x\", but got \"y\"");
+        err(function () {
+            assert.nestedInclude({a: {b: ["x", "y"]}}, {"a.c": "y"});
+        }, "expected {a:{b:[\"x\",\"y\"]}} to have a nested property \"a.c\"");
+        err(function () {
+            assert.notNestedInclude({a: {b: ["x", "y"]}}, {"a.b[1]": "y"}, "blah");
+        }, "blah: not expected {a:{b:[\"x\",\"y\"]}} to have a nested property \"a.b[1]\" equal \"y\"");
+    });
 
-    //     err(function () {
-    //         assert.nestedInclude({a: {b: ["x", "y"]}}, {"a.c": "y"});
-    //     }, "expected {a:{b:[\"x\",\"y\"]}} to have nested property 'a.c'");
+    it("deepNestedInclude and notDeepNestedInclude", function() {
+        assert.deepNestedInclude({a: {b: [{x: 1}]}}, {"a.b[0]": {x: 1}});
+        assert.notDeepNestedInclude({a: {b: [{x: 1}]}}, {"a.b[0]": {y: 2}});
+        assert.notDeepNestedInclude({a: {b: [{x: 1}]}}, {"a.c": {x: 1}});
 
-    //     err(function () {
-    //         assert.notNestedInclude({a: {b: ["x", "y"]}}, {"a.b[1]": "y"}, "blah");
-    //     }, "blah: expected {a:{b:[\"x\",\"y\"]}} to not have nested property 'a.b[1]' of \"y\"");
-    // });
+        assert.deepNestedInclude({".a": {"[b]": {x: 1}}}, {"\\.a.\\[b\\]": {x: 1}});
+        assert.notDeepNestedInclude({".a": {"[b]": {x: 1}}}, {"\\.a.\\[b\\]": {y: 2}});
 
-    // it("deepNestedInclude and notDeepNestedInclude", function() {
-    //     assert.deepNestedInclude({a: {b: [{x: 1}]}}, {"a.b[0]": {x: 1}});
-    //     assert.notDeepNestedInclude({a: {b: [{x: 1}]}}, {"a.b[0]": {y: 2}});
-    //     assert.notDeepNestedInclude({a: {b: [{x: 1}]}}, {"a.c": {x: 1}});
+        err(function () {
+            assert.deepNestedInclude({a: {b: [{x: 1}]}}, {"a.b[0]": {y: 2}}, "blah");
+        }, "blah: expected {a:{b:[{x:1}]}} to have a nested property \"a.b[0]\" deeply equal {y:2}, but got {x:1}");
 
-    //     assert.deepNestedInclude({".a": {"[b]": {x: 1}}}, {"\\.a.\\[b\\]": {x: 1}});
-    //     assert.notDeepNestedInclude({".a": {"[b]": {x: 1}}}, {"\\.a.\\[b\\]": {y: 2}});
+        err(function () {
+            assert.deepNestedInclude({a: {b: [{x: 1}]}}, {"a.b[0]": {y: 2}}, "blah");
+        }, "blah: expected {a:{b:[{x:1}]}} to have a nested property \"a.b[0]\" deeply equal {y:2}, but got {x:1}");
+        err(function () {
+            assert.deepNestedInclude({a: {b: [{x: 1}]}}, {"a.c": {x: 1}});
+        }, "expected {a:{b:[{x:1}]}} to have a nested property \"a.c\" deeply equal {x:1}");
 
-    //     err(function () {
-    //         assert.deepNestedInclude({a: {b: [{x: 1}]}}, {"a.b[0]": {y: 2}}, "blah");
-    //     }, "blah: expected {a:{b:[{x:1}]}} to have deep nested property 'a.b[0]' of { y: 2 }, but got { x: 1 }");
-
-    //     err(function () {
-    //         assert.deepNestedInclude({a: {b: [{x: 1}]}}, {"a.b[0]": {y: 2}}, "blah");
-    //     }, "blah: expected {a:{b:[{x:1}]}} to have deep nested property 'a.b[0]' of { y: 2 }, but got { x: 1 }");
-
-    //     err(function () {
-    //         assert.deepNestedInclude({a: {b: [{x: 1}]}}, {"a.c": {x: 1}});
-    //     }, "expected {a:{b:[{x:1}]}} to have deep nested property 'a.c'");
-
-    //     err(function () {
-    //         assert.notDeepNestedInclude({a: {b: [{x: 1}]}}, {"a.b[0]": {x: 1}}, "blah");
-    //     }, "blah: expected {a:{b:[{x:1}]}} to not have deep nested property 'a.b[0]' of { x: 1 }");
-    // });
+        err(function () {
+            assert.notDeepNestedInclude({a: {b: [{x: 1}]}}, {"a.b[0]": {x: 1}}, "blah");
+        }, "blah: not expected {a:{b:[{x:1}]}} to have a nested property \"a.b[0]\" deeply equal {x:1}");
+    });
 
     // it("ownInclude and notOwnInclude", function() {
     //     assert.ownInclude({a: 1}, {a: 1});
@@ -1479,32 +1476,32 @@ describe("assert", function () {
         assert.propertyVal(obj, "toString", Object.prototype.toString);
         assert.property(undefinedKeyObj, "foo");
         assert.propertyVal(undefinedKeyObj, "foo", undefined);
-        // assert.nestedProperty(obj, "foo.bar");
+        assert.nestedProperty(obj, "foo.bar");
         assert.notProperty(obj, "baz");
         assert.notProperty(obj, "foo.bar");
         assert.notPropertyVal(simpleObj, "foo", "flow");
         assert.notPropertyVal(simpleObj, "flow", "bar");
         assert.notPropertyVal(obj, "foo", {bar: "baz"});
-        // assert.notNestedProperty(obj, "foo.baz");
-        // assert.nestedPropertyVal(obj, "foo.bar", "baz");
-        // assert.notNestedPropertyVal(obj, "foo.bar", "flow");
-        // assert.notNestedPropertyVal(obj, "foo.flow", "baz");
+        assert.notNestedProperty(obj, "foo.baz");
+        assert.nestedPropertyVal(obj, "foo.bar", "baz");
+        assert.notNestedPropertyVal(obj, "foo.bar", "flow");
+        assert.notNestedPropertyVal(obj, "foo.flow", "baz");
 
         err(function () {
             assert.property(obj, "baz", "blah");
         }, "blah: expected {foo:{bar:\"baz\"}} to have a \"baz\" property");
 
-        // err(function () {
-        //     assert.nestedProperty(obj, "foo.baz", "blah");
-        // }, "blah: expected { foo: { bar: \"baz\" } } to have nested property 'foo.baz'");
+        err(function () {
+            assert.nestedProperty(obj, "foo.baz", "blah");
+        }, "blah: expected {foo:{bar:\"baz\"}} to have a nested property \"foo.baz\"");
 
         err(function () {
             assert.notProperty(obj, "foo", "blah");
         }, "blah: not expected {foo:{bar:\"baz\"}} to have a \"foo\" property");
 
-        // err(function () {
-        //     assert.notNestedProperty(obj, "foo.bar", "blah");
-        // }, "blah: expected { foo: { bar: \"baz\" } } to not have nested property 'foo.bar'");
+        err(function () {
+            assert.notNestedProperty(obj, "foo.bar", "blah");
+        }, "blah: not expected {foo:{bar:\"baz\"}} to have a nested property \"foo.bar\"");
 
         err(function () {
             assert.propertyVal(simpleObj, "foo", "ball", "blah");
@@ -1514,17 +1511,17 @@ describe("assert", function () {
             assert.propertyVal(simpleObj, "foo", undefined);
         }, /expected/);
 
-        // err(function () {
-        //     assert.nestedPropertyVal(obj, "foo.bar", "ball", "blah");
-        // }, "blah: expected { foo: { bar: \"baz\" } } to have nested property 'foo.bar' of \"ball\", but got \"baz\"");
+        err(function () {
+            assert.nestedPropertyVal(obj, "foo.bar", "ball", "blah");
+        }, "blah: expected {foo:{bar:\"baz\"}} to have a nested property \"foo.bar\" equal \"ball\", but got \"baz\"");
 
         err(function () {
             assert.notPropertyVal(simpleObj, "foo", "bar", "blah");
         }, /blah/);
 
-        // err(function () {
-        //     assert.notNestedPropertyVal(obj, "foo.bar", "baz", "blah");
-        // }, "blah: expected { foo: { bar: \"baz\" } } to not have nested property 'foo.bar' of \"baz\"");
+        err(function () {
+            assert.notNestedPropertyVal(obj, "foo.bar", "baz", "blah");
+        }, "blah: not expected {foo:{bar:\"baz\"}} to have a nested property \"foo.bar\" equal \"baz\"");
 
         err(function () {
             assert.property(null, "a", "blah");
@@ -1542,9 +1539,9 @@ describe("assert", function () {
             assert.propertyVal(dummyObj, "a", "2", "blah");
         }, /blah/);
 
-        // err(function () {
-        //     assert.nestedProperty({a:1}, {"a":"1"} as any, "blah");
-        // }, "blah: the argument to property must be a string when using nested syntax");
+        err(function () {
+            assert.nestedProperty({a:1}, {"a":"1"} as any, "blah");
+        }, "blah: expected {a:\"1\"} to be a string using nested syntax");
     });
 
     it("deepPropertyVal", function () {
@@ -1633,25 +1630,24 @@ describe("assert", function () {
         }, /blah/);
     });
 
-    // it("deepNestedPropertyVal", function () {
-    //     var obj = {a: {b: {c: 1}}};
-    //     assert.deepNestedPropertyVal(obj, "a.b", {c: 1});
-    //     assert.notDeepNestedPropertyVal(obj, "a.b", {c: 7});
-    //     assert.notDeepNestedPropertyVal(obj, "a.b", {z: 1});
-    //     assert.notDeepNestedPropertyVal(obj, "a.z", {c: 1});
+    it("deepNestedPropertyVal", function () {
+        var obj = {a: {b: {c: 1}}};
+        assert.deepNestedPropertyVal(obj, "a.b", {c: 1});
+        assert.notDeepNestedPropertyVal(obj, "a.b", {c: 7});
+        assert.notDeepNestedPropertyVal(obj, "a.b", {z: 1});
+        assert.notDeepNestedPropertyVal(obj, "a.z", {c: 1});
 
-    //     err(function () {
-    //         assert.deepNestedPropertyVal(obj, "a.b", {c: 7}, "blah");
-    //     }, "blah: expected { a: { b: { c: 1 } } } to have deep nested property 'a.b' of { c: 7 }, but got { c: 1 }");
+        err(function () {
+            assert.deepNestedPropertyVal(obj, "a.b", {c: 7}, "blah");
+        }, "blah: expected {a:{b:{c:1}}} to have a nested property \"a.b\" deeply equal {c:7}, but got {c:1}");
 
-    //     err(function () {
-    //         assert.deepNestedPropertyVal(obj, "a.z", {c: 1}, "blah");
-    //     }, "blah: expected { a: { b: { c: 1 } } } to have deep nested property 'a.z'");
-
-    //     err(function () {
-    //         assert.notDeepNestedPropertyVal(obj, "a.b", {c: 1}, "blah");
-    //     }, "blah: expected {a:{b:{c:1}}} to not have deep nested property \"a.b\" of {c:1}");
-    // });
+        err(function () {
+            assert.deepNestedPropertyVal(obj, "a.z", {c: 1}, "blah");
+        }, "blah: expected {a:{b:{c:1}}} to have a nested property \"a.z\"");
+        err(function () {
+            assert.notDeepNestedPropertyVal(obj, "a.b", {c: 1}, "blah");
+        }, "blah: not expected {a:{b:{c:1}}} to have a nested property \"a.b\" deeply equal {c:1}");
+    });
 
     it("throws / throw / Throw", function() {
         ["throws", "throw", "Throw"].forEach(function (throws) {

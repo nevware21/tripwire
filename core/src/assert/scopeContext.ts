@@ -73,7 +73,7 @@ function _createStackTracker(parentstack?: Function[]): Function[] {
 
 /**
  * Returns the scope context for the given value, if it is an {@link IAssertInst}
- * instance it will return it's context, if it's a {@link IAssertScope} it will
+ * instance it will return its context, if it's a {@link IAssertScope} it will
  * return the context of the scope, if it's already a context it will return itself.
  * Otherwise it will create a new context with the value.
  * @param value - The value to get the context for.
@@ -185,7 +185,8 @@ export function createContext<T>(value?: T, initMsg?: MsgSource, stackStart?: Fu
         getDetails: function () {
             let _this = this;
             let details: any = {
-                actual: _this.value
+                actual: _this.value,
+                showDiff: theOptions.v.showDiff
             };
             arrForEach(_this.keys(), (key) => {
                 details[key] = _this.get(key);
@@ -221,7 +222,8 @@ export function createContext<T>(value?: T, initMsg?: MsgSource, stackStart?: Fu
 
             // Use the scope context during error throwing
             return useScope(_this, () => {
-                throw new AssertionFailure(_this.getMessage(msg), causedBy, details || _this.getDetails(), theStack);
+                let theDetails = details || _this.getDetails();
+                throw new AssertionFailure(_this.getMessage(msg), causedBy, theDetails, theStack);
             });
         },
         setOp: function (opName: string) {

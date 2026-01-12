@@ -13,6 +13,7 @@ import { allOp, allOwnOp, anyOp, anyOwnOp } from "./allOp";
 import { AssertScopeFuncDefs } from "../interface/IAssertInst";
 import { IAssertScope } from "../interface/IAssertScope";
 import { hasOwnSymbolFunc, hasSymbolFunc } from "../funcs/hasSymbol";
+import { nestedOp } from "./nestedOp";
 
 export function hasOp<R>(scope: IAssertScope): IHasOp<R> {
     let props: AssertScopeFuncDefs<IHasOp<R>> = {
@@ -21,6 +22,7 @@ export function hasOp<R>(scope: IAssertScope): IHasOp<R> {
         property: { scopeFn: hasPropertyFunc },
         propertyDescriptor: { scopeFn: hasPropertyDescriptorFunc},
         own: { propFn: ownOp },
+        nested: { propFn: nestedOp },
         iterator: { scopeFn: hasSymbolFunc(Symbol.iterator) }
     };
     
@@ -34,6 +36,7 @@ export function hasOwnOp<R>(scope: IAssertScope): IHasOp<R> {
         property: { scopeFn: hasOwnPropertyFunc },
         propertyDescriptor: { scopeFn: hasOwnPropertyDescriptorFunc},
         own: { propFn: ownOp },
+        nested: { propFn: nestedOp },
         iterator: { scopeFn: hasOwnSymbolFunc(Symbol.iterator) }
     };
     

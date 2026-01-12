@@ -6,7 +6,10 @@
  * Licensed under the MIT license.
  */
 
-import { arrMap, arrSlice, asString, createCustomError, CustomErrorConstructor, getLazy, isArray, isError, isUndefined, newSymbol, objDefine, objDefineProps, objForEachKey, objKeys, strTrim } from "@nevware21/ts-utils";
+import {
+    arrMap, arrSlice, asString, createCustomError, CustomErrorConstructor, getLazy, isArray, isError,
+    newSymbol, objDefine, objDefineProps, objForEachKey, objKeys, strTrim
+} from "@nevware21/ts-utils";
 import { EMPTY_STRING } from "./internal/const";
 import { _formatValue } from "./internal/_formatValue";
 import { IParsedStack, parseStack } from "../internal/parseStack";
@@ -41,13 +44,28 @@ export interface AssertionError<T> extends Error {
 
     /**
      * The actual value that was seen
+     * @since 0.1.5
      */
     readonly actual?: any;
 
     /**
      * The value that was expected
+     * @since 0.1.5
      */
     readonly expected?: any;
+
+    /**
+     * The operator used in the assertion
+     * @since 0.1.5
+     */
+    readonly operator?: string;
+
+    /**
+     * Indicates whether to show the difference between expected and actual values
+     * in the error message.
+     * @since 0.1.5
+     */
+    readonly showDiff?: boolean;
 }
 
 /**
@@ -319,6 +337,22 @@ function _captureStackTrace(theError: Error, orgStackDetail: IParsedStack, stack
     return stackDetail;
 }
 
+function _setPropValue(target: any, prop: any, altProp?: any) {
+    try {
+        if (target.props && ((prop in target.props) || (altProp && (altProp in target.props)))) {
+            let value = target.props[altProp] || target.props[prop];
+
+            objDefine(target, prop, {
+                g: () => {
+                    return value;
+                }
+            });
+        }
+    } catch (e) {
+        // Ignore any errors that occur when trying to define the property
+    }
+}
+
 /**
  * @class
  * @hideconstructor
@@ -369,21 +403,10 @@ export const AssertionError = createCustomError<AssertionErrorConstructor<any>>(
 
     let _fullStack = self.stack;
 
-    if (self.props) {
-        objDefine(self, "actual", {
-            g: () => {
-                return self.props ? self.props.actual : undefined;
-            }
-        });
-        
-        if (!isUndefined(self.props.expected)) {
-            objDefine(self, "expected", {
-                g: () => {
-                    return self.props ? self.props.expected : undefined;
-                }
-            });
-        }
-    }
+    _setPropValue(self, "actual");
+    _setPropValue(self, "expected");
+    _setPropValue(self, "operator", "operation");
+    _setPropValue(self, "showDiff");
 
     objDefineProps(self, {
         fullStack: {
