@@ -187,7 +187,7 @@ describe("assert.sizeOf", () => {
             assert.sizeOf(new Set(), 0);
         });
 
-        it("should work with objects that have a custom size property", () => {
+        it("should work with objects that have a custom length property", () => {
             const customObj = { length: 5 };
             assert.sizeOf(customObj, 5);
         });
