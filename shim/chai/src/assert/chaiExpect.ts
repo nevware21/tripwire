@@ -1,4 +1,3 @@
-
 /*
  * @nevware21/tripwire
  * https://github.com/nevware21/tripwire

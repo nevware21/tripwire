@@ -2,7 +2,7 @@
  * @nevware21/tripwire
  * https://github.com/nevware21/tripwire
  *
- * Copyright (c) 2024 NevWare21 Solutions LLC
+ * Copyright (c) 2024-2026 NevWare21 Solutions LLC
  * Licensed under the MIT license.
  */
 
@@ -1900,6 +1900,104 @@ export interface IAssertClass<AssertInst extends IAssertInst = IAssertInst> {
      * ```
      */
     isNotWithin(value: number | Date, start: number | Date, finish: number | Date, initMsg?: MsgSource): AssertInst;
+
+    /**
+     * Asserts that the target has a length or size property equal to the given number.
+     *
+     * Works with arrays, strings, Maps, Sets, and any object with a length or size property.
+     *
+     * @since 0.1.5
+     * @param object - The object to check (array, string, Map, Set, or any object with length/size).
+     * @param length - The expected length or size.
+     * @param initMsg - The message to display if the assertion fails.
+     * @asserts That `object` has a length or size equal to `length` and throws {@link AssertionFailure} if it does not.
+     * @example
+     * ```typescript
+     * assert.lengthOf([1, 2, 3], 3); // Passes
+     * assert.lengthOf("hello", 5); // Passes
+     * assert.lengthOf(new Map([["a", 1]]), 1); // Passes
+     * assert.lengthOf(new Set([1, 2]), 2); // Passes
+     * assert.lengthOf([1, 2], 3); // Throws AssertionFailure
+     * ```
+     */
+    lengthOf<T extends { readonly length?: number | undefined } | { readonly size?: number | undefined }>(
+        object: T,
+        length: number,
+        initMsg?: MsgSource
+    ): AssertInst;
+
+    /**
+     * Asserts that the target does not have a length or size property equal to the given number.
+     *
+     * Works with arrays, strings, Maps, Sets, and any object with a length or size property.
+     * This is the inverse of {@link lengthOf}.
+     *
+     * @since 0.1.5
+     * @param object - The object to check (array, string, Map, Set, or any object with length/size).
+     * @param length - The length or size that the object should not have.
+     * @param initMsg - The message to display if the assertion fails.
+     * @asserts That `object` does not have a length or size equal to `length` and throws {@link AssertionFailure} if it does.
+     * @example
+     * ```typescript
+     * assert.notLengthOf([1, 2, 3], 2); // Passes
+     * assert.notLengthOf("hello", 4); // Passes
+     * assert.notLengthOf([1, 2], 2); // Throws AssertionFailure
+     * ```
+     */
+    notLengthOf<T extends { readonly length?: number | undefined } | { readonly size?: number | undefined }>(
+        object: T,
+        length: number,
+        initMsg?: MsgSource
+    ): AssertInst;
+
+    /**
+     * Asserts that the target has a size or length property equal to the given number.
+     *
+     * Works with arrays, strings, Maps, Sets, and any object with a length or size property.
+     *
+     * @since 0.1.5
+     * @param object - The object to check (array, string, Map, Set, or any object with length/size).
+     * @param length - The expected length or size.
+     * @param initMsg - The message to display if the assertion fails.
+     * @asserts That `object` has a length or size equal to `length` and throws {@link AssertionFailure} if it does not.
+     * @example
+     * ```typescript
+     * assert.sizeOf([1, 2, 3], 3); // Passes
+     * assert.sizeOf("hello", 5); // Passes
+     * assert.sizeOf(new Map([["a", 1]]), 1); // Passes
+     * assert.sizeOf(new Set([1, 2]), 2); // Passes
+     * assert.sizeOf([1, 2], 3); // Throws AssertionFailure
+     * ```
+     */
+    sizeOf<T extends { readonly length?: number | undefined } | { readonly size?: number | undefined }>(
+        object: T,
+        length: number,
+        initMsg?: MsgSource
+    ): AssertInst;
+
+    /**
+     * Asserts that the target does not have a size or length property equal to the given number.
+     *
+     * Works with arrays, strings, Maps, Sets, and any object with a length or size property.
+     * This is the inverse of {@link sizeOf}.
+     *
+     * @since 0.1.5
+     * @param object - The object to check (array, string, Map, Set, or any object with length/size).
+     * @param length - The length or size that the object should not have.
+     * @param initMsg - The message to display if the assertion fails.
+     * @asserts That `object` does not have a length or size equal to `length` and throws {@link AssertionFailure} if it does.
+     * @example
+     * ```typescript
+     * assert.notSizeOf([1, 2, 3], 2); // Passes
+     * assert.notSizeOf("hello", 4); // Passes
+     * assert.notSizeOf([1, 2], 2); // Throws AssertionFailure
+     * ```
+     */
+    notSizeOf<T extends { readonly length?: number | undefined } | { readonly size?: number | undefined }>(
+        object: T,
+        length: number,
+        initMsg?: MsgSource
+    ): AssertInst;
 }
 
 export type IExtendedAssert<T = any> = IAssertClass<IAssertInst & T> & T;

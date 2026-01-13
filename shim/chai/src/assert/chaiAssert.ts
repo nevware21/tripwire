@@ -2,7 +2,7 @@
  * @nevware21/tripwire
  * https://github.com/nevware21/tripwire
  *
- * Copyright (c) 2024 NevWare21 Solutions LLC
+ * Copyright (c) 2024-2026 NevWare21 Solutions LLC
  * Licensed under the MIT license.
  */
 
@@ -133,7 +133,7 @@ function _createChaiAssert(): IChaiAssert {
         notDeepPropertyVal: { scopeFn: createExprAdapter("not.deep.property"), nArgs: 3 },
         notDeepOwnPropertyVal: { scopeFn: createExprAdapter("not.deep.own.property"), nArgs: 3 },
 
-        lengthOf: notImplemented,
+        lengthOf: { scopeFn: createExprAdapter("has.lengthOf"), nArgs: 2 },
         throw: { scopeFn: createExprAdapter("throws"), nArgs: 3 },
         throws: { scopeFn: createExprAdapter("throws"), nArgs: 3 },
         Throw: { scopeFn: createExprAdapter("throws"), nArgs: 3 },
