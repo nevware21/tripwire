@@ -2,7 +2,7 @@
  * @nevware21/tripwire
  * https://github.com/nevware21/tripwire
  *
- * Copyright (c) 2024 NevWare21 Solutions LLC
+ * Copyright (c) 2024-2026 NevWare21 Solutions LLC
  * Licensed under the MIT license.
  */
 
@@ -14,6 +14,7 @@ import { AssertScopeFuncDefs } from "../interface/IAssertInst";
 import { IAssertScope } from "../interface/IAssertScope";
 import { hasOwnSymbolFunc, hasSymbolFunc } from "../funcs/hasSymbol";
 import { nestedOp } from "./nestedOp";
+import { lengthFunc } from "../funcs/length";
 
 export function hasOp<R>(scope: IAssertScope): IHasOp<R> {
     let props: AssertScopeFuncDefs<IHasOp<R>> = {
@@ -23,7 +24,9 @@ export function hasOp<R>(scope: IAssertScope): IHasOp<R> {
         propertyDescriptor: { scopeFn: hasPropertyDescriptorFunc},
         own: { propFn: ownOp },
         nested: { propFn: nestedOp },
-        iterator: { scopeFn: hasSymbolFunc(Symbol.iterator) }
+        iterator: { scopeFn: hasSymbolFunc(Symbol.iterator) },
+        lengthOf: { scopeFn: lengthFunc },
+        sizeOf: { scopeFn: lengthFunc }
     };
     
     return scope.createOperation(props);
@@ -37,7 +40,9 @@ export function hasOwnOp<R>(scope: IAssertScope): IHasOp<R> {
         propertyDescriptor: { scopeFn: hasOwnPropertyDescriptorFunc},
         own: { propFn: ownOp },
         nested: { propFn: nestedOp },
-        iterator: { scopeFn: hasOwnSymbolFunc(Symbol.iterator) }
+        iterator: { scopeFn: hasOwnSymbolFunc(Symbol.iterator) },
+        lengthOf: { scopeFn: lengthFunc },
+        sizeOf: { scopeFn: lengthFunc }
     };
     
     return scope.createOperation(props);

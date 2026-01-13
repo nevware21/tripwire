@@ -78,6 +78,20 @@ grunt lint lint-fix            # Lint with auto-fix
 - **var usage**: Allowed (for ES5 compatibility)
 - **const preference**: Not enforced
 
+### Copyright Headers
+- **New files**: Use current year only (e.g., `Copyright (c) 2026 NevWare21 Solutions LLC`)
+- **Edited files**: Use original year through current year (e.g., `Copyright (c) 2024-2026 NevWare21 Solutions LLC`)
+- All source files must include the standard copyright header:
+```typescript
+/*
+ * @nevware21/tripwire
+ * https://github.com/nevware21/tripwire
+ *
+ * Copyright (c) YYYY[-YYYY] NevWare21 Solutions LLC
+ * Licensed under the MIT license.
+ */
+```
+
 ### Coding Patterns
 - Support for both ES5 and ES6+ runtimes
 - Avoid ES6+ features in core implementation when targeting ES5

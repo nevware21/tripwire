@@ -1,3 +1,11 @@
+/*
+ * @nevware21/tripwire
+ * https://github.com/nevware21/tripwire
+ *
+ * Copyright (c) 2024 NevWare21 Solutions LLC
+ * Licensed under the MIT license.
+ */
+
 import { AssertionError, CHECK_INTERNAL_STACK_FRAME_REGEX, expect } from "@nevware21/tripwire";
 import { arrSlice, dumpObj, isFunction, strTrim } from "@nevware21/ts-utils";
 import { objForEachKey } from "@nevware21/ts-utils";

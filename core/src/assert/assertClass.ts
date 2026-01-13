@@ -35,6 +35,7 @@ import { deepEqualsFunc, deepStrictEqualsFunc, equalsFunc, strictEqualsFunc } fr
 import { aboveFunc, belowFunc, leastFunc, mostFunc, withinFunc } from "./ops/numericOp";
 import { typeOfFunc } from "./funcs/typeOf";
 import { instanceOfFunc } from "./funcs/instanceOf";
+import { lengthFunc } from "./funcs/length";
 
 /**
  * @internal
@@ -148,19 +149,19 @@ export function createAssert(): IAssertClass {
         isNotOk: "not.ok",                                                  // The `isNotOk` function is an alias for `not.truthy`
 
         equal: { scopeFn: equalsFunc, nArgs: 2 },
-        equals: { scopeFn: equalsFunc, nArgs: 2 },
+        equals: { alias: "equal" },
         strictEqual: { scopeFn: strictEqualsFunc, nArgs: 2 },
-        strictEquals: { scopeFn: strictEqualsFunc, nArgs: 2 },
+        strictEquals: { alias: "strictEqual" },
         notStrictEqual: { scopeFn: createExprAdapter("not", strictEqualsFunc), nArgs: 2 },
         deepEqual: { scopeFn: deepEqualsFunc, nArgs: 2 },
-        deepEquals: { scopeFn: deepEqualsFunc, nArgs: 2 },
+        deepEquals: { alias: "deepEqual" },
         deepStrictEqual: { scopeFn: deepStrictEqualsFunc, nArgs: 2 },
-        deepStrictEquals: { scopeFn: deepStrictEqualsFunc, nArgs: 2 },
+        deepStrictEquals: { alias: "deepStrictEqual" },
 
         notEqual: { scopeFn: createExprAdapter("not", equalsFunc), nArgs: 2 },
-        notEquals: { scopeFn: createExprAdapter("not", equalsFunc), nArgs: 2 },
+        notEquals: { alias: "notEqual" },
         notDeepEqual: { scopeFn: createExprAdapter("not", deepEqualsFunc), nArgs: 2 },
-        notDeepEquals: { scopeFn: createExprAdapter("not", deepEqualsFunc), nArgs: 2 },
+        notDeepEquals: { alias: "notDeepEqual" },
 
         isTrue: isStrictTrueFunc,
         isFalse: isStrictFalseFunc,
@@ -256,7 +257,13 @@ export function createAssert(): IAssertClass {
         isAtMost: { scopeFn: mostFunc, nArgs: 2 },
         isNotAtMost: { scopeFn: createExprAdapter("not", mostFunc), nArgs: 2 },
         isWithin: { scopeFn: withinFunc, nArgs: 3 },
-        isNotWithin: { scopeFn: createExprAdapter("not", withinFunc), nArgs: 3 }
+        isNotWithin: { scopeFn: createExprAdapter("not", withinFunc), nArgs: 3 },
+
+        // Length checking
+        lengthOf: { scopeFn: lengthFunc, nArgs: 2 },
+        notLengthOf: { scopeFn: createExprAdapter("not", lengthFunc), nArgs: 2 },
+        sizeOf: { alias: "lengthOf" },
+        notSizeOf: { alias: "notLengthOf" }
     };
 
     addAssertFuncs(assert, assertFuncs);

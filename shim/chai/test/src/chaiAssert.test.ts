@@ -1,3 +1,11 @@
+/*
+ * @nevware21/tripwire
+ * https://github.com/nevware21/tripwire
+ *
+ * Copyright (c) 2024-2026 NevWare21 Solutions LLC
+ * Licensed under the MIT license.
+ */
+
 /**
  * This is a modified version of the original Chai library tests to convert it
  * into TypeScript to ensure that the shim is type-safe and conforms to the
@@ -1416,42 +1424,42 @@ describe("assert", function () {
         }, "blah: not expected any key: [foo,baz], found: [foo,bar] (2 keys)");
     });
 
-    // it("lengthOf", function() {
-    //     assert.lengthOf([1,2,3], 3);
-    //     assert.lengthOf("foobar", 6);
+    it("lengthOf", function() {
+        assert.lengthOf([1,2,3], 3);
+        assert.lengthOf("foobar", 6);
 
-    //     err(function () {
-    //         assert.lengthOf("foobar", 5, "blah");
-    //     }, "blah: expected \"foobar\" to have a length of 5 but got 6");
+        err(function () {
+            assert.lengthOf("foobar", 5, "blah");
+        }, "blah: expected \"foobar\" to have a length of 5 but got 6");
 
-    //     err(function () {
-    //         assert.lengthOf(1 as any, 5);
-    //     }, "expected 1 to have property \"length\"");
+        err(function () {
+            assert.lengthOf(1 as any, 5);
+        }, "expected 1 to have property \"length\"");
 
-    //     assert.lengthOf(new Map(), 0);
+        assert.lengthOf(new Map(), 0);
 
-    //     var map = new Map();
-    //     map.set("a", 1);
-    //     map.set("b", 2);
+        var map = new Map();
+        map.set("a", 1);
+        map.set("b", 2);
 
-    //     assert.lengthOf(map, 2);
+        assert.lengthOf(map, 2);
 
-    //     err(function(){
-    //         assert.lengthOf(map, 3, "blah");
-    //     }, "blah: expected Map{ \"a\" => 1, \"b\" => 2 } to have a size of 3 but got 2");
+        err(function(){
+            assert.lengthOf(map, 3, "blah");
+        }, "blah: expected [Map:{}] to have a size of 3 but got 2");
 
-    //     assert.lengthOf(new Set(), 0);
+        assert.lengthOf(new Set(), 0);
 
-    //     var set = new Set();
-    //     set.add(1);
-    //     set.add(2);
+        var set = new Set();
+        set.add(1);
+        set.add(2);
 
-    //     assert.lengthOf(set, 2);
+        assert.lengthOf(set, 2);
 
-    //     err(function(){
-    //         assert.lengthOf(set, 3, "blah");
-    //     }, "blah: expected Set{ 1, 2 } to have a size of 3 but got 2");
-    // });
+        err(function(){
+            assert.lengthOf(set, 3, "blah");
+        }, "blah: expected [Set:{}] to have a size of 3 but got 2");
+    });
 
     it("match", function () {
         assert.match("foobar", /^foo/);
