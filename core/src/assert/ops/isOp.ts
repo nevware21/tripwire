@@ -26,6 +26,7 @@ import { hasSymbolFunc } from "../funcs/hasSymbol";
 import { aboveFunc, belowFunc, leastFunc, mostFunc, withinFunc } from "./numericOp";
 import { typeOfFunc } from "../funcs/typeOf";
 import { instanceOfFunc } from "../funcs/instanceOf";
+import { closeToFunc } from "../funcs/closeTo";
 
 export function isOp<R>(scope: IAssertScope): IIsOp<R> {
     let props:  AssertScopeFuncDefs<IIsOp<R>> = {
@@ -113,6 +114,10 @@ export function isOp<R>(scope: IAssertScope): IIsOp<R> {
         lte: { scopeFn: mostFunc },
         lessThanOrEqual: { scopeFn: mostFunc },
         within: { scopeFn: withinFunc },
+
+        // Approximate equality
+        closeTo: { scopeFn: closeToFunc },
+        approximately: { scopeFn: closeToFunc },
 
         // Type checking
         typeOf: { scopeFn: typeOfFunc }

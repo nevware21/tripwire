@@ -1998,6 +1998,80 @@ export interface IAssertClass<AssertInst extends IAssertInst = IAssertInst> {
         length: number,
         initMsg?: MsgSource
     ): AssertInst;
+
+    /**
+     * Asserts that the actual value is close to the expected value within the specified delta.
+     * This is useful for floating-point comparisons where exact equality is not guaranteed.
+     * The absolute difference between the actual and expected values must be less than or equal to delta.
+     * @param actual - The actual value to check. Must be a number.
+     * @param expected - The expected value to compare against. Must be a number.
+     * @param delta - The maximum allowed difference between actual and expected. Must be a number. Note: A negative delta will never result in a passing assertion since the absolute difference is always non-negative.
+     * @param initMsg - The message to display if the assertion fails.
+     * @returns - An assert instance for further chaining.
+     * @since 0.1.7
+     * @example
+     * ```typescript
+     * assert.closeTo(1.5, 1.0, 0.5);  // Passes - difference is 0.5
+     * assert.closeTo(10, 20, 20);     // Passes - difference is 10
+     * assert.closeTo(-10, 20, 30);    // Passes - difference is 30
+     * assert.closeTo(2, 1.0, 0.5);    // Throws AssertionFailure - difference is 1.0
+     * assert.closeTo(-10, 20, 29);    // Throws AssertionFailure - difference is 30
+     * ```
+     */
+    closeTo(actual: number, expected: number, delta: number, initMsg?: MsgSource): AssertInst;
+
+    /**
+     * Asserts that the actual value is NOT close to the expected value within the specified delta.
+     * This is the inverse of {@link closeTo}.
+     * @param actual - The actual value to check. Must be a number.
+     * @param expected - The expected value to compare against. Must be a number.
+     * @param delta - The maximum allowed difference. Must be a number. Note: A negative delta will always result in a passing assertion since the absolute difference is always non-negative.
+     * @param initMsg - The message to display if the assertion fails.
+     * @returns - An assert instance for further chaining.
+     * @since 0.1.7
+     * @example
+     * ```typescript
+     * assert.notCloseTo(2, 1.0, 0.5);   // Passes - difference is 1.0 which is > 0.5
+     * assert.notCloseTo(-10, 20, 29);   // Passes - difference is 30 which is > 29
+     * assert.notCloseTo(1.5, 1.0, 0.5); // Throws AssertionFailure - difference is 0.5
+     * ```
+     */
+    notCloseTo(actual: number, expected: number, delta: number, initMsg?: MsgSource): AssertInst;
+
+    /**
+     * Alias for {@link closeTo}. Asserts that the actual value is approximately equal to the expected value
+     * within the specified delta.
+     * @param actual - The actual value to check. Must be a number.
+     * @param expected - The expected value to compare against. Must be a number.
+     * @param delta - The maximum allowed difference between actual and expected. Must be a number. Note: A negative delta will never result in a passing assertion since the absolute difference is always non-negative.
+     * @param initMsg - The message to display if the assertion fails.
+     * @returns - An assert instance for further chaining.
+     * @since 0.1.7
+     * @example
+     * ```typescript
+     * assert.approximately(1.5, 1.0, 0.5);  // Passes - difference is 0.5
+     * assert.approximately(10, 20, 20);     // Passes - difference is 10
+     * assert.approximately(2, 1.0, 0.5);    // Throws AssertionFailure - difference is 1.0
+     * ```
+     */
+    approximately(actual: number, expected: number, delta: number, initMsg?: MsgSource): AssertInst;
+
+    /**
+     * Alias for {@link notCloseTo}. Asserts that the actual value is NOT approximately equal to the expected value
+     * within the specified delta. This is the inverse of {@link approximately}.
+     * @param actual - The actual value to check. Must be a number.
+     * @param expected - The expected value to compare against. Must be a number.
+     * @param delta - The maximum allowed difference. Must be a number. Note: A negative delta will always result in a passing assertion since the absolute difference is always non-negative.
+     * @param initMsg - The message to display if the assertion fails.
+     * @returns - An assert instance for further chaining.
+     * @since 0.1.7
+     * @example
+     * ```typescript
+     * assert.notApproximately(2, 1.0, 0.5);   // Passes - difference is 1.0 which is > 0.5
+     * assert.notApproximately(1.5, 1.0, 0.5); // Throws AssertionFailure - difference is 0.5
+     * ```
+     */
+    notApproximately(actual: number, expected: number, delta: number, initMsg?: MsgSource): AssertInst;
 }
 
 export type IExtendedAssert<T = any> = IAssertClass<IAssertInst & T> & T;
