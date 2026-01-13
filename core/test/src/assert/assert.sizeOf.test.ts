@@ -144,7 +144,7 @@ describe("assert.sizeOf", () => {
     });
 
     describe("edge cases", () => {
-        it("should fail for objects without size or size property", () => {
+        it("should fail for objects without length or size property", () => {
             checkError(
                 () => assert.sizeOf({} as any, 0),
                 "expected {} to have property \"length\" or \"size\""
