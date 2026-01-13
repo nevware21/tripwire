@@ -22,11 +22,11 @@ import { MsgSource } from "../interface/types";
  * ```typescript
  * import { assert } from "@nevware21/tripwire";
  *
- * assert([1, 2, 3]).has.length(3);           // Passes - array length is 3
- * assert("hello").has.length(5);             // Passes - string length is 5
- * assert(new Map([["a", 1]])).has.length(1); // Passes - Map size is 1
- * assert(new Set([1, 2])).has.length(2);     // Passes - Set size is 2
- * assert([1, 2]).has.length(3);              // Fails - array length is 2, not 3
+ * assert([1, 2, 3]).has.lengthOf(3);           // Passes - array length is 3
+ * assert("hello").has.lengthOf(5);             // Passes - string length is 5
+ * assert(new Map([["a", 1]])).has.lengthOf(1); // Passes - Map size is 1
+ * assert(new Set([1, 2])).has.lengthOf(2);     // Passes - Set size is 2
+ * assert([1, 2]).has.lengthOf(3);              // Fails - array length is 2, not 3
  * ```
  */
 export function lengthFunc<R>(this: IAssertScope, length: number, evalMsg?: MsgSource): R {
