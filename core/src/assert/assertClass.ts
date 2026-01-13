@@ -36,6 +36,7 @@ import { aboveFunc, belowFunc, leastFunc, mostFunc, withinFunc } from "./ops/num
 import { typeOfFunc } from "./funcs/typeOf";
 import { instanceOfFunc } from "./funcs/instanceOf";
 import { lengthFunc } from "./funcs/length";
+import { closeToFunc } from "./funcs/closeTo";
 
 /**
  * @internal
@@ -263,7 +264,13 @@ export function createAssert(): IAssertClass {
         lengthOf: { scopeFn: lengthFunc, nArgs: 2 },
         notLengthOf: { scopeFn: createExprAdapter("not", lengthFunc), nArgs: 2 },
         sizeOf: { alias: "lengthOf" },
-        notSizeOf: { alias: "notLengthOf" }
+        notSizeOf: { alias: "notLengthOf" },
+
+        // Approximate equality (closeTo)
+        closeTo: { scopeFn: closeToFunc, nArgs: 3 },
+        notCloseTo: { scopeFn: createExprAdapter("not", closeToFunc), nArgs: 3 },
+        approximately: { alias: "closeTo" },
+        notApproximately: { alias: "notCloseTo" }
     };
 
     addAssertFuncs(assert, assertFuncs);

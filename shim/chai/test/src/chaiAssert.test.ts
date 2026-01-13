@@ -1929,65 +1929,65 @@ describe("assert", function () {
     //     }, "expected undefined to be === null");
     // });
 
-    // it("closeTo", function(){
-    //     assert.closeTo(1.5, 1.0, 0.5);
-    //     assert.closeTo(10, 20, 20);
-    //     assert.closeTo(-10, 20, 30);
+    it("closeTo", function(){
+        assert.closeTo(1.5, 1.0, 0.5);
+        assert.closeTo(10, 20, 20);
+        assert.closeTo(-10, 20, 30);
 
-    //     err(function(){
-    //         assert.closeTo(2, 1.0, 0.5, "blah");
-    //     }, "blah: expected 2 to be close to 1 +/- 0.5");
+        err(function(){
+            assert.closeTo(2, 1.0, 0.5, "blah");
+        }, "blah");
 
-    //     err(function(){
-    //         assert.closeTo(-10, 20, 29);
-    //     }, "expected -10 to be close to 20 +/- 29");
+        err(function(){
+            assert.closeTo(-10, 20, 29);
+        }, "expected -10 to be close to 20 +/- 29");
 
-    //     err(function() {
-    //         assert.closeTo([1.5] as any, 1.0, 0.5, "blah");
-    //     }, "blah: expected [ 1.5 ] to be a number");
+        err(function() {
+            assert.closeTo([1.5] as any, 1.0, 0.5, "blah");
+        }, "blah");
 
-    //     err(function() {
-    //         assert.closeTo(1.5, "1.0" as any, 0.5, "blah");
-    //     }, "blah: the arguments to closeTo or approximately must be numbers");
+        err(function() {
+            assert.closeTo(1.5, "1.0" as any, 0.5, "blah");
+        }, "blah");
 
-    //     err(function() {
-    //         assert.closeTo(1.5, 1.0, true as any, "blah");
-    //     }, "blah: the arguments to closeTo or approximately must be numbers");
+        err(function() {
+            assert.closeTo(1.5, 1.0, true as any, "blah");
+        }, "blah");
 
-    //     err(function() {
-    //         assert.closeTo(1.5, 1.0, undefined as any, "blah");
-    //     }, "blah: the arguments to closeTo or approximately must be numbers, and a delta is required");
-    // });
+        err(function() {
+            assert.closeTo(1.5, 1.0, undefined as any, "blah");
+        }, "blah");
+    });
 
-    // it("approximately", function(){
-    //     assert.approximately(1.5, 1.0, 0.5);
-    //     assert.approximately(10, 20, 20);
-    //     assert.approximately(-10, 20, 30);
+    it("approximately", function(){
+        assert.approximately(1.5, 1.0, 0.5);
+        assert.approximately(10, 20, 20);
+        assert.approximately(-10, 20, 30);
 
-    //     err(function(){
-    //         assert.approximately(2, 1.0, 0.5, "blah");
-    //     }, "blah: expected 2 to be close to 1 +/- 0.5");
+        err(function(){
+            assert.approximately(2, 1.0, 0.5, "blah");
+        }, "blah");
 
-    //     err(function(){
-    //         assert.approximately(-10, 20, 29);
-    //     }, "expected -10 to be close to 20 +/- 29");
+        err(function(){
+            assert.approximately(-10, 20, 29);
+        }, "expected -10 to be close to 20 +/- 29");
 
-    //     err(function() {
-    //         assert.approximately([1.5] as any, 1.0, 0.5);
-    //     }, "expected [ 1.5 ] to be a number");
+        err(function() {
+            assert.approximately([1.5] as any, 1.0, 0.5);
+        }, "expected [1.5] to be a number");
 
-    //     err(function() {
-    //         assert.approximately(1.5, "1.0" as any, 0.5, "blah");
-    //     }, "blah: the arguments to closeTo or approximately must be numbers");
+        err(function() {
+            assert.approximately(1.5, "1.0" as any, 0.5, "blah");
+        }, "blah");
 
-    //     err(function() {
-    //         assert.approximately(1.5, 1.0, true as any, "blah");
-    //     }, "blah: the arguments to closeTo or approximately must be numbers");
+        err(function() {
+            assert.approximately(1.5, 1.0, true as any, "blah");
+        }, "blah");
 
-    //     err(function() {
-    //         assert.approximately(1.5, 1.0, undefined as any, "blah");
-    //     }, "blah: the arguments to closeTo or approximately must be numbers, and a delta is required");
-    // });
+        err(function() {
+            assert.approximately(1.5, 1.0, undefined as any, "blah");
+        }, "blah");
+    });
 
     // it("sameMembers", function() {
     //     assert.sameMembers([], []);
