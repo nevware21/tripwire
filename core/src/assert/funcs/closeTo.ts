@@ -47,8 +47,8 @@ export function closeToFunc<R>(this: IAssertScope, expected: number, delta: numb
         context.fail(evalMsg || "the expected argument ({expected}) must be a number");
     }
 
-    // Validate that delta is a number and not null/undefined
-    if (isNullOrUndefined(delta) || !isNumber(delta)) {
+    // Validate that delta is a number and not null/undefined or NaN
+    if (isNullOrUndefined(delta) || !isNumber(delta) || isNaN(delta)) {
         context.fail(evalMsg || "the delta argument ({delta}) is required and must be a number");
     }
 
