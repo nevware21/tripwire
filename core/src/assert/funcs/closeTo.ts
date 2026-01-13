@@ -42,8 +42,8 @@ export function closeToFunc<R>(this: IAssertScope, expected: number, delta: numb
         context.fail(evalMsg || "expected {value} to be a number");
     }
 
-    // Validate that expected is a number
-    if (!isNumber(expected)) {
+    // Validate that expected is a number (and not NaN)
+    if (!isNumber(expected) || isNaN(expected)) {
         context.fail(evalMsg || "the expected argument ({expected}) must be a number");
     }
 
