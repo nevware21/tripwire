@@ -2008,7 +2008,7 @@ export interface IAssertClass<AssertInst extends IAssertInst = IAssertInst> {
      * @param delta - The maximum allowed difference between actual and expected. Must be a number. Note: A negative delta will never result in a passing assertion since the absolute difference is always non-negative.
      * @param initMsg - The message to display if the assertion fails.
      * @returns - An assert instance for further chaining.
-     * @since 0.1.7
+     * @since 0.1.5
      * @example
      * ```typescript
      * assert.closeTo(1.5, 1.0, 0.5);  // Passes - difference is 0.5
@@ -2028,7 +2028,7 @@ export interface IAssertClass<AssertInst extends IAssertInst = IAssertInst> {
      * @param delta - The maximum allowed difference. Must be a number. Note: A negative delta will always result in a passing assertion since the absolute difference is always non-negative.
      * @param initMsg - The message to display if the assertion fails.
      * @returns - An assert instance for further chaining.
-     * @since 0.1.7
+     * @since 0.1.5
      * @example
      * ```typescript
      * assert.notCloseTo(2, 1.0, 0.5);   // Passes - difference is 1.0 which is > 0.5
@@ -2046,7 +2046,7 @@ export interface IAssertClass<AssertInst extends IAssertInst = IAssertInst> {
      * @param delta - The maximum allowed difference between actual and expected. Must be a number. Note: A negative delta will never result in a passing assertion since the absolute difference is always non-negative.
      * @param initMsg - The message to display if the assertion fails.
      * @returns - An assert instance for further chaining.
-     * @since 0.1.7
+     * @since 0.1.5
      * @example
      * ```typescript
      * assert.approximately(1.5, 1.0, 0.5);  // Passes - difference is 0.5
@@ -2064,7 +2064,7 @@ export interface IAssertClass<AssertInst extends IAssertInst = IAssertInst> {
      * @param delta - The maximum allowed difference. Must be a number. Note: A negative delta will always result in a passing assertion since the absolute difference is always non-negative.
      * @param initMsg - The message to display if the assertion fails.
      * @returns - An assert instance for further chaining.
-     * @since 0.1.7
+     * @since 0.1.5
      * @example
      * ```typescript
      * assert.notApproximately(2, 1.0, 0.5);   // Passes - difference is 1.0 which is > 0.5
@@ -2072,6 +2072,39 @@ export interface IAssertClass<AssertInst extends IAssertInst = IAssertInst> {
      * ```
      */
     notApproximately(actual: number, expected: number, delta: number, initMsg?: MsgSource): AssertInst;
+
+    /**
+     * Asserts that value is compared to expected using the given operator and the result is true.
+     * Supports comparison operators: ==, ===, <, >, <=, >=, !=, !==, typeof
+     * The support for typeof is in the form of `typeof XXX` === `"expected"`, where expected is the type name string.
+     * @param value - The first value to compare.
+     * @param operator - The comparison operator to use.
+     * @param expected - The second value to compare.
+     * @param initMsg - The message to display if the assertion fails.
+     * @returns - An assert instance for further chaining.
+     * @since 0.1.5
+     * @example
+     * ```typescript
+     * assert.operator(1, "<", 2);      // Passes
+     * assert.operator(2, ">", 1);      // Passes
+     * assert.operator(1, "==", 1);     // Passes
+     * assert.operator(1, "===", 1);    // Passes
+     * assert.operator(1, "<=", 1);     // Passes
+     * assert.operator(1, ">=", 1);     // Passes
+     * assert.operator(1, "!=", 2);     // Passes
+     * assert.operator(1, "!==", 2);    // Passes
+     * assert.operator(1, "!==", "1");  // Passes - type difference
+     * assert.operator(2, "<", 1);      // Throws AssertionFailure
+     * assert.operator(1, "=", 2);      // Throws AssertionFailure - invalid operator
+     *
+     * // Typeof operator
+     * assert.operator("hello", "typeof", "string");  // Passes - simplistic type check
+     * assert.operator(123, "typeof", "number");      // Passes
+     * assert.operator(true, "typeof", "boolean");    // Passes
+     * assert.operator(123, "typeof", "string");  // Throws AssertionFailure
+     * ```
+     */
+    operator(value: any, operator: string, expected: any, initMsg?: MsgSource): AssertInst;
 }
 
 export type IExtendedAssert<T = any> = IAssertClass<IAssertInst & T> & T;

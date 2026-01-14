@@ -216,7 +216,7 @@ const _defaultConstructorFormatter: IFormatter = {
             if (value && ("constructor" in value && value.constructor && value.constructor.name)) {
                 result = {
                     res: eFormatResult.Ok,
-                    val: "[" + value.constructor.name + ":" + (JSON.stringify(value) || "").replace(/"(\w+)"\s*:\s{0,1}/g, "$1:") + "]"
+                    val: "[" + value.constructor.name + ":" + (JSON.stringify(value) || EMPTY_STRING).replace(/"(\w+)"\s*:\s{0,1}/g, "$1:") + "]"
                 };
             }
         } catch (e) {
@@ -228,7 +228,7 @@ const _defaultConstructorFormatter: IFormatter = {
                 if (value && ("name" in value && value.constructor && value.constructor.name)) {
                     result = {
                         res: eFormatResult.Ok,
-                        val: "[" + value.name + ":" + (JSON.stringify(value) || "").replace(/"(\w+)"\s*:\s{0,1}/g, "$1:") + "]"
+                        val: "[" + value.name + ":" + (JSON.stringify(value) || EMPTY_STRING).replace(/"(\w+)"\s*:\s{0,1}/g, "$1:") + "]"
                     };
                 }
             } catch (e) {
