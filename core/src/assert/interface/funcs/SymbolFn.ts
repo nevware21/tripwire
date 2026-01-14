@@ -8,7 +8,7 @@
 
 import { IAssertScope } from "../IAssertScope";
 import { IPropertyResultOp } from "../ops/IPropertyResultOp";
-import { MsgSource } from "../types";
+import { MsgSource } from "../../type/MsgSource";
 
 /**
  * Represents a function that defines a symbol assertion for the

@@ -13,7 +13,7 @@ import {
 import { IPromise } from "@nevware21/ts-async";
 import { IAssertClass } from "./interface/IAssertClass";
 import { IAssertInst } from "./interface/IAssertInst";
-import { MsgSource } from "./interface/types";
+import { MsgSource } from "./type/MsgSource";
 import { isFunctionFunc, isNullFunc, isObjectFunc, isPlainObjectFunc, isStrictFalseFunc, isStrictTrueFunc, isUndefinedFunc } from "./funcs/is";
 import { isEmptyFunc } from "./funcs/isEmpty";
 import { IAssertClassDef } from "./interface/IAssertClassDef";

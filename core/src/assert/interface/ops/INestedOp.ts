@@ -6,7 +6,7 @@
  * Licensed under the MIT license.
  */
 
-import { MsgSource } from "../types";
+import { MsgSource } from "../../type/MsgSource";
 import { IPropertyResultOp } from "./IPropertyResultOp";
 
 /**

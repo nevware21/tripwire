@@ -14,7 +14,7 @@ import { throwsFunc } from "../funcs/throws";
 import { truthyFunc } from "../funcs/truthy";
 import { IAssertInst, IAssertScopeFuncDef } from "../interface/IAssertInst";
 import { IScopePropFn, IScopeFn } from "../interface/IScopeFuncs";
-import { MsgSource } from "../interface/types";
+import { MsgSource } from "../type/MsgSource";
 import { allOp, anyOp } from "../ops/allOp";
 import { deepOp } from "../ops/deepOp";
 import { hasOp } from "../ops/hasOp";

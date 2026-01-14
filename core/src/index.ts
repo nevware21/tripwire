@@ -17,7 +17,7 @@ import {
 } from "./assert/interface/IAssertInst";
 import { IScopeContext, IScopeContextOverrides } from "./assert/interface/IScopeContext";
 import { IAssertClassDef } from "./assert/interface/IAssertClassDef";
-import { MsgSource } from "./assert/interface/types";
+import { MsgSource } from "./assert/type/MsgSource";
 import { IAssertInstCore } from "./assert/interface/IAssertInstCore";
 import { IDeepOp } from "./assert/interface/ops/IDeepOp";
 import { IKeysOp } from "./assert/interface/ops/IKeysOp";

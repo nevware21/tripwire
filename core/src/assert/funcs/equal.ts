@@ -7,7 +7,7 @@
  */
 
 import { arrForEach, arrMap, asString, isDate, isFunction, isObject, isPlainObject, isPrimitive, isSymbol, iterForOf, objGetOwnPropertyDescriptor, objGetOwnPropertySymbols, objIs, objToString, strLower } from "@nevware21/ts-utils";
-import { MsgSource } from "../interface/types";
+import { MsgSource } from "../type/MsgSource";
 import { IAssertScope } from "../interface/IAssertScope";
 import { _formatValue } from "../internal/_formatValue";
 import { IScopeContext } from "../interface/IScopeContext";

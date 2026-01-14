@@ -13,7 +13,7 @@ import {
 } from "@nevware21/ts-utils";
 import { IScopeContext, IScopeContextOverrides } from "./interface/IScopeContext";
 import { AssertionFailure } from "./assertionError";
-import { MsgSource } from "./interface/types";
+import { MsgSource } from "./type/MsgSource";
 import { EMPTY_STRING } from "./internal/const";
 import { assertConfig } from "./config";
 import { IAssertConfig } from "./interface/IAssertConfig";

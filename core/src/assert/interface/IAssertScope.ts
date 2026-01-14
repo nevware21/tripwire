@@ -9,7 +9,7 @@
 import { IScopeContext, IScopeContextOverrides } from "./IScopeContext";
 import { IScopeFn } from "./IScopeFuncs";
 import { AssertScopeFuncDefs } from "./IAssertInst";
-import { MsgSource } from "./types";
+import { MsgSource } from "../type/MsgSource";
 
 /**
  * The {@link IAssertScope} interface provides the main entry point for the assertion chain

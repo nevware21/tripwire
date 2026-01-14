@@ -8,7 +8,7 @@
 
 import { IScopeContext } from "./IScopeContext";
 import { IAssertInst } from "./IAssertInst";
-import { MsgSource } from "./types";
+import { MsgSource } from "../type/MsgSource";
 
 /**
  * The `IAssert` interface defines the methods for performing assertions.

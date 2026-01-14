@@ -7,7 +7,7 @@
  */
 
 import { ThrowFn } from "../funcs/ThrowFn";
-import { MsgSource } from "../types";
+import { MsgSource } from "../../type/MsgSource";
 import { IDeepOp } from "./IDeepOp";
 import { IHasOp } from "./IHasOp";
 import { IIncludeOp } from "./IIncludeOp";

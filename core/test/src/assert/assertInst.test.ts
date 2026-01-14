@@ -12,7 +12,7 @@ import { expect } from "../../../src/assert/expect";
 import { addAssertInstFuncDefs, addAssertInstFunc, addAssertInstProperty } from "../../../src/assert/assertInst";
 import { _clearAssertInstFuncs } from "../../../src/assert/internal/_AssertInstCore";
 import { IAssertInst, IExtendedAssertInst } from "../../../src/assert/interface/IAssertInst";
-import { MsgSource } from "../../../src/assert/interface/types";
+import { MsgSource } from "../../../src/assert/type/MsgSource";
 import { createAssertScope } from "../../../src/assert/assertScope";
 import { createContext } from "../../../src/assert/scopeContext";
 import { IAssertScope } from "../../../src";

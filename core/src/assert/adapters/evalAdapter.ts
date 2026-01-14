@@ -8,7 +8,7 @@
 
 import { arrSlice } from "@nevware21/ts-utils";
 import { IAssertScope } from "../interface/IAssertScope";
-import { MsgSource } from "../interface/types";
+import { MsgSource } from "../type/MsgSource";
 import { IScopeFn } from "../interface/IScopeFuncs";
 import { _blockLength } from "../internal/_blockLength";
 

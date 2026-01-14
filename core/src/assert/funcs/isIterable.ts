@@ -8,7 +8,7 @@
 
 import { getKnownSymbol, isFunction, isStrictNullOrUndefined, WellKnownSymbols } from "@nevware21/ts-utils";
 import { IAssertScope } from "../interface/IAssertScope";
-import { MsgSource } from "../interface/types";
+import { MsgSource } from "../type/MsgSource";
 
 export function isIterableFunc<R>(this: IAssertScope, evalMsg?: MsgSource): R{
     let scope = this;

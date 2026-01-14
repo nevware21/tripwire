@@ -7,7 +7,7 @@
  */
 
 import { isArray, isObject, isString, isStrictNullOrUndefined, objKeys, objHasOwnProperty, asString } from "@nevware21/ts-utils";
-import { MsgSource } from "../interface/types";
+import { MsgSource } from "../type/MsgSource";
 import { IAssertScope } from "../interface/IAssertScope";
 import { IPropertyResultOp } from "../interface/ops/IPropertyResultOp";
 import { propertyResultOp } from "../ops/propertyResultOp";
