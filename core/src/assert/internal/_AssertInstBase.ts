@@ -8,7 +8,7 @@
 
 import { arrSlice } from "@nevware21/ts-utils";
 import { IAssertInstCore } from "../interface/IAssertInstCore";
-import { MsgSource } from "../interface/types";
+import { MsgSource } from "../type/MsgSource";
 import { _failFn, _fatalFn } from "./_failFn";
 import { IAssertScope } from "../interface/IAssertScope";
 

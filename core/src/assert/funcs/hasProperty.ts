@@ -7,7 +7,7 @@
  */
 
 import { arrForEach, isArray, isNumber, isObject, isPrimitive, isStrictNullOrUndefined, isString, isSymbol, objGetOwnPropertyDescriptor, objGetPrototypeOf, objHasOwnProperty } from "@nevware21/ts-utils";
-import { MsgSource } from "../interface/types";
+import { MsgSource } from "../type/MsgSource";
 import { IScopeContext } from "../interface/IScopeContext";
 import { deepEqualsFunc, equalsFunc } from "./equal";
 import { IAssertScope } from "../interface/IAssertScope";

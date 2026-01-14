@@ -7,7 +7,7 @@
  */
 
 import { isDate, isNumber } from "@nevware21/ts-utils";
-import { MsgSource } from "../interface/types";
+import { MsgSource } from "../type/MsgSource";
 import { IAssertScope } from "../interface/IAssertScope";
 import { INumericOp } from "../interface/ops/INumericOp";
 import { AssertScopeFuncDefs } from "../interface/IAssertInst";

@@ -6,7 +6,7 @@
  * Licensed under the MIT license.
  */
 
-import { MsgSource } from "../assert/interface/types";
+import { MsgSource } from "../assert/type/MsgSource";
 import { IAssertInst } from "./interface/IAssertInst";
 import { createAssertScope } from "./assertScope";
 import { createContext } from "./scopeContext";

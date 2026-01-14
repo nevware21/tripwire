@@ -11,7 +11,7 @@ import { AssertionFailure, AssertionFatal } from "../assertionError";
 import { IAssertInstCore } from "../interface/IAssertInstCore";
 import { IScopeContext } from "../interface/IScopeContext";
 import { IAssertScope } from "../interface/IAssertScope";
-import { MsgSource } from "../interface/types";
+import { MsgSource } from "../type/MsgSource";
 import { getScopeContext } from "../scopeContext";
 
 function _setContext(context: IScopeContext, name: string, pos: number, theArgs: any[]): void {

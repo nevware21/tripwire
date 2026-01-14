@@ -7,7 +7,7 @@
  */
 
 import { isArray, isBoolean, isFunction, isNumber, isObject, isPlainObject, isString, isTruthy } from "@nevware21/ts-utils";
-import { MsgSource } from "../interface/types";
+import { MsgSource } from "../type/MsgSource";
 import { IAssertScope } from "../interface/IAssertScope";
 
 /**

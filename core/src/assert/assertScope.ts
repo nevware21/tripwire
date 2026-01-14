@@ -9,7 +9,7 @@
 import { arrSlice, objDefineProps } from "@nevware21/ts-utils";
 import { IScopeContext, IScopeContextOverrides } from "./interface/IScopeContext";
 import { AssertScopeFuncDefs } from "./interface/IAssertInst";
-import { MsgSource } from "./interface/types";
+import { MsgSource } from "./type/MsgSource";
 import { EXEC } from "./internal/const";
 import { IAssertScope } from "./interface/IAssertScope";
 import { _addAssertInstFuncs } from "./internal/_addAssertInstFuncs";

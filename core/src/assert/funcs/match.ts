@@ -7,7 +7,7 @@
  */
 
 import { isRegExp } from "@nevware21/ts-utils";
-import { MsgSource } from "../interface/types";
+import { MsgSource } from "../type/MsgSource";
 import { IAssertScope } from "../interface/IAssertScope";
 
 export function matchFunc<R>(this: IAssertScope, match: RegExp, evalMsg?: MsgSource): R {

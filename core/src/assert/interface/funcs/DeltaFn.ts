@@ -6,7 +6,7 @@
  * Licensed under the MIT license.
  */
 
-import { MsgSource } from "../types";
+import { MsgSource } from "../../type/MsgSource";
 
 /**
  * Represents the delta operations for the assertion scope/context.

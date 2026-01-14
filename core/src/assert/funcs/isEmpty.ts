@@ -7,7 +7,7 @@
  */
 
 import { getLength, isArray, isFunction, isObject, isPrimitive, isString, isWeakMap, isWeakSet, objKeys, safeGet } from "@nevware21/ts-utils";
-import { MsgSource } from "../interface/types";
+import { MsgSource } from "../type/MsgSource";
 import { IAssertScope } from "../interface/IAssertScope";
 
 /**

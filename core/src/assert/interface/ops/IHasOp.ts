@@ -12,7 +12,7 @@ import { IAllOp } from "./IAllOp";
 import { IAnyOp } from "./IAnyOp";
 import { IOwnOp } from "./IOwnOp";
 import { INestedOp } from "./INestedOp";
-import { MsgSource } from "../types";
+import { MsgSource } from "../../type/MsgSource";
 
 /**
  * Provides the 'has' operation for the assert scope.

@@ -7,7 +7,7 @@
  */
 
 import { IAssertScope } from "../interface/IAssertScope";
-import { MsgSource } from "../interface/types";
+import { MsgSource } from "../type/MsgSource";
 
 /**
  * Asserts that a boolean comparison operation between value and expected using the given operator is true.

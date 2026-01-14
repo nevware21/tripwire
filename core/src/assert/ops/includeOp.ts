@@ -7,7 +7,7 @@
  */
 
 import { arrIndexOf, isArray, isFunction, isString, objKeys } from "@nevware21/ts-utils";
-import { MsgSource } from "../interface/types";
+import { MsgSource } from "../type/MsgSource";
 import { allOp, anyOp } from "./allOp";
 import { IAssertInst, AssertScopeFuncDefs } from "../interface/IAssertInst";
 import { IIncludeOp } from "../interface/ops/IIncludeOp";

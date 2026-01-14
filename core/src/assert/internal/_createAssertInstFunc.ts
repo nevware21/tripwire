@@ -13,7 +13,7 @@ import { IAssertInst } from "../interface/IAssertInst";
 import { _blockLength } from "./_blockLength";
 import { _handleResult } from "./_handleResult";
 import { IScopeFn, IScopePropFn } from "../interface/IScopeFuncs";
-import { MsgSource } from "../interface/types";
+import { MsgSource } from "../type/MsgSource";
 import { _getAssertScope } from "./_instCreator";
 
 /**

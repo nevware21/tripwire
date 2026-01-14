@@ -12,8 +12,7 @@ import { createContext } from "../../../src/assert/scopeContext";
 import { checkError } from "../support/checkError";
 import { objAssign } from "@nevware21/ts-utils";
 import { IScopeContext } from "../../../src/assert/interface/IScopeContext";
-import { MsgSource } from "../../../src/assert/interface/types";
-
+import { MsgSource } from "../../../src/assert/type/MsgSource";
 
 describe("context", () => {
 

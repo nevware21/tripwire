@@ -12,7 +12,7 @@ import { IIsOp } from "./ops/IIsOp";
 import { IOwnOp } from "./ops/IOwnOp";
 import { IScopePropFn, IScopeFn } from "./IScopeFuncs";
 import { IStrictlyOp } from "./ops/IStrictlyOp";
-import { MsgSource } from "./types";
+import { MsgSource } from "../type/MsgSource";
 import { IEqualOp } from "./ops/IEqualOp";
 import { IIncludeOp } from "./ops/IIncludeOp";
 import { IAllOp } from "./ops/IAllOp";
