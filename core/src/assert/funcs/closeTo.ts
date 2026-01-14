@@ -18,7 +18,7 @@ import { MsgSource } from "../interface/types";
  * @param delta - The maximum allowed difference between actual and expected. Note: A negative delta will never result in a passing assertion since the absolute difference is always non-negative.
  * @param evalMsg - The message to display if the assertion fails.
  * @returns - The assert scope.
- * @since 0.1.7
+ * @since 0.1.5
  * @example
  * ```typescript
  * import { assert } from "@nevware21/tripwire";

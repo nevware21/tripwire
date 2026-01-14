@@ -138,7 +138,7 @@ function _createChaiAssert(): IChaiAssert {
         throws: { scopeFn: createExprAdapter("throws"), nArgs: 3 },
         Throw: { scopeFn: createExprAdapter("throws"), nArgs: 3 },
         doesNotThrow: { scopeFn: createExprAdapter("not.throws"), nArgs: 3 },
-        operator: notImplemented,
+        operator: { scopeFn: createExprAdapter("operator"), nArgs: 3 },
         closeTo: { scopeFn: createExprAdapter("is.closeTo"), nArgs: 3 },
         approximately: { scopeFn: createExprAdapter("is.approximately"), nArgs: 3 },
 

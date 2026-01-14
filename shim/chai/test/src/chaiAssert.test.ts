@@ -1872,62 +1872,62 @@ describe("assert", function () {
     //     }, "This is an error message");
     // });
 
-    // it("operator", function() {
-    // // For testing undefined and null with == and ===
-    //     var w: any;
+    it("operator", function() {
+    // For testing undefined and null with == and ===
+        var w: any;
 
-    //     assert.operator(1, "<", 2);
-    //     assert.operator(2, ">", 1);
-    //     assert.operator(1, "==", 1);
-    //     assert.operator(1, "<=", 1);
-    //     assert.operator(1, ">=", 1);
-    //     assert.operator(1, "!=", 2);
-    //     assert.operator(1, "!==", 2);
-    //     assert.operator(1, "!==", "1");
-    //     assert.operator(w, "==", undefined);
-    //     assert.operator(w, "===", undefined);
-    //     assert.operator(w, "==", null);
+        assert.operator(1, "<", 2);
+        assert.operator(2, ">", 1);
+        assert.operator(1, "==", 1);
+        assert.operator(1, "<=", 1);
+        assert.operator(1, ">=", 1);
+        assert.operator(1, "!=", 2);
+        assert.operator(1, "!==", 2);
+        assert.operator(1, "!==", "1");
+        assert.operator(w, "==", undefined);
+        assert.operator(w, "===", undefined);
+        assert.operator(w, "==", null);
 
-    //     err(function () {
-    //         assert.operator(1, "=", 2, "blah");
-    //     }, "blah: Invalid operator \"=\"");
+        err(function () {
+            assert.operator(1, "=", 2, "blah");
+        }, "blah: Invalid operator \"=\"");
 
-    //     err(function () {
-    //         assert.operator(2, "<", 1, "blah");
-    //     }, "blah: expected 2 to be < 1");
+        err(function () {
+            assert.operator(2, "<", 1, "blah");
+        }, "blah: expected 2 to be < 1");
 
-    //     err(function () {
-    //         assert.operator(1, ">", 2);
-    //     }, "expected 1 to be > 2");
+        err(function () {
+            assert.operator(1, ">", 2);
+        }, "expected 1 to be > 2");
 
-    //     err(function () {
-    //         assert.operator(1, "==", 2);
-    //     }, "expected 1 to be == 2");
+        err(function () {
+            assert.operator(1, "==", 2);
+        }, "expected 1 to be == 2");
 
-    //     err(function () {
-    //         assert.operator(1, "===", "1");
-    //     }, "expected 1 to be === \"1\"");
+        err(function () {
+            assert.operator(1, "===", "1");
+        }, "expected 1 to be === \"1\"");
 
-    //     err(function () {
-    //         assert.operator(2, "<=", 1);
-    //     }, "expected 2 to be <= 1");
+        err(function () {
+            assert.operator(2, "<=", 1);
+        }, "expected 2 to be <= 1");
 
-    //     err(function () {
-    //         assert.operator(1, ">=", 2);
-    //     }, "expected 1 to be >= 2");
+        err(function () {
+            assert.operator(1, ">=", 2);
+        }, "expected 1 to be >= 2");
 
-    //     err(function () {
-    //         assert.operator(1, "!=", 1);
-    //     }, "expected 1 to be != 1");
+        err(function () {
+            assert.operator(1, "!=", 1);
+        }, "expected 1 to be != 1");
 
-    //     err(function () {
-    //         assert.operator(1, "!==", 1);
-    //     }, "expected 1 to be !== 1");
+        err(function () {
+            assert.operator(1, "!==", 1);
+        }, "expected 1 to be !== 1");
 
-    //     err(function () {
-    //         assert.operator(w, "===", null);
-    //     }, "expected undefined to be === null");
-    // });
+        err(function () {
+            assert.operator(w, "===", null);
+        }, "expected undefined to be === null");
+    });
 
     it("closeTo", function(){
         assert.closeTo(1.5, 1.0, 0.5);

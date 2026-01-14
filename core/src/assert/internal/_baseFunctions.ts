@@ -9,6 +9,7 @@
 import { equalsFunc } from "../funcs/equal";
 import { hasOwnPropertyFunc, hasPropertyFunc } from "../funcs/hasProperty";
 import { matchFunc } from "../funcs/match";
+import { operatorFunc } from "../funcs/operator";
 import { throwsFunc } from "../funcs/throws";
 import { truthyFunc } from "../funcs/truthy";
 import { IAssertInst, IAssertScopeFuncDef } from "../interface/IAssertInst";
@@ -96,6 +97,7 @@ export const coreFunctions: _AssertInstScopeFuncs = {
     equal: _asFunc(equalsFunc),
     equals: _asFunc(equalsFunc),
     eq: _asFunc(equalsFunc),
+    operator: _asFunc(operatorFunc),
 
     throws: _asFunc(throwsFunc),
     toThrow: _asFunc(throwsFunc),

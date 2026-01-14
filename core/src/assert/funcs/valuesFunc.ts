@@ -117,7 +117,7 @@ export function anyValuesFunc<R>(_scope: IAssertScope): ValuesFn<R> {
             }
         });
 
-        context.eval(found, `expected any value: [${_formatValues(expectedValues)}], found: [${_formatValues(checkValue)}] (${checkLength} value${checkLength > 1 ? "s" : ""})`);
+        context.eval(found, `expected any value: [${_formatValues(expectedValues)}], found: [${_formatValues(checkValue)}] (${checkLength} value${checkLength > 1 ? "s" : EMPTY_STRING})`);
 
         return scope.that;
     }
@@ -161,7 +161,7 @@ export function allValuesFunc<R>(_scope: IAssertScope): ValuesFn<R> {
             }
         });
 
-        context.eval(missingValues.length === 0, `expected all values: [${_formatValues(expectedValues)}], missing: [${_formatValues(missingValues)}], found: [${_formatValues(checkValue)}] (${checkLength} value${checkLength > 1 ? "s" : ""})`);
+        context.eval(missingValues.length === 0, `expected all values: [${_formatValues(expectedValues)}], missing: [${_formatValues(missingValues)}], found: [${_formatValues(checkValue)}] (${checkLength} value${checkLength > 1 ? "s" : EMPTY_STRING})`);
 
         return scope.that;
     }

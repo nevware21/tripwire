@@ -37,6 +37,7 @@ import { typeOfFunc } from "./funcs/typeOf";
 import { instanceOfFunc } from "./funcs/instanceOf";
 import { lengthFunc } from "./funcs/length";
 import { closeToFunc } from "./funcs/closeTo";
+import { operatorFunc } from "./funcs/operator";
 
 /**
  * @internal
@@ -270,7 +271,10 @@ export function createAssert(): IAssertClass {
         closeTo: { scopeFn: closeToFunc, nArgs: 3 },
         notCloseTo: { scopeFn: createExprAdapter("not", closeToFunc), nArgs: 3 },
         approximately: { alias: "closeTo" },
-        notApproximately: { alias: "notCloseTo" }
+        notApproximately: { alias: "notCloseTo" },
+
+        // Operator comparison
+        operator: { scopeFn: operatorFunc, nArgs: 3 }
     };
 
     addAssertFuncs(assert, assertFuncs);

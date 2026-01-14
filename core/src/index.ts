@@ -41,6 +41,7 @@ import { INumericOp } from "./assert/interface/ops/INumericOp";
 import { NumberFn } from "./assert/interface/funcs/NumericFn";
 import { WithinFn } from "./assert/interface/funcs/WithinFn";
 import { CloseToFn } from "./assert/interface/funcs/CloseToFn";
+import { OperatorFn } from "./assert/interface/funcs/OperatorFn";
 import { KeysFn } from "./assert/interface/funcs/KeysFn";
 import { IncludeFn } from "./assert/interface/funcs/IncludeFn";
 import { ValuesFn } from "./assert/interface/funcs/ValuesFn";
@@ -89,7 +90,7 @@ export {
 export {
     AssertClassDef, AssertFn, AssertInstHandlers, AssertScopeFuncDefs, CloseToFn, EqualFn,
     ErrorLikeFn, EvalFn, IncludeFn, InstanceOfFn, IScopeFn, KeysFn, MsgSource, NumberFn,
-    SymbolFn, ThrowFn, ValuesFn, WithinFn
+    OperatorFn, SymbolFn, ThrowFn, ValuesFn, WithinFn
 };
 
 /**

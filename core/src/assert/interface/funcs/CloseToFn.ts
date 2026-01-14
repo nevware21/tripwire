@@ -12,7 +12,7 @@ import { MsgSource } from "../types";
  * This interface provides methods for checking if the current `actual` value is
  * close to an expected value within a specified delta (tolerance).
  * @template R - The type of the result of the operation.
- * @since 0.1.7
+ * @since 0.1.5
  */
 export interface CloseToFn<R> {
 
