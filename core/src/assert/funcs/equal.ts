@@ -279,7 +279,12 @@ function _isVisiting<T>(value: any, options: IEqualOptions, cb: () => T): T {
             });
 
             if (visitCount > 10) {
-                options.context.fail("Unresolvable Circular reference detected for " + _formatValue(options.context, options.visiting[0]) + " @ depth " + options.visiting.length + " reference count: " + visitCount);
+                let errorMsg = "Unresolvable Circular reference detected for " + _formatValue(options.context, options.visiting[0]) + " @ depth " + options.visiting.length + " reference count: " + visitCount;
+                if (options.context) {
+                    options.context.fail(errorMsg);
+                } else {
+                    throw new Error(errorMsg);
+                }
             }
 
             options.visiting.push(value);
@@ -525,4 +530,25 @@ function _mapKeys(values: Array<string | number | symbol>): Array<string|number>
         
         return key;
     });
+}
+
+/**
+ * Internal helper function for performing deep equality checks between two values.
+ * This can be used by other modules that need deep equality comparison.
+ * @internal
+ * @param value - The first value to compare.
+ * @param expected - The second value to compare.
+ * @param strict - Whether to use strict equality (default: false for loose equality).
+ * @returns True if the values are deeply equal, false otherwise.
+ * @since 0.1.5
+ */
+export function _deepEqual<T>(value: T, expected: T, strict: boolean = false): boolean {
+    let options: IEqualOptions = {
+        context: null,
+        strict: strict,
+        matchMap: [],
+        visiting: []
+    };
+
+    return _deepEquals(value, expected, options) === true;
 }

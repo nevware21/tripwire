@@ -6,11 +6,12 @@
  * Licensed under the MIT license.
  */
 
-import { isArray, isObject, isString, isStrictNullOrUndefined, objKeys, objHasOwnProperty, asString } from "@nevware21/ts-utils";
+import { isArray, isObject, isString, isStrictNullOrUndefined, asString } from "@nevware21/ts-utils";
 import { MsgSource } from "../type/MsgSource";
 import { IAssertScope } from "../interface/IAssertScope";
 import { IPropertyResultOp } from "../interface/ops/IPropertyResultOp";
 import { propertyResultOp } from "../ops/propertyResultOp";
+import { _deepEqual } from "./equal";
 
 export function _parseNestedPath(value: string): string[] {
     let tokens: string[] = [];
@@ -94,58 +95,7 @@ function _getNestedProperty(target: any, path: string): { value: any; exists: bo
     return { value: result ? current : undefined, exists: result };
 }
 
-/**
- * Simple deep equals helper for nested include
- * @param a - First value
- * @param b - Second value
- * @returns True if values are deeply equal
- */
-function _deepEquals(a: any, b: any): boolean {
-    if (a === b) {
-        return true;
-    }
 
-    if (isStrictNullOrUndefined(a) || isStrictNullOrUndefined(b)) {
-        return a === b;
-    }
-
-    if (typeof a !== typeof b) {
-        return false;
-    }
-
-    if (isArray(a) && isArray(b)) {
-        if (a.length !== b.length) {
-            return false;
-        }
-        for (let i = 0; i < a.length; i++) {
-            if (!_deepEquals(a[i], b[i])) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    if (isObject(a) && isObject(b)) {
-        let keysA = objKeys(a);
-        let keysB = objKeys(b);
-        
-        if (keysA.length !== keysB.length) {
-            return false;
-        }
-
-        for (let key of keysA) {
-            if (!objHasOwnProperty(b, key)) {
-                return false;
-            }
-            if (!_deepEquals(a[key], b[key])) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    return false;
-}
 
 /**
  * Asserts that the current {@link IScopeContext} value has the specified nested property
@@ -216,7 +166,7 @@ export function hasDeepNestedPropertyFunc(this: IAssertScope, path: string, valu
         context.set("expected", value);
         if (valueResult.exists) {
             context.set("nestedValue", valueResult.value);
-            context.eval(valueResult.exists && _deepEquals(valueResult.value, value), evalMsg || "expected {value} to have a nested property {property} deeply equal {expected}, but got {nestedValue}");
+            context.eval(valueResult.exists && _deepEqual(valueResult.value, value), evalMsg || "expected {value} to have a nested property {property} deeply equal {expected}, but got {nestedValue}");
         } else {
             // Property doesn't exist - fail the assertion
             context.eval(false, evalMsg || "expected {value} to have a nested property {property} deeply equal {expected}");
@@ -299,7 +249,7 @@ export function deepNestedIncludeFunc(this: IAssertScope, expected: any, evalMsg
             context.set("expected", expectedValue);
             if (valueResult.exists) {
                 context.set("nestedValue", valueResult.value);
-                context.eval(valueResult.exists && _deepEquals(valueResult.value, expectedValue), evalMsg || "expected {value} to have a nested property {property} deeply equal {expected}, but got {nestedValue}");
+                context.eval(valueResult.exists && _deepEqual(valueResult.value, expectedValue), evalMsg || "expected {value} to have a nested property {property} deeply equal {expected}, but got {nestedValue}");
             } else {
                 context.eval(false, evalMsg || "expected {value} to have a nested property {property} deeply equal {expected}, but the property does not exist");
             }

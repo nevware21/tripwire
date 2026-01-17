@@ -8,7 +8,7 @@
 
 import { DEEP } from "../internal/const";
 import { IDeepOp } from "../interface/ops/IDeepOp";
-import { includeOp } from "./includeOp";
+import { deepIncludeOp } from "./includeOp";
 import { ownDeepOp } from "./ownOp";
 import { notOp } from "./notOp";
 import { deepEqualsFunc } from "../funcs/equal";
@@ -27,10 +27,10 @@ export function deepOp<R>(scope: IAssertScope): IDeepOp<R> {
         equal: { scopeFn: deepEqualsFunc },
         equals: { scopeFn: deepEqualsFunc },
         eq: { scopeFn: deepEqualsFunc },
-        include: { propFn: includeOp },
-        includes: { propFn: includeOp },
-        contain: { propFn: includeOp },
-        contains: { propFn: includeOp },
+        include: { propFn: deepIncludeOp },
+        includes: { propFn: deepIncludeOp },
+        contain: { propFn: deepIncludeOp },
+        contains: { propFn: deepIncludeOp },
         property: { scopeFn: hasDeepPropertyFunc },
         propertyDescriptor: { scopeFn: hasPropertyDescriptorFunc },
         own: { propFn: ownDeepOp },

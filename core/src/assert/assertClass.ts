@@ -38,6 +38,7 @@ import { instanceOfFunc } from "./funcs/instanceOf";
 import { lengthFunc } from "./funcs/length";
 import { closeToFunc } from "./funcs/closeTo";
 import { operatorFunc } from "./funcs/operator";
+import { includeMembersFunc, includeDeepMembersFunc, includeOrderedMembersFunc, includeDeepOrderedMembersFunc, sameMembersFunc, sameDeepMembersFunc, sameOrderedMembersFunc, sameDeepOrderedMembersFunc, startsWithMembersFunc, startsWithDeepMembersFunc } from "./funcs/members";
 
 /**
  * @internal
@@ -274,7 +275,29 @@ export function createAssert(): IAssertClass {
         notApproximately: { alias: "notCloseTo" },
 
         // Operator comparison
-        operator: { scopeFn: operatorFunc, nArgs: 3 }
+        operator: { scopeFn: operatorFunc, nArgs: 3 },
+
+        // Member comparison
+        sameMembers: { scopeFn: sameMembersFunc, nArgs: 2 },
+        notSameMembers: { scopeFn: createExprAdapter("not", sameMembersFunc), nArgs: 2 },
+        sameDeepMembers: { scopeFn: sameDeepMembersFunc, nArgs: 2 },
+        notSameDeepMembers: { scopeFn: createExprAdapter("not", sameDeepMembersFunc), nArgs: 2 },
+        sameOrderedMembers: { scopeFn: sameOrderedMembersFunc, nArgs: 2 },
+        notSameOrderedMembers: { scopeFn: createExprAdapter("not", sameOrderedMembersFunc), nArgs: 2 },
+        sameDeepOrderedMembers: { scopeFn: sameDeepOrderedMembersFunc, nArgs: 2 },
+        notSameDeepOrderedMembers: { scopeFn: createExprAdapter("not", sameDeepOrderedMembersFunc), nArgs: 2 },
+        includeMembers: { scopeFn: includeMembersFunc, nArgs: 2 },
+        notIncludeMembers: { scopeFn: createExprAdapter("not", includeMembersFunc), nArgs: 2 },
+        includeDeepMembers: { scopeFn: includeDeepMembersFunc, nArgs: 2 },
+        notIncludeDeepMembers: { scopeFn: createExprAdapter("not", includeDeepMembersFunc), nArgs: 2 },
+        includeOrderedMembers: { scopeFn: includeOrderedMembersFunc, nArgs: 2 },
+        notIncludeOrderedMembers: { scopeFn: createExprAdapter("not", includeOrderedMembersFunc), nArgs: 2 },
+        includeDeepOrderedMembers: { scopeFn: includeDeepOrderedMembersFunc, nArgs: 2 },
+        notIncludeDeepOrderedMembers: { scopeFn: createExprAdapter("not", includeDeepOrderedMembersFunc), nArgs: 2 },
+        startsWithMembers: { scopeFn: startsWithMembersFunc, nArgs: 2 },
+        notStartsWithMembers: { scopeFn: createExprAdapter("not", startsWithMembersFunc), nArgs: 2 },
+        startsWithDeepMembers: { scopeFn: startsWithDeepMembersFunc, nArgs: 2 },
+        notStartsWithDeepMembers: { scopeFn: createExprAdapter("not", startsWithDeepMembersFunc), nArgs: 2 }
     };
 
     addAssertFuncs(assert, assertFuncs);

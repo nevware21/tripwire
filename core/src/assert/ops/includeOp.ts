@@ -2,7 +2,7 @@
  * @nevware21/tripwire
  * https://github.com/nevware21/tripwire
  *
- * Copyright (c) 2024-2025 NevWare21 Solutions LLC
+ * Copyright (c) 2024-2026 NevWare21 Solutions LLC
  * Licensed under the MIT license.
  */
 
@@ -12,33 +12,8 @@ import { allOp, anyOp } from "./allOp";
 import { IAssertInst, AssertScopeFuncDefs } from "../interface/IAssertInst";
 import { IIncludeOp } from "../interface/ops/IIncludeOp";
 import { IAssertScope } from "../interface/IAssertScope";
-
-/**
- * Helper function to check if an array contains a deep equal item
- * @param items - The array to search in
- * @param expected - The item to search for
- * @returns True if the item is found, false otherwise
- */
-function _deepIncludesArray(items: any[], expected: any[]): boolean {
-    for (let i = 0; i < items.length; i++) {
-        const item = items[i];
-        if (item.length === expected.length) {
-            let allEqual = true;
-            for (let j = 0; j < item.length; j++) {
-                if (item[j] !== expected[j]) {
-                    allEqual = false;
-                    break;
-                }
-            }
-
-            if (allEqual) {
-                return true;
-            }
-        }
-    }
-    
-    return false;
-}
+import { includeDeepMembersFunc, includeDeepOrderedMembersFunc, includeMembersFunc, includeOrderedMembersFunc, sameDeepMembersFunc, sameDeepOrderedMembersFunc, sameMembersFunc, sameOrderedMembersFunc, startsWithMembersFunc, startsWithDeepMembersFunc } from "../funcs/members";
+import { _deepEqual } from "../funcs/equal";
 
 /**
  * Creates the include assertion operation using the given scope.
@@ -73,7 +48,12 @@ export function includeOp<R>(scope: IAssertScope): IIncludeOp<R> {
     
     const props: AssertScopeFuncDefs<IIncludeOp<R>> = {
         any: { propFn: anyOp },
-        all: { propFn: allOp }
+        all: { propFn: allOp },
+        members: { scopeFn: includeMembersFunc },
+        orderedMembers: { scopeFn: includeOrderedMembersFunc },
+        sameMembers: { scopeFn: sameMembersFunc },
+        sameOrderedMembers: { scopeFn: sameOrderedMembersFunc },
+        startsWithMembers: { scopeFn: startsWithMembersFunc }
     };
 
     return scope.createOperation(props, _includes);
@@ -99,7 +79,15 @@ export function deepIncludeOp<R>(scope: IAssertScope): IIncludeOp<R> {
         if (isString(context.value)) {
             context.eval(value.indexOf(match) > -1, evalMsg || "expected {value} to include {match}");
         } else if (isArray(context.value)) {
-            context.eval(_deepIncludesArray(value, match), evalMsg || "expected {value} to include {match}");
+            // Check if any item in the array deeply equals match
+            let found = false;
+            for (let i = 0; i < value.length; i++) {
+                if (_deepEqual(value[i], match)) {
+                    found = true;
+                    break;
+                }
+            }
+            context.eval(found, evalMsg || "expected {value} to include {match}");
         } else if (value && isFunction(value.has)) {
             // Looks like a set or map
             context.eval(value.has(match), evalMsg || "expected {value} to include {match}");
@@ -114,7 +102,12 @@ export function deepIncludeOp<R>(scope: IAssertScope): IIncludeOp<R> {
     
     const props: AssertScopeFuncDefs<IIncludeOp<R>> = {
         any: { propFn: anyOp },
-        all: { propFn: allOp }
+        all: { propFn: allOp },
+        members: { scopeFn: includeDeepMembersFunc },
+        orderedMembers: { scopeFn: includeDeepOrderedMembersFunc },
+        sameMembers: { scopeFn: sameDeepMembersFunc },
+        sameOrderedMembers: { scopeFn: sameDeepOrderedMembersFunc },
+        startsWithMembers: { scopeFn: startsWithDeepMembersFunc }
     };
 
     return scope.createOperation(props, _deepIncludes);
