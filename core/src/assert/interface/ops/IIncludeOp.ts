@@ -107,4 +107,37 @@ export interface IIncludeOp<R> extends IncludeFn<R> {
      * ```
      */
     startsWithMembers(expected: ArrayLikeOrSizedIterable, evalMsg?: MsgSource): R;
+
+    /**
+     * Asserts that the target collection ends with the expected members in consecutive order at the end.
+     * Uses deep equality when in deep context, strict equality otherwise.
+     * Both target and expected must conform to {@link ArrayLikeOrSizedIterable} but can be different concrete types.
+     * @since 0.1.5
+     * @param expected - The expected ending sequence (must be an {@link ArrayLikeOrSizedIterable}).
+     * @param evalMsg - Optional error message.
+     * @example
+     * ```typescript
+     * expect([1, 2, 3, 4]).includes.endsWithMembers([3, 4]);  // Passes
+     * expect([1, 2, 3, 4]).includes.endsWithMembers([2, 3]);  // Fails - doesn't end with [2, 3]
+     * ```
+     */
+    endsWithMembers(expected: ArrayLikeOrSizedIterable, evalMsg?: MsgSource): R;
+
+    /**
+     * Asserts that the target collection contains a subsequence matching the expected members.
+     * The members must appear in the specified order but don't need to be consecutive -
+     * other elements can appear between them.
+     * Uses deep equality when in deep context, strict equality otherwise.
+     * Both target and expected must conform to {@link ArrayLikeOrSizedIterable} but can be different concrete types.
+     * @since 0.1.5
+     * @param expected - The expected ordered subsequence (must be an {@link ArrayLikeOrSizedIterable}).
+     * @param evalMsg - Optional error message.
+     * @example
+     * ```typescript
+     * expect([1, 2, 3, 4, 5]).includes.subsequence([2, 4, 5]);  // Passes - in order with gaps
+     * expect([1, 2, 3, 4, 5]).includes.subsequence([5, 3, 1]);  // Fails - wrong order
+     * expect([{a: 1}, {b: 2}, {c: 3}]).deep.includes.subsequence([{a: 1}, {c: 3}]);  // Passes with deep equality
+     * ```
+     */
+    subsequence(expected: ArrayLikeOrSizedIterable, evalMsg?: MsgSource): R;
 }
