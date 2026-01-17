@@ -18,6 +18,7 @@ import {
 import { IScopeContext, IScopeContextOverrides } from "./assert/interface/IScopeContext";
 import { IAssertClassDef } from "./assert/interface/IAssertClassDef";
 import { MsgSource } from "./assert/type/MsgSource";
+import { ArrayLikeOrSizedIterable } from "./assert/type/ArrayLikeOrIterable";
 import { IAssertInstCore } from "./assert/interface/IAssertInstCore";
 import { IDeepOp } from "./assert/interface/ops/IDeepOp";
 import { IKeysOp } from "./assert/interface/ops/IKeysOp";
@@ -88,7 +89,7 @@ export {
  * Export the types
  */
 export {
-    AssertClassDef, AssertFn, AssertInstHandlers, AssertScopeFuncDefs, CloseToFn, EqualFn,
+    ArrayLikeOrSizedIterable, AssertClassDef, AssertFn, AssertInstHandlers, AssertScopeFuncDefs, CloseToFn, EqualFn,
     ErrorLikeFn, EvalFn, IncludeFn, InstanceOfFn, IScopeFn, KeysFn, MsgSource, NumberFn,
     OperatorFn, SymbolFn, ThrowFn, ValuesFn, WithinFn
 };

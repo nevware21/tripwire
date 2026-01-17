@@ -9,6 +9,7 @@
 import { IScopeContext } from "./IScopeContext";
 import { IAssertInst } from "./IAssertInst";
 import { MsgSource } from "../type/MsgSource";
+import { ArrayLikeOrSizedIterable } from "../type/ArrayLikeOrIterable";
 
 /**
  * The `IAssert` interface defines the methods for performing assertions.
@@ -2105,6 +2106,384 @@ export interface IAssertClass<AssertInst extends IAssertInst = IAssertInst> {
      * ```
      */
     operator(value: any, operator: string, expected: any, initMsg?: MsgSource): AssertInst;
+
+    /**
+     * Asserts that the actual collection has the same members as the expected collection, regardless of order.
+     * Uses strict equality (===) for comparison.
+     * Both arguments must conform to {@link ArrayLikeOrSizedIterable} but can be different concrete types.
+     * @param actual - The actual collection to check (must be an {@link ArrayLikeOrSizedIterable}).
+     * @param expected - The expected collection to compare against (must be an {@link ArrayLikeOrSizedIterable}).
+     * @param initMsg - The message to display if the assertion fails.
+     * @returns - An assert instance for further chaining.
+     * @since 0.1.5
+     * @example
+     * ```typescript
+     * assert.sameMembers([1, 2, 3], [3, 2, 1]);                // Passes - same members, different order
+     * assert.sameMembers([1, 2, 2, 3], [3, 2, 2, 1]);          // Passes - duplicates handled
+     * assert.sameMembers([1, 2, 3], new Set([3, 2, 1]));       // Passes - Array vs Set
+     * assert.sameMembers(new Set([1, 2, 3]), [3, 2, 1]);       // Passes - Set vs Array
+     * assert.sameMembers(new Set([1, 2, 3]), new Set([3, 2, 1])); // Passes - Set vs Set
+     * assert.sameMembers([1, 2, 3], [1, 2]);                   // Throws AssertionFailure - different length
+     * assert.sameMembers([1, 2, 3], [1, 2, 4]);                // Throws AssertionFailure - different members
+     * ```
+     */
+    sameMembers<T>(actual: ArrayLikeOrSizedIterable<T>, expected: ArrayLikeOrSizedIterable<T>, initMsg?: MsgSource): AssertInst;
+
+    /**
+     * Asserts that the actual collection does not have the same members as the expected collection.
+     * This is the inverse of {@link sameMembers}.
+     * Both arguments must conform to {@link ArrayLikeOrSizedIterable} but can be different concrete types.
+     * @param actual - The actual collection to check (must be an {@link ArrayLikeOrSizedIterable}).
+     * @param expected - The expected collection to compare against (must be an {@link ArrayLikeOrSizedIterable}).
+     * @param initMsg - The message to display if the assertion fails.
+     * @returns - An assert instance for further chaining.
+     * @since 0.1.5
+     * @example
+     * ```typescript
+     * assert.notSameMembers([1, 2, 3], [1, 2]);                 // Passes - different length
+     * assert.notSameMembers([1, 2, 3], [1, 2, 4]);              // Passes - different members
+     * assert.notSameMembers([1, 2, 3], new Set([1, 2, 4]));     // Passes - different members
+     * assert.notSameMembers(new Set([1, 2, 3]), [1, 2, 4]);     // Passes - different members
+     * assert.notSameMembers([1, 2, 3], [3, 2, 1]);              // Throws AssertionFailure - same members
+     * assert.notSameMembers([1, 2, 3], new Set([3, 2, 1]));     // Throws AssertionFailure - same members
+     * ```
+     */
+    notSameMembers<T>(actual: ArrayLikeOrSizedIterable<T>, expected: ArrayLikeOrSizedIterable<T>, initMsg?: MsgSource): AssertInst;
+
+    /**
+     * Asserts that the actual collection has the same members as the expected collection, regardless of order.
+     * Uses deep equality for comparison. Particularly useful for Maps which iterate over [key, value] pairs.
+     * Both arguments must conform to {@link ArrayLikeOrSizedIterable} but can be different concrete types.
+     * @param actual - The actual collection to check (must be an {@link ArrayLikeOrSizedIterable}).
+     * @param expected - The expected collection to compare against (must be an {@link ArrayLikeOrSizedIterable}).
+     * @param initMsg - The message to display if the assertion fails.
+     * @returns - An assert instance for further chaining.
+     * @since 0.1.5
+     * @example
+     * ```typescript
+     * assert.sameDeepMembers([{a: 1}, {b: 2}], [{b: 2}, {a: 1}]);      // Passes
+     * assert.sameDeepMembers([[1, 2], [3, 4]], [[3, 4], [1, 2]]);      // Passes
+     * assert.sameDeepMembers([{a: 1}], new Set([{a: 1}]));             // Passes - Array vs Set
+     * assert.sameDeepMembers(new Set([{a: 1}, {b: 2}]), [{b: 2}, {a: 1}]); // Passes
+     *
+     * // Maps iterate over [key, value] pairs, so use deep comparison
+     * const map = new Map([[1, "a"], [2, "b"]]);
+     * assert.sameDeepMembers(map, [[1, "a"], [2, "b"]]);              // Passes
+     * assert.sameDeepMembers([{a: 1}], [{a: 2}]);                      // Throws AssertionFailure
+     * ```
+     */
+    sameDeepMembers<T>(actual: ArrayLikeOrSizedIterable<T>, expected: ArrayLikeOrSizedIterable<T>, initMsg?: MsgSource): AssertInst;
+
+    /**
+     * Asserts that the actual collection does not have the same deep members as the expected collection.
+     * This is the inverse of {@link sameDeepMembers}.
+     * Both arguments must conform to {@link ArrayLikeOrSizedIterable} but can be different concrete types.
+     * @param actual - The actual collection to check (must be an {@link ArrayLikeOrSizedIterable}).
+     * @param expected - The expected collection to compare against (must be an {@link ArrayLikeOrSizedIterable}).
+     * @param initMsg - The message to display if the assertion fails.
+     * @returns - An assert instance for further chaining.
+     * @since 0.1.5
+     * @example
+     * ```typescript
+     * assert.notSameDeepMembers([{a: 1}], [{a: 2}]);                    // Passes
+     * assert.notSameDeepMembers([{a: 1}], new Set([{a: 2}]));           // Passes - Array vs Set
+     * assert.notSameDeepMembers(new Set([{a: 1}]), [{a: 2}]);           // Passes - Set vs Array
+     * assert.notSameDeepMembers([{a: 1}, {b: 2}], [{b: 2}, {a: 1}]);    // Throws AssertionFailure
+     * assert.notSameDeepMembers([{a: 1}], new Set([{a: 1}]));           // Throws AssertionFailure
+     * ```
+     */
+    notSameDeepMembers<T>(actual: ArrayLikeOrSizedIterable<T>, expected: ArrayLikeOrSizedIterable<T>, initMsg?: MsgSource): AssertInst;
+
+    /**
+     * Asserts that the actual collection has the same members in the same order as the expected collection.
+     * Uses strict equality (===) for comparison.
+     * Both arguments must conform to {@link ArrayLikeOrSizedIterable} but can be different concrete types.
+     * @param actual - The actual collection to check (must be an {@link ArrayLikeOrSizedIterable}).
+     * @param expected - The expected collection to compare against (must be an {@link ArrayLikeOrSizedIterable}).
+     * @param initMsg - The message to display if the assertion fails.
+     * @returns - An assert instance for further chaining.
+     * @since 0.1.5
+     * @example
+     * ```typescript
+     * assert.sameOrderedMembers([1, 2, 3], [1, 2, 3]);  // Passes - same order
+     * assert.sameOrderedMembers([1, 2, 3], [3, 2, 1]);  // Throws AssertionFailure - different order
+     * assert.sameOrderedMembers([1, 2, 3], [1, 2]);     // Throws AssertionFailure - different length
+     * ```
+     */
+    sameOrderedMembers<T>(actual: ArrayLikeOrSizedIterable<T>, expected: ArrayLikeOrSizedIterable<T>, initMsg?: MsgSource): AssertInst;
+
+    /**
+     * Asserts that the actual collection does not have the same ordered members as the expected collection.
+     * This is the inverse of {@link sameOrderedMembers}.
+     * Both arguments must conform to {@link ArrayLikeOrSizedIterable} but can be different concrete types.
+     * @param actual - The actual collection to check (must be an {@link ArrayLikeOrSizedIterable}).
+     * @param expected - The expected collection to compare against (must be an {@link ArrayLikeOrSizedIterable}).
+     * @param initMsg - The message to display if the assertion fails.
+     * @returns - An assert instance for further chaining.
+     * @since 0.1.5
+     * @example
+     * ```typescript
+     * assert.notSameOrderedMembers([1, 2, 3], [3, 2, 1]);  // Passes - different order
+     * assert.notSameOrderedMembers([1, 2, 3], [1, 2, 3]);  // Throws AssertionFailure - same order
+     * ```
+     */
+    notSameOrderedMembers<T>(actual: ArrayLikeOrSizedIterable<T>, expected: ArrayLikeOrSizedIterable<T>, initMsg?: MsgSource): AssertInst;
+
+    /**
+     * Asserts that the actual and expected collections have the same members in the same order.
+     * Uses deep equality for comparison.
+     * Both arguments must conform to {@link ArrayLikeOrSizedIterable} but can be different concrete types.
+     * @param actual - The actual collection (must be an {@link ArrayLikeOrSizedIterable}).
+     * @param expected - The expected collection (must be an {@link ArrayLikeOrSizedIterable}).
+     * @param initMsg - The message to display if the assertion fails.
+     * @returns - An assert instance for further chaining.
+     * @since 0.1.5
+     * @example
+     * ```typescript
+     * assert.sameDeepOrderedMembers([{a: 1}, {b: 2}], [{a: 1}, {b: 2}]);  // Passes
+     * assert.sameDeepOrderedMembers([[1, 2], [3, 4]], [[1, 2], [3, 4]]);  // Passes
+     * assert.sameDeepOrderedMembers([{a: 1}, {b: 2}], [{b: 2}, {a: 1}]);  // Throws AssertionFailure - different order
+     * ```
+     */
+    sameDeepOrderedMembers<T>(actual: ArrayLikeOrSizedIterable<T>, expected: ArrayLikeOrSizedIterable<T>, initMsg?: MsgSource): AssertInst;
+
+    /**
+     * Asserts that the actual and expected collections do not have the same members in the same order.
+     * This is the inverse of {@link sameDeepOrderedMembers}.
+     * Both arguments must conform to {@link ArrayLikeOrSizedIterable} but can be different concrete types.
+     * @param actual - The actual collection (must be an {@link ArrayLikeOrSizedIterable}).
+     * @param expected - The expected collection (must be an {@link ArrayLikeOrSizedIterable}).
+     * @param initMsg - The message to display if the assertion fails.
+     * @returns - An assert instance for further chaining.
+     * @since 0.1.5
+     * @example
+     * ```typescript
+     * assert.notSameDeepOrderedMembers([{a: 1}, {b: 2}], [{b: 2}, {a: 1}]);  // Passes - different order
+     * assert.notSameDeepOrderedMembers([{a: 1}, {b: 2}], [{a: 1}, {b: 2}]);  // Throws AssertionFailure - same order
+     * ```
+     */
+    notSameDeepOrderedMembers<T>(actual: ArrayLikeOrSizedIterable<T>, expected: ArrayLikeOrSizedIterable<T>, initMsg?: MsgSource): AssertInst;
+
+    /**
+     * Asserts that the superset collection includes all members of the subset collection (order doesn't matter).
+     * Uses strict equality (===) for comparison.
+     * Both arguments must conform to {@link ArrayLikeOrSizedIterable} but can be different concrete types.
+     * @param superset - The collection that should contain all members of the subset (must be an {@link ArrayLikeOrSizedIterable}).
+     * @param subset - The collection of members to check for (must be an {@link ArrayLikeOrSizedIterable}).
+     * @param initMsg - The message to display if the assertion fails.
+     * @returns - An assert instance for further chaining.
+     * @since 0.1.5
+     * @example
+     * ```typescript
+     * assert.includeMembers([1, 2, 3, 4], [2, 3]);                  // Passes - all members present
+     * assert.includeMembers([1, 2, 3, 4], new Set([2, 3]));         // Passes - Array vs Set
+     * assert.includeMembers(new Set([1, 2, 3, 4]), [2, 3]);         // Passes - Set vs Array
+     * assert.includeMembers(new Set([1, 2, 3, 4]), new Set([2, 3])); // Passes - Set vs Set
+     * assert.includeMembers([1, 2, 3], [1, 4]);                     // Throws AssertionFailure - 4 not present
+     * ```
+     */
+    includeMembers<T>(superset: ArrayLikeOrSizedIterable<T>, subset: ArrayLikeOrSizedIterable<T>, initMsg?: MsgSource): AssertInst;
+
+    /**
+     * Asserts that the superset collection does not include all members of the subset collection.
+     * This is the inverse of {@link includeMembers}.
+     * Both arguments must conform to {@link ArrayLikeOrSizedIterable} but can be different concrete types.
+     * @param superset - The collection that should not contain all members of the subset (must be an {@link ArrayLikeOrSizedIterable}).
+     * @param subset - The collection of members to check for (must be an {@link ArrayLikeOrSizedIterable}).
+     * @param initMsg - The message to display if the assertion fails.
+     * @returns - An assert instance for further chaining.
+     * @since 0.1.5
+     * @example
+     * ```typescript
+     * assert.notIncludeMembers([1, 2, 3], [1, 4]);                 // Passes - 4 not present
+     * assert.notIncludeMembers([1, 2, 3], new Set([1, 4]));        // Passes - Array vs Set
+     * assert.notIncludeMembers(new Set([1, 2, 3]), [1, 4]);        // Passes - Set vs Array
+     * assert.notIncludeMembers([1, 2, 3, 4], [2, 3]);              // Throws AssertionFailure - all present
+     * assert.notIncludeMembers([1, 2, 3, 4], new Set([2, 3]));     // Throws AssertionFailure - all present
+     * ```
+     */
+    notIncludeMembers<T>(superset: ArrayLikeOrSizedIterable<T>, subset: ArrayLikeOrSizedIterable<T>, initMsg?: MsgSource): AssertInst;
+
+    /**
+     * Asserts that the superset collection includes all members of the subset collection (order doesn't matter).
+     * Uses deep equality for comparison. Particularly useful for Maps which iterate over [key, value] pairs.
+     * Both arguments must conform to {@link ArrayLikeOrSizedIterable} but can be different concrete types.
+     * @param superset - The collection that should contain all members of the subset (must be an {@link ArrayLikeOrSizedIterable}).
+     * @param subset - The collection of members to check for (must be an {@link ArrayLikeOrSizedIterable}).
+     * @param initMsg - The message to display if the assertion fails.
+     * @returns - An assert instance for further chaining.
+     * @since 0.1.5
+     * @example
+     * ```typescript
+     * assert.includeDeepMembers([{a: 1}, {b: 2}], [{a: 1}]);          // Passes
+     * assert.includeDeepMembers([[1, 2], [3, 4]], [[1, 2]]);          // Passes
+     * assert.includeDeepMembers([{a: 1}, {b: 2}], new Set([{a: 1}])); // Passes - Array vs Set
+     * assert.includeDeepMembers(new Set([{a: 1}, {b: 2}]), [{a: 1}]); // Passes - Set vs Array
+     *
+     * // Maps iterate over [key, value] pairs
+     * const map = new Map([[1, "a"], [2, "b"], [3, "c"]]);
+     * assert.includeDeepMembers(map, [[1, "a"], [2, "b"]]);          // Passes
+     * assert.includeDeepMembers([{a: 1}], [{a: 2}]);                  // Throws AssertionFailure
+     * ```
+     */
+    includeDeepMembers<T>(superset: ArrayLikeOrSizedIterable<T>, subset: ArrayLikeOrSizedIterable<T>, initMsg?: MsgSource): AssertInst;
+
+    /**
+     * Asserts that the superset collection does not include all members of the subset collection with deep equality.
+     * This is the inverse of {@link includeDeepMembers}.
+     * Both arguments must conform to {@link ArrayLikeOrSizedIterable} but can be different concrete types.
+     * @param superset - The collection that should not contain all members of the subset (must be an {@link ArrayLikeOrSizedIterable}).
+     * @param subset - The collection of members to check for (must be an {@link ArrayLikeOrSizedIterable}).
+     * @param initMsg - The message to display if the assertion fails.
+     * @returns - An assert instance for further chaining.
+     * @since 0.1.5
+     * @example
+     * ```typescript
+     * assert.notIncludeDeepMembers([{a: 1}], [{a: 2}]);          // Passes
+     * assert.notIncludeDeepMembers([{a: 1}, {b: 2}], [{a: 1}]);  // Throws AssertionFailure
+     * ```
+     */
+    notIncludeDeepMembers<T>(superset: ArrayLikeOrSizedIterable<T>, subset: ArrayLikeOrSizedIterable<T>, initMsg?: MsgSource): AssertInst;
+
+    /**
+     * Asserts that the superset collection includes all members of the subset collection in the same order
+     * (but may have additional members in between).
+     * Uses strict equality (===) for comparison.
+     * Both arguments must conform to {@link ArrayLikeOrSizedIterable} but can be different concrete types.
+     * @param superset - The collection that should contain all members of the subset (must be an {@link ArrayLikeOrSizedIterable}).
+     * @param subset - The collection of members to check for (must be an {@link ArrayLikeOrSizedIterable}).
+     * @param initMsg - The message to display if the assertion fails.
+     * @returns - An assert instance for further chaining.
+     * @since 0.1.5
+     * @example
+     * ```typescript
+     * assert.includeOrderedMembers([1, 2, 3, 4], [1, 2, 3]);  // Passes
+     * assert.includeOrderedMembers([1, 2, 3, 4], [2, 4]);     // Passes - with gaps
+     * assert.includeOrderedMembers([1, 2, 3, 4], [3, 2]);     // Throws AssertionFailure - wrong order
+     * ```
+     */
+    includeOrderedMembers<T>(superset: ArrayLikeOrSizedIterable<T>, subset: ArrayLikeOrSizedIterable<T>, initMsg?: MsgSource): AssertInst;
+
+    /**
+     * Asserts that the superset collection does not include all members of the subset collection in the same order.
+     * This is the inverse of {@link includeOrderedMembers}.
+     * Both arguments must conform to {@link ArrayLikeOrSizedIterable} but can be different concrete types.
+     * @param superset - The collection that should not contain all members of the subset in order (must be an {@link ArrayLikeOrSizedIterable}).
+     * @param subset - The collection of members to check for (must be an {@link ArrayLikeOrSizedIterable}).
+     * @param initMsg - The message to display if the assertion fails.
+     * @returns - An assert instance for further chaining.
+     * @since 0.1.5
+     * @example
+     * ```typescript
+     * assert.notIncludeOrderedMembers([1, 2, 3, 4], [3, 2]);     // Passes - wrong order
+     * assert.notIncludeOrderedMembers([1, 2, 3, 4], [1, 2, 3]);  // Throws AssertionFailure
+     * ```
+     */
+    notIncludeOrderedMembers<T>(superset: ArrayLikeOrSizedIterable<T>, subset: ArrayLikeOrSizedIterable<T>, initMsg?: MsgSource): AssertInst;
+
+    /**
+     * Asserts that the superset collection includes all members of the subset collection in the same order
+     * (but may have additional members in between).
+     * Uses deep equality for comparison.
+     * Both arguments must conform to {@link ArrayLikeOrSizedIterable} but can be different concrete types.
+     * @param superset - The collection that should contain all members of the subset (must be an {@link ArrayLikeOrSizedIterable}).
+     * @param subset - The collection of members to check for (must be an {@link ArrayLikeOrSizedIterable}).
+     * @param initMsg - The message to display if the assertion fails.
+     * @returns - An assert instance for further chaining.
+     * @since 0.1.5
+     * @example
+     * ```typescript
+     * assert.includeDeepOrderedMembers([{a: 1}, {b: 2}, {c: 3}], [{a: 1}, {b: 2}]);  // Passes
+     * assert.includeDeepOrderedMembers([{a: 1}, {b: 2}], [{b: 2}, {a: 1}]);          // Throws AssertionFailure
+     * ```
+     */
+    includeDeepOrderedMembers<T>(superset: ArrayLikeOrSizedIterable<T>, subset: ArrayLikeOrSizedIterable<T>, initMsg?: MsgSource): AssertInst;
+
+    /**
+     * Asserts that the superset collection does not include all members of the subset collection in the same order with deep equality.
+     * This is the inverse of {@link includeDeepOrderedMembers}.
+     * Both arguments must conform to {@link ArrayLikeOrSizedIterable} but can be different concrete types.
+     * @param superset - The collection that should not contain all members of the subset in order (must be an {@link ArrayLikeOrSizedIterable}).
+     * @param subset - The collection of members to check for (must be an {@link ArrayLikeOrSizedIterable}).
+     * @param initMsg - The message to display if the assertion fails.
+     * @returns - An assert instance for further chaining.
+     * @since 0.1.5
+     * @example
+     * ```typescript
+     * assert.notIncludeDeepOrderedMembers([{a: 1}, {b: 2}], [{b: 2}, {a: 1}]);          // Passes
+     * assert.notIncludeDeepOrderedMembers([{a: 1}, {b: 2}, {c: 3}], [{a: 1}, {b: 2}]);  // Throws AssertionFailure
+     * ```
+     */
+    notIncludeDeepOrderedMembers<T>(superset: ArrayLikeOrSizedIterable<T>, subset: ArrayLikeOrSizedIterable<T>, initMsg?: MsgSource): AssertInst;
+
+    /**
+     * Asserts that the target collection starts with the expected members in consecutive order from the beginning.
+     * Uses strict equality (===) for comparison.
+     * Both arguments must conform to {@link ArrayLikeOrSizedIterable} but can be different concrete types.
+     * @param actual - The collection that should start with the expected sequence (must be an {@link ArrayLikeOrSizedIterable}).
+     * @param expected - The expected starting sequence (must be an {@link ArrayLikeOrSizedIterable}).
+     * @param initMsg - The message to display if the assertion fails.
+     * @returns - An assert instance for further chaining.
+     * @since 0.1.5
+     * @example
+     * ```typescript
+     * assert.startsWithMembers([1, 2, 3, 4], [1, 2]);     // Passes - starts with [1, 2]
+     * assert.startsWithMembers([1, 2, 3, 4], [1, 2, 3]);  // Passes - starts with [1, 2, 3]
+     * assert.startsWithMembers([1, 2, 3, 4], [2, 3]);     // Throws AssertionFailure - doesn't start with [2, 3]
+     * ```
+     */
+    startsWithMembers<T>(actual: ArrayLikeOrSizedIterable<T>, expected: ArrayLikeOrSizedIterable<T>, initMsg?: MsgSource): AssertInst;
+
+    /**
+     * Asserts that the target collection does not start with the expected members in consecutive order from the beginning.
+     * This is the inverse of {@link startsWithMembers}.
+     * Both arguments must conform to {@link ArrayLikeOrSizedIterable} but can be different concrete types.
+     * @param actual - The collection that should not start with the expected sequence (must be an {@link ArrayLikeOrSizedIterable}).
+     * @param expected - The sequence to check against (must be an {@link ArrayLikeOrSizedIterable}).
+     * @param initMsg - The message to display if the assertion fails.
+     * @returns - An assert instance for further chaining.
+     * @since 0.1.5
+     * @example
+     * ```typescript
+     * assert.notStartsWithMembers([1, 2, 3, 4], [2, 3]);  // Passes - doesn't start with [2, 3]
+     * assert.notStartsWithMembers([1, 2, 3, 4], [1, 2]);  // Throws AssertionFailure - does start with [1, 2]
+     * ```
+     */
+    notStartsWithMembers<T>(actual: ArrayLikeOrSizedIterable<T>, expected: ArrayLikeOrSizedIterable<T>, initMsg?: MsgSource): AssertInst;
+
+    /**
+     * Asserts that the target collection starts with the expected members in consecutive order from the beginning.
+     * Uses deep equality for comparison.
+     * Both arguments must conform to {@link ArrayLikeOrSizedIterable} but can be different concrete types.
+     * @param actual - The collection that should start with the expected sequence (must be an {@link ArrayLikeOrSizedIterable}).
+     * @param expected - The expected starting sequence (must be an {@link ArrayLikeOrSizedIterable}).
+     * @param initMsg - The message to display if the assertion fails.
+     * @returns - An assert instance for further chaining.
+     * @since 0.1.5
+     * @example
+     * ```typescript
+     * assert.startsWithDeepMembers([{a: 1}, {b: 2}, {c: 3}], [{a: 1}, {b: 2}]);  // Passes
+     * assert.startsWithDeepMembers([{a: 1}, {b: 2}, {c: 3}], [{b: 2}]);          // Throws AssertionFailure
+     * ```
+     */
+    startsWithDeepMembers<T>(actual: ArrayLikeOrSizedIterable<T>, expected: ArrayLikeOrSizedIterable<T>, initMsg?: MsgSource): AssertInst;
+
+    /**
+     * Asserts that the target collection does not start with the expected members in consecutive order from the beginning.
+     * This is the inverse of {@link startsWithDeepMembers}.
+     * Both arguments must conform to {@link ArrayLikeOrSizedIterable} but can be different concrete types.
+     * @param actual - The collection that should not start with the expected sequence (must be an {@link ArrayLikeOrSizedIterable}).
+     * @param expected - The sequence to check against (must be an {@link ArrayLikeOrSizedIterable}).
+     * @param initMsg - The message to display if the assertion fails.
+     * @returns - An assert instance for further chaining.
+     * @since 0.1.5
+     * @example
+     * ```typescript
+     * assert.notStartsWithDeepMembers([{a: 1}, {b: 2}], [{b: 2}]);  // Passes
+     * assert.notStartsWithDeepMembers([{a: 1}, {b: 2}], [{a: 1}]);  // Throws AssertionFailure
+     * ```
+     */
+    notStartsWithDeepMembers<T>(actual: ArrayLikeOrSizedIterable<T>, expected: ArrayLikeOrSizedIterable<T>, initMsg?: MsgSource): AssertInst;
 }
 
 export type IExtendedAssert<T = any> = IAssertClass<IAssertInst & T> & T;
