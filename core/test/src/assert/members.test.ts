@@ -971,7 +971,7 @@ describe("Member Comparison Tests", () => {
                 // 2. Circular reference error (if >10 visits detected)
                 // NOT acceptable: null pointer exception from context.fail()
                 assert.isTrue(
-                    e.message.includes("AssertionFailure") || 
+                    e.message.includes("AssertionFailure") ||
                     e.message.includes("Circular reference") ||
                     e.message.includes("expected") ||
                     e.name === "AssertionFailure" ||
@@ -979,6 +979,359 @@ describe("Member Comparison Tests", () => {
                     "Should not throw null pointer exception, got: " + e.message
                 );
             }
+        });
+    });
+
+    describe("endsWithMembers", () => {
+        it("should pass when array ends with the expected sequence", () => {
+            assert.endsWithMembers([1, 2, 3, 4, 5], [4, 5]);
+        });
+
+        it("should pass when arrays are equal", () => {
+            assert.endsWithMembers([1, 2, 3], [1, 2, 3]);
+        });
+
+        it("should pass when expected is empty", () => {
+            assert.endsWithMembers([1, 2, 3], []);
+        });
+
+        it("should fail when array doesn't end with the expected sequence", () => {
+            expect(() => {
+                assert.endsWithMembers([1, 2, 3, 4, 5], [3, 4]);
+            }).to.throw();
+        });
+
+        it("should fail when expected is longer than actual", () => {
+            expect(() => {
+                assert.endsWithMembers([1, 2], [1, 2, 3]);
+            }).to.throw();
+        });
+
+        it("should fail when sequence appears in middle but not at end", () => {
+            expect(() => {
+                assert.endsWithMembers([1, 2, 3, 4, 5], [2, 3]);
+            }).to.throw();
+        });
+
+        it("should work with expect syntax", () => {
+            expect([1, 2, 3, 4]).includes.endsWithMembers([3, 4]);
+            expect([1, 2, 3, 4]).to.include.endsWithMembers([3, 4]);
+        });
+
+        it("should work with not operator", () => {
+            expect([1, 2, 3, 4]).to.not.include.endsWithMembers([1, 2]);
+        });
+
+        it("should fail with correct error message for invalid types", () => {
+            expect(() => {
+                assert.endsWithMembers("not an array" as any, [1, 2]);
+            }).to.throw(/array-like or sized iterable/);
+        });
+
+        describe("with Sets", () => {
+            it("should check if Array ends with Set members", () => {
+                assert.endsWithMembers([1, 2, 3, 4], new Set([3, 4]));
+            });
+
+            it("should check if Set ends with Array members", () => {
+                assert.endsWithMembers(new Set([1, 2, 3, 4]), [3, 4]);
+            });
+
+            it("should check if Set ends with Set members", () => {
+                assert.endsWithMembers(new Set([1, 2, 3]), new Set([2, 3]));
+            });
+
+            it("should fail when Set doesn't end with the sequence", () => {
+                expect(() => {
+                    assert.endsWithMembers(new Set([1, 2, 3]), [1, 2]);
+                }).to.throw();
+            });
+        });
+    });
+
+    describe("endsWithDeepMembers", () => {
+        it("should pass when array ends with the expected deep sequence", () => {
+            assert.endsWithDeepMembers([{a: 1}, {b: 2}, {c: 3}], [{b: 2}, {c: 3}]);
+        });
+
+        it("should fail when array doesn't end with the expected deep sequence", () => {
+            expect(() => {
+                assert.endsWithDeepMembers([{a: 1}, {b: 2}, {c: 3}], [{a: 1}, {b: 2}]);
+            }).to.throw();
+        });
+
+        it("should fail when expected is longer than actual", () => {
+            expect(() => {
+                assert.endsWithDeepMembers([{a: 1}], [{a: 1}, {b: 2}]);
+            }).to.throw();
+        });
+
+        it("should work with expect syntax", () => {
+            expect([{a: 1}, {b: 2}]).deep.includes.endsWithMembers([{b: 2}]);
+            expect([{a: 1}, {b: 2}]).to.deep.include.endsWithMembers([{b: 2}]);
+        });
+
+        it("should work with not operator", () => {
+            expect([{a: 1}, {b: 2}, {c: 3}]).to.not.deep.include.endsWithMembers([{a: 1}]);
+        });
+
+        it("should handle nested arrays", () => {
+            assert.endsWithDeepMembers([[1, 2], [3, 4], [5, 6]], [[3, 4], [5, 6]]);
+        });
+
+        it("should fail with correct error message for invalid types", () => {
+            expect(() => {
+                assert.endsWithDeepMembers("not an array" as any, [{a: 1}]);
+            }).to.throw(/array-like or sized iterable/);
+        });
+
+        describe("with Sets", () => {
+            it("should check if Array ends with Set deep members", () => {
+                assert.endsWithDeepMembers([{a: 1}, {b: 2}, {c: 3}], new Set([{b: 2}, {c: 3}]));
+            });
+
+            it("should check if Set ends with Array deep members", () => {
+                assert.endsWithDeepMembers(new Set([{a: 1}, {b: 2}]), [{b: 2}]);
+            });
+
+            it("should check if Set ends with Set deep members", () => {
+                assert.endsWithDeepMembers(new Set([{a: 1}, {b: 2}]), new Set([{b: 2}]));
+            });
+
+            it("should fail when Set doesn't end with the deep sequence", () => {
+                expect(() => {
+                    assert.endsWithDeepMembers(new Set([{a: 1}, {b: 2}]), [{a: 1}]);
+                }).to.throw();
+            });
+        });
+    });
+
+    describe("subsequence", () => {
+        it("should pass when members appear in order with gaps", () => {
+            assert.subsequence([1, 2, 3, 4, 5], [2, 4, 5]);
+        });
+
+        it("should pass when members appear in order without gaps", () => {
+            assert.subsequence([1, 2, 3, 4, 5], [1, 2, 3]);
+        });
+
+        it("should pass when arrays are equal", () => {
+            assert.subsequence([1, 2, 3], [1, 2, 3]);
+        });
+
+        it("should pass when expected is empty", () => {
+            assert.subsequence([1, 2, 3], []);
+        });
+
+        it("should pass when expected is a single element", () => {
+            assert.subsequence([1, 2, 3, 4, 5], [3]);
+        });
+
+        it("should fail when members appear in wrong order", () => {
+            expect(() => {
+                assert.subsequence([1, 2, 3, 4, 5], [5, 3, 1]);
+            }).to.throw();
+        });
+
+        it("should fail when not all members are present", () => {
+            expect(() => {
+                assert.subsequence([1, 2, 3, 4, 5], [2, 6]);
+            }).to.throw();
+        });
+
+        it("should handle duplicates correctly", () => {
+            assert.subsequence([1, 2, 2, 3, 3, 3], [2, 2, 3]);
+        });
+
+        it("should fail when not enough duplicates", () => {
+            expect(() => {
+                assert.subsequence([1, 2, 3], [2, 2]);
+            }).to.throw();
+        });
+
+        it("should throw with correct message when members appear in wrong order", () => {
+            expect(() => {
+                assert.subsequence([1, 2, 3, 4, 5], [5, 3, 1]);
+            }).to.throw(/expected \[1,2,3,4,5\] to include subsequence \[5,3,1\]/);
+        });
+
+        it("should throw with correct message when not all members are present", () => {
+            expect(() => {
+                assert.subsequence([1, 2, 3, 4, 5], [2, 6]);
+            }).to.throw(/expected \[1,2,3,4,5\] to include subsequence \[2,6\]/);
+        });
+
+        it("should throw with correct message when not enough duplicates", () => {
+            expect(() => {
+                assert.subsequence([1, 2, 3], [2, 2]);
+            }).to.throw(/expected \[1,2,3\] to include subsequence \[2,2\]/);
+        });
+
+        it("should work with expect syntax", () => {
+            expect([1, 2, 3, 4, 5]).includes.subsequence([1, 3, 5]);
+            expect([1, 2, 3, 4, 5]).to.include.subsequence([1, 3, 5]);
+        });
+
+        it("should work with not operator", () => {
+            expect([1, 2, 3, 4, 5]).to.not.include.subsequence([5, 1]);
+        });
+
+        it("should fail with correct error message for invalid types", () => {
+            expect(() => {
+                assert.subsequence("not an array" as any, [1, 2]);
+            }).to.throw(/array-like or sized iterable/);
+        });
+
+        describe("with Sets", () => {
+            it("should check if Array contains Set members in order", () => {
+                assert.subsequence([1, 2, 3, 4, 5], new Set([2, 4]));
+            });
+
+            it("should check if Set contains Array members in order", () => {
+                assert.subsequence(new Set([1, 2, 3, 4]), [1, 3]);
+            });
+
+            it("should check if Set contains Set members in order", () => {
+                assert.subsequence(new Set([1, 2, 3]), new Set([1, 3]));
+            });
+
+            it("should fail when Set doesn't contain members in order", () => {
+                expect(() => {
+                    assert.subsequence(new Set([1, 2, 3]), [3, 1]);
+                }).to.throw();
+            });
+        });
+
+        describe("real-world use cases", () => {
+            it("should validate event sequence with interspersed events", () => {
+                const events = ["start", "init", "loading", "progress", "loaded", "ready"];
+                assert.subsequence(events, ["init", "loaded", "ready"]);
+            });
+
+            it("should validate filtered array maintains order", () => {
+                const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+                const evens = [2, 4, 6, 8, 10];
+                assert.subsequence(numbers, evens);
+            });
+
+            it("should validate workflow steps occurred in order", () => {
+                const log = ["user_login", "view_page", "click_button", "submit_form", "api_call", "success"];
+                assert.subsequence(log, ["user_login", "submit_form", "success"]);
+            });
+        });
+    });
+
+    describe("deepSubsequence", () => {
+        it("should pass when deep members appear in order with gaps", () => {
+            assert.deepSubsequence([{a: 1}, {b: 2}, {c: 3}, {d: 4}], [{a: 1}, {c: 3}]);
+        });
+
+        it("should pass when deep members appear in order without gaps", () => {
+            assert.deepSubsequence([{a: 1}, {b: 2}, {c: 3}], [{a: 1}, {b: 2}]);
+        });
+
+        it("should pass when arrays are equal", () => {
+            assert.deepSubsequence([{a: 1}, {b: 2}], [{a: 1}, {b: 2}]);
+        });
+
+        it("should pass when expected is empty", () => {
+            assert.deepSubsequence([{a: 1}, {b: 2}], []);
+        });
+
+        it("should fail when members appear in wrong order", () => {
+            expect(() => {
+                assert.deepSubsequence([{a: 1}, {b: 2}, {c: 3}], [{c: 3}, {a: 1}]);
+            }).to.throw();
+        });
+
+        it("should fail when not all members are present", () => {
+            expect(() => {
+                assert.deepSubsequence([{a: 1}, {b: 2}], [{a: 1}, {c: 3}] as any);
+            }).to.throw();
+        });
+
+        it("should throw with correct message when members appear in wrong order", () => {
+            expect(() => {
+                assert.deepSubsequence([{a: 1}, {b: 2}, {c: 3}], [{c: 3}, {a: 1}]);
+            }).to.throw(/expected .* to include deep subsequence .*/);
+        });
+
+        it("should throw with correct message when not all members are present", () => {
+            expect(() => {
+                assert.deepSubsequence([{a: 1}, {b: 2}], [{a: 1}, {c: 3}] as any);
+            }).to.throw(/expected .* to include deep subsequence .*/);
+        });
+
+        it("should handle nested objects", () => {
+            assert.deepSubsequence([{a: {x: 1}}, {b: {y: 2}}, {c: {z: 3}}], [{a: {x: 1}}, {c: {z: 3}}]);
+        });
+
+        it("should handle nested arrays", () => {
+            assert.deepSubsequence([[1, 2], [3, 4], [5, 6], [7, 8]], [[1, 2], [5, 6]]);
+        });
+
+        it("should work with expect syntax", () => {
+            expect([{a: 1}, {b: 2}, {c: 3}]).deep.includes.subsequence([{a: 1}, {c: 3}]);
+            expect([{a: 1}, {b: 2}, {c: 3}]).to.deep.include.subsequence([{a: 1}, {c: 3}]);
+        });
+
+        it("should work with not operator", () => {
+            expect([{a: 1}, {b: 2}, {c: 3}]).to.not.deep.include.subsequence([{c: 3}, {a: 1}]);
+        });
+
+        it("should fail with correct error message for invalid types", () => {
+            expect(() => {
+                assert.deepSubsequence("not an array" as any, [{a: 1}]);
+            }).to.throw(/array-like or sized iterable/);
+        });
+
+        describe("with Sets", () => {
+            it("should check if Array contains Set deep members in order", () => {
+                assert.deepSubsequence([{a: 1}, {b: 2}, {c: 3}], new Set([{a: 1}, {c: 3}]));
+            });
+
+            it("should check if Set contains Array deep members in order", () => {
+                assert.deepSubsequence(new Set([{a: 1}, {b: 2}, {c: 3}]), [{a: 1}, {c: 3}]);
+            });
+
+            it("should check if Set contains Set deep members in order", () => {
+                assert.deepSubsequence(new Set([{a: 1}, {b: 2}]), new Set([{a: 1}]));
+            });
+
+            it("should fail when Set doesn't contain deep members in order", () => {
+                expect(() => {
+                    assert.deepSubsequence(new Set([{a: 1}, {b: 2}]), [{b: 2}, {a: 1}]);
+                }).to.throw();
+            });
+        });
+
+        describe("real-world use cases", () => {
+            it("should validate object event sequence", () => {
+                const events = [
+                    {type: "init", data: {id: 1}},
+                    {type: "loading", data: {id: 1}},
+                    {type: "progress", data: {id: 1, pct: 50}},
+                    {type: "loaded", data: {id: 1}},
+                    {type: "ready", data: {id: 1}}
+                ];
+                assert.deepSubsequence(events, [
+                    {type: "init", data: {id: 1}},
+                    {type: "loaded", data: {id: 1}}
+                ]);
+            });
+
+            it("should validate API response sequence", () => {
+                const responses = [
+                    {status: 200, body: {step: 1}},
+                    {status: 200, body: {step: 2}},
+                    {status: 200, body: {step: 3}},
+                    {status: 201, body: {complete: true}}
+                ];
+                assert.deepSubsequence(responses, [
+                    {status: 200, body: {step: 1}},
+                    {status: 201, body: {complete: true}}
+                ]);
+            });
         });
     });
 });
