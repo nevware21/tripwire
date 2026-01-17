@@ -12,7 +12,7 @@ import { allOp, anyOp } from "./allOp";
 import { IAssertInst, AssertScopeFuncDefs } from "../interface/IAssertInst";
 import { IIncludeOp } from "../interface/ops/IIncludeOp";
 import { IAssertScope } from "../interface/IAssertScope";
-import { includeDeepMembersFunc, includeDeepOrderedMembersFunc, includeMembersFunc, includeOrderedMembersFunc, sameDeepMembersFunc, sameDeepOrderedMembersFunc, sameMembersFunc, sameOrderedMembersFunc, startsWithMembersFunc, startsWithDeepMembersFunc } from "../funcs/members";
+import { includeDeepMembersFunc, includeDeepOrderedMembersFunc, includeMembersFunc, includeOrderedMembersFunc, sameDeepMembersFunc, sameDeepOrderedMembersFunc, sameMembersFunc, sameOrderedMembersFunc, startsWithMembersFunc, startsWithDeepMembersFunc, endsWithMembersFunc, endsWithDeepMembersFunc, subsequenceFunc, deepSubsequenceFunc } from "../funcs/members";
 import { _deepEqual } from "../funcs/equal";
 
 /**
@@ -53,7 +53,9 @@ export function includeOp<R>(scope: IAssertScope): IIncludeOp<R> {
         orderedMembers: { scopeFn: includeOrderedMembersFunc },
         sameMembers: { scopeFn: sameMembersFunc },
         sameOrderedMembers: { scopeFn: sameOrderedMembersFunc },
-        startsWithMembers: { scopeFn: startsWithMembersFunc }
+        startsWithMembers: { scopeFn: startsWithMembersFunc },
+        endsWithMembers: { scopeFn: endsWithMembersFunc },
+        subsequence: { scopeFn: subsequenceFunc }
     };
 
     return scope.createOperation(props, _includes);
@@ -107,7 +109,9 @@ export function deepIncludeOp<R>(scope: IAssertScope): IIncludeOp<R> {
         orderedMembers: { scopeFn: includeDeepOrderedMembersFunc },
         sameMembers: { scopeFn: sameDeepMembersFunc },
         sameOrderedMembers: { scopeFn: sameDeepOrderedMembersFunc },
-        startsWithMembers: { scopeFn: startsWithDeepMembersFunc }
+        startsWithMembers: { scopeFn: startsWithDeepMembersFunc },
+        endsWithMembers: { scopeFn: endsWithDeepMembersFunc },
+        subsequence: { scopeFn: deepSubsequenceFunc }
     };
 
     return scope.createOperation(props, _deepIncludes);

@@ -717,3 +717,253 @@ export function startsWithDeepMembersFunc<R>(this: IAssertScope, expected: Array
     return this.that;
 }
 
+/**
+ * Checks if an array ends with a specific sequence of members using strict equality.
+ *
+ * The function verifies that the last N elements of the array match the expected sequence,
+ * where N is the length of the expected array. Uses strict equality (`===`) for comparison.
+ *
+ * @param expected - The expected sequence that should appear at the end of the array
+ * @param evalMsg - Optional custom error message
+ * @returns The current assertion scope for chaining
+ *
+ * @example
+ * ```typescript
+ * assert([1, 2, 3, 4, 5]).has.endsWithMembers([4, 5]);      // Passes
+ * assert([1, 2, 3, 4, 5]).has.endsWithMembers([5]);         // Passes
+ * assert([1, 2, 3, 4, 5]).has.endsWithMembers([3, 4]);      // Fails - doesn't end with [3, 4]
+ * assert([1, 2, 3]).has.endsWithMembers([]);                // Passes - empty sequence
+ * assert(new Set([1, 2, 3])).has.endsWithMembers([2, 3]);   // Passes - different types
+ * ```
+ */
+export function endsWithMembersFunc<R>(this: IAssertScope, expected: ArrayLikeOrSizedIterable, evalMsg?: MsgSource): R {
+    let context = this.context;
+    let value = context.value;
+
+    context.set("expected", expected);
+
+    // Convert sized iterables to arrays for comparison
+    let valueArray = _toArray(value);
+    let expectedArray = _toArray(expected);
+
+    // Validate that both values conform to ArrayLikeOrSizedIterable
+    if (valueArray === null) {
+        context.fail(evalMsg || "expected {value} to be an array-like or sized iterable");
+    }
+
+    if (expectedArray === null) {
+        context.fail(evalMsg || "expected argument ({expected}) to be an array-like or sized iterable");
+    }
+
+    // Check if expected array appears at the end with strict equality
+    if (expectedArray.length === 0) {
+        context.eval(true, evalMsg || "expected {value} to end with members {expected}");
+        return this.that;
+    }
+
+    // Check if value is long enough
+    if (valueArray.length < expectedArray.length) {
+        context.eval(false, evalMsg || "expected {value} to end with members {expected}");
+        return this.that;
+    }
+
+    // Check if the sequence matches from the end with strict equality
+    let offset = valueArray.length - expectedArray.length;
+    for (let i = 0; i < expectedArray.length; i++) {
+        if (valueArray[offset + i] !== expectedArray[i]) {
+            context.eval(false, evalMsg || "expected {value} to end with members {expected}");
+            return this.that;
+        }
+    }
+
+    context.eval(true, evalMsg || "expected {value} to end with members {expected}");
+    return this.that;
+}
+
+/**
+ * Checks if an array ends with a specific sequence of members using deep equality.
+ *
+ * The function verifies that the last N elements of the array match the expected sequence,
+ * where N is the length of the expected array. Uses deep equality for comparison, making it
+ * suitable for arrays containing objects or nested structures.
+ *
+ * @param expected - The expected sequence that should appear at the end of the array
+ * @param evalMsg - Optional custom error message
+ * @returns The current assertion scope for chaining
+ *
+ * @example
+ * ```typescript
+ * assert([{a: 1}, {b: 2}, {c: 3}]).has.deep.endsWithMembers([{b: 2}, {c: 3}]);  // Passes
+ * assert([{a: 1}, {b: 2}, {c: 3}]).has.deep.endsWithMembers([{c: 3}]);          // Passes
+ * assert([{a: 1}, {b: 2}, {c: 3}]).has.deep.endsWithMembers([{a: 1}]);          // Fails - doesn't end with {a: 1}
+ * assert(new Set([{a: 1}, {b: 2}])).has.deep.endsWithMembers([{b: 2}]);         // Passes - different types
+ * ```
+ */
+export function endsWithDeepMembersFunc<R>(this: IAssertScope, expected: ArrayLikeOrSizedIterable, evalMsg?: MsgSource): R {
+    let context = this.context;
+    let value = context.value;
+
+    context.set("expected", expected);
+
+    // Convert sized iterables to arrays for comparison
+    let valueArray = _toArray(value);
+    let expectedArray = _toArray(expected);
+
+    // Validate that both values conform to ArrayLikeOrSizedIterable
+    if (valueArray === null) {
+        context.fail(evalMsg || "expected {value} to be an array-like or sized iterable");
+    }
+
+    if (expectedArray === null) {
+        context.fail(evalMsg || "expected argument ({expected}) to be an array-like or sized iterable");
+    }
+
+    // Check if expected array appears at the end with deep equality
+    if (expectedArray.length === 0) {
+        context.eval(true, evalMsg || "expected {value} to end with deep members {expected}");
+        return this.that;
+    }
+
+    // Check if value is long enough
+    if (valueArray.length < expectedArray.length) {
+        context.eval(false, evalMsg || "expected {value} to end with deep members {expected}");
+        return this.that;
+    }
+
+    // Check if the sequence matches from the end with deep equality
+    let offset = valueArray.length - expectedArray.length;
+    for (let i = 0; i < expectedArray.length; i++) {
+        if (!_deepEqual(valueArray[offset + i], expectedArray[i])) {
+            context.eval(false, evalMsg || "expected {value} to end with deep members {expected}");
+            return this.that;
+        }
+    }
+
+    context.eval(true, evalMsg || "expected {value} to end with deep members {expected}");
+    return this.that;
+}
+
+/**
+ * Checks if an array contains members in a specific order (non-consecutive) using strict equality.
+ *
+ * The function verifies that all expected members appear in the array in the specified order,
+ * but they don't need to be consecutive - other elements can appear between them.
+ * This is subsequence matching. Uses strict equality (`===`) for comparison.
+ *
+ * @param expected - The expected members that should appear in order (with possible gaps)
+ * @param evalMsg - Optional custom error message
+ * @returns The current assertion scope for chaining
+ *
+ * @example
+ * ```typescript
+ * assert([1, 2, 3, 4, 5]).includes.subsequence([2, 4, 5]);     // Passes - in order with gaps
+ * assert([1, 2, 3, 4, 5]).includes.subsequence([1, 3, 5]);     // Passes - in order with gaps
+ * assert([1, 2, 3, 4, 5]).includes.subsequence([5, 3, 1]);     // Fails - wrong order
+ * assert([1, 2, 3, 4, 5]).includes.subsequence([2, 2]);        // Fails - not enough 2s
+ * assert(new Set([1, 2, 3])).includes.subsequence([1, 3]);     // Passes - different types
+ * ```
+ */
+export function subsequenceFunc<R>(this: IAssertScope, expected: ArrayLikeOrSizedIterable, evalMsg?: MsgSource): R {
+    let context = this.context;
+    let value = context.value;
+
+    context.set("expected", expected);
+
+    // Convert sized iterables to arrays for comparison
+    let valueArray = _toArray(value);
+    let expectedArray = _toArray(expected);
+
+    // Validate that both values conform to ArrayLikeOrSizedIterable
+    if (valueArray === null) {
+        context.fail(evalMsg || "expected {value} to be an array-like or sized iterable");
+    }
+
+    if (expectedArray === null) {
+        context.fail(evalMsg || "expected argument ({expected}) to be an array-like or sized iterable");
+    }
+
+    // Empty expected array always matches
+    if (expectedArray.length === 0) {
+        context.eval(true, evalMsg || "expected {value} to include subsequence {expected}");
+        return this.that;
+    }
+
+    // Check if all expected members appear in order (non-consecutive)
+    let valueIdx = 0;
+    let expectedIdx = 0;
+
+    while (valueIdx < valueArray.length && expectedIdx < expectedArray.length) {
+        if (valueArray[valueIdx] === expectedArray[expectedIdx]) {
+            expectedIdx++;
+        }
+        valueIdx++;
+    }
+
+    // All expected members were found in order
+    let success = expectedIdx === expectedArray.length;
+    context.eval(success, evalMsg || "expected {value} to include subsequence {expected}");
+    return this.that;
+}
+
+/**
+ * Checks if an array contains a subsequence using deep equality.
+ *
+ * The function verifies that all expected members appear in the array in the specified order,
+ * but they don't need to be consecutive - other elements can appear between them.
+ * This is subsequence matching with deep equality, suitable for arrays containing objects
+ * or nested structures.
+ *
+ * @param expected - The expected members that should appear in order (with possible gaps)
+ * @param evalMsg - Optional custom error message
+ * @returns The current assertion scope for chaining
+ *
+ * @example
+ * ```typescript
+ * assert([{a: 1}, {b: 2}, {c: 3}]).deep.includes.subsequence([{a: 1}, {c: 3}]);  // Passes
+ * assert([{a: 1}, {b: 2}, {c: 3}]).deep.includes.subsequence([{b: 2}]);          // Passes
+ * assert([{a: 1}, {b: 2}, {c: 3}]).deep.includes.subsequence([{c: 3}, {a: 1}]);  // Fails - wrong order
+ * assert(new Set([{a: 1}, {b: 2}])).deep.includes.subsequence([{a: 1}]);         // Passes - different types
+ * ```
+ */
+export function deepSubsequenceFunc<R>(this: IAssertScope, expected: ArrayLikeOrSizedIterable, evalMsg?: MsgSource): R {
+    let context = this.context;
+    let value = context.value;
+
+    context.set("expected", expected);
+
+    // Convert sized iterables to arrays for comparison
+    let valueArray = _toArray(value);
+    let expectedArray = _toArray(expected);
+
+    // Validate that both values conform to ArrayLikeOrSizedIterable
+    if (valueArray === null) {
+        context.fail(evalMsg || "expected {value} to be an array-like or sized iterable");
+    }
+
+    if (expectedArray === null) {
+        context.fail(evalMsg || "expected argument ({expected}) to be an array-like or sized iterable");
+    }
+
+    // Empty expected array always matches
+    if (expectedArray.length === 0) {
+        context.eval(true, evalMsg || "expected {value} to include deep subsequence {expected}");
+        return this.that;
+    }
+
+    // Check if all expected members appear in order (non-consecutive) with deep equality
+    let valueIdx = 0;
+    let expectedIdx = 0;
+
+    while (valueIdx < valueArray.length && expectedIdx < expectedArray.length) {
+        if (_deepEqual(valueArray[valueIdx], expectedArray[expectedIdx])) {
+            expectedIdx++;
+        }
+        valueIdx++;
+    }
+
+    // All expected members were found in order
+    let success = expectedIdx === expectedArray.length;
+    context.eval(success, evalMsg || "expected {value} to include deep subsequence {expected}");
+    return this.that;
+}
+

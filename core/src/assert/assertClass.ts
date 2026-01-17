@@ -38,7 +38,11 @@ import { instanceOfFunc } from "./funcs/instanceOf";
 import { lengthFunc } from "./funcs/length";
 import { closeToFunc } from "./funcs/closeTo";
 import { operatorFunc } from "./funcs/operator";
-import { includeMembersFunc, includeDeepMembersFunc, includeOrderedMembersFunc, includeDeepOrderedMembersFunc, sameMembersFunc, sameDeepMembersFunc, sameOrderedMembersFunc, sameDeepOrderedMembersFunc, startsWithMembersFunc, startsWithDeepMembersFunc } from "./funcs/members";
+import { 
+    includeMembersFunc, includeDeepMembersFunc, includeOrderedMembersFunc, includeDeepOrderedMembersFunc,
+    sameMembersFunc, sameDeepMembersFunc, sameOrderedMembersFunc, sameDeepOrderedMembersFunc, startsWithMembersFunc,
+    startsWithDeepMembersFunc, endsWithMembersFunc, endsWithDeepMembersFunc, subsequenceFunc, deepSubsequenceFunc
+} from "./funcs/members";
 
 /**
  * @internal
@@ -297,7 +301,15 @@ export function createAssert(): IAssertClass {
         startsWithMembers: { scopeFn: startsWithMembersFunc, nArgs: 2 },
         notStartsWithMembers: { scopeFn: createExprAdapter("not", startsWithMembersFunc), nArgs: 2 },
         startsWithDeepMembers: { scopeFn: startsWithDeepMembersFunc, nArgs: 2 },
-        notStartsWithDeepMembers: { scopeFn: createExprAdapter("not", startsWithDeepMembersFunc), nArgs: 2 }
+        notStartsWithDeepMembers: { scopeFn: createExprAdapter("not", startsWithDeepMembersFunc), nArgs: 2 },
+        endsWithMembers: { scopeFn: endsWithMembersFunc, nArgs: 2 },
+        notEndsWithMembers: { scopeFn: createExprAdapter("not", endsWithMembersFunc), nArgs: 2 },
+        endsWithDeepMembers: { scopeFn: endsWithDeepMembersFunc, nArgs: 2 },
+        notEndsWithDeepMembers: { scopeFn: createExprAdapter("not", endsWithDeepMembersFunc), nArgs: 2 },
+        subsequence: { scopeFn: subsequenceFunc, nArgs: 2 },
+        notSubsequence: { scopeFn: createExprAdapter("not", subsequenceFunc), nArgs: 2 },
+        deepSubsequence: { scopeFn: deepSubsequenceFunc, nArgs: 2 },
+        notDeepSubsequence: { scopeFn: createExprAdapter("not", deepSubsequenceFunc), nArgs: 2 }
     };
 
     addAssertFuncs(assert, assertFuncs);

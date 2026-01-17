@@ -2484,6 +2484,146 @@ export interface IAssertClass<AssertInst extends IAssertInst = IAssertInst> {
      * ```
      */
     notStartsWithDeepMembers<T>(actual: ArrayLikeOrSizedIterable<T>, expected: ArrayLikeOrSizedIterable<T>, initMsg?: MsgSource): AssertInst;
+
+    /**
+     * Asserts that the target collection ends with the expected members in consecutive order at the end.
+     * Uses strict equality (===) for comparison.
+     * Both arguments must conform to {@link ArrayLikeOrSizedIterable} but can be different concrete types.
+     * @param actual - The collection that should end with the expected sequence (must be an {@link ArrayLikeOrSizedIterable}).
+     * @param expected - The expected ending sequence (must be an {@link ArrayLikeOrSizedIterable}).
+     * @param initMsg - The message to display if the assertion fails.
+     * @returns - An assert instance for further chaining.
+     * @since 0.1.5
+     * @example
+     * ```typescript
+     * assert.endsWithMembers([1, 2, 3, 4], [3, 4]);     // Passes - ends with [3, 4]
+     * assert.endsWithMembers([1, 2, 3, 4], [4]);        // Passes - ends with [4]
+     * assert.endsWithMembers([1, 2, 3, 4], [2, 3]);     // Throws AssertionFailure - doesn't end with [2, 3]
+     * ```
+     */
+    endsWithMembers<T>(actual: ArrayLikeOrSizedIterable<T>, expected: ArrayLikeOrSizedIterable<T>, initMsg?: MsgSource): AssertInst;
+
+    /**
+     * Asserts that the target collection does not end with the expected members in consecutive order at the end.
+     * This is the inverse of {@link endsWithMembers}.
+     * Both arguments must conform to {@link ArrayLikeOrSizedIterable} but can be different concrete types.
+     * @param actual - The collection that should not end with the expected sequence (must be an {@link ArrayLikeOrSizedIterable}).
+     * @param expected - The sequence to check against (must be an {@link ArrayLikeOrSizedIterable}).
+     * @param initMsg - The message to display if the assertion fails.
+     * @returns - An assert instance for further chaining.
+     * @since 0.1.5
+     * @example
+     * ```typescript
+     * assert.notEndsWithMembers([1, 2, 3, 4], [2, 3]);  // Passes - doesn't end with [2, 3]
+     * assert.notEndsWithMembers([1, 2, 3, 4], [3, 4]);  // Throws AssertionFailure - does end with [3, 4]
+     * ```
+     */
+    notEndsWithMembers<T>(actual: ArrayLikeOrSizedIterable<T>, expected: ArrayLikeOrSizedIterable<T>, initMsg?: MsgSource): AssertInst;
+
+    /**
+     * Asserts that the target collection ends with the expected members in consecutive order at the end.
+     * Uses deep equality for comparison.
+     * Both arguments must conform to {@link ArrayLikeOrSizedIterable} but can be different concrete types.
+     * @param actual - The collection that should end with the expected sequence (must be an {@link ArrayLikeOrSizedIterable}).
+     * @param expected - The expected ending sequence (must be an {@link ArrayLikeOrSizedIterable}).
+     * @param initMsg - The message to display if the assertion fails.
+     * @returns - An assert instance for further chaining.
+     * @since 0.1.5
+     * @example
+     * ```typescript
+     * assert.endsWithDeepMembers([{a: 1}, {b: 2}, {c: 3}], [{b: 2}, {c: 3}]);  // Passes
+     * assert.endsWithDeepMembers([{a: 1}, {b: 2}, {c: 3}], [{a: 1}]);          // Throws AssertionFailure
+     * ```
+     */
+    endsWithDeepMembers<T>(actual: ArrayLikeOrSizedIterable<T>, expected: ArrayLikeOrSizedIterable<T>, initMsg?: MsgSource): AssertInst;
+
+    /**
+     * Asserts that the target collection does not end with the expected members in consecutive order at the end.
+     * This is the inverse of {@link endsWithDeepMembers}.
+     * Both arguments must conform to {@link ArrayLikeOrSizedIterable} but can be different concrete types.
+     * @param actual - The collection that should not end with the expected sequence (must be an {@link ArrayLikeOrSizedIterable}).
+     * @param expected - The sequence to check against (must be an {@link ArrayLikeOrSizedIterable}).
+     * @param initMsg - The message to display if the assertion fails.
+     * @returns - An assert instance for further chaining.
+     * @since 0.1.5
+     * @example
+     * ```typescript
+     * assert.notEndsWithDeepMembers([{a: 1}, {b: 2}], [{a: 1}]);  // Passes
+     * assert.notEndsWithDeepMembers([{a: 1}, {b: 2}], [{b: 2}]);  // Throws AssertionFailure
+     * ```
+     */
+    notEndsWithDeepMembers<T>(actual: ArrayLikeOrSizedIterable<T>, expected: ArrayLikeOrSizedIterable<T>, initMsg?: MsgSource): AssertInst;
+
+    /**
+     * Asserts that the target collection contains a subsequence matching the expected members.
+     * The members must appear in the specified order but don't need to be consecutive -
+     * other elements can appear between them. Uses strict equality (===) for comparison.
+     * Both arguments must conform to {@link ArrayLikeOrSizedIterable} but can be different concrete types.
+     * @param actual - The collection that should contain the ordered subsequence (must be an {@link ArrayLikeOrSizedIterable}).
+     * @param expected - The expected ordered subsequence (must be an {@link ArrayLikeOrSizedIterable}).
+     * @param initMsg - The message to display if the assertion fails.
+     * @returns - An assert instance for further chaining.
+     * @since 0.1.5
+     * @example
+     * ```typescript
+     * assert.subsequence([1, 2, 3, 4, 5], [2, 4, 5]);     // Passes - in order with gaps
+     * assert.subsequence([1, 2, 3, 4, 5], [1, 3, 5]);     // Passes
+     * assert.subsequence([1, 2, 3, 4, 5], [5, 3, 1]);     // Throws AssertionFailure - wrong order
+     * ```
+     */
+    subsequence<T>(actual: ArrayLikeOrSizedIterable<T>, expected: ArrayLikeOrSizedIterable<T>, initMsg?: MsgSource): AssertInst;
+
+    /**
+     * Asserts that the target collection does not contain a subsequence matching the expected members.
+     * This is the inverse of {@link subsequence}.
+     * Both arguments must conform to {@link ArrayLikeOrSizedIterable} but can be different concrete types.
+     * @param actual - The collection to check (must be an {@link ArrayLikeOrSizedIterable}).
+     * @param expected - The sequence to check against (must be an {@link ArrayLikeOrSizedIterable}).
+     * @param initMsg - The message to display if the assertion fails.
+     * @returns - An assert instance for further chaining.
+     * @since 0.1.5
+     * @example
+     * ```typescript
+     * assert.notSubsequence([1, 2, 3, 4, 5], [5, 3, 1]);  // Passes - wrong order
+     * assert.notSubsequence([1, 2, 3, 4, 5], [1, 3, 5]);  // Throws AssertionFailure
+     * ```
+     */
+    notSubsequence<T>(actual: ArrayLikeOrSizedIterable<T>, expected: ArrayLikeOrSizedIterable<T>, initMsg?: MsgSource): AssertInst;
+
+    /**
+     * Asserts that the target collection contains a subsequence matching the expected members using deep equality.
+     * The members must appear in the specified order but don't need to be consecutive -
+     * other elements can appear between them.
+     * Both arguments must conform to {@link ArrayLikeOrSizedIterable} but can be different concrete types.
+     * @param actual - The collection that should contain the ordered subsequence (must be an {@link ArrayLikeOrSizedIterable}).
+     * @param expected - The expected ordered subsequence (must be an {@link ArrayLikeOrSizedIterable}).
+     * @param initMsg - The message to display if the assertion fails.
+     * @returns - An assert instance for further chaining.
+     * @since 0.1.5
+     * @example
+     * ```typescript
+     * assert.deepSubsequence([{a: 1}, {b: 2}, {c: 3}], [{a: 1}, {c: 3}]);  // Passes
+     * assert.deepSubsequence([{a: 1}, {b: 2}, {c: 3}], [{c: 3}, {a: 1}]);  // Throws AssertionFailure
+     * ```
+     */
+    deepSubsequence<T>(actual: ArrayLikeOrSizedIterable<T>, expected: ArrayLikeOrSizedIterable<T>, initMsg?: MsgSource): AssertInst;
+
+    /**
+     * Asserts that the target collection does not contain a subsequence matching the expected members using deep equality.
+     * This is the inverse of {@link deepSubsequence}.
+     * Both arguments must conform to {@link ArrayLikeOrSizedIterable} but can be different concrete types.
+     * @param actual - The collection to check (must be an {@link ArrayLikeOrSizedIterable}).
+     * @param expected - The sequence to check against (must be an {@link ArrayLikeOrSizedIterable}).
+     * @param initMsg - The message to display if the assertion fails.
+     * @returns - An assert instance for further chaining.
+     * @since 0.1.5
+     * @example
+     * ```typescript
+     * assert.notDeepSubsequence([{a: 1}, {b: 2}], [{b: 2}, {a: 1}]);  // Passes - wrong order
+     * assert.notDeepSubsequence([{a: 1}, {b: 2}], [{a: 1}]);          // Throws AssertionFailure
+     * ```
+     */
+    notDeepSubsequence<T>(actual: ArrayLikeOrSizedIterable<T>, expected: ArrayLikeOrSizedIterable<T>, initMsg?: MsgSource): AssertInst;
 }
 
 export type IExtendedAssert<T = any> = IAssertClass<IAssertInst & T> & T;
