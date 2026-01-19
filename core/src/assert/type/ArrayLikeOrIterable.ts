@@ -34,4 +34,4 @@
  * @template T - The type of elements in the collection
  * @since 0.1.5
  */
-export type ArrayLikeOrSizedIterable<T = any> = ArrayLike<T> | { size: number; [Symbol.iterator](): Iterator<T> };
+export type ArrayLikeOrSizedIterable<T = any> = ArrayLike<T> | ({ size: number; } & Iterable<T>);

@@ -37,8 +37,9 @@ import { typeOfFunc } from "./funcs/typeOf";
 import { instanceOfFunc } from "./funcs/instanceOf";
 import { lengthFunc } from "./funcs/length";
 import { closeToFunc } from "./funcs/closeTo";
+import { oneOfFunc } from "./funcs/oneOf";
 import { operatorFunc } from "./funcs/operator";
-import { 
+import {
     includeMembersFunc, includeDeepMembersFunc, includeOrderedMembersFunc, includeDeepOrderedMembersFunc,
     sameMembersFunc, sameDeepMembersFunc, sameOrderedMembersFunc, sameDeepOrderedMembersFunc, startsWithMembersFunc,
     startsWithDeepMembersFunc, endsWithMembersFunc, endsWithDeepMembersFunc, subsequenceFunc, deepSubsequenceFunc
@@ -277,6 +278,10 @@ export function createAssert(): IAssertClass {
         notCloseTo: { scopeFn: createExprAdapter("not", closeToFunc), nArgs: 3 },
         approximately: { alias: "closeTo" },
         notApproximately: { alias: "notCloseTo" },
+
+        // Value membership (oneOf)
+        oneOf: { scopeFn: oneOfFunc, nArgs: 2 },
+        notOneOf: { scopeFn: createExprAdapter("not", oneOfFunc), nArgs: 2 },
 
         // Operator comparison
         operator: { scopeFn: operatorFunc, nArgs: 3 },

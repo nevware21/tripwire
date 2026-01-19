@@ -2075,6 +2075,56 @@ export interface IAssertClass<AssertInst extends IAssertInst = IAssertInst> {
     notApproximately(actual: number, expected: number, delta: number, initMsg?: MsgSource): AssertInst;
 
     /**
+     * Asserts that the value is a member of the given list.
+     * Uses strict equality (===) to check if the value is in the list.
+     * Supports arrays, array-like objects (with length), Sets, Maps, and other iterables with size.
+     * @param value - The value to check.
+     * @param list - The array, array-like, Set, Map, or other iterable of possible values to check against.
+     * @param initMsg - The message to display if the assertion fails.
+     * @returns - An assert instance for further chaining.
+     * @since 0.1.5
+     * @example
+     * ```typescript
+     * // With arrays
+     * assert.oneOf(1, [1, 2, 3]);              // Passes
+     * assert.oneOf("a", ["a", "b", "c"]);      // Passes
+     * assert.oneOf(true, [true, false]);       // Passes
+     * assert.oneOf(5, [1, 2, 3]);              // Throws AssertionFailure
+     * assert.oneOf("x", ["a", "b", "c"]);      // Throws AssertionFailure
+     *
+     * // With Sets
+     * const mySet = new Set([1, 2, 3]);
+     * assert.oneOf(2, mySet);                  // Passes
+     * ```
+     */
+    oneOf(value: any, list: ArrayLikeOrSizedIterable, initMsg?: MsgSource): AssertInst;
+
+    /**
+     * Asserts that the value is NOT a member of the given list.
+     * Uses strict equality (===) to check if the value is in the list.
+     * Supports arrays, array-like objects (with length), Sets, Maps, and other iterables with size.
+     * This is the inverse of {@link oneOf}.
+     * @param value - The value to check.
+     * @param list - The array, array-like, Set, Map, or other iterable of possible values to check against.
+     * @param initMsg - The message to display if the assertion fails.
+     * @returns - An assert instance for further chaining.
+     * @since 0.1.5
+     * @example
+     * ```typescript
+     * // With arrays
+     * assert.notOneOf(5, [1, 2, 3]);           // Passes
+     * assert.notOneOf("x", ["a", "b", "c"]);   // Passes
+     * assert.notOneOf(1, [1, 2, 3]);           // Throws AssertionFailure
+     * assert.notOneOf("a", ["a", "b", "c"]);   // Throws AssertionFailure
+     *
+     * // With Sets
+     * const mySet = new Set([1, 2, 3]);
+     * assert.notOneOf(5, mySet);               // Passes
+     * ```
+     */
+    notOneOf(value: any, list: ArrayLikeOrSizedIterable, initMsg?: MsgSource): AssertInst;
+
+    /**
      * Asserts that value is compared to expected using the given operator and the result is true.
      * Supports comparison operators: ==, ===, <, >, <=, >=, !=, !==, typeof
      * The support for typeof is in the form of `typeof XXX` === `"expected"`, where expected is the type name string.
