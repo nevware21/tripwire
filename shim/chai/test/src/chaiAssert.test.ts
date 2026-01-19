@@ -2186,35 +2186,35 @@ describe("assert", function () {
         }, "blah: not expected [{a:1},{b:2},{c:3}] to start with deep members [{a:1},{b:2}]");
     });
 
-    // it("oneOf", function() {
-    //     assert.oneOf(1, [1, 2, 3]);
+    it("oneOf", function() {
+        assert.oneOf(1, [1, 2, 3]);
 
-    //     var three = [3];
-    //     assert.oneOf(three, [1, 2, three]);
+        var three = [3];
+        assert.oneOf(three, [1, 2, three]);
 
-    //     var four = { four: 4 };
-    //     assert.oneOf(four, [1, 2, four]);
+        var four = { four: 4 };
+        assert.oneOf(four, [1, 2, four]);
 
-    //     err(function() {
-    //         assert.oneOf(1, 1 as any, "blah");
-    //     }, "blah: expected 1 to be an array");
+        err(function() {
+            assert.oneOf(1, 1 as any, "blah");
+        }, /blah:.*list.*must be an array/);
 
-    //     err(function() {
-    //         assert.oneOf(1, { a: 1 } as any);
-    //     }, "expected { a: 1 } to be an array");
+        err(function() {
+            assert.oneOf(1, { a: 1 } as any);
+        }, /list.*must be an array/);
 
-    //     err(function() {
-    //         assert.oneOf(9, [1, 2, 3], "Message");
-    //     }, "Message: expected 9 to be one of [ 1, 2, 3 ]");
+        err(function() {
+            assert.oneOf(9, [1, 2, 3], "Message");
+        }, "Message: expected 9 to be one of [1,2,3]");
 
-    //     err(function() {
-    //         assert.oneOf([3], [1, 2, [3]]);
-    //     }, "expected [ 3 ] to be one of [ 1, 2, [ 3 ] ]");
+        err(function() {
+            assert.oneOf([3], [1, 2, [3]]);
+        }, "expected [3] to be one of [1,2,[3]]");
 
-    //     err(function() {
-    //         assert.oneOf({ four: 4 }, [1, 2, { four: 4 }]);
-    //     }, "expected { four: 4 } to be one of [ 1, 2, { four: 4 } ]");
-    // });
+        err(function() {
+            assert.oneOf({ four: 4 }, [1, 2, { four: 4 }]);
+        }, "expected {four:4} to be one of [1,2,{four:4}]");
+    });
 
     it("above", function() {
         assert.isAbove(5, 2, "5 should be above 2");

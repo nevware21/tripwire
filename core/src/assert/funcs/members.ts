@@ -6,50 +6,25 @@
  * Licensed under the MIT license.
  */
 
-import { arrFrom, arrIndexOf, arrSlice, isArray, isFunction, isNumber, isObject, safeGet } from "@nevware21/ts-utils";
+import { arrForEach, arrFrom, arrIndexOf } from "@nevware21/ts-utils";
 import { IAssertScope } from "../interface/IAssertScope";
 import { MsgSource } from "../type/MsgSource";
 import { ArrayLikeOrSizedIterable } from "../type/ArrayLikeOrIterable";
 import { _deepEqual } from "./equal";
+import { _getArrayLikeOrIterableSize, _isArrayLikeOrIterable, _iterateForEachItem } from "../internal/_isArrayLikeOrIterable";
+import { IScopeContext } from "../interface/IScopeContext";
 
-/**
- * Helper function to convert a value to an array.
- * Accepts arrays directly, or any object that has a "size" property and is iterable (such as Sets).
- * @param value - The value to convert.
- * @returns The value as an array, or null if it's neither an array nor an iterable object with a size property.
- */
-function _toArray(value: any): any[] {
-    if (isArray(value)) {
-        return value;
-    }
-    
-    // Check if value is ArrayLike (has length property and numeric indices)
-    // Note: We only validate that index 0 exists when length > 0 as a minimal check.
-    // Array.from will handle sparse/incomplete ArrayLike objects by filling missing
-    // indices with undefined, which matches JavaScript's standard behavior for
-    // ArrayLike objects (e.g., arguments, NodeList with gaps).
-    if (safeGet<boolean>(() => {
-        if (!isObject(value) || value === null || !("length" in value) || !isNumber(value.length)) {
-            return false;
-        }
+function _checkActualAndExpected(context: IScopeContext, value: any, expected: any, evalMsg?: MsgSource): void {
+    context.set("expected", expected);
 
-        // Check for at least one numeric index if length > 0
-        // This validates it's ArrayLike, but doesn't require all indices to exist
-        if (value.length > 0 && !(0 in value)) {
-            return false;
-        }
+    // Validate that both values conform to ArrayLikeOrSizedIterable
+    if (!_isArrayLikeOrIterable(value)) {
+        context.fail(evalMsg || "expected {value} to be an array-like or sized iterable");
+    }
 
-        return true;
-    }, false)) {
-        return arrFrom(value);
+    if (!_isArrayLikeOrIterable(expected)) {
+        context.fail(evalMsg || "expected argument ({expected}) to be an array-like or sized iterable");
     }
-    
-    // Check if value is a Set (has a size property and is iterable)
-    if (safeGet<boolean>(() => "size" in value && isFunction(value[Symbol.iterator]), false)) {
-        return arrFrom(value);
-    }
-    
-    return null;
 }
 
 /**
@@ -59,27 +34,30 @@ function _toArray(value: any): any[] {
  * @param expected - The expected array or Set.
  * @returns True if arrays have same members (regardless of order), false otherwise.
  */
-function _hasSameMembers(actual: any[], expected: any[]): boolean {
-    if (actual.length !== expected.length) {
+function _hasSameMembers(actual: ArrayLikeOrSizedIterable<any>, expected: ArrayLikeOrSizedIterable<any>): boolean {
+    if (_getArrayLikeOrIterableSize(actual) !== _getArrayLikeOrIterableSize(expected)) {
         return false;
     }
 
+    let result = true;
+
     // Create a copy of expected to track used items
-    let expectedCopy = arrSlice(expected);
-    
-    for (let i = 0; i < actual.length; i++) {
-        let idx = arrIndexOf(expectedCopy, actual[i]);
+    // While this will use more memory its faster than searching the expected for each actual item
+    let expectedArray: any[] = arrFrom(expected);
+
+    _iterateForEachItem(actual, (actItem) => {
+        let idx = arrIndexOf(expectedArray, actItem);
         if (idx === -1) {
-            return false;
+            result = false;
+            return -1;
         }
+
         // Remove the matched item so duplicates are handled correctly
-        expectedCopy.splice(idx, 1);
-    }
-    
-    return true;
+        expectedArray.splice(idx, 1);
+    });
+
+    return result;
 }
-
-
 
 /**
  * Helper function to check if two arrays have the same members with deep equality (regardless of order).
@@ -87,29 +65,34 @@ function _hasSameMembers(actual: any[], expected: any[]): boolean {
  * @param expected - The expected array or Set.
  * @returns True if arrays have same members (regardless of order) with deep equality, false otherwise.
  */
-function _hasSameDeepMembers(actual: any[], expected: any[]): boolean {
-    if (actual.length !== expected.length) {
+function _hasSameDeepMembers(actual: ArrayLikeOrSizedIterable<any>, expected: ArrayLikeOrSizedIterable<any>): boolean {
+    if (_getArrayLikeOrIterableSize(actual) !== _getArrayLikeOrIterableSize(expected)) {
         return false;
     }
 
+    let result = true;
+
     // Create a copy of expected to track used items
-    let expectedCopy = arrSlice(expected);
-    
-    for (let i = 0; i < actual.length; i++) {
+    // While this will use more memory its faster than searching the expected for each actual item
+    let expectedArray: any[] = arrFrom(expected);
+
+    _iterateForEachItem(actual, (actItem) => {
         let found = false;
-        for (let j = 0; j < expectedCopy.length; j++) {
-            if (_deepEqual(actual[i], expectedCopy[j])) {
-                expectedCopy.splice(j, 1);
+        arrForEach(expectedArray, (expItem, idx) => {
+            if (_deepEqual(actItem, expItem)) {
+                expectedArray.splice(idx, 1);
                 found = true;
-                break;
+                return -1; // Stop iteration
             }
-        }
+        });
+
         if (!found) {
-            return false;
+            result = false;
+            return -1;
         }
-    }
+    });
     
-    return true;
+    return result;
 }
 
 /**
@@ -145,24 +128,11 @@ export function sameMembersFunc<R>(this: IAssertScope, expected: ArrayLikeOrSize
     let context = this.context;
     let value = context.value;
 
-    context.set("expected", expected);
-
-    // Convert sized iterables to arrays for comparison
-    let valueArray = _toArray(value);
-    let expectedArray = _toArray(expected);
-
-    // Validate that both values conform to ArrayLikeOrSizedIterable
-    if (valueArray === null) {
-        context.fail(evalMsg || "expected {value} to be an array-like or sized iterable");
-    }
-
-    if (expectedArray === null) {
-        context.fail(evalMsg || "expected argument ({expected}) to be an array-like or sized iterable");
-    }
+    _checkActualAndExpected(context, value, expected, evalMsg);
 
     // Check if arrays have the same members
     context.eval(
-        _hasSameMembers(valueArray, expectedArray),
+        _hasSameMembers(value, expected),
         evalMsg || "expected {value} to have the same members as {expected}"
     );
 
@@ -192,24 +162,11 @@ export function sameDeepMembersFunc<R>(this: IAssertScope, expected: ArrayLikeOr
     let context = this.context;
     let value = context.value;
 
-    context.set("expected", expected);
-
-    // Convert sized iterables to arrays for comparison
-    let valueArray = _toArray(value);
-    let expectedArray = _toArray(expected);
-
-    // Validate that both values conform to ArrayLikeOrSizedIterable
-    if (valueArray === null) {
-        context.fail(evalMsg || "expected {value} to be an array-like or sized iterable");
-    }
-
-    if (expectedArray === null) {
-        context.fail(evalMsg || "expected argument ({expected}) to be an array-like or sized iterable");
-    }
+    _checkActualAndExpected(context, value, expected, evalMsg);
 
     // Check if arrays have the same members with deep equality
     context.eval(
-        _hasSameDeepMembers(valueArray, expectedArray),
+        _hasSameDeepMembers(value, expected),
         evalMsg || "expected {value} to have the same deeply equal members as {expected}"
     );
 
@@ -244,36 +201,26 @@ export function sameOrderedMembersFunc<R>(this: IAssertScope, expected: ArrayLik
     let context = this.context;
     let value = context.value;
 
-    context.set("expected", expected);
-
-    // Convert sized iterables to arrays for comparison
-    let valueArray = _toArray(value);
-    let expectedArray = _toArray(expected);
-
-    // Validate that both values conform to ArrayLikeOrSizedIterable
-    if (valueArray === null) {
-        context.fail(evalMsg || "expected {value} to be an array-like or sized iterable");
-    }
-
-    if (expectedArray === null) {
-        context.fail(evalMsg || "expected argument ({expected}) to be an array-like or sized iterable");
-    }
+    _checkActualAndExpected(context, value, expected, evalMsg);
 
     // Check length first
-    if (valueArray.length !== expectedArray.length) {
+    if (_getArrayLikeOrIterableSize(value) !== _getArrayLikeOrIterableSize(expected)) {
         context.eval(false, evalMsg || "expected {value} to have the same ordered members as {expected}");
         return this.that;
     }
 
-    // Check if all members match in order
-    for (let i = 0; i < valueArray.length; i++) {
-        if (valueArray[i] !== expectedArray[i]) {
-            context.eval(false, evalMsg || "expected {value} to have the same ordered members as {expected}");
-            return this.that;
-        }
-    }
+    let result = true;
+    let expectedArray: any[] = arrFrom(expected);
 
-    context.eval(true, evalMsg || "expected {value} to have the same ordered members as {expected}");
+    // Check if all members match in order
+    _iterateForEachItem(value, (actItem, index) => {
+        if (actItem !== expectedArray[index]) {
+            result = false;
+            return -1;
+        }
+    });
+
+    context.eval(result, evalMsg || "expected {value} to have the same ordered members as {expected}");
 
     return this.that;
 }
@@ -302,36 +249,26 @@ export function sameDeepOrderedMembersFunc<R>(this: IAssertScope, expected: Arra
     let context = this.context;
     let value = context.value;
 
-    context.set("expected", expected);
-
-    // Convert sized iterables to arrays for comparison
-    let valueArray = _toArray(value);
-    let expectedArray = _toArray(expected);
-
-    // Validate that both values conform to ArrayLikeOrSizedIterable
-    if (valueArray === null) {
-        context.fail(evalMsg || "expected {value} to be an array-like or sized iterable");
-    }
-
-    if (expectedArray === null) {
-        context.fail(evalMsg || "expected argument ({expected}) to be an array-like or sized iterable");
-    }
+    _checkActualAndExpected(context, value, expected, evalMsg);
 
     // Check length first
-    if (valueArray.length !== expectedArray.length) {
+    if (_getArrayLikeOrIterableSize(value) !== _getArrayLikeOrIterableSize(expected)) {
         context.eval(false, evalMsg || "expected {value} to have the same ordered members as {expected}");
         return this.that;
     }
 
-    // Check if all members match in order with deep equality
-    for (let i = 0; i < valueArray.length; i++) {
-        if (!_deepEqual(valueArray[i], expectedArray[i])) {
-            context.eval(false, evalMsg || "expected {value} to have the same ordered members as {expected}");
-            return this.that;
-        }
-    }
+    let result = true;
+    let expectedArray: any[] = arrFrom(expected);
 
-    context.eval(true, evalMsg || "expected {value} to have the same ordered members as {expected}");
+    // Check if all members match in order
+    _iterateForEachItem(value, (actItem, index) => {
+        if (!_deepEqual(actItem, expectedArray[index])) {
+            result = false;
+            return -1;
+        }
+    });
+
+    context.eval(result, evalMsg || "expected {value} to have the same ordered members as {expected}");
 
     return this.that;
 }
@@ -367,36 +304,23 @@ export function includeMembersFunc<R>(this: IAssertScope, expected: ArrayLikeOrS
     let context = this.context;
     let value = context.value;
 
-    context.set("expected", expected);
+    _checkActualAndExpected(context, value, expected, evalMsg);
 
-    // Convert sized iterables to arrays for comparison
-    let valueArray = _toArray(value);
-    let expectedArray = _toArray(expected);
-
-    // Validate that both values conform to ArrayLikeOrSizedIterable
-    if (valueArray === null) {
-        context.fail(evalMsg || "expected {value} to be an array-like or sized iterable");
-    }
-
-    if (expectedArray === null) {
-        context.fail(evalMsg || "expected argument ({expected}) to be an array-like or sized iterable");
-    }
-
-    // Check if all expected members are present (using strict equality)
-    // Create a copy of value to track used items (handles duplicates correctly)
-    let valueCopy = arrSlice(valueArray);
+    let result = true;
+    let valueArray = arrFrom(value);
     
-    for (let i = 0; i < expectedArray.length; i++) {
-        let index = arrIndexOf(valueCopy, expectedArray[i]);
+    _iterateForEachItem(expected, (expItem) => {
+        let index = arrIndexOf(valueArray, expItem);
         if (index === -1) {
-            context.eval(false, evalMsg || "expected {value} to include members {expected}");
-            return this.that;
+            result = false;
+            return -1;
         }
-        // Remove the matched element so it can't be matched again
-        valueCopy.splice(index, 1);
-    }
 
-    context.eval(true, evalMsg || "expected {value} to include members {expected}");
+        // Remove the matched element so it can't be matched again
+        valueArray.splice(index, 1);
+    });
+
+    context.eval(result, evalMsg || "expected {value} to include members {expected}");
 
     return this.that;
 }
@@ -426,43 +350,40 @@ export function includeOrderedMembersFunc<R>(this: IAssertScope, expected: Array
     let context = this.context;
     let value = context.value;
 
-    context.set("expected", expected);
-
-    // Convert sized iterables to arrays for comparison
-    let valueArray = _toArray(value);
-    let expectedArray = _toArray(expected);
-
-    // Validate that both values conform to ArrayLikeOrSizedIterable
-    if (valueArray === null) {
-        context.fail(evalMsg || "expected {value} to be an array-like or sized iterable");
-    }
-
-    if (expectedArray === null) {
-        context.fail(evalMsg || "expected argument ({expected}) to be an array-like or sized iterable");
-    }
+    _checkActualAndExpected(context, value, expected, evalMsg);
 
     // Check if expected array appears as a consecutive subsequence
-    if (expectedArray.length === 0) {
+    if (_getArrayLikeOrIterableSize(expected) === 0) {
         context.eval(true, evalMsg || "expected {value} to include ordered members {expected}");
         return this.that;
     }
 
-    // Search for the consecutive sequence
-    for (let i = 0; i <= valueArray.length - expectedArray.length; i++) {
-        let match = true;
-        for (let j = 0; j < expectedArray.length; j++) {
-            if (valueArray[i + j] !== expectedArray[j]) {
-                match = false;
+    let result = false;
+    let valueArray = arrFrom(value);
+    let expectedArray: any[] = arrFrom(expected);
+
+    // Check if all expected members are present (with strict equality)
+    for (let lp = 0; lp <= valueArray.length - expectedArray.length; lp++) {
+        if (valueArray[lp] === expectedArray[0]) {
+            let match = true;
+
+            // Check for match starting at this position
+            arrForEach(expectedArray, (expItem, idx) => {
+                if (valueArray[lp + idx] !== expItem) {
+                    match = false;
+                    return -1; // Stop iteration
+                }
+            });
+
+            if (match) {
+                result = true;
                 break;
             }
         }
-        if (match) {
-            context.eval(true, evalMsg || "expected {value} to include ordered members {expected}");
-            return this.that;
-        }
     }
 
-    context.eval(false, evalMsg || "expected {value} to include ordered members {expected}");
+    context.eval(result, evalMsg || "expected {value} to include ordered members {expected}");
+
     return this.that;
 }
 
@@ -489,42 +410,33 @@ export function includeDeepMembersFunc<R>(this: IAssertScope, expected: ArrayLik
     let context = this.context;
     let value = context.value;
 
-    context.set("expected", expected);
-
-    // Convert sized iterables to arrays for comparison
-    let valueArray = _toArray(value);
-    let expectedArray = _toArray(expected);
-
-    // Validate that both values conform to ArrayLikeOrSizedIterable
-    if (valueArray === null) {
-        context.fail(evalMsg || "expected {value} to be an array-like or sized iterable");
-    }
-
-    if (expectedArray === null) {
-        context.fail(evalMsg || "expected argument ({expected}) to be an array-like or sized iterable");
-    }
+    _checkActualAndExpected(context, value, expected, evalMsg);
 
     // Check if all expected members are present (with deep equality)
-    // Create a copy of value to track used items (handles duplicates correctly)
-    let valueCopy = arrSlice(valueArray);
-    
-    for (let i = 0; i < expectedArray.length; i++) {
-        let found = false;
-        for (let j = 0; j < valueCopy.length; j++) {
-            if (_deepEqual(valueCopy[j], expectedArray[i])) {
-                // Remove the matched element so it can't be matched again
-                valueCopy.splice(j, 1);
-                found = true;
-                break;
-            }
-        }
-        if (!found) {
-            context.eval(false, evalMsg || "expected {value} to include deep members {expected}");
-            return this.that;
-        }
-    }
+    let result = true;
+    let valueArray = arrFrom(value);
+    let expectedArray: any[] = arrFrom(expected);
 
-    context.eval(true, evalMsg || "expected {value} to include deep members {expected}");
+    arrForEach(expectedArray, (expItem) => {
+        let found = false;
+
+        // Search for a deep equal match in the actual value
+        arrForEach(valueArray, (valItem, j) => {
+            if (_deepEqual(valItem, expItem)) {
+                // Remove the matched element so it can't be matched again
+                valueArray.splice(j, 1);
+                found = true;
+                return -1; // Stop iteration
+            }
+        });
+
+        if (!found) {
+            result = false;
+            return -1; // Stop iteration
+        }
+    });
+
+    context.eval(result, evalMsg || "expected {value} to include deep members {expected}");
 
     return this.that;
 }
@@ -551,44 +463,40 @@ export function includeDeepMembersFunc<R>(this: IAssertScope, expected: ArrayLik
 export function includeDeepOrderedMembersFunc<R>(this: IAssertScope, expected: ArrayLikeOrSizedIterable, evalMsg?: MsgSource): R {
     let context = this.context;
     let value = context.value;
+    let result = true;
 
-    context.set("expected", expected);
-
-    // Convert sized iterables to arrays for comparison
-    let valueArray = _toArray(value);
-    let expectedArray = _toArray(expected);
-
-    // Validate that both values conform to ArrayLikeOrSizedIterable
-    if (valueArray === null) {
-        context.fail(evalMsg || "expected {value} to be an array-like or sized iterable");
-    }
-
-    if (expectedArray === null) {
-        context.fail(evalMsg || "expected argument ({expected}) to be an array-like or sized iterable");
-    }
+    _checkActualAndExpected(context, value, expected, evalMsg);
 
     // Check if expected array appears as a consecutive subsequence with deep equality
-    if (expectedArray.length === 0) {
-        context.eval(true, evalMsg || "expected {value} to include deep ordered members {expected}");
-        return this.that;
-    }
+    if (_getArrayLikeOrIterableSize(expected) > 0) {
+        let valueArray = arrFrom(value);
+        let expectedArray: any[] = arrFrom(expected);
+        let expLen = expectedArray.length;
 
-    // Search for the consecutive sequence
-    for (let i = 0; i <= valueArray.length - expectedArray.length; i++) {
-        let match = true;
-        for (let j = 0; j < expectedArray.length; j++) {
-            if (!_deepEqual(valueArray[i + j], expectedArray[j])) {
-                match = false;
+        // Assume no match until found
+        result = false;
+
+        // Check if all expected members are present (with deep equality)
+        for (let lp = 0; lp <= valueArray.length - expLen; lp++) {
+            let match = true;
+
+            // Check for match starting at this position
+            arrForEach(expectedArray, (expItem, idx) => {
+                if (!_deepEqual(valueArray[lp + idx], expItem)) {
+                    match = false;
+                    return -1; // Stop iteration
+                }
+            });
+
+            if (match) {
+                result = true;
                 break;
             }
         }
-        if (match) {
-            context.eval(true, evalMsg || "expected {value} to include deep ordered members {expected}");
-            return this.that;
-        }
     }
 
-    context.eval(false, evalMsg || "expected {value} to include deep ordered members {expected}");
+    context.eval(result, evalMsg || "expected {value} to include deep ordered members {expected}");
+    
     return this.that;
 }
 
@@ -615,43 +523,29 @@ export function includeDeepOrderedMembersFunc<R>(this: IAssertScope, expected: A
 export function startsWithMembersFunc<R>(this: IAssertScope, expected: ArrayLikeOrSizedIterable, evalMsg?: MsgSource): R {
     let context = this.context;
     let value = context.value;
+    let result = false;
 
-    context.set("expected", expected);
-
-    // Convert sized iterables to arrays for comparison
-    let valueArray = _toArray(value);
-    let expectedArray = _toArray(expected);
-
-    // Validate that both values conform to ArrayLikeOrSizedIterable
-    if (valueArray === null) {
-        context.fail(evalMsg || "expected {value} to be an array-like or sized iterable");
-    }
-
-    if (expectedArray === null) {
-        context.fail(evalMsg || "expected argument ({expected}) to be an array-like or sized iterable");
-    }
-
-    // Check if expected array appears at the start
-    if (expectedArray.length === 0) {
-        context.eval(true, evalMsg || "expected {value} to start with members {expected}");
-        return this.that;
-    }
+    _checkActualAndExpected(context, value, expected, evalMsg);
 
     // Check if value is long enough
-    if (valueArray.length < expectedArray.length) {
-        context.eval(false, evalMsg || "expected {value} to start with members {expected}");
-        return this.that;
+    if (_getArrayLikeOrIterableSize(value) >= _getArrayLikeOrIterableSize(expected)) {
+        let valueArray = arrFrom(value);
+        let expectedArray: any[] = arrFrom(expected);
+
+        // Assume a match until proven otherwise
+        result = true;
+
+        // Check if the sequence matches from the start
+        arrForEach(expectedArray, (expItem, i) => {
+            if (valueArray[i] !== expItem) {
+                result = false;
+                return -1; // Stop iteration
+            }
+        });
     }
 
-    // Check if the sequence matches from the start
-    for (let i = 0; i < expectedArray.length; i++) {
-        if (valueArray[i] !== expectedArray[i]) {
-            context.eval(false, evalMsg || "expected {value} to start with members {expected}");
-            return this.that;
-        }
-    }
+    context.eval(result, evalMsg || "expected {value} to start with members {expected}");
 
-    context.eval(true, evalMsg || "expected {value} to start with members {expected}");
     return this.that;
 }
 
@@ -677,43 +571,29 @@ export function startsWithMembersFunc<R>(this: IAssertScope, expected: ArrayLike
 export function startsWithDeepMembersFunc<R>(this: IAssertScope, expected: ArrayLikeOrSizedIterable, evalMsg?: MsgSource): R {
     let context = this.context;
     let value = context.value;
+    let result = false;
 
-    context.set("expected", expected);
-
-    // Convert sized iterables to arrays for comparison
-    let valueArray = _toArray(value);
-    let expectedArray = _toArray(expected);
-
-    // Validate that both values conform to ArrayLikeOrSizedIterable
-    if (valueArray === null) {
-        context.fail(evalMsg || "expected {value} to be an array-like or sized iterable");
-    }
-
-    if (expectedArray === null) {
-        context.fail(evalMsg || "expected argument ({expected}) to be an array-like or sized iterable");
-    }
-
-    // Check if expected array appears at the start with deep equality
-    if (expectedArray.length === 0) {
-        context.eval(true, evalMsg || "expected {value} to start with deep members {expected}");
-        return this.that;
-    }
+    _checkActualAndExpected(context, value, expected, evalMsg);
 
     // Check if value is long enough
-    if (valueArray.length < expectedArray.length) {
-        context.eval(false, evalMsg || "expected {value} to start with deep members {expected}");
-        return this.that;
+    if (_getArrayLikeOrIterableSize(value) >= _getArrayLikeOrIterableSize(expected)) {
+        let valueArray = arrFrom(value);
+        let expectedArray = arrFrom(expected);
+
+        // Assume a match until proven otherwise
+        result = true;
+
+        // Check if the sequence matches from the start
+        arrForEach(expectedArray, (expItem, i) => {
+            if (!_deepEqual(valueArray[i], expItem)) {
+                result = false;
+                return -1; // Stop iteration
+            }
+        });
     }
 
-    // Check if the sequence matches from the start with deep equality
-    for (let i = 0; i < expectedArray.length; i++) {
-        if (!_deepEqual(valueArray[i], expectedArray[i])) {
-            context.eval(false, evalMsg || "expected {value} to start with deep members {expected}");
-            return this.that;
-        }
-    }
+    context.eval(result, evalMsg || "expected {value} to start with deep members {expected}");
 
-    context.eval(true, evalMsg || "expected {value} to start with deep members {expected}");
     return this.that;
 }
 
@@ -739,44 +619,30 @@ export function startsWithDeepMembersFunc<R>(this: IAssertScope, expected: Array
 export function endsWithMembersFunc<R>(this: IAssertScope, expected: ArrayLikeOrSizedIterable, evalMsg?: MsgSource): R {
     let context = this.context;
     let value = context.value;
+    let result = false;
 
-    context.set("expected", expected);
-
-    // Convert sized iterables to arrays for comparison
-    let valueArray = _toArray(value);
-    let expectedArray = _toArray(expected);
-
-    // Validate that both values conform to ArrayLikeOrSizedIterable
-    if (valueArray === null) {
-        context.fail(evalMsg || "expected {value} to be an array-like or sized iterable");
-    }
-
-    if (expectedArray === null) {
-        context.fail(evalMsg || "expected argument ({expected}) to be an array-like or sized iterable");
-    }
-
-    // Check if expected array appears at the end with strict equality
-    if (expectedArray.length === 0) {
-        context.eval(true, evalMsg || "expected {value} to end with members {expected}");
-        return this.that;
-    }
+    _checkActualAndExpected(context, value, expected, evalMsg);
 
     // Check if value is long enough
-    if (valueArray.length < expectedArray.length) {
-        context.eval(false, evalMsg || "expected {value} to end with members {expected}");
-        return this.that;
+    if (_getArrayLikeOrIterableSize(value) >= _getArrayLikeOrIterableSize(expected)) {
+        let valueArray = arrFrom(value);
+        let expectedArray: any[] = arrFrom(expected);
+
+        // Assume a match until proven otherwise
+        result = true;
+
+        // Check if the sequence matches from the end with strict equality
+        let offset = valueArray.length - expectedArray.length;
+        arrForEach(expectedArray, (expItem, i) => {
+            if (valueArray[offset + i] !== expItem) {
+                result = false;
+                return -1; // Stop iteration
+            }
+        });
     }
 
-    // Check if the sequence matches from the end with strict equality
-    let offset = valueArray.length - expectedArray.length;
-    for (let i = 0; i < expectedArray.length; i++) {
-        if (valueArray[offset + i] !== expectedArray[i]) {
-            context.eval(false, evalMsg || "expected {value} to end with members {expected}");
-            return this.that;
-        }
-    }
+    context.eval(result, evalMsg || "expected {value} to end with members {expected}");
 
-    context.eval(true, evalMsg || "expected {value} to end with members {expected}");
     return this.that;
 }
 
@@ -802,44 +668,30 @@ export function endsWithMembersFunc<R>(this: IAssertScope, expected: ArrayLikeOr
 export function endsWithDeepMembersFunc<R>(this: IAssertScope, expected: ArrayLikeOrSizedIterable, evalMsg?: MsgSource): R {
     let context = this.context;
     let value = context.value;
+    let result = false;
 
-    context.set("expected", expected);
-
-    // Convert sized iterables to arrays for comparison
-    let valueArray = _toArray(value);
-    let expectedArray = _toArray(expected);
-
-    // Validate that both values conform to ArrayLikeOrSizedIterable
-    if (valueArray === null) {
-        context.fail(evalMsg || "expected {value} to be an array-like or sized iterable");
-    }
-
-    if (expectedArray === null) {
-        context.fail(evalMsg || "expected argument ({expected}) to be an array-like or sized iterable");
-    }
-
-    // Check if expected array appears at the end with deep equality
-    if (expectedArray.length === 0) {
-        context.eval(true, evalMsg || "expected {value} to end with deep members {expected}");
-        return this.that;
-    }
+    _checkActualAndExpected(context, value, expected, evalMsg);
 
     // Check if value is long enough
-    if (valueArray.length < expectedArray.length) {
-        context.eval(false, evalMsg || "expected {value} to end with deep members {expected}");
-        return this.that;
+    if (_getArrayLikeOrIterableSize(value) >= _getArrayLikeOrIterableSize(expected)) {
+        let valueArray = arrFrom(value);
+        let expectedArray = arrFrom(expected);
+
+        // Assume a match until proven otherwise
+        result = true;
+
+        // Check if the sequence matches from the end with strict equality
+        let offset = valueArray.length - expectedArray.length;
+        arrForEach(expectedArray, (expItem, i) => {
+            if (!_deepEqual(valueArray[offset + i], expItem)) {
+                result = false;
+                return -1; // Stop iteration
+            }
+        });
     }
 
-    // Check if the sequence matches from the end with deep equality
-    let offset = valueArray.length - expectedArray.length;
-    for (let i = 0; i < expectedArray.length; i++) {
-        if (!_deepEqual(valueArray[offset + i], expectedArray[i])) {
-            context.eval(false, evalMsg || "expected {value} to end with deep members {expected}");
-            return this.that;
-        }
-    }
+    context.eval(result, evalMsg || "expected {value} to end with deep members {expected}");
 
-    context.eval(true, evalMsg || "expected {value} to end with deep members {expected}");
     return this.that;
 }
 
@@ -867,28 +719,11 @@ export function subsequenceFunc<R>(this: IAssertScope, expected: ArrayLikeOrSize
     let context = this.context;
     let value = context.value;
 
-    context.set("expected", expected);
-
-    // Convert sized iterables to arrays for comparison
-    let valueArray = _toArray(value);
-    let expectedArray = _toArray(expected);
-
-    // Validate that both values conform to ArrayLikeOrSizedIterable
-    if (valueArray === null) {
-        context.fail(evalMsg || "expected {value} to be an array-like or sized iterable");
-    }
-
-    if (expectedArray === null) {
-        context.fail(evalMsg || "expected argument ({expected}) to be an array-like or sized iterable");
-    }
-
-    // Empty expected array always matches
-    if (expectedArray.length === 0) {
-        context.eval(true, evalMsg || "expected {value} to include subsequence {expected}");
-        return this.that;
-    }
+    _checkActualAndExpected(context, value, expected, evalMsg);
 
     // Check if all expected members appear in order (non-consecutive)
+    let valueArray = arrFrom(value);
+    let expectedArray = arrFrom(expected);
     let valueIdx = 0;
     let expectedIdx = 0;
 
@@ -896,12 +731,15 @@ export function subsequenceFunc<R>(this: IAssertScope, expected: ArrayLikeOrSize
         if (valueArray[valueIdx] === expectedArray[expectedIdx]) {
             expectedIdx++;
         }
+
         valueIdx++;
     }
 
     // All expected members were found in order
-    let success = expectedIdx === expectedArray.length;
-    context.eval(success, evalMsg || "expected {value} to include subsequence {expected}");
+    let result = expectedIdx === expectedArray.length;
+
+    context.eval(result, evalMsg || "expected {value} to include subsequence {expected}");
+
     return this.that;
 }
 
@@ -929,28 +767,11 @@ export function deepSubsequenceFunc<R>(this: IAssertScope, expected: ArrayLikeOr
     let context = this.context;
     let value = context.value;
 
-    context.set("expected", expected);
-
-    // Convert sized iterables to arrays for comparison
-    let valueArray = _toArray(value);
-    let expectedArray = _toArray(expected);
-
-    // Validate that both values conform to ArrayLikeOrSizedIterable
-    if (valueArray === null) {
-        context.fail(evalMsg || "expected {value} to be an array-like or sized iterable");
-    }
-
-    if (expectedArray === null) {
-        context.fail(evalMsg || "expected argument ({expected}) to be an array-like or sized iterable");
-    }
-
-    // Empty expected array always matches
-    if (expectedArray.length === 0) {
-        context.eval(true, evalMsg || "expected {value} to include deep subsequence {expected}");
-        return this.that;
-    }
+    _checkActualAndExpected(context, value, expected, evalMsg);
 
     // Check if all expected members appear in order (non-consecutive) with deep equality
+    let valueArray = arrFrom(value);
+    let expectedArray = arrFrom(expected);
     let valueIdx = 0;
     let expectedIdx = 0;
 
@@ -962,8 +783,9 @@ export function deepSubsequenceFunc<R>(this: IAssertScope, expected: ArrayLikeOr
     }
 
     // All expected members were found in order
-    let success = expectedIdx === expectedArray.length;
-    context.eval(success, evalMsg || "expected {value} to include deep subsequence {expected}");
+    let result = expectedIdx === expectedArray.length;
+
+    context.eval(result, evalMsg || "expected {value} to include deep subsequence {expected}");
+
     return this.that;
 }
-

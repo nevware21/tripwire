@@ -63,6 +63,7 @@ import { CHECK_INTERNAL_STACK_FRAME_REGEX } from "./assert/const";
 import { getScopeContext, createContext } from "./assert/scopeContext";
 import { SymbolFn } from "./assert/interface/funcs/SymbolFn";
 import { IRemovable } from "./assert/interface/IRemovable";
+import { OneOfFn } from "./assert/interface/funcs/OneOfFn";
 
 /**
  * Export the Error classes
@@ -90,7 +91,7 @@ export {
  */
 export {
     ArrayLikeOrSizedIterable, AssertClassDef, AssertFn, AssertInstHandlers, AssertScopeFuncDefs, CloseToFn, EqualFn,
-    ErrorLikeFn, EvalFn, IncludeFn, InstanceOfFn, IScopeFn, KeysFn, MsgSource, NumberFn,
+    ErrorLikeFn, EvalFn, IncludeFn, InstanceOfFn, IScopeFn, KeysFn, MsgSource, NumberFn, OneOfFn,
     OperatorFn, SymbolFn, ThrowFn, ValuesFn, WithinFn
 };
 

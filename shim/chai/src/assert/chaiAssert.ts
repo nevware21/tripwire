@@ -162,7 +162,7 @@ function _createChaiAssert(): IChaiAssert {
         includeDeepMembers: { scopeFn: createExprAdapter("deep.include.members"), nArgs: 2 },
         notIncludeDeepMembers: { scopeFn: createExprAdapter("not.deep.include.members"), nArgs: 2 },
 
-        oneOf: notImplemented,
+        oneOf: { scopeFn: createExprAdapter("is.oneOf"), nArgs: 2 },
         changes: notImplemented,
         changesBy: notImplemented,
 

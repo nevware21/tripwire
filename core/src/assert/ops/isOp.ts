@@ -27,6 +27,7 @@ import { aboveFunc, belowFunc, leastFunc, mostFunc, withinFunc } from "./numeric
 import { typeOfFunc } from "../funcs/typeOf";
 import { instanceOfFunc } from "../funcs/instanceOf";
 import { closeToFunc } from "../funcs/closeTo";
+import { oneOfFunc } from "../funcs/oneOf";
 
 export function isOp<R>(scope: IAssertScope): IIsOp<R> {
     let props:  AssertScopeFuncDefs<IIsOp<R>> = {
@@ -120,7 +121,10 @@ export function isOp<R>(scope: IAssertScope): IIsOp<R> {
         approximately: { scopeFn: closeToFunc },
 
         // Type checking
-        typeOf: { scopeFn: typeOfFunc }
+        typeOf: { scopeFn: typeOfFunc },
+
+        // Value membership
+        oneOf: { scopeFn: oneOfFunc }
     };
     
     return scope.createOperation(props);

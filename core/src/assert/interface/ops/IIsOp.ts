@@ -11,6 +11,7 @@ import { INotOp } from "./INotOp";
 import { IIsTypeOp } from "./ITypeOp";
 import { INumericOp } from "./INumericOp";
 import { CloseToFn } from "../funcs/CloseToFn";
+import { OneOfFn } from "../funcs/OneOfFn";
 
 /**
  * Represents an interface for operations on an assertion scope confirming the type of a value.
@@ -89,4 +90,23 @@ export interface IIsOp<R> extends INotOp<IIsOp<R>>, IEqualOp<R>, IIsTypeOp<R>, I
      * ```
      */
     approximately: CloseToFn<R>;
+
+    /**
+     * Asserts that the target value is a member of the given list.
+     * Uses strict equality (===) to check if the value is in the list.
+     * @param list - The array of possible values to check against.
+     * @param evalMsg - The message to evaluate if the assertion fails.
+     * @returns The result of the operation.
+     * @since 0.1.5
+     * @example
+     * ```typescript
+     * import { expect } from "@nevware21/tripwire";
+     *
+     * expect(1).is.oneOf([1, 2, 3]);              // Passes
+     * expect("a").is.oneOf(["a", "b", "c"]);      // Passes
+     * expect(5).to.not.be.oneOf([1, 2, 3]);       // Passes
+     * expect("x").is.not.oneOf(["a", "b", "c"]);  // Passes
+     * ```
+     */
+    oneOf: OneOfFn<R>;
 }

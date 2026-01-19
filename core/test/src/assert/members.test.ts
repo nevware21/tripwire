@@ -379,6 +379,13 @@ describe("Member Comparison Tests", () => {
     });
 
     describe("includeDeepOrderedMembers", () => {
+        it("should pass when the expected is empty", () => {
+            assert.includeDeepOrderedMembers(
+                [{a: 1}, {b: 2}, {c: 3}],
+                []
+            );
+        });
+
         it("should pass when subset deep members appear consecutively in order", () => {
             assert.includeDeepOrderedMembers(
                 [{a: 1}, {b: 2}, {c: 3}],
@@ -444,6 +451,107 @@ describe("Member Comparison Tests", () => {
             expect(() => {
                 assert.includeDeepOrderedMembers([{a: 1}], Symbol("test") as any);
             }).to.throw("expected argument ([Symbol(test)]) to be an array-like or sized iterable");
+        });
+    });
+
+    describe("notIncludeDeepOrderedMembers", () => {
+        it("should pass when subset members are not consecutive", () => {
+            assert.notIncludeDeepOrderedMembers(
+                [{a: 1}, {b: 2}, {c: 3}],
+                [{a: 1}, {c: 3}]
+            );
+        });
+
+        it("should pass when subset members appear in wrong order", () => {
+            assert.notIncludeDeepOrderedMembers(
+                [{a: 1}, {b: 2}, {c: 3}],
+                [{b: 2}, {a: 1}]
+            );
+            assert.notIncludeDeepOrderedMembers(
+                [{a: 1}, {b: 2}, {c: 3}],
+                [{c: 3}, {b: 2}]
+            );
+        });
+
+        it("should pass when subset has objects not in superset", () => {
+            assert.notIncludeDeepOrderedMembers(
+                [{a: 1}, {b: 2}],
+                [{a: 1}, {c: 3}] as any
+            );
+            assert.notIncludeDeepOrderedMembers(
+                [{a: 1}, {b: 2}],
+                [{d: 4}] as any
+            );
+        });
+
+        it("should fail when subset deep members DO appear consecutively in order", () => {
+            expect(() => {
+                assert.notIncludeDeepOrderedMembers(
+                    [{a: 1}, {b: 2}, {c: 3}],
+                    [{a: 1}, {b: 2}]
+                );
+            }).to.throw();
+
+            expect(() => {
+                assert.notIncludeDeepOrderedMembers(
+                    [{a: 1}, {b: 2}, {c: 3}],
+                    [{b: 2}, {c: 3}]
+                );
+            }).to.throw();
+        });
+
+        it("should fail when expected is empty (empty always matches)", () => {
+            expect(() => {
+                assert.notIncludeDeepOrderedMembers(
+                    [{a: 1}, {b: 2}],
+                    []
+                );
+            }).to.throw();
+        });
+
+        it("should work with expect syntax", () => {
+            expect([{a: 1}, {b: 2}, {c: 3}]).to.not.deep.include.orderedMembers([{a: 1}, {c: 3}]);
+            expect([{a: 1}, {b: 2}]).to.not.deep.include.orderedMembers([{b: 2}, {a: 1}]);
+        });
+
+        it("should handle nested arrays", () => {
+            assert.notIncludeDeepOrderedMembers(
+                [[1, 2], [3, 4], [5, 6]],
+                [[1, 2], [5, 6]]
+            );
+            assert.notIncludeDeepOrderedMembers(
+                [[1, 2], [3, 4], [5, 6]],
+                [[5, 6], [1, 2]]
+            );
+        });
+
+        it("should fail when nested arrays DO appear consecutively", () => {
+            expect(() => {
+                assert.notIncludeDeepOrderedMembers(
+                    [[1, 2], [3, 4], [5, 6]],
+                    [[1, 2], [3, 4]]
+                );
+            }).to.throw();
+        });
+
+        it("should work with Sets", () => {
+            assert.notIncludeDeepOrderedMembers(
+                new Set([{a: 1}, {b: 2}, {c: 3}]),
+                [{a: 1}, {c: 3}]
+            );
+            assert.notIncludeDeepOrderedMembers(
+                [{a: 1}, {b: 2}, {c: 3}],
+                new Set([{b: 2}, {a: 1}])
+            );
+        });
+
+        it("should fail when Set members DO appear consecutively", () => {
+            expect(() => {
+                assert.notIncludeDeepOrderedMembers(
+                    new Set([{a: 1}, {b: 2}, {c: 3}]),
+                    [{a: 1}, {b: 2}]
+                );
+            }).to.throw();
         });
     });
 
