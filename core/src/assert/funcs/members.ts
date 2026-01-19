@@ -14,7 +14,7 @@ import { _deepEqual } from "./equal";
 import { _getArrayLikeOrIterableSize, _isArrayLikeOrIterable, _iterateForEachItem } from "../internal/_isArrayLikeOrIterable";
 import { IScopeContext } from "../interface/IScopeContext";
 
-function _checkActualAndExpected(context: IScopeContext, value: any, expected: any, evalMsg: MsgSource): void {
+function _checkActualAndExpected(context: IScopeContext, value: any, expected: any, evalMsg?: MsgSource): void {
     context.set("expected", expected);
 
     // Validate that both values conform to ArrayLikeOrSizedIterable
