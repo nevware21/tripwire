@@ -49,7 +49,7 @@ export function createEvalAdapter(evalFn: EvalFn, evalMsg?: MsgSource, funcName?
         if (context.opts.isVerbose) {
             let theFuncName = funcName || evalFn.name || (evalFn as any)["displayName"] || "anonymous";
     
-            context.setOp("[[" + theFuncName + "]]");
+            context.setOp("[[ev:" + theFuncName + "]]");
         }
     
         theArgs.unshift(context.value);

@@ -193,6 +193,7 @@ describe("assert.oneOf", () => {
             // Since Maps are iterable but don't use reference equality for arrays
             // The converted array contains new arrays from iteration
             checkError(() => assert.oneOf(entry1, myMap), /expected .* to be one of/);
+            checkError(() => assert.oneOf(entry2, myMap), /expected .* to be one of/);
         });
     });
 

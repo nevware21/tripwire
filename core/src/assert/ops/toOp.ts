@@ -18,6 +18,8 @@ import { includeOp } from "./includeOp";
 import { strictlyOp } from "./strictlyOp";
 import { deepOp } from "./deepOp";
 import { existsFunc } from "../funcs/exists";
+import { changesFunc, increasesFunc, decreasesFunc } from "../funcs/changes";
+import { changesByFunc, increasesByFunc, decreasesByFunc, changesButNotByFunc, increasesButNotByFunc, decreasesButNotByFunc } from "../funcs/changesBy";
 
 export function toOp<R>(scope: IAssertScope): IToOp<R> {
 
@@ -33,7 +35,22 @@ export function toOp<R>(scope: IAssertScope): IToOp<R> {
         strictly: { propFn: strictlyOp },
         match: { scopeFn: matchFunc },
         throw: { scopeFn: throwsFunc },
-        exist: { scopeFn: existsFunc }
+        exist: { scopeFn: existsFunc },
+        change: { scopeFn: changesFunc },
+        changes: { scopeFn: changesFunc },
+        changeBy: { scopeFn: changesByFunc },
+        changesBy: { scopeFn: changesByFunc },
+        changesButNotBy: { scopeFn: changesButNotByFunc },
+        increase: { scopeFn: increasesFunc },
+        increases: { scopeFn: increasesFunc },
+        increaseBy: { scopeFn: increasesByFunc },
+        increasesBy: { scopeFn: increasesByFunc },
+        increasesButNotBy: { scopeFn: increasesButNotByFunc },
+        decrease: { scopeFn: decreasesFunc },
+        decreases: { scopeFn: decreasesFunc },
+        decreaseBy: { scopeFn: decreasesByFunc },
+        decreasesBy: { scopeFn: decreasesByFunc },
+        decreasesButNotBy: { scopeFn: decreasesButNotByFunc }
     };
     
     return scope.createOperation(props);

@@ -44,6 +44,8 @@ import {
     sameMembersFunc, sameDeepMembersFunc, sameOrderedMembersFunc, sameDeepOrderedMembersFunc, startsWithMembersFunc,
     startsWithDeepMembersFunc, endsWithMembersFunc, endsWithDeepMembersFunc, subsequenceFunc, deepSubsequenceFunc
 } from "./funcs/members";
+import { changesFunc, increasesFunc, decreasesFunc } from "./funcs/changes";
+import { changesByFunc, increasesByFunc, decreasesByFunc, changesButNotByFunc, increasesButNotByFunc, decreasesButNotByFunc } from "./funcs/changesBy";
 
 /**
  * @internal
@@ -278,6 +280,23 @@ export function createAssert(): IAssertClass {
         notCloseTo: { scopeFn: createExprAdapter("not", closeToFunc), nArgs: 3 },
         approximately: { alias: "closeTo" },
         notApproximately: { alias: "notCloseTo" },
+
+        // Change/increase/decrease detection
+        changes: { scopeFn: changesFunc, nArgs: 3 },
+        doesNotChange: { scopeFn: createExprAdapter("not", changesFunc), nArgs: 3 },
+        changesBy: { scopeFn: changesByFunc, nArgs: 4 },
+        notChangesBy: { scopeFn: createExprAdapter("not", changesByFunc), nArgs: 4 },
+        changesButNotBy: { scopeFn: changesButNotByFunc, nArgs: 4 },
+        increases: { scopeFn: increasesFunc, nArgs: 3 },
+        doesNotIncrease: { scopeFn: createExprAdapter("not", increasesFunc), nArgs: 3 },
+        increasesBy: { scopeFn: increasesByFunc, nArgs: 4 },
+        notIncreasesBy: { scopeFn: createExprAdapter("not", increasesByFunc), nArgs: 4 },
+        increasesButNotBy: { scopeFn: increasesButNotByFunc, nArgs: 4 },
+        decreases: { scopeFn: decreasesFunc, nArgs: 3 },
+        doesNotDecrease: { scopeFn: createExprAdapter("not", decreasesFunc), nArgs: 3 },
+        decreasesBy: { scopeFn: decreasesByFunc, nArgs: 4 },
+        notDecreasesBy: { scopeFn: createExprAdapter("not", decreasesByFunc), nArgs: 4 },
+        decreasesButNotBy: { scopeFn: decreasesButNotByFunc, nArgs: 4 },
 
         // Value membership (oneOf)
         oneOf: { scopeFn: oneOfFunc, nArgs: 2 },

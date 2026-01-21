@@ -120,7 +120,7 @@ export function createAssertScope(context: IScopeContext, handlerCreator?: Asser
     function _exec<F extends IScopeFn, R = ReturnType<F>>(fn: F, args: Parameters<F>, funcName?: string): R {
         let theFuncName = funcName || fn.name || (fn as any)["displayName"] || "anonymous";
         if (_context.opts.isVerbose) {
-            theScope.context.setOp("[[" + theFuncName + "]]");
+            theScope.context.setOp("[[ex:" + theFuncName + "]]");
         }
 
         _context.set(EXEC, theFuncName);

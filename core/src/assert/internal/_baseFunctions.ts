@@ -12,6 +12,8 @@ import { matchFunc } from "../funcs/match";
 import { operatorFunc } from "../funcs/operator";
 import { throwsFunc } from "../funcs/throws";
 import { truthyFunc } from "../funcs/truthy";
+import { changesFunc, increasesFunc, decreasesFunc } from "../funcs/changes";
+import { changesByFunc, increasesByFunc, decreasesByFunc, changesButNotByFunc, increasesButNotByFunc, decreasesButNotByFunc } from "../funcs/changesBy";
 import { IAssertInst, IAssertScopeFuncDef } from "../interface/IAssertInst";
 import { IScopePropFn, IScopeFn } from "../interface/IScopeFuncs";
 import { MsgSource } from "../type/MsgSource";
@@ -104,5 +106,21 @@ export const coreFunctions: _AssertInstScopeFuncs = {
     toThrowError: _asFunc(throwsFunc),
     match: _asFunc(matchFunc),
     hasProperty: _asFunc(hasPropertyFunc),
-    hasOwnProperty: _asFunc(hasOwnPropertyFunc)
+    hasOwnProperty: _asFunc(hasOwnPropertyFunc),
+    
+    change: _asFunc(changesFunc),
+    changes: _asFunc(changesFunc),
+    changeBy: _asFunc(changesByFunc),
+    changesBy: _asFunc(changesByFunc),
+    changesButNotBy: _asFunc(changesButNotByFunc),
+    increase: _asFunc(increasesFunc),
+    increases: _asFunc(increasesFunc),
+    increaseBy: _asFunc(increasesByFunc),
+    increasesBy: _asFunc(increasesByFunc),
+    increasesButNotBy: _asFunc(increasesButNotByFunc),
+    decrease: _asFunc(decreasesFunc),
+    decreases: _asFunc(decreasesFunc),
+    decreaseBy: _asFunc(decreasesByFunc),
+    decreasesBy: _asFunc(decreasesByFunc),
+    decreasesButNotBy: _asFunc(decreasesButNotByFunc)
 };

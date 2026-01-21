@@ -7,7 +7,7 @@
  */
 
 import {
-    arrForEach, arrIndexOf, arrSlice, fnApply, getLazy, isArray, isFunction, isPlainObject,
+    arrForEach, arrIndexOf, arrSlice, fnApply, getDeferred, getLazy, isArray, isFunction, isPlainObject,
     newSymbol,  objAssign, objDefine, objDefineProps, objForEachKey, objHasOwnProperty,
     objKeys, strIndexOf, strLeft, strSubstring
 } from "@nevware21/ts-utils";
@@ -22,6 +22,7 @@ import { _formatValue } from "./internal/_formatValue";
 import { useScope } from "./useScope";
 
 const cScopeContextTag = newSymbol("@nevware21/tripwire#IScopeContext");
+const DetailsSymbol = (/* #__PURE__*/getDeferred(() => newSymbol("_$details")));
 
 function _createStackTracker(parentstack?: Function[]): Function[] {
     let theStack: Function[] = [];
@@ -264,6 +265,14 @@ export function createContext<T>(value?: T, initMsg?: MsgSource, stackStart?: Fu
         e: false
     });
 
+    // Define a non-enumerable symbol based property to get the details
+    // This is useful when debugging to be able to see the details without
+    // calling the function
+    objDefine(context, DetailsSymbol.v as any, {
+        g: () => context.getDetails(),
+        e: false
+    });
+
     objDefine(context as any, cScopeContextTag, {
         v: true,
         e: false
@@ -386,6 +395,14 @@ function _childContext<V>(parent: IScopeContext, value: V, overrides?: IScopeCon
         opts: null,
         orgArgs: null
     };
+
+    // Define a non-enumerable symbol based property to get the details
+    // This is useful when debugging to be able to see the details without
+    // calling the function
+    objDefine(newContext, DetailsSymbol.v as any, {
+        g: () => newContext.getDetails(),
+        e: false
+    });
 
     objDefine(newContext as any, cScopeContextTag, {
         v: true,
