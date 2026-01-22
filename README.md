@@ -24,14 +24,16 @@ As part of the Mono-Repo it also provides some shim implementations which are de
 ## Key Features
 
 ### Comprehensive Assertion Library
-- Type checking (object, array, string, number, boolean, null, undefined, etc.)
-- Equality assertions (equal, strictEqual, deepEqual)
-- Property checking (has, hasOwn, hasDeep)
-- Collection operations (include, keys, members)
-- **Numeric comparisons** (above, below, within, etc.)
-- Error/exception testing
-- Custom error messages
-- Full `not` operator support
+- **Type checking** - object, array, string, number, boolean, null, undefined, NaN, finite, typeof, instanceof
+- **Equality assertions** - equal, strictEqual, deepEqual, closeTo (approximate equality)
+- **Property checking** - property, ownProperty, deepProperty, nestedProperty with value validation
+- **Collection operations** - include, keys, members with deep equality and ordered comparison support
+- **Numeric comparisons** - above, below, within, atLeast, atMost with full range validation
+- **Value changes** - track changes, increases, decreases over function execution with delta validation
+- **Array operations** - member comparison with subsequence, endsWith, and oneOf matching
+- **Error/exception testing** - comprehensive throw/catch with error type and message validation
+- **Custom error messages** - all assertions support optional custom messages
+- **Full negation support** - consistent `not` operator across all assertion types
 
 ## API Documentation
 
@@ -69,10 +71,10 @@ As of the initial version not all functions are yet implemented
 
 ## Quick Start
 
-Install the npm packare: `npm install @nevware21/tripwire --save-dev`
+Install the npm package: `npm install @nevware21/tripwire --save-dev`
 
-> It is suggested / recommended that you use the following definition in your `package.json` so that you are compatible with any future releases as they become available
-> we do not intend to make ANY known breaking changes moving forward until v2.x 
+> Recommended: Use the following definition in your `package.json` to stay compatible with future releases.
+> We do not intend to make runtime / environment breaking changes until at least v2.x
 > ```json
 > "@nevware21/tripwire": ">= 0.1.4 < 2.x"
 > ```

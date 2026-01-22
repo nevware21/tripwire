@@ -1,4 +1,4 @@
-# Chai Shim
+# @nevware21/tripwire-chai
 
 ![GitHub Workflow Status (main)](https://img.shields.io/github/actions/workflow/status/nevware21/tripwire/ci.yml?branch=main)
 [![codecov](https://codecov.io/gh/nevware21/tripwire/graph/badge.svg?token=I9mMGSvfkk)](https://codecov.io/gh/nevware21/tripwire)
@@ -6,94 +6,118 @@
 [![downloads](https://img.shields.io/npm/dt/%40nevware21/tripwire-chai.svg)](https://www.npmjs.com/package/%40nevware21/tripwire-chai)
 [![downloads](https://img.shields.io/npm/dm/%40nevware21/tripwire-chai.svg)](https://www.npmjs.com/package/%40nevware21/tripwire-chai)
 
-This module is a Shim of the Chai.js assertion library which uses the [tripwire](https://github.com/nevware21/tripwire) assertion engine.
+Chai.js compatibility shim powered by tripwire - Drop-in replacement for Chai's `assert` API.
 
-> **Chai Version Compatibility:** This shim is designed to be compatible with the Chai v5.x API (as documented at [chaijs.com](https://www.chaijs.com/)).
+> **Chai v5.x Compatible** - Designed to match the Chai v5.x assert API
 
-This Shim is not designed to be a complete 1:1 replacement for Chai, it's primary focus is to provide a quicker migration option using your existing chai based `assert.*` functions.
+## Purpose
 
-As such the returned "error messages" do not and will not match the assertion text returned by `chai`, if your unit tests include validation of the returned error messages then they will need to be updated, it is recommended to use regular expressions to validate the returned error message when required.
+Migrate from Chai.js without rewriting your tests. Perfect when:
 
-As of the initial version not all functions are yet implemented
+- Chai dependencies are causing build issues
+- You need Web Worker support (broken in some Chai versions)
+- Your project is stuck due to Chai dependency conflicts
+- You want to unblock your tests and migrate gradually
 
-### Incomplete Shim implementation
+**Note**: This is NOT a complete Chai replacement. Only the `assert.*` API is implemented. The `expect` and `should` APIs are NOT available.
 
-**As of version 0.1.4:**
+## Installation
 
-#### Implemented
-
-- **`assert` API** - Most assert functions are now implemented
-  - Basic assertions: `equal`, `strictEqual`, `deepEqual`, `notEqual`, etc.
-  - Type checking: `isObject`, `isArray`, `isString`, `isNumber`, `isBoolean`, `isFunction`, etc.
-  - Comparison: `isAbove`, `isAtLeast`, `isBelow`, `isAtMost`
-  - Property checking: `property`, `ownProperty`, `deepProperty`, `nestedProperty`, etc.
-  - Property values: `propertyVal`, `ownPropertyVal`, `deepPropertyVal`, `nestedPropertyVal`, etc.
-  - Inclusion: `include`, `deepInclude`, `ownInclude`, `nestedInclude`, etc.
-  - Members: `sameMembers`, `includeMembers`, `sameDeepMembers`, `includeOrderedMembers`, etc.
-  - Keys: `hasAnyKeys`, `hasAllKeys`, `hasAnyDeepKeys`, `hasAllDeepKeys`, etc.
-  - Exception handling: `throw`, `throws`, `doesNotThrow`
-  - Value changes: `changes`, `increases`, `decreases` and their variants
-  - Object state: `isExtensible`, `isSealed`, `isFrozen`, `isEmpty`
-  - And many more!
-
-#### Not Yet Implemented
-
-- **`expect` API** - The BDD-style chainable expect API is not implemented
-  - `expect(value).to.be.equal(...)` syntax is **not available**
-  - Use `assert.*` functions or tripwire core instead
-- **`should` API** - No plans to implement this
-- **`use` function** - Plugin support is not available
-
-The unsupported assertions will return an AssertionError with text indicating that it's not implemented.
-
-## API Documentation
-
-The API documentation is generated from the source code via typedoc and is located [here](https://nevware21.github.io/tripwire/index.html)
-
-## Quickstart
-
-Install the npm packare: `npm install @nevware21/tripwire-chai --save-dev`
-
-> It is suggested / recommended that you use the following definition in your `package.json` so that you are compatible with any future releases as they become available
-> we do not intend to make ANY known breaking changes moving forward until v2.x 
-> ```json
-> "@nevware21/tripwire-chai": ">= 0.1.4 < 2.x"
-> ```
-
-### Importing into Browsers
-
-TBD. 
-
-```html
-<script src="./node_modules/@nevware21/tripwire-chai/bundle/es5/umd/tripwire-chai.min.js"></script>
+```bash
+npm install @nevware21/tripwire-chai --save-dev
 ```
 
-
-## Usage
-
-As a Shim and for all supported function and functionality, you should just need to change you `import` to reference this package instead of `chai`.
-
-```typescript
-import { assert } from "@nevware21/tripwire-chai";
-
-// Example usage
-assert.isObject([]);
+**Recommended version range:**
+```json
+{
+  "devDependencies": {
+    "@nevware21/tripwire-chai": ">= 0.1.4 < 2.x"
+  }
+}
 ```
-## API Documentation
 
-The API documentation is generated from the source code via typedoc and is located [here](https://nevware21.github.io/tripwire/index.html)
+## Quick Migration
+
+### Step 1: Update imports
+
+```diff
+- import { assert } from 'chai';
++ import { assert } from '@nevware21/tripwire-chai';
+```
+
+### Step 2: Run your tests
+
+Most `assert.*` functions should work immediately.
+
+### Step 3: Fix error message tests (if any)
+
+Error messages differ from Chai. Use regex instead of exact strings:
+
+```diff
+- assert.throws(() => fn(), "exact chai message");
++ assert.throws(() => fn(), /error message/);
+```
+
+## What's Supported?
+
+### Fully Implemented (assert API)
+
+- **Basic**: `equal`, `notEqual`, `strictEqual`, `deepEqual`, `isOk`, `isTrue`, etc.
+- **Types**: `isObject`, `isArray`, `isString`, `isNumber`, `isBoolean`, `isFunction`, `isNull`, `isUndefined`, `isNaN`, `isFinite`, etc.
+- **Comparisons**: `isAbove`, `isAtLeast`, `isBelow`, `isAtMost`, `closeTo`, `approximately`
+- **Properties**: `property`, `deepProperty`, `nestedProperty`, `ownProperty` with value validation
+- **Collections**: `include`, `deepInclude`, `members`, `sameMembers`, `keys`
+- **Size**: `lengthOf`, `sizeOf`
+- **Changes**: `changes`, `increases`, `decreases` with delta tracking
+- **Errors**: `throws`, `doesNotThrow`
+- **State**: `isExtensible`, `isSealed`, `isFrozen`, `isEmpty`
+
+### NOT Implemented
+
+- **`expect` API** - Use core `@nevware21/tripwire` instead
+- **`should` API** - No plans to implement
+- **Plugins** - `use()` function not available
+
+## Usage Example
+
+```ts
+import { assert } from '@nevware21/tripwire-chai';
+
+// Your existing Chai tests should work
+assert.equal(1 + 1, 2);
+assert.isArray([1, 2, 3]);
+assert.deepEqual({ a: 1 }, { a: 1 });
+assert.throws(() => { throw new Error(); });
+assert.property({ a: 1 }, 'a');
+assert.include([1, 2, 3], 2);
+```
+
+## Documentation
+
+**Migration Guide & Examples**: [Documentation Guide](https://nevware21.github.io/tripwire)
+
+**API Reference**: [TypeDoc Documentation](https://nevware21.github.io/tripwire/typedoc/shim/chai/index.html)
+
+**Core Package**: [@nevware21/tripwire](https://www.npmjs.com/package/@nevware21/tripwire) - Consider migrating for better features
+
+**Repository**: [github.com/nevware21/tripwire](https://github.com/nevware21/tripwire)
+
+## When to Use Core Tripwire
+
+Consider switching to `@nevware21/tripwire` for:
+- Better error messages
+- Fluent `expect` syntax
+- New features and improvements
+- Long-term maintenance
 
 ## Browser Support
 
-General support is currently set to ES5 supported runtimes and higher.
-
-This module uses [@nevware21/ts-utils](https://github.com/nevware21/ts-utils) to provide some of it core functionality which includes internal polyfills to provide support on older browsers.
-
-While every effort will be made to maintain as much technical compatibility as possible, some assertions and functionality will require later browsers to function correctly.
+- Comprehensive support from ES5+ for broad compatibility
+- Tested in Node.js, browsers, and Web Workers
 
 ## Contributing
 
-Read our primary [contributing guide](https://github.com/nevware21/tripwire/blob/main/CONTRIBUTING.md) to learn about our development process, how to propose bugfixes and improvements, and how to build and test your changes.
+See [Contributing Guide](https://github.com/nevware21/tripwire/blob/main/CONTRIBUTING.md)
 
 ## License
 
