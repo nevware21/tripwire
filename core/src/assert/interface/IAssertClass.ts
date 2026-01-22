@@ -973,9 +973,79 @@ export interface IAssertClass<AssertInst extends IAssertInst = IAssertInst> {
     isNotArray(value: any, initMsg?: MsgSource): AssertInst;
 
     /**
+     * Asserts that the value is a number.
+     * @param value - The value to check.
+     * @param initMsg - The custom message to display if the assertion fails.
+     * @throws An {@link AssertionFailure} if the value is not a number.
+     * @since 0.1.5
+     * @example
+     * ```typescript
+     * assert.isNumber(123); // Passes
+     * assert.isNumber(3.14); // Passes
+     * assert.isNumber(0); // Passes
+     * assert.isNumber("123"); // Throws AssertionFailure
+     * assert.isNumber(null); // Throws AssertionFailure
+     * assert.isNumber(undefined); // Throws AssertionFailure
+     * ```
+     */
+    isNumber(value: any, initMsg?: MsgSource): AssertInst;
+
+    /**
+     * Asserts that the value is not a number.
+     * @param value - The value to check.
+     * @param initMsg - The custom message to display if the assertion fails.
+     * @throws An {@link AssertionFailure} if the value is a number.
+     * @since 0.1.5
+     * @example
+     * ```typescript
+     * assert.isNotNumber("hello"); // Passes
+     * assert.isNotNumber({}); // Passes
+     * assert.isNotNumber(null); // Passes
+     * assert.isNotNumber(123); // Throws AssertionFailure
+     * assert.isNotNumber(3.14); // Throws AssertionFailure
+     * ```
+     */
+    isNotNumber(value: any, initMsg?: MsgSource): AssertInst;
+
+    /**
+     * Asserts that the value is a boolean.
+     * @param value - The value to check.
+     * @param initMsg - The custom message to display if the assertion fails.
+     * @throws An {@link AssertionFailure} if the value is not a boolean.
+     * @since 0.1.5
+     * @example
+     * ```typescript
+     * assert.isBoolean(true); // Passes
+     * assert.isBoolean(false); // Passes
+     * assert.isBoolean(1); // Throws AssertionFailure
+     * assert.isBoolean("true"); // Throws AssertionFailure
+     * assert.isBoolean(null); // Throws AssertionFailure
+     * assert.isBoolean(undefined); // Throws AssertionFailure
+     * ```
+     */
+    isBoolean(value: any, initMsg?: MsgSource): AssertInst;
+
+    /**
+     * Asserts that the value is not a boolean.
+     * @param value - The value to check.
+     * @param initMsg - The custom message to display if the assertion fails.
+     * @throws An {@link AssertionFailure} if the value is a boolean.
+     * @since 0.1.5
+     * @example
+     * ```typescript
+     * assert.isNotBoolean(123); // Passes
+     * assert.isNotBoolean("hello"); // Passes
+     * assert.isNotBoolean(null); // Passes
+     * assert.isNotBoolean(true); // Throws AssertionFailure
+     * assert.isNotBoolean(false); // Throws AssertionFailure
+     * ```
+     */
+    isNotBoolean(value: any, initMsg?: MsgSource): AssertInst;
+
+    /**
      * Asserts whether the value is extensible indicating whether
      * new properties can be added to it.
-     * Primive values are not extensible.
+     * Primitive values are not extensible.
      * @param value - The value to check.
      * @param initMsg - The custom message to display if the assertion fails.
      * @throws An {@link AssertionFailure} if the value is not extensible.
@@ -993,7 +1063,7 @@ export interface IAssertClass<AssertInst extends IAssertInst = IAssertInst> {
     /**
      * Asserts whether the value is not extensible indicating whether
      * new properties can be added to it.
-     * Primive values are not extensible.
+     * Primitive values are not extensible.
      * @param value - The value to check.
      * @param initMsg - The custom message to display if the assertion fails
      * @throws An {@link AssertionFailure} if the value is extensible.

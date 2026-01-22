@@ -1,4 +1,4 @@
-# Core Module
+# @nevware21/tripwire
 
 ![GitHub Workflow Status (main)](https://img.shields.io/github/actions/workflow/status/nevware21/tripwire/ci.yml?branch=main)
 [![codecov](https://codecov.io/gh/nevware21/tripwire/graph/badge.svg?token=I9mMGSvfkk)](https://codecov.io/gh/nevware21/tripwire)
@@ -6,67 +6,93 @@
 [![downloads](https://img.shields.io/npm/dt/%40nevware21/tripwire.svg)](https://www.npmjs.com/package/%40nevware21/tripwire)
 [![downloads](https://img.shields.io/npm/dm/%40nevware21/tripwire.svg)](https://www.npmjs.com/package/%40nevware21/tripwire)
 
-This is the core module of the `tripwire` project which is designed to be used for testing your Javascript or TypeScript packages.
+Modern assertion library for testing JavaScript and TypeScript packages across Node.js, Browser, and Web Worker environments.
 
-It is designed to work in and is tested with the following environments.
+## Why Tripwire?
 
-- `node`
-- `browser`
-- `worker` (browser)
+**Cross-Environment Testing**
+- Works seamlessly in Node.js, browsers, and Web Workers
+- Comprehensive support from ES5+ for broad compatibility
+- Tested across all three environments
 
-It currently provides `assertion` functions to make testing simplier and easier by providing common assertion checks that you can run against your code.
+**Dual API Design**
+- Use familiar `assert.*` functions for quick checks
+- Use fluent `expect().to.be.*` syntax for readable tests
+- Mix both styles in the same test suite
 
-It provides both `assert` and `expect` support, where the `assert` functions are a set of fixed operations, which the `expect` is a more descriptive language API.
+**Reliable & Lightweight**
+- Minimal dependencies to prevent build breakages
+- Built with TypeScript for full type safety
+- No dependency on unstable or unmaintained packages
 
-The `assert` functions are built on-top of the underlying `expect` support, and if no assertions are thrown the result of the internal "chained" descriptive language API is returned. Which means you can mix the `expect` objects with the responses from the `assert` functions.
+## Installation
 
-To avoid dependency issues, this project will use the mininal set of external dependencies so that it can ensure and maintain compatibility with current (and future) runtimes.
+```bash
+npm install @nevware21/tripwire --save-dev
+```
 
-## API Documentation
-
-The API documentation is generated from the source code via typedoc and is located [here](https://nevware21.github.io/tripwire/index.html)
+**Recommended version range:**
+```json
+{
+  "devDependencies": {
+    "@nevware21/tripwire": ">= 0.1.4 < 2.x"
+  }
+}
+```
 
 ## Quick Start
-
-Install the npm packare: `npm install @nevware21/tripwire --save-dev`
-
-> It is suggested / recommended that you use the following definition in your `package.json` so that you are compatible with any future releases as they become available
-> we do not intend to make ANY known breaking changes moving forward until v2.x 
-> ```json
-> "@nevware21/tripwire": ">= 0.1.4 < 2.x"
-> ```
-
-## Usage
-
-To use the core functionalities, import the necessary modules and functions:
 
 ```ts
 import { assert, expect } from '@nevware21/tripwire';
 
-assert.isObject([]); // throws
+// Assert style
+assert.equal(1 + 1, 2);
+assert.isString("hello");
+assert.deepEqual({ a: 1 }, { a: 1 });
 
-expect(() => { dosomething(); }).to.not.throw();
-expect(() => { throw new Error("failed")}).to.throw();
+// Expect style
+expect(1 + 1).to.equal(2);
+expect("hello").to.be.a.string;
+expect({ a: 1 }).to.deep.equal({ a: 1 });
 ```
 
-For detailed documentation on specific assertion types, see:
-- [Change/Increase/Decrease Assertions](https://nevware21.github.io/tripwire/change-assertions) - Testing value changes over function execution
+## Key Features
 
-## API Documentation
+- **Type Checking** - `isObject`, `isArray`, `isString`, `isNumber`, `isBoolean`, `isFunction`, `isNull`, `isUndefined`, `isNaN`, `isFinite`, `typeOf`, `instanceOf`, `exists`
+- **Equality** - `equal`, `strictEqual`, `deepEqual`, `closeTo` (approximate equality)
+- **Comparisons** - `above`, `below`, `within`, `atLeast`, `atMost`
+- **Properties** - `property`, `ownProperty`, `deepProperty`, `nestedProperty` with value validation
+- **Collections** - `include`, `keys`, `members` with deep equality and ordered comparison
+- **Size/Length** - `lengthOf`, `sizeOf` for arrays, strings, maps, sets
+- **Array Operations** - `subsequence`, `endsWith`, `oneOf` matching
+- **Change Tracking** - Monitor value `changes`, `increases`, `decreases` with delta validation
+- **Error Testing** - `throw`, `throws`, `doesNotThrow` with type and message validation
+- **Object State** - `isExtensible`, `isSealed`, `isFrozen`, `isEmpty`
 
-The API documentation is generated from the source code via typedoc and is located [here](https://nevware21.github.io/tripwire/index.html)
+## Documentation
+
+**Quick Start & Examples**: [Documentation Guide](https://nevware21.github.io/tripwire)
+
+**API Reference**: [TypeDoc Documentation](https://nevware21.github.io/tripwire/typedoc/core/index.html)
+
+**Guides**:
+- [Change/Increase/Decrease Assertions](https://nevware21.github.io/tripwire/change-assertions)
+
+**Repository**: [github.com/nevware21/tripwire](https://github.com/nevware21/tripwire)
 
 ## Browser Support
 
-General support is currently set to ES5 supported runtimes and higher.
+- Comprehensive support from ES5+ for broad browser compatibility, from IE9+
+- Tested in Node.js, Chrome, Firefox, Safari, Edge
+- Full Web Worker support
 
-This module uses [@nevware21/ts-utils](https://github.com/nevware21/ts-utils) to provide some of it core functionality which includes internal polyfills to provide support on older browsers.
+## Related Packages
 
-While every effort will be made to maintain as much technical compatibility as possible, some assertions and functionality will require later browsers to function correctly.
+**[@nevware21/tripwire-chai](https://www.npmjs.com/package/@nevware21/tripwire-chai)** - Chai.js compatibility shim
 
 ## Contributing
 
-Read our primary [contributing guide](https://github.com/nevware21/tripwire/blob/main/CONTRIBUTING.md) to learn about our development process, how to propose bugfixes and improvements, and how to build and test your changes.
+See [Contributing Guide](https://github.com/nevware21/tripwire/blob/main/CONTRIBUTING.md)
 
 ## License
 
