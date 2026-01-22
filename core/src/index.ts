@@ -64,6 +64,10 @@ import { getScopeContext, createContext } from "./assert/scopeContext";
 import { SymbolFn } from "./assert/interface/funcs/SymbolFn";
 import { IRemovable } from "./assert/interface/IRemovable";
 import { OneOfFn } from "./assert/interface/funcs/OneOfFn";
+import { ChangeFn } from "./assert/interface/funcs/ChangeFn";
+import { ChangeByFn } from "./assert/interface/funcs/ChangeByFn";
+import { IChangeResultOp } from "./assert/interface/ops/IChangeResultOp";
+import { IChangeResultValue } from "./assert/interface/ops/IChangeResultValue";
 
 /**
  * Export the Error classes
@@ -79,20 +83,21 @@ export {
 export {
     IAllOp, IAnyOp, IAssertClass, IAssertClassDef, IAssertConfig, IAssertConfigDefaults,
     IAssertInst, IAssertInstCore, IAssertInstHandlers, IAssertScope, IAssertScopeFuncDef,
-    IDeepOp, IEqualOp, IExtendedAssert, IExtendedAssertInst, IFormatCtx, IFormattedValue,
-    IFormatter, IFormatterOptions, IHasOp, IIncludeOp, IIsOp, IIsTypeOp, IKeysOp, INestedOp,
-    INotOp, INumericOp, IOwnOp, IPropertyResultOp, IRemovable, IScopeContext,
-    IScopeContextOverrides, IScopePropFn, IStrictlyOp, IThrowOp, IToOp, PropertyDescriptorFn,
-    PropertyFn
+    IChangeResultOp, IChangeResultValue, IDeepOp, IEqualOp, IExtendedAssert, IExtendedAssertInst,
+    IFormatCtx, IFormattedValue, IFormatter, IFormatterOptions, IHasOp, IIncludeOp, IIsOp,
+    IIsTypeOp, IKeysOp, INestedOp, INotOp, INumericOp, IOwnOp, IPropertyResultOp, IRemovable,
+    IScopeContext, IScopeContextOverrides, IScopePropFn, IStrictlyOp, IThrowOp, IToOp,
+    PropertyDescriptorFn, PropertyFn
 };
 
 /**
  * Export the types
  */
 export {
-    ArrayLikeOrSizedIterable, AssertClassDef, AssertFn, AssertInstHandlers, AssertScopeFuncDefs, CloseToFn, EqualFn,
-    ErrorLikeFn, EvalFn, IncludeFn, InstanceOfFn, IScopeFn, KeysFn, MsgSource, NumberFn, OneOfFn,
-    OperatorFn, SymbolFn, ThrowFn, ValuesFn, WithinFn
+    ArrayLikeOrSizedIterable, AssertClassDef, AssertFn, AssertInstHandlers, AssertScopeFuncDefs,
+    ChangeByFn, ChangeFn, CloseToFn, EqualFn, ErrorLikeFn, EvalFn, IncludeFn, InstanceOfFn,
+    IScopeFn, KeysFn, MsgSource, NumberFn, OneOfFn, OperatorFn, SymbolFn, ThrowFn, ValuesFn,
+    WithinFn
 };
 
 /**

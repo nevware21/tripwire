@@ -49,6 +49,9 @@ expect(() => { dosomething(); }).to.not.throw();
 expect(() => { throw new Error("failed")}).to.throw();
 ```
 
+For detailed documentation on specific assertion types, see:
+- [Change/Increase/Decrease Assertions](https://nevware21.github.io/tripwire/change-assertions) - Testing value changes over function execution
+
 ## API Documentation
 
 The API documentation is generated from the source code via typedoc and is located [here](https://nevware21.github.io/tripwire/index.html)

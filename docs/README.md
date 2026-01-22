@@ -16,6 +16,9 @@
 
 [Core Assertion Typedoc](https://nevware21.github.io/tripwire/typedoc/core/index.html)
 
+#### Guides
+- [Change/Increase/Decrease Assertions](change-assertions.md) - Testing value changes over function execution
+
 ## Shim Chai
 
 [![npm version](https://badge.fury.io/js/%40nevware21%2Ftripwire-chai.svg)](https://badge.fury.io/js/%40nevware21%2Ftripwire-chai)

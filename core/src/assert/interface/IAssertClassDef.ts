@@ -32,7 +32,7 @@ export interface IAssertClassDef {
     scopeFn?: IScopeFn;
 
     /**
-     * Identifies the expected number of "logical" arguments that the accert class function is
+     * Identifies the expected number of "logical" arguments that the assert class function is
      * defined to receive (including any initial `actual` value). These arguments are collected
      * and will be passed to the provided `scopeFn` function when the assertion is evaluated.
      * This optional property is used to determine how many of the initial passed arguments

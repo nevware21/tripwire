@@ -2047,6 +2047,7 @@ export interface IAssertClass<AssertInst extends IAssertInst = IAssertInst> {
      * @param delta - The maximum allowed difference between actual and expected. Must be a number. Note: A negative delta will never result in a passing assertion since the absolute difference is always non-negative.
      * @param initMsg - The message to display if the assertion fails.
      * @returns - An assert instance for further chaining.
+     * @alias closeTo
      * @since 0.1.5
      * @example
      * ```typescript
@@ -2065,6 +2066,7 @@ export interface IAssertClass<AssertInst extends IAssertInst = IAssertInst> {
      * @param delta - The maximum allowed difference. Must be a number. Note: A negative delta will always result in a passing assertion since the absolute difference is always non-negative.
      * @param initMsg - The message to display if the assertion fails.
      * @returns - An assert instance for further chaining.
+     * @alias notCloseTo
      * @since 0.1.5
      * @example
      * ```typescript
@@ -2674,6 +2676,614 @@ export interface IAssertClass<AssertInst extends IAssertInst = IAssertInst> {
      * ```
      */
     notDeepSubsequence<T>(actual: ArrayLikeOrSizedIterable<T>, expected: ArrayLikeOrSizedIterable<T>, initMsg?: MsgSource): AssertInst;
+
+    // /**
+    //  * Asserts that executing the target function changes the monitored value.
+    //  * Can monitor either a getter function's return value or an object property.
+    //  * @param fn - The function to execute that should change the value.
+    //  * @param getter - A function that returns the value to monitor, or an object containing the property.
+    //  * @param prop - The property name to monitor (only when getter is an object).
+    //  * @param initMsg - The message to display if the assertion fails.
+    //  * @returns - An assert instance for further chaining.
+    //  * @since 0.1.5
+    //  * @example
+    //  * ```typescript
+    //  * let value = 1;
+    //  * const getValue = () => value;
+    //  * const changeValue = () => { value = 2; };
+    //  * assert.changes(changeValue, getValue);
+    //  *
+    //  * const obj = { count: 0 };
+    //  * const increment = () => { obj.count++; };
+    //  * assert.changes(increment, obj, 'count');
+    //  * ```
+    //  */
+    // changes(fn: () => void, getter: (() => any) | any, prop?: string | symbol | number, initMsg?: MsgSource): AssertInst;
+
+    /**
+     * Asserts that executing the target function changes the monitored value.
+     * Can monitor either a getter function's return value or an object property.
+     * @param fn - The function to execute that should change the value.
+     * @param getter - A function that returns the value to monitor.
+     * @param initMsg - The message to display if the assertion fails.
+     * @returns - An assert instance for further chaining.
+     * @since 0.1.5
+     * @example
+     * ```typescript
+     * let value = 1;
+     * const getValue = () => value;
+     * const changeValue = () => { value = 2; };
+     * assert.changes(changeValue, getValue);
+     *
+     * const obj = { count: 0 };
+     * const increment = () => { obj.count++; };
+     * assert.changes(increment, obj, 'count');
+     * ```
+     */
+    changes(fn: () => void, getter: () => any, initMsg?: MsgSource): AssertInst;
+
+    /**
+     * Asserts that executing the target function changes the monitored value.
+     * Can monitor either a getter function's return value or an object property.
+     * @param fn - The function to execute that should change the value.
+     * @param target - An object containing the property.
+     * @param prop - The property name to monitor (only when getter is an object).
+     * @param initMsg - The message to display if the assertion fails.
+     * @returns - An assert instance for further chaining.
+     * @since 0.1.5
+     * @example
+     * ```typescript
+     * let value = 1;
+     * const getValue = () => value;
+     * const changeValue = () => { value = 2; };
+     * assert.changes(changeValue, getValue);
+     *
+     * const obj = { count: 0 };
+     * const increment = () => { obj.count++; };
+     * assert.changes(increment, obj, 'count');
+     * ```
+     */
+    changes<T = any>(fn: () => void, target: T, prop: keyof T, initMsg?: MsgSource): AssertInst;
+
+    /**
+     * Asserts that executing the target function does NOT change the monitored value.
+     * This is the inverse of {@link changes}.
+     * @param fn - The function to execute.
+     * @param getter - A function that returns the value to monitor.
+     * @param initMsg - The message to display if the assertion fails.
+     * @returns - An assert instance for further chaining.
+     * @since 0.1.5
+     * @example
+     * ```typescript
+     * let value = 1;
+     * const getValue = () => value;
+     * const noOp = () => {};
+     * assert.doesNotChange(noOp, getValue);
+     * ```
+     */
+    doesNotChange(fn: () => void, getter: () => any, initMsg?: MsgSource): AssertInst;
+
+    /**
+     * Asserts that executing the target function does NOT change the monitored object property.
+     * This is the inverse of {@link changes}.
+     * @param fn - The function to execute.
+     * @param target - An object containing the property to monitor.
+     * @param prop - The property name to monitor.
+     * @param initMsg - The message to display if the assertion fails.
+     * @returns - An assert instance for further chaining.
+     * @since 0.1.5
+     * @example
+     * ```typescript
+     * const obj = { count: 0 };
+     * const noOp = () => {};
+     * assert.doesNotChange(noOp, obj, 'count');
+     * ```
+     */
+    doesNotChange<T>(fn: () => void, target: T, prop: keyof T, initMsg?: MsgSource): AssertInst;
+
+    /**
+     * Asserts that executing the target function changes the monitored value by the specified delta.
+     * **Important:** The sign of the delta is ignored - only the absolute value is compared.
+     * This means both positive and negative deltas with the same absolute value will match.
+     * @param fn - The function to execute that should change the value.
+     * @param getter - A function that returns the value to monitor.
+     * @param delta - The expected delta (sign is ignored, only absolute value matters).
+     * @param initMsg - The message to display if the assertion fails.
+     * @returns - An assert instance for further chaining.
+     * @since 0.1.5
+     * @example
+     * ```typescript
+     * let value = 0;
+     * const getValue = () => value;
+     * const addFive = () => { value += 5; };
+     * const subtractFive = () => { value -= 5; };
+     * assert.changesBy(addFive, getValue, 5);  // Passes (delta of +5)
+     * assert.changesBy(addFive, getValue, -5); // Also passes (absolute value is 5)
+     * assert.changesBy(subtractFive, getValue, 5); // Also passes (absolute value is 5)
+     * ```
+     */
+    changesBy(fn: () => void, getter: () => any, delta: number, initMsg?: MsgSource): AssertInst;
+
+    /**
+     * Asserts that executing the target function changes the monitored object property by the specified delta.
+     * **Important:** The sign of the delta is ignored - only the absolute value is compared.
+     * This means both positive and negative deltas with the same absolute value will match.
+     * @param fn - The function to execute that should change the value.
+     * @param target - An object containing the property to monitor.
+     * @param prop - The property name to monitor.
+     * @param delta - The expected delta (sign is ignored, only absolute value matters).
+     * @param initMsg - The message to display if the assertion fails.
+     * @returns - An assert instance for further chaining.
+     * @since 0.1.5
+     * @example
+     * ```typescript
+     * const obj = { count: 10 };
+     * const addFive = () => { obj.count += 5; };
+     * const subtractFive = () => { obj.count -= 5; };
+     * assert.changesBy(addFive, obj, 'count', 5);  // Passes (delta of +5)
+     * assert.changesBy(addFive, obj, 'count', -5); // Also passes (absolute value is 5)
+     * assert.changesBy(subtractFive, obj, 'count', 5); // Also passes (absolute value is 5)
+     * ```
+     */
+    changesBy<T>(fn: () => void, target: T, prop: keyof T, delta: number, initMsg?: MsgSource): AssertInst;
+
+    /**
+     * Asserts that the value does NOT change by the specified delta after executing the target function.
+     * The value may remain unchanged, or change by a different amount.
+     * This is the negation of {@link changesBy}.
+     * For asserting that a change MUST occur but not by the specified amount, use {@link changesButNotBy}.
+     * @param fn - The function to execute.
+     * @param getter - A function that returns the value to monitor.
+     * @param delta - The delta that should NOT match.
+     * @param initMsg - The message to display if the assertion fails.
+     * @returns - An assert instance for further chaining.
+     * @since 0.1.5
+     * @example
+     * ```typescript
+     * let value = 0;
+     * const getValue = () => value;
+     * const addTwo = () => { value += 2; };
+     * const noOp = () => {};
+     * assert.notChangesBy(addTwo, getValue, 5);  // Passes - changed by 2, not by 5
+     * assert.notChangesBy(noOp, getValue, 5);    // Passes - no change at all (not by 5)
+     * assert.notChangesBy(addTwo, getValue, 2);  // Fails - changed by exactly 2
+     * ```
+     */
+    notChangesBy(fn: () => void, getter: () => any, delta: number, initMsg?: MsgSource): AssertInst;
+
+    /**
+     * Asserts that the property does NOT change by the specified delta after executing the target function.
+     * The value may remain unchanged, or change by a different amount.
+     * This is the negation of {@link changesBy}.
+     * For asserting that a change MUST occur but not by the specified amount, use {@link changesButNotBy}.
+     * @param fn - The function to execute.
+     * @param target - An object containing the property to monitor.
+     * @param prop - The property name to monitor.
+     * @param delta - The delta that should NOT match.
+     * @param initMsg - The message to display if the assertion fails.
+     * @returns - An assert instance for further chaining.
+     * @since 0.1.5
+     * @example
+     * ```typescript
+     * const obj = { count: 10 };
+     * const addTwo = () => { obj.count += 2; };
+     * const noOp = () => {};
+     * assert.notChangesBy(addTwo, obj, 'count', 5);  // Passes - changed by 2, not by 5
+     * assert.notChangesBy(noOp, obj, 'count', 5);    // Passes - no change at all (not by 5)
+     * assert.notChangesBy(addTwo, obj, 'count', 2);  // Fails - changed by exactly 2
+     * ```
+     */
+    notChangesBy<T>(fn: () => void, target: T, prop: keyof T, delta: number, initMsg?: MsgSource): AssertInst;
+
+    /**
+     * Asserts that the value DOES change but NOT by the specified delta after executing the target function.
+     * The value MUST change (cannot remain the same), but the change amount must not equal the specified delta.
+     * This differs from {@link notChangesBy} which allows the value to remain unchanged.
+     * @param fn - The function to execute that should change the value.
+     * @param getter - A function that returns the value to monitor.
+     * @param delta - The delta that should NOT match (sign is considered).
+     * @param initMsg - The message to display if the assertion fails.
+     * @returns - An assert instance for further chaining.
+     * @since 0.1.5
+     * @example
+     * ```typescript
+     * let value = 0;
+     * const getValue = () => value;
+     * const addTwo = () => { value += 2; };
+     * const noOp = () => {};
+     * assert.changesButNotBy(addTwo, getValue, 5);  // Passes - changed by 2, not by 5
+     * assert.changesButNotBy(addTwo, getValue, 2);  // Fails - changed by exactly 2
+     * assert.changesButNotBy(noOp, getValue, 5);    // Fails - no change occurred
+     * ```
+     */
+    changesButNotBy(fn: () => void, getter: () => any, delta: number, initMsg?: MsgSource): AssertInst;
+
+    /**
+     * Asserts that the property DOES change but NOT by the specified delta after executing the target function.
+     * The value MUST change (cannot remain the same), but the change amount must not equal the specified delta.
+     * This differs from {@link notChangesBy} which allows the value to remain unchanged.
+     * @param fn - The function to execute that should change the value.
+     * @param target - An object containing the property to monitor.
+     * @param prop - The property name to monitor.
+     * @param delta - The delta that should NOT match (sign is considered).
+     * @param initMsg - The message to display if the assertion fails.
+     * @returns - An assert instance for further chaining.
+     * @since 0.1.5
+     * @example
+     * ```typescript
+     * const obj = { count: 10 };
+     * const addTwo = () => { obj.count += 2; };
+     * const noOp = () => {};
+     * assert.changesButNotBy(addTwo, obj, 'count', 5);  // Passes - changed by 2, not by 5
+     * assert.changesButNotBy(addTwo, obj, 'count', 2);  // Fails - changed by exactly 2
+     * assert.changesButNotBy(noOp, obj, 'count', 5);    // Fails - no change occurred
+     * ```
+     */
+    changesButNotBy<T>(fn: () => void, target: T, prop: keyof T, delta: number, initMsg?: MsgSource): AssertInst;
+
+    /**
+     * Asserts that executing the target function increases the monitored numeric value.
+     * @param fn - The function to execute that should increase the value.
+     * @param getter - A function that returns the value to monitor.
+     * @param initMsg - The message to display if the assertion fails.
+     * @returns - An assert instance for further chaining.
+     * @since 0.1.5
+     * @example
+     * ```typescript
+     * let count = 0;
+     * const getCount = () => count;
+     * const increment = () => { count++; };
+     * assert.increases(increment, getCount);
+     * ```
+     */
+    increases(fn: () => void, getter: () => any, initMsg?: MsgSource): AssertInst;
+
+    /**
+     * Asserts that executing the target function increases the monitored object property.
+     * @param fn - The function to execute that should increase the value.
+     * @param target - An object containing the property to monitor.
+     * @param prop - The property name to monitor.
+     * @param initMsg - The message to display if the assertion fails.
+     * @returns - An assert instance for further chaining.
+     * @since 0.1.5
+     * @example
+     * ```typescript
+     * const obj = { count: 5 };
+     * const addFive = () => { obj.count += 5; };
+     * assert.increases(addFive, obj, 'count');
+     * ```
+     */
+    increases<T>(fn: () => void, target: T, prop: keyof T, initMsg?: MsgSource): AssertInst;
+
+    /**
+     * Asserts that executing the target function does NOT increase the monitored numeric value.
+     * This is the inverse of {@link increases}.
+     * @param fn - The function to execute.
+     * @param getter - A function that returns the value to monitor.
+     * @param initMsg - The message to display if the assertion fails.
+     * @returns - An assert instance for further chaining.
+     * @since 0.1.5
+     * @example
+     * ```typescript
+     * let value = 5;
+     * const getValue = () => value;
+     * const noOp = () => {};
+     * assert.doesNotIncrease(noOp, getValue);
+     * ```
+     */
+    doesNotIncrease(fn: () => void, getter: () => any, initMsg?: MsgSource): AssertInst;
+
+    /**
+     * Asserts that executing the target function does NOT increase the monitored object property.
+     * This is the inverse of {@link increases}.
+     * @param fn - The function to execute.
+     * @param target - An object containing the property to monitor.
+     * @param prop - The property name to monitor.
+     * @param initMsg - The message to display if the assertion fails.
+     * @returns - An assert instance for further chaining.
+     * @since 0.1.5
+     * @example
+     * ```typescript
+     * const obj = { count: 5 };
+     * const noOp = () => {};
+     * assert.doesNotIncrease(noOp, obj, 'count');
+     * ```
+     */
+    doesNotIncrease<T>(fn: () => void, target: T, prop: keyof T, initMsg?: MsgSource): AssertInst;
+
+    /**
+     * Asserts that executing the target function increases the monitored value by the specified delta.
+     * @param fn - The function to execute that should increase the value.
+     * @param getter - A function that returns the value to monitor.
+     * @param delta - The expected increase delta (must be positive).
+     * @param initMsg - The message to display if the assertion fails.
+     * @returns - An assert instance for further chaining.
+     * @since 0.1.5
+     * @example
+     * ```typescript
+     * let value = 0;
+     * const getValue = () => value;
+     * const addFive = () => { value += 5; };
+     * assert.increasesBy(addFive, getValue, 5);
+     * ```
+     */
+    increasesBy(fn: () => void, getter: () => any, delta: number, initMsg?: MsgSource): AssertInst;
+
+    /**
+     * Asserts that executing the target function increases the monitored object property by the specified delta.
+     * @param fn - The function to execute that should increase the value.
+     * @param target - An object containing the property to monitor.
+     * @param prop - The property name to monitor.
+     * @param delta - The expected increase delta (must be positive).
+     * @param initMsg - The message to display if the assertion fails.
+     * @returns - An assert instance for further chaining.
+     * @since 0.1.5
+     * @example
+     * ```typescript
+     * const obj = { count: 10 };
+     * const addFive = () => { obj.count += 5; };
+     * assert.increasesBy(addFive, obj, 'count', 5);
+     * ```
+     */
+    increasesBy<T>(fn: () => void, target: T, prop: keyof T, delta: number, initMsg?: MsgSource): AssertInst;
+
+    /**
+     * Asserts that executing the target function increases the monitored value but NOT by the specified delta.
+     * @param fn - The function to execute that should increase the value.
+     * @param getter - A function that returns the value to monitor.
+     * @param delta - The delta that should NOT match.
+     * @param initMsg - The message to display if the assertion fails.
+     * @returns - An assert instance for further chaining.
+     * @since 0.1.5
+     * @example
+     * ```typescript
+     * let value = 0;
+     * const getValue = () => value;
+     * const addTwo = () => { value += 2; };
+     * assert.notIncreasesBy(addTwo, getValue, 5);  // Passes - increased by 2, not 5
+     * ```
+     */
+    notIncreasesBy(fn: () => void, getter: () => any, delta: number, initMsg?: MsgSource): AssertInst;
+
+    /**
+     * Asserts that executing the target function increases the monitored object property but NOT by the specified delta.
+     * @param fn - The function to execute that should increase the value.
+     * @param target - An object containing the property to monitor.
+     * @param prop - The property name to monitor.
+     * @param delta - The delta that should NOT match.
+     * @param initMsg - The message to display if the assertion fails.
+     * @returns - An assert instance for further chaining.
+     * @since 0.1.5
+     * @example
+     * ```typescript
+     * const obj = { count: 10 };
+     * const addTwo = () => { obj.count += 2; };
+     * assert.notIncreasesBy(addTwo, obj, 'count', 5);  // Passes - increased by 2, not 5
+     * ```
+     */
+    notIncreasesBy<T>(fn: () => void, target: T, prop: keyof T, delta: number, initMsg?: MsgSource): AssertInst;
+
+    /**
+     * Asserts that executing the target function increases the monitored value but NOT by the specified delta.
+     * The value MUST increase, but the increase amount must not equal the specified delta.
+     * @param fn - The function to execute that should increase the value.
+     * @param getter - A function that returns the value to monitor.
+     * @param delta - The delta that should NOT match.
+     * @param initMsg - The message to display if the assertion fails.
+     * @returns - An assert instance for further chaining.
+     * @since 0.1.5
+     * @example
+     * ```typescript
+     * let value = 0;
+     * const getValue = () => value;
+     * const addTwo = () => { value += 2; };
+     * assert.increasesButNotBy(addTwo, getValue, 5);  // Passes - increased by 2, not 5
+     * assert.increasesButNotBy(addTwo, getValue, 2);  // Fails - increased by exactly 2
+     * ```
+     */
+    increasesButNotBy(fn: () => void, getter: () => any, delta: number, initMsg?: MsgSource): AssertInst;
+
+    /**
+     * Asserts that executing the target function increases the monitored object property but NOT by the specified delta.
+     * The value MUST increase, but the increase amount must not equal the specified delta.
+     * @param fn - The function to execute that should increase the value.
+     * @param target - An object containing the property to monitor.
+     * @param prop - The property name to monitor.
+     * @param delta - The delta that should NOT match.
+     * @param initMsg - The message to display if the assertion fails.
+     * @returns - An assert instance for further chaining.
+     * @since 0.1.5
+     * @example
+     * ```typescript
+     * const obj = { count: 10 };
+     * const addTwo = () => { obj.count += 2; };
+     * assert.increasesButNotBy(addTwo, obj, 'count', 5);  // Passes - increased by 2, not 5
+     * assert.increasesButNotBy(addTwo, obj, 'count', 2);  // Fails - increased by exactly 2
+     * ```
+     */
+    increasesButNotBy<T>(fn: () => void, target: T, prop: keyof T, delta: number, initMsg?: MsgSource): AssertInst;
+
+    /**
+     * Asserts that executing the target function decreases the monitored numeric value.
+     * @param fn - The function to execute that should decrease the value.
+     * @param getter - A function that returns the value to monitor.
+     * @param initMsg - The message to display if the assertion fails.
+     * @returns - An assert instance for further chaining.
+     * @since 0.1.5
+     * @example
+     * ```typescript
+     * let count = 10;
+     * const getCount = () => count;
+     * const decrement = () => { count--; };
+     * assert.decreases(decrement, getCount);
+     * ```
+     */
+    decreases(fn: () => void, getter: () => any, initMsg?: MsgSource): AssertInst;
+
+    /**
+     * Asserts that executing the target function decreases the monitored object property.
+     * @param fn - The function to execute that should decrease the value.
+     * @param target - An object containing the property to monitor.
+     * @param prop - The property name to monitor.
+     * @param initMsg - The message to display if the assertion fails.
+     * @returns - An assert instance for further chaining.
+     * @since 0.1.5
+     * @example
+     * ```typescript
+     * const obj = { count: 10 };
+     * const subtractThree = () => { obj.count -= 3; };
+     * assert.decreases(subtractThree, obj, 'count');
+     * ```
+     */
+    decreases<T>(fn: () => void, target: T, prop: keyof T, initMsg?: MsgSource): AssertInst;
+
+    /**
+     * Asserts that executing the target function does NOT decrease the monitored numeric value.
+     * This is the inverse of {@link decreases}.
+     * @param fn - The function to execute.
+     * @param getter - A function that returns the value to monitor.
+     * @param initMsg - The message to display if the assertion fails.
+     * @returns - An assert instance for further chaining.
+     * @since 0.1.5
+     * @example
+     * ```typescript
+     * let value = 5;
+     * const getValue = () => value;
+     * const noOp = () => {};
+     * assert.doesNotDecrease(noOp, getValue);
+     * ```
+     */
+    doesNotDecrease(fn: () => void, getter: () => any, initMsg?: MsgSource): AssertInst;
+
+    /**
+     * Asserts that executing the target function does NOT decrease the monitored object property.
+     * This is the inverse of {@link decreases}.
+     * @param fn - The function to execute.
+     * @param target - An object containing the property to monitor.
+     * @param prop - The property name to monitor.
+     * @param initMsg - The message to display if the assertion fails.
+     * @returns - An assert instance for further chaining.
+     * @since 0.1.5
+     * @example
+     * ```typescript
+     * const obj = { count: 5 };
+     * const noOp = () => {};
+     * assert.doesNotDecrease(noOp, obj, 'count');
+     * ```
+     */
+    doesNotDecrease<T>(fn: () => void, target: T, prop: keyof T, initMsg?: MsgSource): AssertInst;
+
+    /**
+     * Asserts that executing the target function decreases the monitored value by the specified delta.
+     * @param fn - The function to execute that should decrease the value.
+     * @param getter - A function that returns the value to monitor.
+     * @param delta - The expected decrease delta (should be a positive value as a decrease is expected).
+     * @param initMsg - The message to display if the assertion fails.
+     * @returns - An assert instance for further chaining.
+     * @since 0.1.5
+     * @example
+     * ```typescript
+     * let value = 10;
+     * const getValue = () => value;
+     * const subtractFive = () => { value -= 5; };
+     * assert.decreasesBy(subtractFive, getValue, 5);
+     * ```
+     */
+    decreasesBy(fn: () => void, getter: () => any, delta: number, initMsg?: MsgSource): AssertInst;
+
+    /**
+     * Asserts that executing the target function decreases the monitored object property by the specified delta.
+     * @param fn - The function to execute that should decrease the value.
+     * @param target - An object containing the property to monitor.
+     * @param prop - The property name to monitor.
+     * @param delta - The expected decrease delta (should be a positive value as a decrease is expected).
+     * @param initMsg - The message to display if the assertion fails.
+     * @returns - An assert instance for further chaining.
+     * @since 0.1.5
+     * @example
+     * ```typescript
+     * const obj = { count: 10 };
+     * const subtractFive = () => { obj.count -= 5; };
+     * assert.decreasesBy(subtractFive, obj, 'count', 5);
+     * ```
+     */
+    decreasesBy<T>(fn: () => void, target: T, prop: keyof T, delta: number, initMsg?: MsgSource): AssertInst;
+
+    /**
+     * Asserts that executing the target function decreases the monitored value but NOT by the specified delta.
+     * @param fn - The function to execute that should decrease the value.
+     * @param getter - A function that returns the value to monitor.
+     * @param delta - The delta that should NOT match.
+     * @param initMsg - The message to display if the assertion fails.
+     * @returns - An assert instance for further chaining.
+     * @since 0.1.5
+     * @example
+     * ```typescript
+     * let value = 10;
+     * const getValue = () => value;
+     * const subtractTwo = () => { value -= 2; };
+     * assert.notDecreasesBy(subtractTwo, getValue, 5);  // Passes - decreased by 2, not 5
+     * ```
+     */
+    notDecreasesBy(fn: () => void, getter: () => any, delta: number, initMsg?: MsgSource): AssertInst;
+
+    /**
+     * Asserts that executing the target function decreases the monitored object property but NOT by the specified delta.
+     * @param fn - The function to execute that should decrease the value.
+     * @param target - An object containing the property to monitor.
+     * @param prop - The property name to monitor.
+     * @param delta - The delta that should NOT match.
+     * @param initMsg - The message to display if the assertion fails.
+     * @returns - An assert instance for further chaining.
+     * @since 0.1.5
+     * @example
+     * ```typescript
+     * const obj = { count: 10 };
+     * const subtractTwo = () => { obj.count -= 2; };
+     * assert.notDecreasesBy(subtractTwo, obj, 'count', 5);  // Passes - decreased by 2, not 5
+     * ```
+     */
+    notDecreasesBy<T>(fn: () => void, target: T, prop: keyof T, delta: number, initMsg?: MsgSource): AssertInst;
+
+    /**
+     * Asserts that executing the target function decreases the monitored value but NOT by the specified delta.
+     * The value MUST decrease, but the decrease amount must not equal the specified delta.
+     * @param fn - The function to execute that should decrease the value.
+     * @param getter - A function that returns the value to monitor.
+     * @param delta - The delta that should NOT match.
+     * @param initMsg - The message to display if the assertion fails.
+     * @returns - An assert instance for further chaining.
+     * @since 0.1.5
+     * @example
+     * ```typescript
+     * let value = 10;
+     * const getValue = () => value;
+     * const subtractTwo = () => { value -= 2; };
+     * assert.decreasesButNotBy(subtractTwo, getValue, 5);  // Passes - decreased by 2, not 5
+     * assert.decreasesButNotBy(subtractTwo, getValue, 2);  // Fails - decreased by exactly 2
+     * ```
+     */
+    decreasesButNotBy(fn: () => void, getter: () => any, delta: number, initMsg?: MsgSource): AssertInst;
+
+    /**
+     * Asserts that executing the target function decreases the monitored object property but NOT by the specified delta.
+     * The value MUST decrease, but the decrease amount must not equal the specified delta.
+     * @param fn - The function to execute that should decrease the value.
+     * @param target - An object containing the property to monitor.
+     * @param prop - The property name to monitor.
+     * @param delta - The delta that should NOT match.
+     * @param initMsg - The message to display if the assertion fails.
+     * @returns - An assert instance for further chaining.
+     * @since 0.1.5
+     * @example
+     * ```typescript
+     * const obj = { count: 10 };
+     * const subtractTwo = () => { obj.count -= 2; };
+     * assert.decreasesButNotBy(subtractTwo, obj, 'count', 5);  // Passes - decreased by 2, not 5
+     * assert.decreasesButNotBy(subtractTwo, obj, 'count', 2);  // Fails - decreased by exactly 2
+     * ```
+     */
+    decreasesButNotBy<T>(fn: () => void, target: T, prop: keyof T, delta: number, initMsg?: MsgSource): AssertInst;
 }
 
 export type IExtendedAssert<T = any> = IAssertClass<IAssertInst & T> & T;

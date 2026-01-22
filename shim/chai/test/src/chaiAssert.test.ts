@@ -2433,182 +2433,181 @@ describe("assert", function () {
         }, "expected {key:\"value\"} to be an iterable");
     });
 
-    // it("change", function() {
-    //     var obj = { value: 10, str: "foo" },
-    //         heroes = ["spiderman", "superman"],
-    //         fn     = function() {
-    //             obj.value += 5
-    //         },
-    //         fnDec  = function() {
-    //             obj.value -= 20
-    //         },
-    //         getterFn = function() {
-    //             return obj.value
-    //         },
-    //         bangFn = function() {
-    //             obj.str += "!"
-    //         },
-    //         smFn   = function() {
-    //             "foo" + "bar"
-    //         },
-    //         batFn  = function() {
-    //             heroes.push("batman")
-    //         },
-    //         lenFn  = function() {
-    //             return heroes.length
-    //         };
+    it("change", function() {
+        var obj = { value: 10, str: "foo" },
+            heroes = ["spiderman", "superman"],
+            fn     = function() {
+                obj.value += 5;
+            },
+            fnDec  = function() {
+                obj.value -= 20;
+            },
+            getterFn = function() {
+                return obj.value;
+            },
+            bangFn = function() {
+                obj.str += "!";
+            },
+            smFn   = function() {
+                "foo" + "bar";
+            },
+            batFn  = function() {
+                heroes.push("batman");
+            },
+            lenFn  = function() {
+                return heroes.length;
+            };
 
-    //     assert.changes(fn, obj, "value");
-    //     assert.changes(fn, getterFn, "changes via getter function");
-    //     assert.changesBy(fn, obj, "value", 5);
-    //     assert.changesBy(fn, obj, "value", -5);
-    //     assert.changesBy(fn, getterFn, 5);
-    //     assert.changesBy(fnDec, obj, "value", 20);
+        assert.changes(fn, obj, "value");
+        assert.changes(fn, getterFn, "changes via getter function");
+        assert.changesBy(fn, obj, "value", 5);
+        assert.changesBy(fn, obj, "value", -5);
+        assert.changesBy(fn, getterFn, 5);
+        assert.changesBy(fnDec, obj, "value", 20);
 
-    //     assert.doesNotChange(smFn, obj, "value");
-    //     assert.doesNotChange(smFn, getterFn, "value");
-    //     assert.changesButNotBy(fnDec, obj, "value", 1);
-    //     assert.changesButNotBy(fnDec, getterFn, 1);
+        assert.doesNotChange(smFn, obj, "value");
+        assert.doesNotChange(smFn, getterFn, "value");
+        assert.changesButNotBy(fnDec, obj, "value", 1);
+        assert.changesButNotBy(fnDec, getterFn, 1);
 
-    //     assert.changes(bangFn, obj, "str");
+        assert.changes(bangFn, obj, "str");
 
-    //     assert.changesBy(batFn, lenFn, 1);
-    //     assert.changesButNotBy(batFn, lenFn, 2);
+        assert.changesBy(batFn, lenFn, 1);
+        assert.changesButNotBy(batFn, lenFn, 2);
 
-    //     err(function () {
-    //         assert.changes(smFn, obj, "value", "blah");
-    //     }, "blah: expected .value to change");
+        err(function () {
+            assert.changes(smFn, obj, "value", "blah");
+        }, /blah: expected .* to change \"value\"/);
 
-    //     err(function () {
-    //         assert.doesNotChange(fn, obj, "value", "blah");
-    //     }, "blah: expected .value to not change");
+        err(function () {
+            assert.doesNotChange(fn, obj, "value", "blah");
+        }, /blah: not expected .* to change \"value\"/);
 
-    //     err(function () {
-    //         assert.changes({} as any, obj, "value", "blah");
-    //     }, "blah: expected {} to be a function");
+        err(function () {
+            assert.changes({} as any, obj, "value", "blah");
+        }, "blah: expected {} to be a function");
 
-    //     err(function () {
-    //         assert.changes(fn, {}, "badprop", "blah");
-    //     }, "blah: expected {} to have property \"badprop\"");
+        err(function () {
+            assert.changes(fn, {}, "badprop", "blah");
+        }, "blah: expected {} to have \"badprop\" property");
 
-    //     err(function () {
-    //         assert.changesBy(fn, obj, "value", 10, "blah");
-    //     }, "blah: expected .value to change by 10");
+        err(function () {
+            assert.changesBy(fn, obj, "value", 10, "blah");
+        }, /blah: expected .* to change \"value\" by 10/);
 
-    //     err(function () {
-    //         assert.changesButNotBy(fn, obj, "value", 5, "blah");
-    //     }, "blah: expected .value to not change by 5");
-    // });
+        err(function () {
+            assert.changesButNotBy(fn, obj, "value", 5, "blah");
+        }, /blah: expected .* to change \"value\" but not by 5/);
+    });
 
-    // it("increase, decrease", function() {
-    //     var obj = { value: 10, noop: null as any },
-    //         arr = ["one", "two"],
-    //         pFn   = function() {
-    //             arr.push("three")
-    //         },
-    //         popFn = function() {
-    //             arr.pop()
-    //         },
-    //         lenFn = function() {
-    //             return arr.length
-    //         },
-    //         incFn = function() {
-    //             obj.value += 2
-    //         },
-    //         decFn = function() {
-    //             obj.value -= 3
-    //         },
-    //         getterFn = function() {
-    //             return obj.value
-    //         },
-    //         smFn  = function() {
-    //             obj.value += 0
-    //         };
+    it("increase, decrease", function() {
+        var obj = { value: 10, noop: null as any },
+            arr = ["one", "two"],
+            pFn   = function() {
+                arr.push("three");
+            },
+            popFn = function() {
+                arr.pop();
+            },
+            lenFn = function() {
+                return arr.length;
+            },
+            incFn = function() {
+                obj.value += 2;
+            },
+            decFn = function() {
+                obj.value -= 3;
+            },
+            getterFn = function() {
+                return obj.value;
+            },
+            smFn  = function() {
+                obj.value += 0;
+            };
 
-    //     assert.decreases(decFn, obj, "value");
-    //     assert.decreases(decFn, getterFn, "decreases via getter function");
-    //     assert.doesNotDecrease(smFn, obj, "value");
-    //     assert.doesNotDecrease(smFn, getterFn, "value");
-    //     assert.decreasesBy(decFn, obj, "value", 3);
-    //     assert.decreasesBy(decFn, getterFn, 3);
-    //     assert.decreasesButNotBy(decFn, obj, "value", 10);
-    //     assert.decreasesButNotBy(decFn, getterFn, 10);
+        assert.decreases(decFn, obj, "value");
+        assert.decreases(decFn, getterFn, "decreases via getter function");
+        assert.doesNotDecrease(smFn, obj, "value");
+        assert.doesNotDecrease(smFn, getterFn, "value");
+        assert.decreasesBy(decFn, obj, "value", 3);
+        assert.decreasesBy(decFn, getterFn, 3);
+        assert.decreasesButNotBy(decFn, obj, "value", 10);
+        assert.decreasesButNotBy(decFn, getterFn, 10);
 
-    //     assert.increases(incFn, obj, "value");
-    //     assert.increases(incFn, getterFn, "increases via getter function");
-    //     assert.doesNotIncrease(smFn, obj, "value");
-    //     assert.doesNotIncrease(smFn, getterFn, "value");
-    //     assert.increasesBy(incFn, obj, "value", 2);
-    //     assert.increasesBy(incFn, getterFn, 2);
-    //     assert.increasesButNotBy(incFn, obj, "value", 1);
-    //     assert.increasesButNotBy(incFn, getterFn, 1);
+        assert.increases(incFn, obj, "value");
+        assert.increases(incFn, getterFn, "increases via getter function");
+        assert.doesNotIncrease(smFn, obj, "value");
+        assert.doesNotIncrease(smFn, getterFn, "value");
+        assert.increasesBy(incFn, obj, "value", 2);
+        assert.increasesBy(incFn, getterFn, 2);
+        assert.increasesButNotBy(incFn, obj, "value", 1);
+        assert.increasesButNotBy(incFn, getterFn, 1);
 
-    //     assert.decreases(popFn, lenFn);
-    //     assert.doesNotDecrease(pFn, lenFn);
-    //     assert.decreasesBy(popFn, lenFn, 1);
-    //     assert.decreasesButNotBy(popFn, lenFn, 2);
+        assert.decreases(popFn, lenFn);
+        assert.doesNotDecrease(pFn, lenFn);
+        assert.decreasesBy(popFn, lenFn, 1);
+        assert.decreasesButNotBy(popFn, lenFn, 2);
 
-    //     assert.increases(pFn, lenFn);
-    //     assert.doesNotIncrease(popFn, lenFn);
-    //     assert.increasesBy(pFn, lenFn, 1);
-    //     assert.increasesButNotBy(pFn, lenFn, 2);
+        assert.increases(pFn, lenFn);
+        assert.doesNotIncrease(popFn, lenFn);
+        assert.increasesBy(pFn, lenFn, 1);
+        assert.increasesButNotBy(pFn, lenFn, 2);
 
-    //     err(function () {
-    //         assert.increases(smFn, obj, "value", "blah");
-    //     }, "blah: expected .value to increase");
+        err(function () {
+            assert.increases(smFn, obj, "value", "blah");
+        }, /blah: expected .* to increase \"value\"/);
 
-    //     err(function () {
-    //         assert.doesNotIncrease(incFn, obj, "value", "blah");
-    //     }, "blah: expected .value to not increase");
+        err(function () {
+            assert.doesNotIncrease(incFn, obj, "value", "blah");
+        }, /blah: not expected .* to increase \"value\"/);
 
-    //     err(function () {
-    //         assert.increases({} as any, obj, "value", "blah");
-    //     }, "blah: expected {} to be a function");
+        err(function () {
+            assert.increases({} as any, obj, "value", "blah");
+        }, "blah: expected {} to be a function");
 
-    //     err(function () {
-    //         assert.increases(incFn, {}, "badprop", "blah");
-    //     }, "blah: expected {} to have property \"badprop\"");
+        err(function () {
+            assert.increases(incFn, {}, "badprop", "blah");
+        }, "blah: expected {} to have \"badprop\" property");
 
-    //     err(function() {
-    //         assert.increases(incFn, obj, "noop", "blah");
-    //     }, "blah: expected null to be a number");
+        err(function() {
+            assert.increases(incFn, obj, "noop", "blah");
+        }, "blah: expected initial value (null) to be a number");
 
-    //     err(function () {
-    //         assert.increasesBy(incFn, obj, "value", 10, "blah");
-    //     }, "blah: expected .value to increase by 10");
+        err(function () {
+            assert.increasesBy(incFn, obj, "value", 10, "blah");
+        }, /blah: expected .* to increase \"value\" by 10/);
 
-    //     err(function () {
-    //         assert.increasesButNotBy(incFn, obj, "value", 2, "blah");
-    //     }, "blah: expected .value to not increase by 2");
+        err(function () {
+            assert.increasesButNotBy(incFn, obj, "value", 2, "blah");
+        }, /blah: expected .* to increase \"value\" but not by 2/);
+        err(function () {
+            assert.decreases(smFn, obj, "value", "blah");
+        }, /blah: expected .* to decrease \"value\"/);
 
-    //     err(function () {
-    //         assert.decreases(smFn, obj, "value", "blah");
-    //     }, "blah: expected .value to decrease");
+        err(function () {
+            assert.doesNotDecrease(decFn, obj, "value", "blah");
+        }, /blah: not expected .* to decrease \"value\"/);
 
-    //     err(function () {
-    //         assert.doesNotDecrease(decFn, obj, "value", "blah");
-    //     }, "blah: expected .value to not decrease");
+        err(function () {
+            assert.decreases({} as any, obj, "value", "blah");
+        }, "blah: expected {} to be a function");
 
-    //     err(function () {
-    //         assert.decreases({} as any, obj, "value", "blah");
-    //     }, "blah: expected {} to be a function");
+        err(function () {
+            assert.decreases(decFn, {}, "badprop", "blah");
+        }, "blah: expected {} to have \"badprop\" property");
 
-    //     err(function () {
-    //         assert.decreases(decFn, {}, "badprop", "blah");
-    //     }, "blah: expected {} to have property \"badprop\"");
+        err(function() {
+            assert.decreases(decFn, obj, "noop", "blah");
+        }, "blah: expected initial value (null) to be a number");
 
-    //     err(function() {
-    //         assert.decreases(decFn, obj, "noop", "blah");
-    //     }, "blah: expected null to be a number");
+        err(function () {
+            assert.decreasesBy(decFn, obj, "value", 10, "blah");
+        }, /blah: expected .* to decrease \"value\" by 10/);
 
-    //     err(function () {
-    //         assert.decreasesBy(decFn, obj, "value", 10, "blah");
-    //     }, "blah: expected .value to decrease by 10");
-
-    //     err(function () {
-    //         assert.decreasesButNotBy(decFn, obj, "value", 3, "blah");
-    //     }, "blah: expected .value to not decrease by 3");
-    // });
+        err(function () {
+            assert.decreasesButNotBy(decFn, obj, "value", 3, "blah");
+        }, /blah: expected .* to decrease \"value\" but not by 3/);
+    });
 
     it("isExtensible / extensible", function() {
         ["isExtensible", "extensible"].forEach(function (isExtensible) {

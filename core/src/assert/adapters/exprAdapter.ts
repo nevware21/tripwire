@@ -180,7 +180,7 @@ function _processFn(scope: IAssertScope, scopeFn: IScopeFn, theArgs: any[], theR
         // Track the operation path and set the stack start position
         if (scope.context.opts.isVerbose) {
             let theScopeName = scopeFn.name || (scopeFn as any)["displayName"] || "anonymous";
-            scope.context.setOp("[[" + theScopeName + "]]");
+            scope.context.setOp("[[p:" + theScopeName + "]]");
         }
 
         theResult = scopeFn;
@@ -190,6 +190,9 @@ function _processFn(scope: IAssertScope, scopeFn: IScopeFn, theArgs: any[], theR
     if (handleResultFunc && isFunction(theResult)) {
         // The last step is a function, so we call it
         theResult = scope.exec(theResult, theArgs);
+        if (scope.context.opts.isVerbose) {
+            scope.context.setOp("=>[[r:" + _formatValue(scope.context, theResult) + "]]");
+        }
     }
 
     return theResult;
@@ -225,18 +228,15 @@ export function createExprAdapter(theExpr: string | string[], scopeFn?: IScopeFn
     
         // Track the operation path and set the stack start position
         if (context.opts.isVerbose) {
-            let theFuncName: string;
-            if (isArray(theExpr)) {
-                theFuncName = theExpr.join(".");
+            let theFuncName = theExpr;
+            if (isArray(theFuncName)) {
+                // Convert to a string
+                theFuncName = theFuncName.join(".");
             }
 
             context.setOp("[[\"" + theFuncName + "\"]]");
         }
 
-        return doAwait(_runExpr(scope.that, scope, steps, scopeFn, theArgs), (result) => {
-            scope.that = result;
-
-            return _processFn(scope, scopeFn, theArgs, result, false);
-        });
+        return _runExpr(scope.that, scope, steps, scopeFn, theArgs);
     };
 }

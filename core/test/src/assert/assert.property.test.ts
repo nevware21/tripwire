@@ -86,16 +86,53 @@ describe("assert.hasProperty", () => {
 });
 
 describe("assert.notHasProperty", () => {
-    it("should pass when property does not exist", () => {
-        assert.notHasProperty({ a: 1 }, "b", 1);
+    it("should pass when property exists but value doesn't match", () => {
+        assert.notHasProperty({ a: 1 }, "a", 2);
+        assert.notHasProperty({ foo: "bar" }, "foo", "baz");
+    });
+
+    it("should fail when property exists without value check", () => {
+        checkError(() => {
+            assert.notHasProperty({ a: 1 }, "a");
+        }, "not expected {a:1} to have a \"a\" property");
+
+        expect(() => assert.notHasProperty({ a: 1 }, "a")).toThrow(AssertionFailure);
     });
 
     it("should fail when property value matches", () => {
-        assert.throws(() => assert.notHasProperty({ a: 1 }, "a", 1));
+        checkError(() => {
+            assert.notHasProperty({ a: 1 }, "a", 1);
+        }, "not expected \"a\" value 1 to equal 1");
+
+        expect(() => assert.notHasProperty({ a: 1 }, "a", 1)).toThrow(AssertionFailure);
+    });
+
+    it("should fail with correct error for matching string value", () => {
+        checkError(() => {
+            assert.notHasProperty({ foo: "bar" }, "foo", "bar");
+        }, "not expected \"foo\" value \"bar\" to equal \"bar\"");
+    });
+
+    it("should fail with correct error for matching boolean value", () => {
+        checkError(() => {
+            assert.notHasProperty({ active: true }, "active", true);
+        }, "not expected \"active\" value true to equal true");
     });
 
     it("should work with custom message", () => {
-        assert.throws(() => assert.notHasProperty({ a: 1 }, "a", 1, "custom"));
+        checkError(() => {
+            assert.notHasProperty({ a: 1 }, "a", 1, "custom");
+        }, "custom");
+
+        expect(() => assert.notHasProperty({ a: 1 }, "a", 1, "custom")).toThrowError(new AssertionFailure("custom"));
+    });
+
+    it("should work with expect syntax", () => {
+        expect({ a: 1 }).to.not.have.property("b");
+        expect({ a: 1 }).to.not.have.property("a", 2);
+        
+        expect(() => expect({ a: 1 }).to.not.have.property("a")).toThrow(AssertionFailure);
+        expect(() => expect({ a: 1 }).to.not.have.property("a", 1)).toThrow(AssertionFailure);
     });
 });
 
@@ -162,15 +199,51 @@ describe("assert.hasOwnProperty", () => {
 
 describe("assert.notHasOwnProperty", () => {
     it("should pass when property does not exist", () => {
-        expect(() => assert.notHasOwnProperty({ a: 1 }, "b", 1)).to.not.throw();
+        // Since notHasOwnProperty checks value equality, the property must exist
+        // to access its value. This test validates that inherited properties pass.
+        const obj = Object.create({ b: 1 });
+        expect(() => assert.notHasOwnProperty(obj, "b", 1)).to.not.throw();
+    });
+
+    it("should pass when property is inherited", () => {
+        const obj = Object.create({ a: 1 });
+        assert.notHasOwnProperty(obj, "a");
+        assert.notHasOwnProperty(obj, "a", 1);
+    });
+
+    it("should pass when own property exists but value doesn't match", () => {
+        assert.notHasOwnProperty({ a: 1 }, "a", 2);
+    });
+
+    it("should fail when own property exists without value check", () => {
+        checkError(() => {
+            assert.notHasOwnProperty({ a: 1 }, "a");
+        }, "not expected {a:1} to have its own \"a\" property");
+
+        expect(() => assert.notHasOwnProperty({ a: 1 }, "a")).toThrow(AssertionFailure);
     });
 
     it("should fail when own property value matches", () => {
-        assert.throws(() => assert.notHasOwnProperty({ a: 1 }, "a", 1));
+        checkError(() => {
+            assert.notHasOwnProperty({ a: 1 }, "a", 1);
+        }, "not expected \"a\" value 1 to equal 1");
+
+        expect(() => assert.notHasOwnProperty({ a: 1 }, "a", 1)).toThrow(AssertionFailure);
     });
 
     it("should work with custom message", () => {
-        assert.throws(() => assert.notHasOwnProperty({ a: 1 }, "a", 1, "custom"));
+        checkError(() => {
+            assert.notHasOwnProperty({ a: 1 }, "a", 1, "custom");
+        }, "custom");
+
+        expect(() => assert.notHasOwnProperty({ a: 1 }, "a", 1, "custom")).toThrowError(new AssertionFailure("custom"));
+    });
+
+    it("should work with expect syntax", () => {
+        expect({ a: 1 }).to.not.have.own.property("b");
+        
+        expect(() => expect({ a: 1 }).to.not.have.own.property("a")).toThrow(AssertionFailure);
+        expect(() => expect({ a: 1 }).to.not.have.own.property("a", 1)).toThrow(AssertionFailure);
     });
 });
 
@@ -203,16 +276,46 @@ describe("assert.hasDeepProperty", () => {
 });
 
 describe("assert.notHasDeepProperty", () => {
-    it("should pass when property does not exist", () => {
-        assert.notHasDeepProperty({ a: { b: 1 } }, "c", { b: 2 });
+    it("should pass when property exists but deep value doesn't match", () => {
+        // notHasDeepProperty requires the property to exist to compare values
+        assert.notHasDeepProperty({ a: { b: 1 } }, "a", { b: 2 });
+        assert.notHasDeepProperty({ arr: [1, 2, 3] }, "arr", [1, 2, 4]);
+    });
+
+    it("should fail when property exists and value matches", () => {
+        checkError(() => {
+            assert.notHasDeepProperty({ a: { b: 1 } }, "a", { b: 1 });
+        }, "not expected \"a\" value {b:1} to deeply equal {b:1}");
+
+        expect(() => assert.notHasDeepProperty({ a: { b: 1 } }, "a", { b: 1 })).toThrow(AssertionFailure);
     });
 
     it("should fail when deep value matches", () => {
-        assert.throws(() => assert.notHasDeepProperty({ a: { b: 1 } }, "a", { b: 1 }));
+        checkError(() => {
+            assert.notHasDeepProperty({ a: { b: 1 } }, "a", { b: 1 });
+        }, "not expected \"a\" value {b:1} to deeply equal {b:1}");
+
+        expect(() => assert.notHasDeepProperty({ a: { b: 1 } }, "a", { b: 1 })).toThrow(AssertionFailure);
+    });
+
+    it("should fail when deep array value matches", () => {
+        checkError(() => {
+            assert.notHasDeepProperty({ arr: [1, 2, 3] }, "arr", [1, 2, 3]);
+        }, "not expected \"arr\" value [1,2,3] to deeply equal [1,2,3]");
     });
 
     it("should work with custom message", () => {
-        assert.throws(() => assert.notHasDeepProperty({ a: { b: 1 } }, "a", { b: 1 }, "custom"));
+        checkError(() => {
+            assert.notHasDeepProperty({ a: { b: 1 } }, "a", { b: 1 }, "custom");
+        }, "custom");
+
+        expect(() => assert.notHasDeepProperty({ a: { b: 1 } }, "a", { b: 1 }, "custom")).toThrowError(new AssertionFailure("custom"));
+    });
+
+    it("should work with expect syntax", () => {
+        expect({ a: { b: 1 } }).to.not.deep.property("a", { b: 2 });
+        
+        expect(() => expect({ a: { b: 1 } }).to.not.deep.property("a", { b: 1 })).toThrow(AssertionFailure);
     });
 });
 
@@ -244,16 +347,46 @@ describe("assert.hasDeepOwnProperty", () => {
 });
 
 describe("assert.notHasDeepOwnProperty", () => {
-    it("should pass when property does not exist", () => {
-        assert.notHasDeepOwnProperty({ a: { b: 1 } }, "c", { b: 1 });
+    it("should pass when property exists but deep value doesn't match", () => {
+        // notHasDeepOwnProperty requires the property to exist to compare deep values
+        assert.notHasDeepOwnProperty({ a: { b: 1 } }, "a", { b: 2 });
+        assert.notHasDeepOwnProperty({ arr: [1, 2, 3] }, "arr", [3, 2, 1]);
+    });
+
+    it("should fail when own property exists and value matches", () => {
+        checkError(() => {
+            assert.notHasDeepOwnProperty({ a: { b: 1 } }, "a", { b: 1 });
+        }, "not expected \"a\" value {b:1} to deeply equal {b:1}");
+
+        expect(() => assert.notHasDeepOwnProperty({ a: { b: 1 } }, "a", { b: 1 })).toThrow(AssertionFailure);
     });
 
     it("should fail when own property deep value matches", () => {
-        assert.throws(() => assert.notHasDeepOwnProperty({ a: { b: 1 } }, "a", { b: 1 }));
+        checkError(() => {
+            assert.notHasDeepOwnProperty({ a: { b: 1 } }, "a", { b: 1 });
+        }, "not expected \"a\" value {b:1} to deeply equal {b:1}");
+
+        expect(() => assert.notHasDeepOwnProperty({ a: { b: 1 } }, "a", { b: 1 })).toThrow(AssertionFailure);
+    });
+
+    it("should fail when own property array deep value matches", () => {
+        checkError(() => {
+            assert.notHasDeepOwnProperty({ arr: [1, 2, 3] }, "arr", [1, 2, 3]);
+        }, "not expected \"arr\" value [1,2,3] to deeply equal [1,2,3]");
     });
 
     it("should work with custom message", () => {
-        assert.throws(() => assert.notHasDeepOwnProperty({ a: { b: 1 } }, "a", { b: 1 }, "custom"));
+        checkError(() => {
+            assert.notHasDeepOwnProperty({ a: { b: 1 } }, "a", { b: 1 }, "custom");
+        }, "custom");
+
+        expect(() => assert.notHasDeepOwnProperty({ a: { b: 1 } }, "a", { b: 1 }, "custom")).toThrowError(new AssertionFailure("custom"));
+    });
+
+    it("should work with expect syntax", () => {
+        expect({ a: { b: 1 } }).to.not.deep.own.property("a", { b: 2 });
+        
+        expect(() => expect({ a: { b: 1 } }).to.not.deep.own.property("a", { b: 1 })).toThrow(AssertionFailure);
     });
 });
 
