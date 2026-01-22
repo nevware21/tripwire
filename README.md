@@ -35,9 +35,43 @@ As part of the Mono-Repo it also provides some shim implementations which are de
 - **Custom error messages** - all assertions support optional custom messages
 - **Full negation support** - consistent `not` operator across all assertion types
 
-## API Documentation
+## Documentation
 
-The API documentation is generated from the source code via typedoc and is located [here](https://nevware21.github.io/tripwire/index.html)
+**Main Documentation Site**: [https://nevware21.github.io/tripwire](https://nevware21.github.io/tripwire)
+
+The documentation site includes:
+- Quick start guides and usage examples
+- Feature highlights and comparison tables
+- Migration guides (e.g., from Chai.js)
+- Detailed guides for specific features (like change/increase/decrease assertions)
+- Links to full TypeDoc API reference for each module
+
+**API Reference (TypeDoc)**:
+- [Core Module API](https://nevware21.github.io/tripwire/typedoc/core/index.html)
+- [Chai Shim API](https://nevware21.github.io/tripwire/typedoc/shim/chai/index.html)
+
+## Quick Start
+
+Install the npm package: `npm install @nevware21/tripwire --save-dev`
+
+> Recommended: Use the following definition in your `package.json` to stay compatible with future releases.
+> We do not intend to make runtime / environment breaking changes until at least v2.x
+> ```json
+> "@nevware21/tripwire": ">= 0.1.4 < 2.x"
+> ```
+
+## Usage
+
+To use the core functionalities, import the necessary modules and functions:
+
+```ts
+import { assert, expect } from '@nevware21/tripwire';
+
+assert.isObject([]); // throws
+
+expect(() => { dosomething(); }).to.not.throw();
+expect(() => { throw new Error("failed")}).to.throw();
+```
 
 # Modules
 
@@ -68,29 +102,6 @@ This Shim is not designed to be a complete 1:1 replacement for Chai, it's primar
 As part of this the returned "error messages" do not and will not match the assertion text returned by `chai`, if your unit tests include validation of the returned error messages then they will need to be updated, it is recommended to use regular expressions to validate the returned error message when required.
 
 As of the initial version not all functions are yet implemented
-
-## Quick Start
-
-Install the npm package: `npm install @nevware21/tripwire --save-dev`
-
-> Recommended: Use the following definition in your `package.json` to stay compatible with future releases.
-> We do not intend to make runtime / environment breaking changes until at least v2.x
-> ```json
-> "@nevware21/tripwire": ">= 0.1.4 < 2.x"
-> ```
-
-## Usage
-
-To use the core functionalities, import the necessary modules and functions:
-
-```ts
-import { assert, expect } from '@nevware21/tripwire';
-
-assert.isObject([]); // throws
-
-expect(() => { dosomething(); }).to.not.throw();
-expect(() => { throw new Error("failed")}).to.throw();
-```
 
 ## Browser Support
 
