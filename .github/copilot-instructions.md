@@ -98,6 +98,13 @@ grunt lint lint-fix            # Lint with auto-fix
 - Use `@nevware21/ts-utils` for cross-platform utilities
 - No non-null assertions (`!` operator) - use proper null checks
 
+### Versioning for New Features
+- **@since tags**: Check `core/package.json` version before adding new features
+- Current version in package.json is the **last published** version
+- Use the **next minor version** for @since tags on new features
+- Example: If package.json shows `0.1.4`, use `@since 0.1.5` for new features
+- This follows semver: new features increment the minor version
+
 ## Testing Patterns
 
 ### Test Structure

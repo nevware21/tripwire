@@ -208,11 +208,11 @@ function _createChaiAssert(): IChaiAssert {
         doesNotHaveAnyKeys: { scopeFn: createExprAdapter("not.has.any.keys"), nArgs: 2 },
         doesNotHaveAllKeys: { scopeFn: createExprAdapter("not.has.all.keys"), nArgs: 2 },
 
-        hasAnyDeepKeys: notImplemented,
-        hasAllDeepKeys: notImplemented,
-        containsAllDeepKeys: notImplemented,
-        doesNotHaveAnyDeepKeys: notImplemented,
-        doesNotHaveAllDeepKeys: notImplemented,
+        hasAnyDeepKeys: { scopeFn: createExprAdapter("has.any.deep.keys"), nArgs: 2 },
+        hasAllDeepKeys: { scopeFn: createExprAdapter("has.all.deep.keys"), nArgs: 2 },
+        containsAllDeepKeys: { scopeFn: createExprAdapter("contains.all.deep.keys"), nArgs: 2 },
+        doesNotHaveAnyDeepKeys: { scopeFn: createExprAdapter("not.has.any.deep.keys"), nArgs: 2 },
+        doesNotHaveAllDeepKeys: { scopeFn: createExprAdapter("not.has.all.deep.keys"), nArgs: 2 },
 
         nestedProperty: { scopeFn: createExprAdapter("has.nested.property"), nArgs: 2 },
         notNestedProperty: { scopeFn: createExprAdapter("not.has.nested.property"), nArgs: 2 },

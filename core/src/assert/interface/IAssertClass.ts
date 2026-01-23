@@ -3354,6 +3354,147 @@ export interface IAssertClass<AssertInst extends IAssertInst = IAssertInst> {
      * ```
      */
     decreasesButNotBy<T>(fn: () => void, target: T, prop: keyof T, delta: number, initMsg?: MsgSource): AssertInst;
+
+    /**
+     * Asserts that the target has any of the specified keys using deep equality comparison.
+     * This method checks if at least one of the given keys exists in the target using deep equality
+     * for key comparison. Particularly useful for Maps and Sets where keys may be objects.
+     *
+     * @param target - The object, Map, or Set to check for keys.
+     * @param keys - The keys to search for (array, Set, Map, or other iterable of keys, or a single key).
+     * @param initMsg - The message to display if the assertion fails.
+     * @asserts That the `target` has at least one of the specified keys and throws {@link AssertionFailure} if it does not.
+     * @since 0.1.5
+     * @example
+     * ```typescript
+     * const obj = { greeting: "hello", subject: "friend" };
+     * assert.hasAnyDeepKeys(obj, "greeting");  // Passes - has "greeting"
+     * assert.hasAnyDeepKeys(obj, ["greeting", "message"]);  // Passes - has "greeting"
+     *
+     * const map = new Map([[{ id: 1 }, "value1"], [{ id: 2 }, "value2"]]);
+     * assert.hasAnyDeepKeys(map, { id: 1 });  // Passes - deep key match
+     * assert.hasAnyDeepKeys(map, [{ id: 1 }, { id: 3 }]);  // Passes - has { id: 1 }
+     * assert.hasAnyDeepKeys(obj, ["unknown", "missing"]);  // Throws AssertionFailure
+     * ```
+     */
+    hasAnyDeepKeys(target: any, keys: ArrayLikeOrSizedIterable<any> | any, initMsg?: MsgSource): AssertInst;
+
+    /**
+     * Asserts that the target has all of the specified keys using deep equality comparison.
+     * This method checks if all of the given keys exist in the target using deep equality
+     * for key comparison. Particularly useful for Maps and Sets where keys may be objects.
+     *
+     * @param target - The object, Map, or Set to check for keys.
+     * @param keys - The keys to search for (array, Set, Map, or other iterable of keys, or a single key).
+     * @param initMsg - The message to display if the assertion fails.
+     * @asserts That the `target` has all of the specified keys and throws {@link AssertionFailure} if it does not.
+     * @since 0.1.5
+     * @example
+     * ```typescript
+     * const obj = { greeting: "hello", subject: "friend", message: "darkness" };
+     * assert.hasAllDeepKeys(obj, "greeting");  // Passes - has the key
+     * assert.hasAllDeepKeys(obj, ["greeting", "subject"]);  // Passes - has both keys
+     *
+     * const map = new Map([[{ id: 1 }, "value1"], [{ id: 2 }, "value2"]]);
+     * assert.hasAllDeepKeys(map, [{ id: 1 }, { id: 2 }]);  // Passes - has both keys
+     * assert.hasAllDeepKeys(obj, ["greeting", "unknown"]);  // Throws AssertionFailure - missing "unknown"
+     * ```
+     */
+    hasAllDeepKeys(target: any, keys: ArrayLikeOrSizedIterable<any> | any, initMsg?: MsgSource): AssertInst;
+
+    /**
+     * Asserts that the target does NOT have any of the specified keys using deep equality comparison.
+     * This method checks that none of the given keys exist in the target using deep equality
+     * for key comparison. This is the inverse of {@link hasAnyDeepKeys}.
+     *
+     * @param target - The object, Map, or Set to check for keys.
+     * @param keys - The keys to search for (array, Set, Map, or other iterable of keys, or a single key).
+     * @param initMsg - The message to display if the assertion fails.
+     * @asserts That the `target` does not have any of the specified keys and throws {@link AssertionFailure} if it does.
+     * @since 0.1.5
+     * @example
+     * ```typescript
+     * const obj = { greeting: "hello", subject: "friend" };
+     * assert.notHaveAnyDeepKeys(obj, "unknown");  // Passes - does not have the key
+     * assert.notHaveAnyDeepKeys(obj, ["unknown", "missing"]);  // Passes - has neither key
+     *
+     * const map = new Map([[{ id: 1 }, "value1"]]);
+     * assert.notHaveAnyDeepKeys(map, [{ id: 3 }, { id: 4 }]);  // Passes - has neither key
+     * assert.notHaveAnyDeepKeys(obj, ["greeting", "unknown"]);  // Throws AssertionFailure - has "greeting"
+     * ```
+     */
+    notHaveAnyDeepKeys(target: any, keys: ArrayLikeOrSizedIterable<any> | any, initMsg?: MsgSource): AssertInst;
+
+    /**
+     * Asserts that the target does NOT have any of the specified keys using deep equality comparison.
+     * This method checks that none of the given keys exist in the target using deep equality
+     * for key comparison. This is the inverse of {@link hasAnyDeepKeys}.
+     *
+     * @param target - The object, Map, or Set to check for keys.
+     * @param keys - The keys to search for (array, Set, Map, or other iterable of keys, or a single key).
+     * @param initMsg - The message to display if the assertion fails.
+     * @asserts That the `target` does not have any of the specified keys and throws {@link AssertionFailure} if it does.
+     * @alias notHaveAnyDeepKeys
+     * @since 0.1.5
+     * @example
+     * ```typescript
+     * const obj = { greeting: "hello", subject: "friend" };
+     * assert.doesNotHaveAnyDeepKeys(obj, "unknown");  // Passes - does not have the key
+     * assert.doesNotHaveAnyDeepKeys(obj, ["unknown", "missing"]);  // Passes - has neither key
+     *
+     * const map = new Map([[{ id: 1 }, "value1"]]);
+     * assert.doesNotHaveAnyDeepKeys(map, [{ id: 3 }, { id: 4 }]);  // Passes - has neither key
+     * assert.doesNotHaveAnyDeepKeys(obj, ["greeting", "unknown"]);  // Throws AssertionFailure - has "greeting"
+     * ```
+     */
+    doesNotHaveAnyDeepKeys(target: any, keys: ArrayLikeOrSizedIterable<any> | any, initMsg?: MsgSource): AssertInst;
+
+    /**
+     * Asserts that the target does NOT have all of the specified keys using deep equality comparison.
+     * This method checks that at least one of the given keys does not exist in the target using deep equality
+     * for key comparison. This is the inverse of {@link hasAllDeepKeys}.
+     *
+     * @param target - The object, Map, or Set to check for keys.
+     * @param keys - The keys to search for (array, Set, Map, or other iterable of keys, or a single key).
+     * @param initMsg - The message to display if the assertion fails.
+     * @asserts That the `target` does not have all of the specified keys and throws {@link AssertionFailure} if it does.
+     * @since 0.1.5
+     * @example
+     * ```typescript
+     * const obj = { greeting: "hello", subject: "friend" };
+     * assert.notHaveAllDeepKeys(obj, "unknown");  // Passes - missing "unknown"
+     * assert.notHaveAllDeepKeys(obj, ["greeting", "unknown"]);  // Passes - missing "unknown"
+     *
+     * const map = new Map([[{ id: 1 }, "value1"]]);
+     * assert.notHaveAllDeepKeys(map, [{ id: 1 }, { id: 2 }]);  // Passes - missing { id: 2 }
+     * assert.notHaveAllDeepKeys(obj, ["greeting", "subject"]);  // Throws AssertionFailure - has both keys
+     * ```
+     */
+    notHaveAllDeepKeys(target: any, keys: ArrayLikeOrSizedIterable<any> | any, initMsg?: MsgSource): AssertInst;
+
+    /**
+     * Asserts that the target does NOT have all of the specified keys using deep equality comparison.
+     * This method checks that at least one of the given keys does not exist in the target using deep equality
+     * for key comparison. This is the inverse of {@link hasAllDeepKeys}.
+     *
+     * @param target - The object, Map, or Set to check for keys.
+     * @param keys - The keys to search for (array, Set, Map, or other iterable of keys, or a single key).
+     * @param initMsg - The message to display if the assertion fails.
+     * @asserts That the `target` does not have all of the specified keys and throws {@link AssertionFailure} if it does.
+     * @alias notHaveAllDeepKeys
+     * @since 0.1.5
+     * @example
+     * ```typescript
+     * const obj = { greeting: "hello", subject: "friend" };
+     * assert.doesNotHaveAllDeepKeys(obj, "unknown");  // Passes - missing "unknown"
+     * assert.doesNotHaveAllDeepKeys(obj, ["greeting", "unknown"]);  // Passes - missing "unknown"
+     *
+     * const map = new Map([[{ id: 1 }, "value1"]]);
+     * assert.doesNotHaveAllDeepKeys(map, [{ id: 1 }, { id: 2 }]);  // Passes - missing { id: 2 }
+     * assert.doesNotHaveAllDeepKeys(obj, ["greeting", "subject"]);  // Throws AssertionFailure - has both keys
+     * ```
+     */
+    doesNotHaveAllDeepKeys(target: any, keys: ArrayLikeOrSizedIterable<any> | any, initMsg?: MsgSource): AssertInst;
 }
 
 export type IExtendedAssert<T = any> = IAssertClass<IAssertInst & T> & T;

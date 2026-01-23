@@ -2,7 +2,7 @@
  * @nevware21/tripwire
  * https://github.com/nevware21/tripwire
  *
- * Copyright (c) 2024-2025 NevWare21 Solutions LLC
+ * Copyright (c) 2024-2026 NevWare21 Solutions LLC
  * Licensed under the MIT license.
  */
 
@@ -14,4 +14,14 @@ import { IKeysOp } from "./IKeysOp";
  * @template R - The type of the result of the operation.
  */
 export interface IAllOp<R> extends ValuesFn<R>, IKeysOp<R> {
+    /**
+     * Provides deep equality operations for keys.
+     * @example
+     * ```typescript
+     * const map = new Map();
+     * map.set({ a: 1 }, "value");
+     * expect(map).to.have.all.deep.keys({ a: 1 });
+     * ```
+     */
+    deep: IKeysOp<R>;
 }
