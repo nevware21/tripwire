@@ -63,6 +63,7 @@ expect({ a: 1 }).to.deep.equal({ a: 1 });
 - **Comparisons** - `above`, `below`, `within`, `atLeast`, `atMost`
 - **Properties** - `property`, `ownProperty`, `deepProperty`, `nestedProperty` with value validation
 - **Collections** - `include`, `keys`, `members` with deep equality and ordered comparison
+- **Deep Keys** - `hasAnyDeepKeys`, `hasAllDeepKeys` for Maps/Sets with object keys using deep equality
 - **Size/Length** - `lengthOf`, `sizeOf` for arrays, strings, maps, sets
 - **Array Operations** - `subsequence`, `endsWith`, `oneOf` matching
 - **Change Tracking** - Monitor value `changes`, `increases`, `decreases` with delta validation
