@@ -1097,12 +1097,12 @@ describe("assert", function () {
         assert.hasAllKeys(obj, [sym1, sym2, str]);
         assert.doesNotHaveAllKeys(obj, [sym1, sym2, sym3, str]);
 
-        // var aKey = {thisIs: "anExampleObject"}
-        //     , anotherKey = {doingThisBecauseOf: "referential equality"}
-        //     , testMap = new Map();
+        var aKey = {thisIs: "anExampleObject"}
+            , anotherKey = {doingThisBecauseOf: "referential equality"}
+            , testMap = new Map();
 
-        // testMap.set(aKey, "aValue");
-        // testMap.set(anotherKey, "anotherValue");
+        testMap.set(aKey, "aValue");
+        testMap.set(anotherKey, "anotherValue");
 
         // assert.hasAnyKeys(testMap, [ aKey ]);
         // assert.hasAnyKeys(testMap, [ "thisDoesNotExist", "thisToo", aKey ]);
@@ -1135,21 +1135,22 @@ describe("assert", function () {
         //     assert.containsAllKeys(testMap, [ {thisIs: "anExampleObject"} ]);
         // });
 
-        // // Tests for the deep variations of the keys assertion
-        // assert.hasAnyDeepKeys(testMap, {thisIs: "anExampleObject"});
-        // assert.hasAnyDeepKeys(testMap, [{thisIs: "anExampleObject"}, {three: "three"}]);
-        // assert.hasAnyDeepKeys(testMap, [{thisIs: "anExampleObject"}, {doingThisBecauseOf: "referential equality"}]);
+        // Tests for the deep variations of the keys assertion
+        assert.hasAnyDeepKeys(testMap, {thisIs: "anExampleObject"});
+        assert.hasAnyDeepKeys(testMap, [{thisIs: "anExampleObject"}, {three: "three"}]);
+        assert.hasAnyDeepKeys(testMap, [{thisIs: "anExampleObject"}, {doingThisBecauseOf: "referential equality"}]);
 
-        // assert.hasAllDeepKeys(testMap, [{thisIs: "anExampleObject"}, {doingThisBecauseOf: "referential equality"}]);
+        assert.hasAllDeepKeys(testMap, [{thisIs: "anExampleObject"}, {doingThisBecauseOf: "referential equality"}]);
 
-        // assert.containsAllDeepKeys(testMap, {thisIs: "anExampleObject"});
-        // assert.containsAllDeepKeys(testMap, [{thisIs: "anExampleObject"}, {doingThisBecauseOf: "referential equality"}]);
+        assert.containsAllDeepKeys(testMap, {thisIs: "anExampleObject"});
+        assert.containsAllDeepKeys(testMap, [{thisIs: "anExampleObject"}, {doingThisBecauseOf: "referential equality"}]);
 
-        // assert.doesNotHaveAnyDeepKeys(testMap, {thisDoesNot: "exist"});
-        // assert.doesNotHaveAnyDeepKeys(testMap, [{twenty: "twenty"}, {fifty: "fifty"}]);
+        assert.doesNotHaveAnyDeepKeys(testMap, {thisDoesNot: "exist"});
+        assert.doesNotHaveAnyDeepKeys(testMap, [{twenty: "twenty"}, {fifty: "fifty"}]);
 
-        // assert.doesNotHaveAllDeepKeys(testMap, {thisDoesNot: "exist"});
-        // assert.doesNotHaveAllDeepKeys(testMap, [{twenty: "twenty"}, {thisIs: "anExampleObject"}]);
+        assert.doesNotHaveAllDeepKeys(testMap, {thisDoesNot: "exist"});
+        assert.doesNotHaveAllDeepKeys(testMap, [{twenty: "twenty"}, {thisIs: "anExampleObject"}]);
+
 
         // var weirdMapKey1 = Object.create(null)
         //     , weirdMapKey2 = {toString: NaN}
@@ -1211,12 +1212,12 @@ describe("assert", function () {
         //   assert.containsAllDeepKeys(new Map([[{foo: 1}, \"bar\"]]), { iDoNotExist: 0 })
         // }, 'expected [ { foo: 1 } ] to deeply contain key { iDoNotExist: 0 }');
 
-        // var aKey = {thisIs: "anExampleObject"}
-        //     , anotherKey = {doingThisBecauseOf: "referential equality"}
-        //     , testSet = new Set();
+        var aKey = {thisIs: "anExampleObject"}
+            , anotherKey = {doingThisBecauseOf: "referential equality"}
+            , testSet = new Set();
 
-        // testSet.add(aKey);
-        // testSet.add(anotherKey);
+        testSet.add(aKey);
+        testSet.add(anotherKey);
 
         // assert.hasAnyKeys(testSet, [ aKey ]);
         // assert.hasAnyKeys(testSet, [ 20, 1, aKey ]);
@@ -1249,21 +1250,23 @@ describe("assert", function () {
         //     assert.containsAllKeys(testSet, [ {thisIs: "anExampleObject"} ]);
         // });
 
-        // // Tests for the deep variations of the keys assertion
-        // assert.hasAnyDeepKeys(testSet, {thisIs: "anExampleObject"});
-        // assert.hasAnyDeepKeys(testSet, [{thisIs: "anExampleObject"}, {three: "three"}]);
-        // assert.hasAnyDeepKeys(testSet, [{thisIs: "anExampleObject"}, {doingThisBecauseOf: "referential equality"}]);
+        // Tests for the deep variations of the keys assertion
+        assert.hasAnyDeepKeys(testSet, {thisIs: "anExampleObject"});
+        assert.hasAnyDeepKeys(testSet, [{thisIs: "anExampleObject"}, {three: "three"}]);
+        assert.hasAnyDeepKeys(testSet, [{thisIs: "anExampleObject"}, {doingThisBecauseOf: "referential equality"}]);
 
-        // assert.hasAllDeepKeys(testSet, [{thisIs: "anExampleObject"}, {doingThisBecauseOf: "referential equality"}]);
+        assert.hasAllDeepKeys(testSet, [{thisIs: "anExampleObject"}, {doingThisBecauseOf: "referential equality"}]);
 
-        // assert.containsAllDeepKeys(testSet, {thisIs: "anExampleObject"});
-        // assert.containsAllDeepKeys(testSet, [{thisIs: "anExampleObject"}, {doingThisBecauseOf: "referential equality"}]);
+        assert.containsAllDeepKeys(testSet, {thisIs: "anExampleObject"});
+        assert.containsAllDeepKeys(testSet, [{thisIs: "anExampleObject"}, {doingThisBecauseOf: "referential equality"}]);
 
-        // assert.doesNotHaveAnyDeepKeys(testSet, {twenty: "twenty"});
-        // assert.doesNotHaveAnyDeepKeys(testSet, [{twenty: "twenty"}, {fifty: "fifty"}]);
+        assert.doesNotHaveAnyDeepKeys(testSet, {twenty: "twenty"});
+        assert.doesNotHaveAnyDeepKeys(testSet, [{twenty: "twenty"}, {fifty: "fifty"}]);
 
-        // assert.doesNotHaveAllDeepKeys(testSet, {twenty: "twenty"});
-        // assert.doesNotHaveAllDeepKeys(testSet, [{thisIs: "anExampleObject"}, {fifty: "fifty"}]);
+        assert.doesNotHaveAllDeepKeys(testSet, {twenty: "twenty"});
+
+        assert.doesNotHaveAllDeepKeys(testSet, [{thisIs: "anExampleObject"}, {fifty: "fifty"}]);
+
 
         // var weirdSetKey1 = Object.create(null)
         //     , weirdSetKey2 = {toString: NaN}

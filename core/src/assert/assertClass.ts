@@ -339,7 +339,15 @@ export function createAssert(): IAssertClass {
         subsequence: { scopeFn: subsequenceFunc, nArgs: 2 },
         notSubsequence: { scopeFn: createExprAdapter("not", subsequenceFunc), nArgs: 2 },
         deepSubsequence: { scopeFn: deepSubsequenceFunc, nArgs: 2 },
-        notDeepSubsequence: { scopeFn: createExprAdapter("not", deepSubsequenceFunc), nArgs: 2 }
+        notDeepSubsequence: { scopeFn: createExprAdapter("not", deepSubsequenceFunc), nArgs: 2 },
+
+        // Deep keys operations
+        hasAnyDeepKeys: { scopeFn: createExprAdapter("has.any.deep.keys"), nArgs: 2 },
+        hasAllDeepKeys: { scopeFn: createExprAdapter("has.all.deep.keys"), nArgs: 2 },
+        notHaveAnyDeepKeys: { scopeFn: createExprAdapter("not.has.any.deep.keys"), nArgs: 2 },
+        doesNotHaveAnyDeepKeys: { alias: "notHaveAnyDeepKeys" },
+        notHaveAllDeepKeys: { scopeFn: createExprAdapter("not.has.all.deep.keys"), nArgs: 2 },
+        doesNotHaveAllDeepKeys: { alias: "notHaveAllDeepKeys" }
     };
 
     addAssertFuncs(assert, assertFuncs);

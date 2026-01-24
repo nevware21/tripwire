@@ -2,7 +2,7 @@
  * @nevware21/tripwire
  * https://github.com/nevware21/tripwire
  *
- * Copyright (c) 2024 NevWare21 Solutions LLC
+ * Copyright (c) 2024-2026 NevWare21 Solutions LLC
  * Licensed under the MIT license.
  */
 
@@ -13,6 +13,7 @@ import { IEqualOp } from "./IEqualOp";
 import { IIncludeOp } from "./IIncludeOp";
 import { INotOp } from "./INotOp";
 import { INestedOp } from "./INestedOp";
+import { IKeysOp } from "./IKeysOp";
 
 
 /**
@@ -70,4 +71,9 @@ export interface IDeepOp<R> extends INotOp<IDeepOp<R>>, IEqualOp<R> {
      * Provides nested property operations using dot notation with deep equality.
      */
     nested: INestedOp<R>;
+
+    /**
+     * Provides operations to assert that the value has specific keys using deep equality.
+     */
+    keys: IKeysOp<R>;
 }

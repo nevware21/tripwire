@@ -2,7 +2,7 @@
  * @nevware21/tripwire
  * https://github.com/nevware21/tripwire
  *
- * Copyright (c) 2024 NevWare21 Solutions LLC
+ * Copyright (c) 2024-2026 NevWare21 Solutions LLC
  * Licensed under the MIT license.
  */
 
@@ -17,6 +17,7 @@ import { hasDeepPropertyFunc, hasPropertyDescriptorFunc } from "../funcs/hasProp
 import { AssertScopeFuncDefs } from "../interface/IAssertInst";
 import { IAssertScope } from "../interface/IAssertScope";
 import { deepNestedOp } from "./nestedOp";
+import { deepKeysOp } from "./keysOp";
 
 export function deepOp<R>(scope: IAssertScope): IDeepOp<R> {
     scope.context.set(DEEP, true);
@@ -34,7 +35,8 @@ export function deepOp<R>(scope: IAssertScope): IDeepOp<R> {
         property: { scopeFn: hasDeepPropertyFunc },
         propertyDescriptor: { scopeFn: hasPropertyDescriptorFunc },
         own: { propFn: ownDeepOp },
-        nested: { propFn: deepNestedOp }
+        nested: { propFn: deepNestedOp },
+        keys: { propFn: deepKeysOp }
     };
 
     return scope.createOperation(props);
