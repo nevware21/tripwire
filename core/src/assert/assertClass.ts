@@ -46,6 +46,7 @@ import {
 } from "./funcs/members";
 import { changesFunc, increasesFunc, decreasesFunc } from "./funcs/changes";
 import { changesByFunc, increasesByFunc, decreasesByFunc, changesButNotByFunc, increasesButNotByFunc, decreasesButNotByFunc } from "./funcs/changesBy";
+import { ifErrorFunc } from "./funcs/ifError";
 
 /**
  * @internal
@@ -236,6 +237,8 @@ export function createAssert(): IAssertClass {
 
         exists: createExprAdapter("to.exist"),
         notExists: createExprAdapter("not.to.exist"),
+
+        ifError: { scopeFn: ifErrorFunc, nArgs: 1 },
 
         isInstanceOf: { scopeFn: instanceOfFunc, nArgs: 2 },
         isNotInstanceOf: { scopeFn: createExprAdapter("not", instanceOfFunc), nArgs: 2 },

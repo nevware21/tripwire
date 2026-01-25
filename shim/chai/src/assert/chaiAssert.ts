@@ -180,7 +180,7 @@ function _createChaiAssert(): IChaiAssert {
         doesNotDecreaseBy: { scopeFn: createExprAdapter("not.decreaseBy"), nArgs: 4 },
         decreasesButNotBy: { scopeFn: createExprAdapter("decreasesButNotBy"), nArgs: 4 },
 
-        ifError: notImplemented,
+        ifError: { scopeFn: createExprAdapter("to.ifError"), nArgs: 1 },
         isExtensible: "is.extensible",
         extensible: "is.extensible",
         isNotExtensible: "is.not.extensible",

@@ -1864,16 +1864,16 @@ describe("assert", function () {
         }, "blah: expected {} to be a function");
     });
 
-    // it("ifError", function() {
-    //     assert.ifError(false);
-    //     assert.ifError(null);
-    //     assert.ifError(undefined);
+    it("ifError", function() {
+        assert.ifError(false);
+        assert.ifError(null);
+        assert.ifError(undefined);
 
-    //     err(function () {
-    //         var err = new Error("This is an error message");
-    //         assert.ifError(err);
-    //     }, "This is an error message");
-    // });
+        err(function () {
+            var err = new Error("This is an error message");
+            assert.ifError(err);
+        }, "This is an error message");
+    });
 
     it("operator", function() {
     // For testing undefined and null with == and ===

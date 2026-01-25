@@ -18,6 +18,7 @@ import { includeOp } from "./includeOp";
 import { strictlyOp } from "./strictlyOp";
 import { deepOp } from "./deepOp";
 import { existsFunc } from "../funcs/exists";
+import { ifErrorFunc } from "../funcs/ifError";
 import { changesFunc, increasesFunc, decreasesFunc } from "../funcs/changes";
 import { changesByFunc, increasesByFunc, decreasesByFunc, changesButNotByFunc, increasesButNotByFunc, decreasesButNotByFunc } from "../funcs/changesBy";
 
@@ -36,6 +37,7 @@ export function toOp<R>(scope: IAssertScope): IToOp<R> {
         match: { scopeFn: matchFunc },
         throw: { scopeFn: throwsFunc },
         exist: { scopeFn: existsFunc },
+        ifError: { scopeFn: ifErrorFunc },
         change: { scopeFn: changesFunc },
         changes: { scopeFn: changesFunc },
         changeBy: { scopeFn: changesByFunc },

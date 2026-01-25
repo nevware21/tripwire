@@ -60,14 +60,14 @@ expect({ a: 1 }).to.deep.equal({ a: 1 });
 
 - **Type Checking** - `isObject`, `isArray`, `isString`, `isNumber`, `isBoolean`, `isFunction`, `isNull`, `isUndefined`, `isNaN`, `isFinite`, `typeOf`, `instanceOf`, `exists`
 - **Equality** - `equal`, `strictEqual`, `deepEqual`, `closeTo` (approximate equality)
-- **Comparisons** - `above`, `below`, `within`, `atLeast`, `atMost`
+- **Comparisons** - `above`, `below`, `within`, `atLeast`, `atMost`, `operator` (generic comparison)
 - **Properties** - `property`, `ownProperty`, `deepProperty`, `nestedProperty` with value validation
 - **Collections** - `include`, `keys`, `members` with deep equality and ordered comparison
 - **Deep Keys** - `hasAnyDeepKeys`, `hasAllDeepKeys` for Maps/Sets with object keys using deep equality
 - **Size/Length** - `lengthOf`, `sizeOf` for arrays, strings, maps, sets
 - **Array Operations** - `subsequence`, `endsWith`, `oneOf` matching
 - **Change Tracking** - Monitor value `changes`, `increases`, `decreases` with delta validation
-- **Error Testing** - `throw`, `throws`, `doesNotThrow` with type and message validation
+- **Error Testing** - `throw`, `throws`, `doesNotThrow`, `ifError` with type and message validation
 - **Object State** - `isExtensible`, `isSealed`, `isFrozen`, `isEmpty`
 
 ## Documentation
