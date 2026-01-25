@@ -1243,6 +1243,37 @@ export interface IAssertClass<AssertInst extends IAssertInst = IAssertInst> {
     notExists(value: any, initMsg?: MsgSource): AssertInst;
 
     /**
+     * Asserts that the target is falsy or throws the error if it is an Error instance.
+     * This is commonly used in Node.js-style callback error handling to check for errors.
+     *
+     * - If the value is falsy (null, undefined, false, 0, "", etc.), the assertion passes
+     * - If the value is an Error instance, that error is thrown
+     * - If the value is truthy but not an Error, an {@link AssertionFailure} is thrown
+     *
+     * @since 0.1.5
+     * @param value - The value to check.
+     * @param initMsg - The message to display if the assertion fails.
+     * @asserts That the `value` is falsy or throws the Error if it is an Error instance.
+     * @example
+     * ```typescript
+     * assert.ifError(null);          // Passes - null is falsy
+     * assert.ifError(undefined);     // Passes - undefined is falsy
+     * assert.ifError(false);         // Passes - false is falsy
+     * assert.ifError(0);             // Passes - 0 is falsy
+     * assert.ifError("");            // Passes - empty string is falsy
+     *
+     * // Throws the error itself
+     * assert.ifError(new Error("Something went wrong"));
+     *
+     * // Throws AssertionFailure
+     * assert.ifError(true);          // Truthy but not an Error
+     * assert.ifError("error");       // Truthy but not an Error
+     * assert.ifError(1);             // Truthy but not an Error
+     * ```
+     */
+    ifError(value: any, initMsg?: MsgSource): AssertInst;
+
+    /**
      * Asserts that the given value's type matches the expected type string.
      * Uses the JavaScript `typeof` operator for type comparison.
      *

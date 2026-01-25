@@ -56,16 +56,16 @@ export function allKeyFilterOp<R>(scope: IAssertScope): IKeysOp<R> {
  * @param scope - The assert scope.
  * @returns The deep key filter operation that supports deep key matching.
  * @template R - The type of the key filter operation result.
- * 
+ *
  * @remarks
  * This operation creates a chainable `.keys()` method that accepts:
  * - Single keys
  * - Arrays of keys
  * - Sets, Maps, or other iterables containing keys
- * 
+ *
  * Deep equality is performed using {@link anyDeepKeysFunc} which recursively compares
  * object properties and handles special types.
- * 
+ *
  * @example
  * ```typescript
  * const map = new Map();
@@ -89,16 +89,16 @@ export function anyDeepKeyFilterOp<R>(scope: IAssertScope): IKeysOp<R> {
  * @template R - The type of the keys operation result.
  * @param scope - The assert scope.
  * @returns The deep keys operation that supports deep key matching.
- * 
+ *
  * @remarks
  * This operation creates a chainable `.keys()` method that accepts:
  * - Single keys
  * - Arrays of keys
  * - Sets, Maps, or other iterables containing keys
- * 
+ *
  * Deep equality is performed using {@link allDeepKeysFunc} which recursively compares
  * object properties and handles special types. All provided keys must exist for assertion to pass.
- * 
+ *
  * @example
  * ```typescript
  * const map = new Map();
@@ -124,22 +124,22 @@ export function allDeepKeyFilterOp<R>(scope: IAssertScope): IKeysOp<R> {
  *
  * @param scope - The assert scope.
  * @returns A IKeysOp operation configured for either any or all matching based on context.
- * 
+ *
  * @remarks
  * The operation checks the assertion context to determine behavior:
  * - If `ANY` context flag is set → uses {@link anyDeepKeyFilterOp} (at least one key must match)
  * - Otherwise → uses {@link allDeepKeyFilterOp} (all keys must match)
- * 
+ *
  * This allows natural assertion syntax like:
  * - `expect(map).to.have.deep.keys([...])` → defaults to "all"
  * - `expect(map).to.have.any.deep.keys([...])` → uses "any"
- * 
+ *
  * @example
  * ```typescript
  * // Without explicit any/all - defaults to "all"
  * const map = new Map([[{ id: 1 }, 'val1'], [{ id: 2 }, 'val2']]);
  * expect(map).to.have.deep.keys([{ id: 1 }, { id: 2 }]);  // Uses allDeepKeyFilterOp
- * 
+ *
  * // With explicit any - uses anyDeepKeyFilterOp
  * expect(map).to.have.any.deep.keys([{ id: 1 }, { id: 99 }]);  // Passes
  * ```

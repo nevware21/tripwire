@@ -42,6 +42,26 @@ export interface IToOp<R> extends INotOp<IToOp<R>> {
     exist: AssertFn<R>;
 
     /**
+     * Asserts that the target is falsy or throws the error if it is an Error instance.
+     * This is commonly used in Node.js-style callback error handling.
+     *
+     * - If the value is falsy (null, undefined, false, 0, "", etc.), the assertion passes
+     * - If the value is an Error instance, that error is thrown
+     * - If the value is truthy but not an Error, an {@link AssertionFailure} is thrown
+     *
+     * @since 0.1.5
+     * @example
+     * ```typescript
+     * expect(null).to.ifError();          // Passes - null is falsy
+     * expect(undefined).to.ifError();     // Passes - undefined is falsy
+     * expect(false).to.ifError();         // Passes - false is falsy
+     * expect(new Error("fail")).to.ifError(); // Throws the Error itself
+     * expect(true).to.ifError();          // Throws AssertionFailure
+     * ```
+     */
+    ifError: AssertFn<R>;
+
+    /**
      * Provides access to operations that can be performed on the assertion scope,
      * based on the {@link IHasOp} interface.
      * @returns The operations that can be performed on the assertion scope.
