@@ -16,15 +16,6 @@ export const chaiAssert: IChaiAssert = _createChaiAssert();
 /**
  * @internal
  * @ignore
- * Internal function which throws an error indicating that a function is not yet implemented.
- */
-function notImplemented(this: IAssertScope): void {
-    this.fatal("Not implemented");
-}
-
-/**
- * @internal
- * @ignore
  * Internal type which ensures that we don't forget to add a defined function to the
  * `Assert` "class" (function).
  */
@@ -111,10 +102,10 @@ function _createChaiAssert(): IChaiAssert {
         notNestedInclude: { scopeFn: createExprAdapter("not.has.nested.include"), nArgs: 2 },
         deepNestedInclude: { scopeFn: createExprAdapter("deep.nested.include"), nArgs: 2 },
         notDeepNestedInclude: { scopeFn: createExprAdapter("not.deep.nested.include"), nArgs: 2 },
-        ownInclude: notImplemented, //{ scopeFn: createExprAdapter("own.include"), nArgs: 2 },
-        notOwnInclude: notImplemented, //{ scopeFn: createExprAdapter("not.own.include"), nArgs: 2 },
-        deepOwnInclude: notImplemented, //{ scopeFn: createExprAdapter("deep.own.include"), nArgs: 2 },
-        notDeepOwnInclude: notImplemented, //{ scopeFn: createExprAdapter("not.deep.own.include"), nArgs: 2 },
+        ownInclude: { scopeFn: createExprAdapter("own.include"), nArgs: 2 },
+        notOwnInclude: { scopeFn: createExprAdapter("not.own.include"), nArgs: 2 },
+        deepOwnInclude: { scopeFn: createExprAdapter("deep.own.include"), nArgs: 2 },
+        notDeepOwnInclude: { scopeFn: createExprAdapter("not.deep.own.include"), nArgs: 2 },
         match: { scopeFn: createExprAdapter("match"), nArgs: 2 },
         notMatch: { scopeFn: createExprAdapter("not.match"), nArgs: 2 },
         property: { scopeFn: createExprAdapter("has.property"), nArgs: 2 },

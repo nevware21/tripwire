@@ -2,7 +2,7 @@
  * @nevware21/tripwire
  * https://github.com/nevware21/tripwire
  *
- * Copyright (c) 2025 NevWare21 Solutions LLC
+ * Copyright (c) 2025-2026 NevWare21 Solutions LLC
  * Licensed under the MIT license.
  */
 
@@ -258,6 +258,7 @@ export interface IFormatterOptions {
     finalizeFn?: (value: string) => string;
 
     /**
+     * @deprecated This property is deprecated and will be replaced and removed in future releases.
      * Custom value formatter functions to be used for formatting values in error messages.
      * These formatters will be checked before the default formatters. Each formatter should
      * implement `value` which returns an {@link IFormattedValue} object indicating whether

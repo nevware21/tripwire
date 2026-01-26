@@ -2,7 +2,7 @@
  * @nevware21/tripwire
  * https://github.com/nevware21/tripwire
  *
- * Copyright (c) 2024-2025 NevWare21 Solutions LLC
+ * Copyright (c) 2024-2026 NevWare21 Solutions LLC
  * Licensed under the MIT license.
  */
 
@@ -281,7 +281,7 @@ function _isVisiting<T>(value: any, options: IEqualOptions, cb: () => T): T {
             if (visitCount > 10) {
                 let errorMsg = "Unresolvable Circular reference detected for " + _formatValue(options.context, options.visiting[0]) + " @ depth " + options.visiting.length + " reference count: " + visitCount;
                 if (options.context) {
-                    options.context.fail(errorMsg);
+                    options.context.fatal(errorMsg);
                 } else {
                     throw new Error(errorMsg);
                 }

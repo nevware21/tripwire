@@ -244,8 +244,10 @@ export function createAssert(): IAssertClass {
         isNotInstanceOf: { scopeFn: createExprAdapter("not", instanceOfFunc), nArgs: 2 },
             
         throws: { scopeFn: throwsFunc, nArgs: 3 },
+        doesNotThrow: { scopeFn: createExprAdapter("not", throwsFunc), nArgs: 3 },
 
         match: { scopeFn: matchFunc, nArgs: 2 },
+        notMatch: { scopeFn: createExprAdapter("not", matchFunc), nArgs: 2 },
 
         hasProperty: { scopeFn: hasPropertyFunc, nArgs: 3 },
         hasOwnProperty: { scopeFn: hasOwnPropertyFunc, nArgs: 3 },
@@ -265,6 +267,12 @@ export function createAssert(): IAssertClass {
         notNestedInclude: { scopeFn: createExprAdapter("not", nestedIncludeFunc), nArgs: 2 },
         deepNestedInclude: { scopeFn: deepNestedIncludeFunc, nArgs: 2 },
         notDeepNestedInclude: { scopeFn: createExprAdapter("not", deepNestedIncludeFunc), nArgs: 2 },
+
+        // Own include operations (checks only own properties, not inherited)
+        ownInclude: { scopeFn: createExprAdapter("own.include"), nArgs: 2 },
+        notOwnInclude: { scopeFn: createExprAdapter("not.own.include"), nArgs: 2 },
+        deepOwnInclude: { scopeFn: createExprAdapter("deep.own.include"), nArgs: 2 },
+        notDeepOwnInclude: { scopeFn: createExprAdapter("not.deep.own.include"), nArgs: 2 },
 
         // Numeric comparison operations
         isAbove: { scopeFn: aboveFunc, nArgs: 2 },
@@ -344,6 +352,12 @@ export function createAssert(): IAssertClass {
         deepSubsequence: { scopeFn: deepSubsequenceFunc, nArgs: 2 },
         notDeepSubsequence: { scopeFn: createExprAdapter("not", deepSubsequenceFunc), nArgs: 2 },
 
+        // Keys operations (non-deep, uses strict equality)
+        hasAnyKeys: { scopeFn: createExprAdapter("has.any.keys"), nArgs: 2 },
+        hasAllKeys: { scopeFn: createExprAdapter("has.all.keys"), nArgs: 2 },
+        doesNotHaveAnyKeys: { scopeFn: createExprAdapter("not.has.any.keys"), nArgs: 2 },
+        doesNotHaveAllKeys: { scopeFn: createExprAdapter("not.has.all.keys"), nArgs: 2 },
+
         // Deep keys operations
         hasAnyDeepKeys: { scopeFn: createExprAdapter("has.any.deep.keys"), nArgs: 2 },
         hasAllDeepKeys: { scopeFn: createExprAdapter("has.all.deep.keys"), nArgs: 2 },
@@ -419,7 +433,7 @@ export function addAssertFuncs(target: any, funcs: { [key: string]: AssertClassD
                     scopeFn: createExprAdapter(def)
                 };
             } else {
-                throw new AssertionError(`Invalid definition for ${name}: ${def}`, null, addAssertFuncs);
+                throw new AssertionError("Invalid definition for " + name + ": " + def, null, addAssertFuncs);
             }
         } else if (isString(def)) {
             theDef = {
@@ -430,7 +444,7 @@ export function addAssertFuncs(target: any, funcs: { [key: string]: AssertClassD
                 scopeFn: def
             };
         } else if (!def) {
-            throw new AssertionError(`Invalid definition for ${name}: ${def}`, null, addAssertFuncs);
+            throw new AssertionError("Invalid definition for " + name + ": " + def, null, addAssertFuncs);
         } else {
             theDef = def;
         }
@@ -494,7 +508,7 @@ function _createProxyFunc(theAssert: IAssertClass, assertName: string, def: IAss
     let numArgs: number = isNullOrUndefined(def.nArgs) ? 1 : def.nArgs;
 
     if (!isFunction(scopeFn)) {
-        throw new AssertionError(`Invalid definition for ${assertName}: ${dumpObj(def)}`, null, internalErrorStackStart);
+        throw new AssertionError("Invalid definition for " + assertName + ": " + dumpObj(def), null, internalErrorStackStart);
     }
 
     return function _assertFunc(): any {

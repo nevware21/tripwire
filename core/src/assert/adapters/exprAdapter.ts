@@ -2,7 +2,7 @@
  * @nevware21/tripwire
  * https://github.com/nevware21/tripwire
  *
- * Copyright (c) 2024-2025 NevWare21 Solutions LLC
+ * Copyright (c) 2024-2026 NevWare21 Solutions LLC
  * Licensed under the MIT license.
  */
 
@@ -34,7 +34,7 @@ function _throwInvalidExpr(isValid: boolean, expr: string | string[], internalEr
             expr = expr.join(".");
         }
         
-        throw new AssertionError(`Invalid expression: ${expr}`, null, internalErrorStackStart);
+        throw new AssertionError("Invalid expression: " + expr, null, internalErrorStackStart);
     }
 }
 
@@ -136,7 +136,7 @@ function _runExpr(theAssert: any, scope: IAssertScope, steps: IStepDef[], scopeF
 
         if (!(step.name in scope.that)) {
             throw new AssertionError(
-                `${idx} Invalid step: ${step.name} for [${steps.map(s => s.name).join("->")}] available steps: [${objKeys(scope.that).join(";")}] - ${_formatValue(scope.context, scope.that)}`,
+                "" + idx + " Invalid step: " + step.name + " for [" + steps.map((s: any) => s.name).join("->") + "] available steps: [" + objKeys(scope.that).join(";") + "] - " + _formatValue(scope.context, scope.that),
                 {
                     expected: step.name,
                     actual: objKeys(scope.that).join(";")

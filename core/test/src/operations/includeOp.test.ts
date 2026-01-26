@@ -2,7 +2,7 @@
  * @nevware21/tripwire
  * https://github.com/nevware21/tripwire
  *
- * Copyright (c) 2024 NevWare21 Solutions LLC
+ * Copyright (c) 2024-2026 NevWare21 Solutions LLC
  * Licensed under the MIT license.
  */
 
@@ -20,7 +20,7 @@ describe("includeOp", () => {
 
         checkError(() => {
             op.call(scope, "hello");
-        }, "expected null to have a \"hello\" property");
+        }, "argument null (\"null\") is not a supported collection type for the operation.");
 
         expect(() => op.call(scope, "hello")).to.throw();
     });
@@ -32,7 +32,7 @@ describe("includeOp", () => {
 
         checkError(() => {
             op.call(scope, "hello");
-        }, "expected undefined to have a \"hello\" property");
+        }, "argument undefined (\"undefined\") is not a supported collection type for the operation.");
 
         expect(() => op.call(scope, "hello")).to.throw();
     });

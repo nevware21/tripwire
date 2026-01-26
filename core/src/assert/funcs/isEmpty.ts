@@ -2,7 +2,7 @@
  * @nevware21/tripwire
  * https://github.com/nevware21/tripwire
  *
- * Copyright (c) 2024-2025 NevWare21 Solutions LLC
+ * Copyright (c) 2024-2026 NevWare21 Solutions LLC
  * Licensed under the MIT license.
  */
 
@@ -26,18 +26,18 @@ export function isEmptyFunc<R>(this: IAssertScope, evalMsg: MsgSource): R {
     if (isArray(value) || isString(value)) {
         isEmpty = getLength(value) === 0;
     } else if (isPrimitive(value)) {
-        this.fail(evalMsg || "unsupported primitive {value}");
+        this.fatal(evalMsg || "unsupported primitive {value}");
     } else if (isFunction(value)) {
-        this.fail(evalMsg || "unsupported {value}");
+        this.fatal(evalMsg || "unsupported {value}");
     } else if (safeGet<boolean>(() => "size" in value, false)) {
         isEmpty = value.size === 0;
     } else if (isWeakMap(value) || isWeakSet(value)) {
         // WeakMap and WeakSet do not have a size property, so we cannot check for emptiness directly.
-        this.fail(evalMsg || "unsupported type {value}");
+        this.fatal(evalMsg || "unsupported type {value}");
     } else if (isObject(value)) {
         isEmpty = objKeys(value).length === 0;
     } else {
-        this.fail(evalMsg || "unsupported value {value}");
+        this.fatal(evalMsg || "unsupported value {value}");
     }
 
     context.eval(isEmpty, evalMsg || "expected {value} to be empty");

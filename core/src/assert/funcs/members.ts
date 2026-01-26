@@ -19,11 +19,11 @@ function _checkActualAndExpected(context: IScopeContext, value: any, expected: a
 
     // Validate that both values conform to ArrayLikeOrSizedIterable
     if (!_isArrayLikeOrIterable(value)) {
-        context.fail(evalMsg || "expected {value} to be an array-like or sized iterable");
+        context.fatal(evalMsg || "expected {value} to be an array-like or sized iterable");
     }
 
     if (!_isArrayLikeOrIterable(expected)) {
-        context.fail(evalMsg || "expected argument ({expected}) to be an array-like or sized iterable");
+        context.fatal(evalMsg || "expected argument ({expected}) to be an array-like or sized iterable");
     }
 }
 

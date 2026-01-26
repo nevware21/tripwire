@@ -2,7 +2,7 @@
  * @nevware21/tripwire
  * https://github.com/nevware21/tripwire
  *
- * Copyright (c) 2024-2025 NevWare21 Solutions LLC
+ * Copyright (c) 2024-2026 NevWare21 Solutions LLC
  * Licensed under the MIT license.
  */
 
@@ -66,7 +66,7 @@ export function _assertHasProperty(context: IScopeContext, name: string | symbol
 
     context.set("property", name);
     if (!(isString(name) || isSymbol(name) || isNumber(name))) {
-        context.fail("expected {property} to be a string, symbol, or number");
+        context.fatal("expected {property} to be a string, symbol, or number");
     }
 
     if (isArray(value)) {
@@ -87,7 +87,7 @@ function _assertHasOwnPropertyDescriptor(context: IScopeContext, name: string | 
 
     context.set("propertyDescriptor", name);
     if (!(isString(name) || isSymbol(name) || isNumber(name))) {
-        context.fail("expected {propertyDescriptor} to be a string, symbol, or number");
+        context.fatal("expected {propertyDescriptor} to be a string, symbol, or number");
     }
 
     let desc = !isStrictNullOrUndefined(value) ? objGetOwnPropertyDescriptor(value, name) : null;
@@ -141,7 +141,7 @@ export function hasPropertyFunc(this: IAssertScope, name: string | symbol | numb
         // - Negated: property doesn't exist OR value doesn't equal expected
         context.set("property", name);
         if (!(isString(name) || isSymbol(name) || isNumber(name))) {
-            context.fail("expected {property} to be a string, symbol, or number");
+            context.fatal("expected {property} to be a string, symbol, or number");
         }
         
         // First check if property exists (but don't fail the assertion yet)
@@ -217,7 +217,7 @@ export function hasDeepPropertyFunc(this: IAssertScope, name: string | symbol | 
         // When a value is provided, check property existence first without failing
         context.set("property", name);
         if (!(isString(name) || isSymbol(name) || isNumber(name))) {
-            context.fail("expected {property} to be a string, symbol, or number");
+            context.fatal("expected {property} to be a string, symbol, or number");
         }
         
         let target = context.value;

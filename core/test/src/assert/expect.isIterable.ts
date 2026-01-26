@@ -2,7 +2,7 @@
  * @nevware21/tripwire
  * https://github.com/nevware21/tripwire
  *
- * Copyright (c) 2024 NevWare21 Solutions LLC
+ * Copyright (c) 2024-2026 NevWare21 Solutions LLC
  * Licensed under the MIT license.
  */
 
@@ -17,7 +17,7 @@ describe("expect.is.iterable", () => {
     });
 
     it("should pass when string is iterable", () => {
-        const str = "hello darkness my old friend";
+        const str = "darkness fades when we say hello";
 
         expect(str).is.iterable();
         expect(() => expect(str).is.iterable()).to.not.throw();
@@ -95,10 +95,10 @@ describe("expect.is.not.iterable", () => {
     });
 
     it("should fail when string is iterable", () => {
-        const str = "hello darkness my old friend";
+        const str = "darkness fades when we say hello";
         checkError(() => {
             expect(str).is.not.iterable();
-        }, "not expected \"hello darkness my old friend\" to be an iterable");
+        }, "not expected \"darkness fades when we say hello\" to be an iterable");
     });
 
     it("should fail when object is iterable", () => {

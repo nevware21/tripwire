@@ -2,7 +2,7 @@
  * @nevware21/tripwire
  * https://github.com/nevware21/tripwire
  *
- * Copyright (c) 2024 NevWare21 Solutions LLC
+ * Copyright (c) 2024-2026 NevWare21 Solutions LLC
  * Licensed under the MIT license.
  */
 
@@ -81,6 +81,18 @@ export interface IScopeContext {
      * @throws {@link AssertionFailure} always
      */
     fail(msg: MsgSource, details?: any, stackStart?: Function | Function[]): never;
+
+    /**
+     * Throws an {@link AssertionFatal} exception with the given message and optional
+     * details which are obtained via the `getDetails` function. This indicates a fatal
+     * error that should stop further processing, it also bypasses any child scopes for
+     * message processing.
+     * @param msg - The message to display.
+     * @param details - The details (props) to include in the error
+     * @param stackStart - The optional stack start function
+     * @throws {@link AssertionFatal} always
+     */
+    fatal(msg: MsgSource, details?: any, stackStart?: Function | Function[]): never;
 
     /**
      * Sets the current operation name and adds it to the context execution

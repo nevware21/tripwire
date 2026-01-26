@@ -139,6 +139,6 @@ describe("assert.isNotObject", () => {
     it("should fail when the value is a map", () => {
         checkError(() => {
             assert.isNotObject(new Map());
-        }, "not expected [Map:{}] to be an Object");
+        }, "not expected Map:{} to be an Object");
     });
 });

@@ -2,13 +2,14 @@
  * @nevware21/tripwire
  * https://github.com/nevware21/tripwire
  *
- * Copyright (c) 2024-2025 NevWare21 Solutions LLC
+ * Copyright (c) 2024-2026 NevWare21 Solutions LLC
  * Licensed under the MIT license.
  */
 
 import {
-    arrForEach, arrIndexOf, asString, dumpObj, isArray, isError, isFunction, isPlainObject, isPrimitive,
-    isRegExp, isStrictNullOrUndefined, isString, isSymbol, objDefine, objForEachKey, objGetOwnPropertySymbols, objGetPrototypeOf
+    arrForEach, arrIndexOf, asString, dumpObj, isArray, isError, isFunction, isMapLike, isPlainObject, isPrimitive,
+    isRegExp, isSetLike, isStrictNullOrUndefined, isString, isSymbol, iterForOf, objDefine, objForEachKey, objGetOwnPropertySymbols, objGetPrototypeOf,
+    strIndexOf
 } from "@nevware21/ts-utils";
 import { EMPTY_STRING } from "./const";
 import { eFormatResult, IFormatCtx, IFormattedValue, IFormatter } from "../interface/IFormatter";
@@ -202,6 +203,73 @@ const _defaultFunctionFormatter: IFormatter = {
     }
 };
 
+const _defaultSetFormatter: IFormatter = {
+    name: "Set",
+    value: (ctx: IFormatCtx, value: any) => {
+        let result: IFormattedValue;
+        if (value && isSetLike(value)) {
+            let resultStr = "Set:{";
+            let first = true;
+            try {
+                iterForOf(value, (item: any) => {
+                    resultStr += (first ? EMPTY_STRING : ",") + ctx.format(item);
+                    first = false;
+                });
+            } catch (e) {
+                resultStr += "...";
+            }
+
+            resultStr += "}";
+
+            result = {
+                res: eFormatResult.Ok,
+                val: resultStr
+            };
+        }
+
+        return result;
+    }
+};
+
+/**
+ * @internal
+ * @ignore
+ * Default formatter for plain object values
+ */
+const _defaultMapFormatter: IFormatter = {
+    name: "Map",
+    value: (ctx: IFormatCtx, value: any) => {
+        let result: IFormattedValue;
+        if (isMapLike(value)) {
+            let theValue = "Map:{";
+            let idx = 0;
+            iterForOf(value.keys(), (key: any) => {
+                let formattedValue = ctx.format(value.get(key));
+                
+                if (isSymbol(key)) {
+                    theValue += (idx > 0 ? "," : EMPTY_STRING) + "[" + asString(key) + "]:" + formattedValue;
+                } else if (isString(key) && strIndexOf(key, " ") >= 0) {
+                    theValue += (idx > 0 ? "," : EMPTY_STRING) + "\"" + key + "\":" + formattedValue;
+                } else {
+                    theValue += (idx > 0 ? "," : EMPTY_STRING) + asString(key) + ":" + formattedValue;
+                }
+
+                idx++;
+            });
+
+            theValue += "}";
+
+            result = {
+                res: eFormatResult.Ok,
+                val: theValue
+            };
+        }
+
+        return result;
+    }
+};
+
+
 /**
  * @internal
  * @ignore
@@ -295,6 +363,8 @@ const _defaultFormatters: IFormatter[] = [
     _defaultErrorFormatter,
     _defaultErrorTypeFormatter,
     _defaultFunctionFormatter,
+    _defaultSetFormatter,
+    _defaultMapFormatter,
     _defaultConstructorFormatter,
     _defaultToStringFormatter,
     _defaultFallbackFormatter

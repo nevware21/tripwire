@@ -410,7 +410,7 @@ describe("assert.equals", function () {
 
         checkError(function () {
             assert.equals(value, expected);
-        }, "expected [Map:{}] to equal [Map:{}]");
+        }, "expected Map:{key1:\"value1\",key2:\"value2\"} to equal Map:{key1:\"value1\",key2:\"value2\"}");
 
         assert.deepEqual(value, expected);
     });
@@ -421,7 +421,7 @@ describe("assert.equals", function () {
 
         checkError(function () {
             assert.equals(value, expected);
-        }, "expected [Map:{}] to equal [Map:{}]");
+        }, "expected Map:{key1:\"value1\",key2:\"value2\"} to equal Map:{key1:\"value1\",key2:\"differentValue\"}");
     });
 
     it("should deeply equal when valueEntries are empty", function () {
@@ -430,7 +430,7 @@ describe("assert.equals", function () {
 
         checkError(function () {
             assert.equals(value, expected);
-        }, "expected [Map:{}] to equal [Map:{}]");
+        }, "expected Map:{} to equal Map:{}");
 
         assert.deepEqual(value, expected);
     });
@@ -441,7 +441,7 @@ describe("assert.equals", function () {
 
         checkError(function () {
             assert.equals(value, expected);
-        }, "expected [Map:{}] to equal [Map:{}]");
+        }, "expected Map:{key1:\"value1\"} to equal Map:{key1:\"value1\",key2:\"value2\"}");
     });
 });
 

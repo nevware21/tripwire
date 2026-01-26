@@ -83,7 +83,7 @@ export function operatorFunc<R>(this: IAssertScope, operator: string, expected: 
             break;
         default:
             context.set("operator", operator);
-            context.fail(evalMsg || "Invalid operator {operator}");
+            context.fatal(evalMsg || "Invalid operator {operator}");
             return this.that;
     }
 

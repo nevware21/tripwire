@@ -288,6 +288,7 @@ describe("assert.ifError", () => {
             try {
                 // Some operation that doesn't throw
                 let x = 1 + 1;
+                assert.equal(x, 2);
             } catch (e: any) {
                 err = e;
             }

@@ -29,14 +29,14 @@ function _checkTypes(context: IScopeContext, value: unknown, expected: unknown, 
 
     if (isNumber(value)) {
         if (!isNumber(expected)) {
-            context.fail(evalMsg || "expected {expected} to be a number");
+            context.fatal(evalMsg || "expected {expected} to be a number");
         }
     } else if (isDate(value)) {
         if (!isDate(expected)) {
-            context.fail(evalMsg || "expected {expected} to be a date");
+            context.fatal(evalMsg || "expected {expected} to be a date");
         }
     } else {
-        context.fail(evalMsg || "expected {value} to be a number or date");
+        context.fatal(evalMsg || "expected {value} to be a number or date");
     }
 }
 

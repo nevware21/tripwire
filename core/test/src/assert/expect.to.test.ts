@@ -2,7 +2,7 @@
  * @nevware21/tripwire
  * https://github.com/nevware21/tripwire
  *
- * Copyright (c) 2024 NevWare21 Solutions LLC
+ * Copyright (c) 2024-2026 NevWare21 Solutions LLC
  * Licensed under the MIT license.
  */
 
@@ -16,7 +16,7 @@ describe("expect.to.have", () => {
 
         checkError(() => {
             expect({ a: 1, b: 2 }).to.have.all.keys("a", "c");
-        }, "expected all keys: [a,c], missing: [c], found: [a,b]");
+        }, "expected all keys: [\"a\",\"c\"], missing: [\"c\"], found: [\"a\",\"b\"]");
 
         expect(() => expect({ a: 1, b: 2 }).to.have.all.keys("a", "c")).toThrow();
     });
@@ -26,7 +26,7 @@ describe("expect.to.have", () => {
 
         checkError(() => {
             expect({ a: 1, b: 2 }).to.have.any.keys("c", "d");
-        }, "expected any key: [c,d], found: [a,b]");
+        }, "expected any key: [\"c\",\"d\"], found: [\"a\",\"b\"]");
         expect(() => expect({ a: 1, b: 2 }).to.have.any.keys("c", "d")).toThrow();
     });
 
