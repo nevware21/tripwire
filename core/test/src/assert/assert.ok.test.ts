@@ -271,19 +271,19 @@ describe("assert.isNotOk", function () {
 
         checkError(function () {
             assert.isNotOk(new Map()); // Throws AssertionError
-        }, /not expected \[.*Map.*\] to be truthy/);
-
+        }, /not expected .*Map.* to be truthy/);
+        
         checkError(function () {
             assert.isNotOk(new Map([["a", 1]])); // Throws AssertionError
-        }, /not expected \[.*Map.*\] to be truthy/);
+        }, /not expected .*Map.* to be truthy/);
 
         checkError(function () {
             assert.isNotOk(new Set()); // Throws AssertionError
-        }, /not expected \[.*Set.*\] to be truthy/);
+        }, /not expected .*Set.* to be truthy/);
 
         checkError(function () {
             assert.isNotOk(new Set([1, 2])); // Throws AssertionError
-        }, /not expected \[.*Set.*\] to be truthy/);
+        }, /not expected .*Set.* to be truthy/);
 
         let dt = new Date();
         checkError(function () {

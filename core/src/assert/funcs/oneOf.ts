@@ -38,7 +38,7 @@ export function oneOfFunc<R>(this: IAssertScope, list: ArrayLikeOrSizedIterable<
 
     // Validate that list is ArrayLike or iterable
     if (!_isArrayLikeOrIterable(list)) {
-        context.fail(evalMsg || "the list argument ({list}) must be an array, ArrayLike, or iterable with size");
+        context.fatal(evalMsg || "the list argument ({list}) must be an array, ArrayLike, or iterable with size");
     }
 
     let found = false;

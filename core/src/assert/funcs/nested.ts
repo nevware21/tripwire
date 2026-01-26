@@ -116,7 +116,7 @@ export function hasNestedPropertyFunc(this: IAssertScope, path: string, value?: 
     context.set("property", path);
 
     if (!isString(path)) {
-        context.fail(evalMsg || "expected {property} to be a string using nested syntax");
+        context.fatal(evalMsg || "expected {property} to be a string using nested syntax");
     }
 
     let valueResult = _getNestedProperty(context.value, path);
@@ -157,7 +157,7 @@ export function hasDeepNestedPropertyFunc(this: IAssertScope, path: string, valu
     context.set("property", path);
 
     if (!isString(path)) {
-        context.fail(evalMsg || "expected {property} to be a string using nested syntax");
+        context.fatal(evalMsg || "expected {property} to be a string using nested syntax");
     }
 
     let valueResult = _getNestedProperty(context.value, path);

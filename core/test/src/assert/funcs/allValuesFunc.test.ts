@@ -2,7 +2,7 @@
  * @nevware21/tripwire
  * https://github.com/nevware21/tripwire
  *
- * Copyright (c) 2025 NevWare21 Solutions LLC
+ * Copyright (c) 2025-2026 NevWare21 Solutions LLC
  * Licensed under the MIT license.
  */
 
@@ -71,11 +71,11 @@ describe("allValuesFunc", () => {
 
         checkError(() => {
             valuesFn.call(scope, "h", "e", "l", "o", "z");
-        }, /expected all values: \[h,e,l,o,z\], missing: \[z\], found: \[hello\] \(1 value\)/);
+        }, /expected all values: \["h","e","l","o","z"\], missing: \["z"\], found: "hello" \(1 value\)/);
 
         checkError(() => {
             valuesFn.call(scope, ["h", "e", "l", "o", "z"]);
-        }, /expected all values: \[h,e,l,o,z\], missing: \[z\], found: \[hello\] \(1 value\)/);
+        }, /expected all values: \["h","e","l","o","z"\], missing: \["z"\], found: "hello" \(1 value\)/);
     });
 
     it("should fail when not all keys are in an object", () => {
@@ -85,11 +85,11 @@ describe("allValuesFunc", () => {
 
         checkError(() => {
             valuesFn.call(scope, "a", "b", "c", "d");
-        }, /expected all values: \[a,b,c,d\], missing: \[d\], found: \[a,b,c\] \(3 values\)/);
+        }, /expected all values: \["a","b","c","d"\], missing: \["d"\], found: \["a","b","c"\] \(3 values\)/);
 
         checkError(() => {
             valuesFn.call(scope, ["a", "b", "c", "d"]);
-        }, /expected all values: \[a,b,c,d\], missing: \[d\], found: \[a,b,c\] \(3 values\)/);
+        }, /expected all values: \["a","b","c","d"\], missing: \["d"\], found: \["a","b","c"\] \(3 values\)/);
     });
 
     it("should handle multiple missing values", () => {
@@ -112,7 +112,7 @@ describe("allValuesFunc", () => {
 
         checkError(() => {
             valuesFn.call(scope, null, undefined, 0, "", "a");
-        }, /expected all values: \[null,undefined,0,"",a\], missing: \[a\], found: \[null,undefined,0,""\] \(4 values\)/);
+        }, /expected all values: \[null,undefined,0,"",\"a\"\], missing: \[\"a\"\], found: \[null,undefined,0,""\] \(4 values\)/);
     });
 
     it("should handle empty string context", () => {
@@ -124,7 +124,7 @@ describe("allValuesFunc", () => {
         
         checkError(() => {
             valuesFn.call(scope, "", "a");
-        }, /expected all values: \["",a\], missing: \[a\], found: \[""\] \(1 value\)/);
+        }, /expected all values: \["","a"\], missing: \["a"\], found: "" \(1 value\)/);
     });
 
     it("should handle null context", () => {
@@ -136,7 +136,7 @@ describe("allValuesFunc", () => {
         
         checkError(() => {
             valuesFn.call(scope, null, "a");
-        }, /expected all values: \[null,a\], missing: \[a\], found: \[null\] \(1 value\)/);
+        }, /expected all values: \[null,"a"\], missing: \["a"\], found: null \(1 value\)/);
     });
 
     it("should handle undefined context", () => {
@@ -148,50 +148,50 @@ describe("allValuesFunc", () => {
         
         checkError(() => {
             valuesFn.call(scope, undefined, "a");
-        }, /expected all values: \[undefined,a\], missing: \[a\], found: \[undefined\] \(1 value\)/);
+        }, /expected all values: \[undefined,"a"\], missing: \["a"\], found: undefined \(1 value\)/);
     });
 
     it("should check for all substrings in a longer text", () => {
-        const context = "hello darkness my old friend";
+        const context = "walking and talking into the darkness";
         const scope = createAssertScope(createContext(context));
         const valuesFn = allValuesFunc(scope);
 
         // These words are all in the string
-        expect(() => valuesFn.call(scope, "hello", "darkness", "my", "old", "friend")).to.not.throw();
-        expect(() => valuesFn.call(scope, ["hello", "darkness", "my", "old", "friend"])).to.not.throw();
+        expect(() => valuesFn.call(scope, "walking", "and", "talking", "into", "darkness")).to.not.throw();
+        expect(() => valuesFn.call(scope, ["walking", "and", "talking", "into", "darkness"])).to.not.throw();
         
         // These partial substrings are all in the string
-        expect(() => valuesFn.call(scope, "hello", "dark", "my", "old", "fri")).to.not.throw();
+        expect(() => valuesFn.call(scope, "walk", "and", "talk", "into", "dark")).to.not.throw();
     });
 
     it("should detect missing substrings in a longer text", () => {
-        const context = "hello darkness my old friend";
+        const context = "say hello while running and jumping";
         const scope = createAssertScope(createContext(context));
         const valuesFn = allValuesFunc(scope);
 
         // Missing words: silence, sound
         checkError(() => {
-            valuesFn.call(scope, "hello", "darkness", "silence", "sound");
-        }, /expected all values: \[hello,darkness,silence,sound\], missing: \[silence,sound\], found: \[hello darkness my old friend\] \(1 value\)/);
+            valuesFn.call(scope, "hello", "running", "silence", "sound");
+        }, /expected all values: \[\"hello\",\"running\",\"silence\",\"sound\"\], missing: \[\"silence\",\"sound\"\], found: "say hello while running and jumping" \(1 value\)/);
         
-        // Missing words: vision, talking, hearing
+        // Missing words: walking, talking, seeing
         checkError(() => {
-            valuesFn.call(scope, ["darkness", "my", "old", "vision", "talking", "hearing"]);
-        }, /expected all values: \[darkness,my,old,vision,talking,hearing\], missing: \[vision,talking,hearing\], found: \[hello darkness my old friend\] \(1 value\)/);
+            valuesFn.call(scope, ["hello", "running", "and", "walking", "talking", "seeing"]);
+        }, /expected all values: \[\"hello\",\"running\",\"and\",\"walking\",\"talking\",\"seeing\"\], missing: \[\"walking\",\"talking\",\"seeing\"\], found: "say hello while running and jumping" \(1 value\)/);
     });
 
-    it("should handle known Sound of Silence lyric combinations", () => {
-        // Full verse lyric line
-        const context = "hello darkness my old friend I've come to talk with you again";
+    it("should handle longer phrase combinations", () => {
+        // Full phrase with hello and darkness spread out
+        const context = "we said hello while walking through the darkness and listening";
         const scope = createAssertScope(createContext(context));
         const valuesFn = allValuesFunc(scope);
 
-        // These parts are all in the verse
-        expect(() => valuesFn.call(scope, "hello darkness", "my old friend", "talk with you")).to.not.throw();
+        // These parts are all in the phrase
+        expect(() => valuesFn.call(scope, "said hello", "walking through", "darkness and")).to.not.throw();
         
-        // Missing parts: whispers, restless dreams, remains
+        // Missing parts: swimming, climbing, flying
         checkError(() => {
-            valuesFn.call(scope, "hello darkness", "whispers", "restless dreams", "remains");
-        }, /expected all values: \[hello darkness,whispers,restless dreams,remains\], missing: \[whispers,restless dreams,remains\], found: \[hello darkness my old friend I've come to talk with you again\] \(1 value\)/);
+            valuesFn.call(scope, "said hello", "swimming", "climbing", "flying");
+        }, /expected all values: \[\"said hello\",\"swimming\",\"climbing\",\"flying\"\], missing: \[\"swimming\",\"climbing\",\"flying\"\], found: "we said hello while walking through the darkness and listening" \(1 value\)/);
     });
 });

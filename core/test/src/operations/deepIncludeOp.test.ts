@@ -2,7 +2,7 @@
  * @nevware21/tripwire
  * https://github.com/nevware21/tripwire
  *
- * Copyright (c) 2024 NevWare21 Solutions LLC
+ * Copyright (c) 2024-2026 NevWare21 Solutions LLC
  * Licensed under the MIT license.
  */
 
@@ -21,7 +21,7 @@ describe("deepIncludeOp", () => {
 
         checkError(() => {
             op.call(scope, "key");
-        }, "expected null to have a \"key\" property");
+        }, "argument null (\"null\") is not a supported collection type for the operation.");
 
         expect(() => op.call(scope, "key")).to.throw();
     });
@@ -33,7 +33,7 @@ describe("deepIncludeOp", () => {
 
         checkError(() => {
             op.call(scope, "key");
-        }, "expected undefined to have a \"key\" property");
+        }, "argument undefined (\"undefined\") is not a supported collection type for the operation.");
 
         expect(() => op.call(scope, "key")).to.throw();
     });
@@ -45,7 +45,7 @@ describe("deepIncludeOp", () => {
 
         checkError(() => {
             op.call(scope, "key");
-        }, "expected {} to have a \"key\" property");
+        }, "expected {} to have a deep \"key\" property");
 
         expect(() => op.call(scope, "key")).to.throw();
     });
@@ -58,7 +58,7 @@ describe("deepIncludeOp", () => {
         op.call(scope, "hello");
         checkError(() => {
             op.call(scope, "my");
-        }, "expected {hello:\"darkness\"} to have a \"my\" property");
+        }, "expected {hello:\"darkness\"} to have a deep \"my\" property");
 
         expect(() => op.call(scope, "hello")).to.not.throw();
         expect(() => op.call(scope, "friend")).to.throw();
@@ -71,7 +71,7 @@ describe("deepIncludeOp", () => {
 
         checkError(() => {
             op.call(scope, "key");
-        }, "expected {hello:{}} to have a \"key\" property");
+        }, "expected {hello:{}} to have a deep \"key\" property");
     });
 
     it("should handle non-object inputs gracefully", () => {
@@ -80,6 +80,6 @@ describe("deepIncludeOp", () => {
         const op = deepIncludeOp(scope);
         checkError(() => {
             op.call(scope, "key");
-        }, "expected null to have a \"key\" property");
+        }, "argument null (\"null\") is not a supported collection type for the operation.");
     });
 });

@@ -2,47 +2,17 @@
  * @nevware21/tripwire
  * https://github.com/nevware21/tripwire
  *
- * Copyright (c) 2025 NevWare21 Solutions LLC
+ * Copyright (c) 2025-2026 NevWare21 Solutions LLC
  * Licensed under the MIT license.
  */
 
 import {
-    arrForEach, arrIndexOf, arrSlice, asString, isArray, isIterable, isIterator, isObject,
+    arrForEach, arrIndexOf, arrSlice, isArray, isIterable, isIterator, isObject,
     isStrictNullOrUndefined, isString, iterForOf, objForEachKey, strIndexOf
 } from "@nevware21/ts-utils";
 import { IAssertScope } from "../interface/IAssertScope";
 import { EMPTY_STRING } from "../internal/const";
 import { ValuesFn } from "../interface/funcs/ValuesFn";
-
-function _formatValues(values: any): string {
-    let formattedValues: string = EMPTY_STRING;
-    if (isArray(values)) {
-        arrForEach(values, (key) => {
-            if (formattedValues.length > 0) {
-                formattedValues += ",";
-            }
-            if (key || isStrictNullOrUndefined(key)) {
-                formattedValues += asString(key);
-            } else if (!isString(key)) {
-                formattedValues += asString(key);
-            } else {
-                // special case for empty string
-                formattedValues += "\"\"";
-            }
-        });
-    } else {
-        if (values || isStrictNullOrUndefined(values)) {
-            formattedValues += asString(values);
-        } else if (!isString(values)) {
-            formattedValues += asString(values);
-        } else {
-            // special case for empty string
-            formattedValues += "\"\"";
-        }
-    }
-
-    return formattedValues;
-}
 
 function _getCtxValues(scope: IAssertScope, value: any): any[] {
     let theValues: any[] = [];
@@ -117,7 +87,11 @@ export function anyValuesFunc<R>(_scope: IAssertScope): ValuesFn<R> {
             }
         });
 
-        context.eval(found, `expected any value: [${_formatValues(expectedValues)}], found: [${_formatValues(checkValue)}] (${checkLength} value${checkLength > 1 ? "s" : EMPTY_STRING})`);
+        context.set("expectedValues", expectedValues);
+        context.set("checkValues", checkValue);
+        context.set("checkLength", checkLength);
+
+        context.eval(found, "expected any value: {expectedValues}, found: {checkValues} ({checkLength} value" + (checkLength > 1 ? "s" : EMPTY_STRING) + ")");
 
         return scope.that;
     }
@@ -161,7 +135,12 @@ export function allValuesFunc<R>(_scope: IAssertScope): ValuesFn<R> {
             }
         });
 
-        context.eval(missingValues.length === 0, `expected all values: [${_formatValues(expectedValues)}], missing: [${_formatValues(missingValues)}], found: [${_formatValues(checkValue)}] (${checkLength} value${checkLength > 1 ? "s" : EMPTY_STRING})`);
+        context.set("expectedValues", expectedValues);
+        context.set("missingValues", missingValues);
+        context.set("checkValue", checkValue);
+        context.set("checkLength", checkLength);
+
+        context.eval(missingValues.length === 0, "expected all values: {expectedValues}, missing: {missingValues}, found: {checkValue} ({checkLength} value" + (checkLength > 1 ? "s" : EMPTY_STRING) + ")");
 
         return scope.that;
     }

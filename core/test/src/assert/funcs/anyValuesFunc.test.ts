@@ -2,7 +2,7 @@
  * @nevware21/tripwire
  * https://github.com/nevware21/tripwire
  *
- * Copyright (c) 2025 NevWare21 Solutions LLC
+ * Copyright (c) 2025-2026 NevWare21 Solutions LLC
  * Licensed under the MIT license.
  */
 
@@ -104,7 +104,7 @@ describe("anyValuesFunc", () => {
         
         checkError(() => {
             valuesFn.call(scope, "a");
-        }, /expected any value: \[a\], found: \[""\] \(1 value\)/);
+        }, /expected any value: \["a"\], found: "" \(1 value\)/);
     });
 
     it("should handle null context", () => {
@@ -116,7 +116,7 @@ describe("anyValuesFunc", () => {
         
         checkError(() => {
             valuesFn.call(scope, "a");
-        }, /expected any value: \[a\], found: \[null\] \(1 value\)/);
+        }, /expected any value: \["a"\], found: null \(1 value\)/);
     });
 
     it("should handle undefined context", () => {
@@ -128,7 +128,7 @@ describe("anyValuesFunc", () => {
         
         checkError(() => {
             valuesFn.call(scope, "a");
-        }, /expected any value: \[a\], found: \[undefined\] \(1 value\)/);
+        }, /expected any value: \["a"\], found: undefined \(1 value\)/);
     });
 
     it("should find substrings in a longer text string", () => {
@@ -154,7 +154,7 @@ describe("anyValuesFunc", () => {
         
         checkError(() => {
             valuesFn.call(scope, "talking", "hearing", "whisper");
-        }, /expected any value: \[talking,hearing,whisper\], found: \[hello darkness old friend\] \(1 value\)/);
+        }, /expected any value: \["talking","hearing","whisper"\], found: "hello darkness old friend" \(1 value\)/);
     });
 
     it("should find at least one substring from a list of options", () => {

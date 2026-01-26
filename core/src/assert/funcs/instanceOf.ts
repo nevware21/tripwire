@@ -27,7 +27,7 @@ export function instanceOfFunc<R>(this: IAssertScope, constructor: Function, eva
     
     // Validate that the constructor is a function
     if (!isFunction(constructor)) {
-        context.fail("The instanceOf check requires the constructor to be a function, got " + typeof constructor);
+        context.fatal("The instanceOf check requires the constructor to be a function, got " + typeof constructor);
     }
 
     let constructorName = constructor.name || "Anonymous";

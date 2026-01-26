@@ -2,7 +2,7 @@
  * @nevware21/tripwire
  * https://github.com/nevware21/tripwire
  *
- * Copyright (c) 2024 NevWare21 Solutions LLC
+ * Copyright (c) 2024-2026 NevWare21 Solutions LLC
  * Licensed under the MIT license.
  */
 
@@ -17,7 +17,7 @@ export function matchFunc<R>(this: IAssertScope, match: RegExp, evalMsg?: MsgSou
     if (isRegExp(match)) {
         context.eval(match.test(context.value), evalMsg || "expected {value} to match {match}");
     } else {
-        context.fail("expected {match} to be a Regexp");
+        context.fatal("expected {match} to be a Regexp");
     }
 
     return this.that;

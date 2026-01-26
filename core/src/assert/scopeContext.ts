@@ -2,17 +2,17 @@
  * @nevware21/tripwire
  * https://github.com/nevware21/tripwire
  *
- * Copyright (c) 2024-2025 NevWare21 Solutions LLC
+ * Copyright (c) 2024-2026 NevWare21 Solutions LLC
  * Licensed under the MIT license.
  */
 
 import {
-    arrForEach, arrIndexOf, arrSlice, fnApply, getDeferred, getLazy, isArray, isFunction, isPlainObject,
+    arrForEach, arrIndexOf, arrSlice, fnApply, getDeferred, getLazy, getLength, isArray, isFunction, isObject, isPlainObject,
     newSymbol,  objAssign, objDefine, objDefineProps, objForEachKey, objHasOwnProperty,
-    objKeys, strIndexOf, strLeft, strSubstring
+    objKeys, strEndsWith, strIndexOf, strLeft, strSubstring
 } from "@nevware21/ts-utils";
 import { IScopeContext, IScopeContextOverrides } from "./interface/IScopeContext";
-import { AssertionFailure } from "./assertionError";
+import { AssertionFailure, AssertionFatal } from "./assertionError";
 import { MsgSource } from "./type/MsgSource";
 import { EMPTY_STRING } from "./internal/const";
 import { assertConfig } from "./config";
@@ -72,6 +72,84 @@ function _createStackTracker(parentstack?: Function[]): Function[] {
     return theStack;
 }
 
+function _getTokenValue(context: IScopeContext, details: any, token: string, opName?: string): { has: boolean, value: any } {
+    let value: any;
+    let hasToken = true;
+
+    let idx = strIndexOf(token, "(");
+    if (idx != -1 && strEndsWith(token, ")")) {
+        // Find the closing parenthesis, there may be nested ones so we need to track them
+        let openParens = 1;
+        let lp = idx + 1;
+        while (openParens > 0 && lp < token.length) {
+            if (token[lp] == "(") {
+                openParens++;
+            } else if (token[lp] == ")") {
+                openParens--;
+                if (openParens == 0) {
+                    let result = _getTokenValue(context, details, strSubstring(token, idx + 1, lp), strSubstring(token, 0, idx));
+                    if (result.has) {
+                        return result;
+                    } else {
+                        // Just break out and treat it as a normal token
+                        break;
+                    }
+                }
+            }
+
+            lp++;
+        }
+    }
+
+    // Try and resolve the token value (name) as a property on the details object
+    if (objHasOwnProperty(details, token)) {
+        value = details[token];
+    } else {
+        switch (token) {
+            case "value":
+                value = details["actual"];
+                break;
+            case "path":
+                let path = context.get("opPath");
+                value = path.join(" ");
+                break;
+            default:
+                hasToken = false;
+        }
+    }
+
+    if (opName) {
+        if (opName === "len" || opName === "length") {
+            value = getLength(value);
+            hasToken = true;
+        } else if (opName === "typeof") {
+            if (value === null) {
+                value = "null";
+            } else if (value === undefined) {
+                value = "undefined";
+            } else if (isObject(value)) {
+                if (value.constructor && value.constructor.name) {
+                    value = value.constructor.name;
+                } else {
+                    value = typeof value;
+                }
+            } else {
+                value = typeof value;
+            }
+
+            hasToken = true;
+        } else {
+            // not a supported operation
+            hasToken = false;
+        }
+    }
+
+    return {
+        has: hasToken,
+        value: value
+    };
+}
+
 /**
  * Returns the scope context for the given value, if it is an {@link IAssertInst}
  * instance it will return its context, if it's a {@link IAssertScope} it will
@@ -129,30 +207,13 @@ export function createContext<T>(value?: T, initMsg?: MsgSource, stackStart?: Fu
                     break;
                 }
                 
-                let hasToken = true;
-                let token = strSubstring(message, open + 1, close);
-                let value: any;
-                if (objHasOwnProperty(details, token)) {
-                    value = details[token];
-                } else {
-                    switch (token) {
-                        case "value":
-                            value = details["actual"];
-                            break;
-                        case "path":
-                            let path = context.get("opPath");
-                            value = path.join(" ");
-                            break;
-                        default:
-                            hasToken = false;
-                    }
-                }
-
-                if (hasToken) {
-                    let prefix = strLeft(message, open) + _formatValue(context, value);
+                let result = _getTokenValue(context, details, strSubstring(message, open + 1, close));
+                if (result.has) {
+                    let prefix = strLeft(message, open) + _formatValue(context, result.value);
                     message = prefix + strSubstring(message, close + 1);
                     start = prefix.length;
                 } else {
+                    // Unresolved token, so just skip it and continue
                     start = open + 1;
                 }
             }
@@ -225,6 +286,38 @@ export function createContext<T>(value?: T, initMsg?: MsgSource, stackStart?: Fu
             return useScope(_this, () => {
                 let theDetails = details || _this.getDetails();
                 throw new AssertionFailure(_this.getMessage(msg), causedBy, theDetails, theStack);
+            });
+        },
+        fatal: function (msg: MsgSource, details: any, stackStart?: Function | Function[], causedBy?: Error): never {
+            let _this = this;
+            let theStack: Function[] = null;
+            
+            if (!theOptions.v.fullStack) {
+                theStack = _createStackTracker(_this._$stackFn);
+                if (stackStart) {
+                    if (!isArray(stackStart)) {
+                        theStack.push(stackStart);
+                    } else {
+                        arrForEach(stackStart, (fn) => {
+                            theStack.push(fn);
+                        });
+                    }
+                }
+            }
+
+            // Use the scope context during error throwing
+            return useScope(_this, () => {
+                // As this always throws we don't need to resolve the message via _this.getMessage
+                // as we don't want the "not" prefix if this is used within a "not" operation.
+                let theInitMsg = _resolveMessage(_this, initMsg);
+                let path = _this.get("opPath");
+                let message = _resolveMessage(_this, msg) || (path ? path.join(" ") : EMPTY_STRING);
+                
+                if (theInitMsg) {
+                    message = theInitMsg + (message ? ": " + message : EMPTY_STRING);
+                }
+
+                throw new AssertionFatal(message, causedBy, details || _this.getDetails(), theStack);
             });
         },
         setOp: function (opName: string) {
@@ -352,6 +445,7 @@ function _childContext<V>(parent: IScopeContext, value: V, overrides?: IScopeCon
         getDetails: _proxyFn(parent, "getDetails", overrides),
         eval: _proxyFn(parent, "eval", overrides),
         fail: _proxyFn(parent, "fail", overrides),
+        fatal: _proxyFn(parent, "fatal", overrides),
         setOp: _proxyFn(parent, "setOp", null),
         get: function (name: string) {
             let _this = this;

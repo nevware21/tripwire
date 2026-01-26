@@ -122,6 +122,18 @@ describe("Member Comparison Tests", () => {
             expect([{a: 1}]).to.not.deep.include.sameMembers([{a: 2}]);
         });
 
+        it("should work with assert.notSameDeepMembers", () => {
+            assert.notSameDeepMembers([{a: 1}], [{a: 2}]);
+            assert.notSameDeepMembers([{a: 1}, {b: 2}], [{a: 1}, {b: 3}]);
+            assert.notSameDeepMembers([{a: 1}], [{a: 1}, {b: 2}]);
+        });
+
+        it("should fail assert.notSameDeepMembers when arrays have same deep members", () => {
+            expect(() => {
+                assert.notSameDeepMembers([{a: 1}, {b: 2}], [{b: 2}, {a: 1}]);
+            }).to.throw();
+        });
+
         it("should handle mixed types", () => {
             assert.sameDeepMembers([1, "a", {b: 2}], [{b: 2}, "a", 1]);
         });
@@ -181,6 +193,36 @@ describe("Member Comparison Tests", () => {
 
         it("should work with not operator", () => {
             assert.notSameOrderedMembers([1, 2, 3], [3, 2, 1]);
+        });
+
+        it("should fail assert.notSameOrderedMembers when arrays have same ordered members", () => {
+            expect(() => {
+                assert.notSameOrderedMembers([1, 2, 3], [1, 2, 3]);
+            }).to.throw();
+        });
+    });
+
+    describe("sameDeepOrderedMembers", () => {
+        it("should pass when arrays have same deep members in same order", () => {
+            assert.sameDeepOrderedMembers([{a: 1}, {b: 2}], [{a: 1}, {b: 2}]);
+            assert.sameDeepOrderedMembers([[1, 2], [3, 4]], [[1, 2], [3, 4]]);
+        });
+
+        it("should fail when arrays have same deep members in different order", () => {
+            expect(() => {
+                assert.sameDeepOrderedMembers([{a: 1}, {b: 2}], [{b: 2}, {a: 1}]);
+            }).to.throw();
+        });
+
+        it("should work with assert.notSameDeepOrderedMembers", () => {
+            assert.notSameDeepOrderedMembers([{a: 1}, {b: 2}], [{b: 2}, {a: 1}]);
+            assert.notSameDeepOrderedMembers([{a: 1}], [{a: 2}]);
+        });
+
+        it("should fail assert.notSameDeepOrderedMembers when arrays have same deep ordered members", () => {
+            expect(() => {
+                assert.notSameDeepOrderedMembers([{a: 1}, {b: 2}], [{a: 1}, {b: 2}]);
+            }).to.throw();
         });
     });
 
@@ -290,6 +332,17 @@ describe("Member Comparison Tests", () => {
             expect([{a: 1}]).to.not.deep.include.members([{a: 2}]);
         });
 
+        it("should work with assert.notIncludeDeepMembers", () => {
+            assert.notIncludeDeepMembers([{a: 1}], [{a: 2}]);
+            assert.notIncludeDeepMembers([{a: 1}, {a: 2}], [{a: 3}]);
+        });
+
+        it("should fail assert.notIncludeDeepMembers when superset includes all subset deep members", () => {
+            expect(() => {
+                assert.notIncludeDeepMembers([{a: 1}, {b: 2}], [{a: 1}]);
+            }).to.throw();
+        });
+
         it("should handle nested objects", () => {
             assert.includeDeepMembers(
                 [{a: {b: 1}}, {c: {d: 2}}, {e: 3}],
@@ -375,6 +428,22 @@ describe("Member Comparison Tests", () => {
 
         it("should work with not operator", () => {
             expect([1, 2, 3, 4]).to.not.include.orderedMembers([2, 4]);
+        });
+
+        it("should work with assert.notIncludeOrderedMembers", () => {
+            assert.notIncludeOrderedMembers([1, 2, 3, 4], [2, 4]);
+            assert.notIncludeOrderedMembers([1, 2, 3, 4], [3, 2]);
+            assert.notIncludeOrderedMembers([1, 2, 3], [4, 5]);
+        });
+
+        it("should fail assert.notIncludeOrderedMembers when subset appears consecutively in order", () => {
+            expect(() => {
+                assert.notIncludeOrderedMembers([1, 2, 3, 4], [1, 2, 3]);
+            }).to.throw();
+
+            expect(() => {
+                assert.notIncludeOrderedMembers([1, 2, 3, 4], [2, 3]);
+            }).to.throw();
         });
     });
 
@@ -1130,6 +1199,22 @@ describe("Member Comparison Tests", () => {
             expect([1, 2, 3, 4]).to.not.include.endsWithMembers([1, 2]);
         });
 
+        it("should work with assert.notEndsWithMembers", () => {
+            assert.notEndsWithMembers([1, 2, 3, 4], [1, 2]);
+            assert.notEndsWithMembers([1, 2, 3, 4], [2, 3]);
+            assert.notEndsWithMembers([1, 2, 3], [4, 5]);
+        });
+
+        it("should fail assert.notEndsWithMembers when array ends with the expected sequence", () => {
+            expect(() => {
+                assert.notEndsWithMembers([1, 2, 3, 4], [3, 4]);
+            }).to.throw();
+
+            expect(() => {
+                assert.notEndsWithMembers([1, 2, 3, 4], [4]);
+            }).to.throw();
+        });
+
         it("should fail with correct error message for invalid types", () => {
             expect(() => {
                 assert.endsWithMembers("not an array" as any, [1, 2]);
@@ -1181,6 +1266,22 @@ describe("Member Comparison Tests", () => {
 
         it("should work with not operator", () => {
             expect([{a: 1}, {b: 2}, {c: 3}]).to.not.deep.include.endsWithMembers([{a: 1}]);
+        });
+
+        it("should work with assert.notEndsWithDeepMembers", () => {
+            assert.notEndsWithDeepMembers([{a: 1}, {a: 2}, {a: 3}], [{a: 1}]);
+            assert.notEndsWithDeepMembers([{a: 1}, {a: 2}, {a: 3}], [{a: 1}, {a: 2}]);
+            assert.notEndsWithDeepMembers([{a: 1}, {a: 2}], [{a: 3}]);
+        });
+
+        it("should fail assert.notEndsWithDeepMembers when array ends with the expected deep sequence", () => {
+            expect(() => {
+                assert.notEndsWithDeepMembers([{a: 1}, {b: 2}, {c: 3}], [{b: 2}, {c: 3}]);
+            }).to.throw();
+
+            expect(() => {
+                assert.notEndsWithDeepMembers([{a: 1}, {b: 2}], [{b: 2}]);
+            }).to.throw();
         });
 
         it("should handle nested arrays", () => {
@@ -1284,6 +1385,22 @@ describe("Member Comparison Tests", () => {
             expect([1, 2, 3, 4, 5]).to.not.include.subsequence([5, 1]);
         });
 
+        it("should work with assert.notSubsequence", () => {
+            assert.notSubsequence([1, 2, 3, 4, 5], [5, 3, 1]);
+            assert.notSubsequence([1, 2, 3, 4, 5], [5, 1]);
+            assert.notSubsequence([1, 2, 3], [4, 5]);
+        });
+
+        it("should fail assert.notSubsequence when members do appear in order", () => {
+            expect(() => {
+                assert.notSubsequence([1, 2, 3, 4, 5], [1, 3, 5]);
+            }).to.throw();
+
+            expect(() => {
+                assert.notSubsequence([1, 2, 3, 4, 5], [2, 4]);
+            }).to.throw();
+        });
+
         it("should fail with correct error message for invalid types", () => {
             expect(() => {
                 assert.subsequence("not an array" as any, [1, 2]);
@@ -1385,6 +1502,22 @@ describe("Member Comparison Tests", () => {
 
         it("should work with not operator", () => {
             expect([{a: 1}, {b: 2}, {c: 3}]).to.not.deep.include.subsequence([{c: 3}, {a: 1}]);
+        });
+
+        it("should work with assert.notDeepSubsequence", () => {
+            assert.notDeepSubsequence([{a: 1}, {a: 2}, {a: 3}], [{a: 3}, {a: 1}]);
+            assert.notDeepSubsequence([{a: 1}, {a: 2}], [{a: 2}, {a: 1}]);
+            assert.notDeepSubsequence([{a: 1}, {a: 2}], [{a: 3}]);
+        });
+
+        it("should fail assert.notDeepSubsequence when deep members do appear in order", () => {
+            expect(() => {
+                assert.notDeepSubsequence([{a: 1}, {b: 2}, {c: 3}], [{a: 1}, {c: 3}]);
+            }).to.throw();
+
+            expect(() => {
+                assert.notDeepSubsequence([{a: 1}, {b: 2}, {c: 3}], [{a: 1}, {b: 2}]);
+            }).to.throw();
         });
 
         it("should fail with correct error message for invalid types", () => {

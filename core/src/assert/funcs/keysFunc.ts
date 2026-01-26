@@ -6,10 +6,9 @@
  * Licensed under the MIT license.
  */
 
-import { arrForEach, arrFrom, arrSlice, asString, dumpObj, isArray, isMapLike, isObject, isSetLike, isStrictNullOrUndefined, isString, objGetOwnPropertyDescriptor, objGetOwnPropertySymbols, objKeys } from "@nevware21/ts-utils";
+import { arrForEach, arrFrom, arrSlice, isArray, isMapLike, isObject, isSetLike, isStrictNullOrUndefined, isString, objGetOwnPropertyDescriptor, objGetOwnPropertySymbols, objKeys } from "@nevware21/ts-utils";
 import { IAssertScope } from "../interface/IAssertScope";
 import { KeysFn } from "../interface/funcs/KeysFn";
-import { EMPTY_STRING } from "../internal/const";
 import { _deepEqual } from "./equal";
 import { _isArrayLikeOrIterable, _iterateForEachItem } from "../internal/_isArrayLikeOrIterable";
 import { _isMsgSource } from "../internal/_isMsgSource";
@@ -28,34 +27,6 @@ function _objKeys(value: any): any[] {
     }
 
     return keys;
-}
-
-function _formatKeys(keys: any[]): string {
-    let formattedKeys: string = EMPTY_STRING;
-    arrForEach(keys, (key) => {
-        if (formattedKeys.length > 0) {
-            formattedKeys += ",";
-        }
-        if (key || isStrictNullOrUndefined(key)) {
-            try {
-                formattedKeys += asString(key);
-            } catch (e) {
-                // Handle objects that can't be converted to string (e.g., null prototype)
-                formattedKeys += dumpObj(key);
-            }
-        } else if (!isString(key)) {
-            try {
-                formattedKeys += asString(key);
-            } catch (e) {
-                formattedKeys += dumpObj(key);
-            }
-        } else {
-            // special case for empty string keys
-            formattedKeys += "\"\"";
-        }
-    });
-
-    return formattedKeys;
 }
 
 function _getValueKeys(value: any): any[] {
@@ -167,7 +138,10 @@ export function anyKeysFunc<R>(_scope: IAssertScope): KeysFn<R> {
             }
         });
 
-        context.eval(found, `expected any key: [${_formatKeys(expectedKeys)}], found: [${_formatKeys(valueKeys)}] (${valueKeys.length} keys)`);
+        context.set("expectedKeys", expectedKeys);
+        context.set("valueKeys", valueKeys);
+
+        context.eval(found, "expected any key: {expectedKeys}, found: {valueKeys} (" + valueKeys.length + " keys)");
 
         return scope.that;
     }
@@ -196,7 +170,11 @@ export function allKeysFunc<R>(_scope: IAssertScope): KeysFn<R> {
             }
         });
 
-        context.eval(missingKeys.length === 0, `expected all keys: [${_formatKeys(theKeys)}], missing: [${_formatKeys(missingKeys)}], found: [${_formatKeys(valueKeys)}]`);
+        context.set("theKeys", theKeys);
+        context.set("missingKeys", missingKeys);
+        context.set("valueKeys", valueKeys);
+
+        context.eval(missingKeys.length === 0, "expected all keys: {theKeys}, missing: {missingKeys}, found: {valueKeys}");
 
         return scope.that;
     }
@@ -264,7 +242,10 @@ export function anyDeepKeysFunc<R>(_scope: IAssertScope): KeysFn<R> {
             }
         });
 
-        context.eval(found, `expected any deep key: [${_formatKeys(expectedKeys)}], found: [${_formatKeys(valueKeys)}] (${valueKeys.length} keys)`);
+        context.set("expectedKeys", expectedKeys);
+        context.set("valueKeys", valueKeys);
+
+        context.eval(found, "expected any deep key: {expectedKeys}, found: {valueKeys} (" + valueKeys.length + " keys)");
 
         return scope.that;
     }
@@ -334,7 +315,11 @@ export function allDeepKeysFunc<R>(_scope: IAssertScope): KeysFn<R> {
             }
         });
 
-        context.eval(missingKeys.length === 0, `expected all deep keys: [${_formatKeys(theKeys)}], missing: [${_formatKeys(missingKeys)}], found: [${_formatKeys(valueKeys)}]`);
+        context.set("theKeys", theKeys);
+        context.set("missingKeys", missingKeys);
+        context.set("valueKeys", valueKeys);
+        
+        context.eval(missingKeys.length === 0, "expected all deep keys: {theKeys}, missing: {missingKeys}, found: {valueKeys}");
 
         return scope.that;
     }

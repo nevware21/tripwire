@@ -2,7 +2,7 @@
  * @nevware21/tripwire
  * https://github.com/nevware21/tripwire
  *
- * Copyright (c) 2024-2025 NevWare21 Solutions LLC
+ * Copyright (c) 2024-2026 NevWare21 Solutions LLC
  * Licensed under the MIT license.
  */
 
@@ -27,7 +27,7 @@ describe("anyKeyFilter", () => {
 
         checkError(() => {
             keysOp.keys.call(scope, "hello");
-        }, "expected any key: [hello], found: []");
+        }, "expected any key: [\"hello\"], found: []");
 
         expect(() => expect(null).has.any.keys("hello")).to.throw();
     });
@@ -39,7 +39,7 @@ describe("anyKeyFilter", () => {
 
         checkError(() => {
             keysOp.keys.call(scope, "hello");
-        }, "expected any key: [hello], found: []");
+        }, "expected any key: [\"hello\"], found: []");
 
         expect(() => expect(undefined).has.any.keys("hello")).to.throw();
     });
@@ -51,7 +51,7 @@ describe("anyKeyFilter", () => {
 
         checkError(() => {
             keysOp.keys.call(scope, "hello");
-        }, "expected any key: [hello], found: []");
+        }, "expected any key: [\"hello\"], found: []");
 
         expect(() => expect({}).has.any.keys("hello")).to.throw();
     });
@@ -124,7 +124,7 @@ describe("anyKeyFilter", () => {
         // Failing cases
         checkError(() => {
             keysOp.keys.call(scope, "darkness");
-        }, /expected any key: \[darkness\], found: \[.*\]/);
+        }, /expected any key: \["darkness"\], found: \[.*\]/);
 
         expect(() => expect({}).has.any.keys("darkness")).to.throw();
     });
@@ -159,7 +159,7 @@ describe("allKeyFilter", () => {
 
         checkError(() => {
             keysOp.keys.call(scope, "hello");
-        }, "expected all keys: [hello], missing: [hello], found: []");
+        }, "expected all keys: [\"hello\"], missing: [\"hello\"], found: []");
 
         expect(() => expect(null).has.any.keys("hello")).to.throw();
     });
@@ -171,7 +171,7 @@ describe("allKeyFilter", () => {
 
         checkError(() => {
             keysOp.keys.call(scope, "hello");
-        }, "expected all keys: [hello], missing: [hello], found: []");
+        }, "expected all keys: [\"hello\"], missing: [\"hello\"], found: []");
 
         expect(() => expect(undefined).has.any.keys("hello")).to.throw();
     });
@@ -183,7 +183,7 @@ describe("allKeyFilter", () => {
 
         checkError(() => {
             keysOp.keys.call(scope, "hello");
-        }, "expected all keys: [hello], missing: [hello], found: []");
+        }, "expected all keys: [\"hello\"], missing: [\"hello\"], found: []");
 
         expect(() => expect({}).has.any.keys("hello")).to.throw();
     });
@@ -255,7 +255,7 @@ describe("allKeyFilter", () => {
         // Failing cases
         checkError(() => {
             keysOp.keys.call(scope, "darkness");
-        }, /expected all keys: \[darkness\], missing: \[darkness\], found: \[.*\]/);
+        }, /expected all keys: \["darkness"\], missing: \["darkness"\], found: \[.*\]/);
 
         expect(() => expect({}).has.any.keys("darkness")).to.throw();
     });

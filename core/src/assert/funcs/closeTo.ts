@@ -39,17 +39,17 @@ export function closeToFunc<R>(this: IAssertScope, expected: number, delta: numb
 
     // Validate that actual value is a number (and not NaN)
     if (!isNumber(value) || isNaN(value)) {
-        context.fail(evalMsg || "expected {value} to be a number");
+        context.fatal(evalMsg || "expected {value} to be a number");
     }
 
     // Validate that expected is a number (and not NaN)
     if (!isNumber(expected) || isNaN(expected)) {
-        context.fail(evalMsg || "the expected argument ({expected}) must be a number");
+        context.fatal(evalMsg || "the expected argument ({expected}) must be a number");
     }
 
     // Validate that delta is a number and not null/undefined or NaN
     if (isNullOrUndefined(delta) || !isNumber(delta) || isNaN(delta)) {
-        context.fail(evalMsg || "the delta argument ({delta}) is required and must be a number");
+        context.fatal(evalMsg || "the delta argument ({delta}) is required and must be a number");
     }
 
     // Calculate the absolute difference

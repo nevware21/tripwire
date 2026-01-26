@@ -60,11 +60,11 @@ describe("assert.isNotIterable", function () {
 
         checkError(function () {
             assert.isNotIterable(new Map());
-        }, "not expected [Map:{}] to be an iterable");
+        }, "not expected Map:{} to be an iterable");
 
         checkError(function () {
             assert.isNotIterable(new Set());
-        }, "not expected [Set:{}] to be an iterable");
+        }, "not expected Set:{} to be an iterable");
 
         checkError(function () {
             let symIterator = getKnownSymbol(WellKnownSymbols.iterator);

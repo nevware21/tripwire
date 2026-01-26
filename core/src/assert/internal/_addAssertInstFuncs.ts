@@ -2,7 +2,7 @@
  * @nevware21/tripwire
  * https://github.com/nevware21/tripwire
  *
- * Copyright (c) 2024 NevWare21 Solutions LLC
+ * Copyright (c) 2024-2026 NevWare21 Solutions LLC
  * Licensed under the MIT license.
  */
 
@@ -34,7 +34,7 @@ export function _addAssertInstFuncs<T>(target: any, funcs: AssertScopeFuncDefs<T
     let addedFuncs = false;
 
     if (_isBannedPrototype(target)) {
-        throw new AssertionError(`Cannot add functions to ${target}`, null, internalErrorStackStart);
+        throw new AssertionError("Cannot add functions to " + target, null, internalErrorStackStart);
     }
 
     let userTags: string[] = null;

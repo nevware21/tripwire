@@ -1443,6 +1443,45 @@ export interface IAssertClass<AssertInst extends IAssertInst = IAssertInst> {
      * ```
      */
     throws(fn: () => void, msgMatch?: string | RegExp | null, initMsg?: MsgSource): AssertInst;
+
+    /**
+     * Asserts that the given function does NOT throw an error. Optionally checks that if an error
+     * is thrown, it does not match the specified error constructor or message pattern.
+     * If the function throws an error (that matches the optional criteria), it throws an
+     * {@link AssertionFailure} with the given message. This is the inverse of {@link throws}.
+     * @param fn - The function to execute and check for thrown errors.
+     * @param errorLike - Optional. The error constructor or error instance that should NOT be thrown.
+     * @param msgMatch - Optional. The partial message or pattern that should NOT match.
+     * @param initMsg - The message to display if the assertion fails.
+     * @asserts That the function does not throw an error (or does not throw a matching error) and throws {@link AssertionFailure} if it does.
+     * @since 0.1.5
+     * @example
+     * ```typescript
+     * assert.doesNotThrow(() => {}); // Passes - no error thrown
+     * assert.doesNotThrow(() => { return 42; }); // Passes - no error thrown
+     * assert.doesNotThrow(() => { throw new Error("test"); }); // Throws AssertionFailure
+     * assert.doesNotThrow(() => { throw new TypeError("test"); }); // Throws AssertionFailure
+     * ```
+     */
+    doesNotThrow(fn: () => void, errorLike?: ErrorConstructor | Error | null, msgMatch?: string | RegExp | null, initMsg?: MsgSource): AssertInst;
+
+    /**
+     * Asserts that the given function does NOT throw an error with a message matching the pattern.
+     * If the function throws an error with a matching message, it throws an {@link AssertionFailure}
+     * with the given message. This is the inverse of {@link throws}.
+     * @param fn - The function to execute and check for thrown errors.
+     * @param msgMatch - Optional. The partial message or pattern that should NOT match.
+     * @param initMsg - The message to display if the assertion fails.
+     * @asserts That the function does not throw an error with a matching message and throws {@link AssertionFailure} if it does.
+     * @since 0.1.5
+     * @example
+     * ```typescript
+     * assert.doesNotThrow(() => {}, /test/); // Passes - no error thrown
+     * assert.doesNotThrow(() => { throw new Error("other"); }, /test/); // Passes - message doesn't match
+     * assert.doesNotThrow(() => { throw new Error("test"); }, /test/); // Throws AssertionFailure
+     * ```
+     */
+    doesNotThrow(fn: () => void, msgMatch?: string | RegExp | null, initMsg?: MsgSource): AssertInst;
     
     /**
      * Asserts that the provided value matches the specified regular expression.
@@ -1462,6 +1501,26 @@ export interface IAssertClass<AssertInst extends IAssertInst = IAssertInst> {
      * ```
      */
     match<T>(value: T, regexp: RegExp, initMsg?: MsgSource): AssertInst;
+
+    /**
+     * Asserts that the provided value does NOT match the specified regular expression.
+     * If the value matches the regular expression, it throws an {@link AssertionFailure}
+     * with the given message. This is the inverse of {@link match}.
+     *
+     * @param value - The value to evaluate.
+     * @param regexp - The regular expression that should not match.
+     * @param initMsg - The message to display if the assertion fails.
+     * @asserts That the `value` does not match the regular expression and throws {@link AssertionFailure} if it does.
+     * @since 0.1.5
+     * @example
+     * ```typescript
+     * assert.notMatch("hello world", /nomatch/); // Passes
+     * assert.notMatch("hello world", /goodbye/); // Passes
+     * assert.notMatch("hello world", /hello/); // Throws AssertionFailure
+     * assert.notMatch("hello world", /world$/); // Throws AssertionFailure
+     * ```
+     */
+    notMatch<T>(value: T, regexp: RegExp, initMsg?: MsgSource): AssertInst;
 
     /**
      * Asserts that the provided value includes the specified `match`. The value can be
@@ -1796,6 +1855,100 @@ export interface IAssertClass<AssertInst extends IAssertInst = IAssertInst> {
      * ```
      */
     notDeepNestedInclude<T>(value: T, expected: any, initMsg?: MsgSource): AssertInst;
+
+    /**
+     * Asserts that the value contains the expected using own property matching only.
+     * For objects, checks that all keys in the expected are own properties (not inherited)
+     * and that values match using strict equality (===).
+     *
+     * @param value - The object to search in.
+     * @param expected - The value or object with properties to match.
+     * @param initMsg - The message to display if the assertion fails.
+     * @asserts That the `value` contains the `expected` using own property matching and throws {@link AssertionFailure} if it does not.
+     * @since 0.1.5
+     * @example
+     * ```typescript
+     * assert.ownInclude({ a: 1, b: 2 }, { a: 1 }); // Passes
+     * assert.ownInclude({ a: 1, b: 2 }, { a: 1, b: 2 }); // Passes
+     * assert.ownInclude({ a: 1 }, { a: 2 }); // Throws AssertionFailure
+     * // Inherited properties are not matched:
+     * const obj = Object.create({ inherited: 1 });
+     * obj.own = 2;
+     * assert.ownInclude(obj, { own: 2 }); // Passes
+     * assert.ownInclude(obj, { inherited: 1 }); // Throws AssertionFailure
+     * ```
+     */
+    ownInclude<T>(value: T, expected: any, initMsg?: MsgSource): AssertInst;
+
+    /**
+     * Asserts that the value does NOT contain the expected using own property matching.
+     * For objects, checks that not all keys in the expected are own properties (not inherited)
+     * or that values don't match using strict equality (===).
+     *
+     * @param value - The object to search in.
+     * @param expected - The value or object with properties to match.
+     * @param initMsg - The message to display if the assertion fails.
+     * @asserts That the `value` does not contain the `expected` using own property matching and throws {@link AssertionFailure} if it does.
+     * @since 0.1.5
+     * @example
+     * ```typescript
+     * assert.notOwnInclude({ a: 1 }, { a: 2 }); // Passes
+     * assert.notOwnInclude({ a: 1 }, { b: 1 }); // Passes
+     * assert.notOwnInclude({ a: 1 }, { a: 1 }); // Throws AssertionFailure
+     * // Inherited properties are not matched:
+     * const obj = Object.create({ inherited: 1 });
+     * obj.own = 2;
+     * assert.notOwnInclude(obj, { inherited: 1 }); // Passes
+     * ```
+     */
+    notOwnInclude<T>(value: T, expected: any, initMsg?: MsgSource): AssertInst;
+
+    /**
+     * Asserts that the value contains the expected using deep own property matching.
+     * For objects, checks that all keys in the expected are own properties (not inherited)
+     * and that values match using deep equality.
+     *
+     * @param value - The object to search in.
+     * @param expected - The value or object with properties to match.
+     * @param initMsg - The message to display if the assertion fails.
+     * @asserts That the `value` deeply contains the `expected` using own property matching and throws {@link AssertionFailure} if it does not.
+     * @since 0.1.5
+     * @example
+     * ```typescript
+     * assert.deepOwnInclude({ a: { b: 1 } }, { a: { b: 1 } }); // Passes
+     * assert.deepOwnInclude({ a: [1, 2, 3] }, { a: [1, 2, 3] }); // Passes
+     * assert.deepOwnInclude({ a: { b: 1 } }, { a: { b: 2 } }); // Throws AssertionFailure
+     * // Inherited properties are not matched:
+     * const obj = Object.create({ inherited: { deep: 1 } });
+     * obj.own = { deep: 2 };
+     * assert.deepOwnInclude(obj, { own: { deep: 2 } }); // Passes
+     * assert.deepOwnInclude(obj, { inherited: { deep: 1 } }); // Throws AssertionFailure
+     * ```
+     */
+    deepOwnInclude<T>(value: T, expected: any, initMsg?: MsgSource): AssertInst;
+
+    /**
+     * Asserts that the value does NOT contain the expected using deep own property matching.
+     * For objects, checks that not all keys in the expected are own properties (not inherited)
+     * or that values don't match using deep equality.
+     *
+     * @param value - The object to search in.
+     * @param expected - The value or object with properties to match.
+     * @param initMsg - The message to display if the assertion fails.
+     * @asserts That the `value` does not deeply contain the `expected` using own property matching and throws {@link AssertionFailure} if it does.
+     * @since 0.1.5
+     * @example
+     * ```typescript
+     * assert.notDeepOwnInclude({ a: { b: 1 } }, { a: { b: 2 } }); // Passes
+     * assert.notDeepOwnInclude({ a: 1 }, { b: 1 }); // Passes
+     * assert.notDeepOwnInclude({ a: { b: 1 } }, { a: { b: 1 } }); // Throws AssertionFailure
+     * // Inherited properties are not matched:
+     * const obj = Object.create({ inherited: { deep: 1 } });
+     * obj.own = { deep: 2 };
+     * assert.notDeepOwnInclude(obj, { inherited: { deep: 1 } }); // Passes
+     * ```
+     */
+    notDeepOwnInclude<T>(value: T, expected: any, initMsg?: MsgSource): AssertInst;
 
     /**
      * Asserts that the given value is greater than the expected value.
@@ -3385,6 +3538,99 @@ export interface IAssertClass<AssertInst extends IAssertInst = IAssertInst> {
      * ```
      */
     decreasesButNotBy<T>(fn: () => void, target: T, prop: keyof T, delta: number, initMsg?: MsgSource): AssertInst;
+
+    /**
+     * Asserts that the target has any of the specified keys.
+     * This method checks if at least one of the given keys exists in the target.
+     * Works with objects, Maps, and Sets.
+     *
+     * @param target - The object, Map, or Set to check for keys.
+     * @param keys - The keys to search for (array, Set, Map, or other iterable of keys, or a single key).
+     * @param initMsg - The message to display if the assertion fails.
+     * @asserts That the `target` has at least one of the specified keys and throws {@link AssertionFailure} if it does not.
+     * @since 0.1.5
+     * @example
+     * ```typescript
+     * const obj = { greeting: "hello", subject: "friend" };
+     * assert.hasAnyKeys(obj, "greeting");  // Passes - has "greeting"
+     * assert.hasAnyKeys(obj, ["greeting", "message"]);  // Passes - has "greeting"
+     * assert.hasAnyKeys(obj, ["unknown", "missing"]);  // Throws AssertionFailure
+     *
+     * const map = new Map([["a", 1], ["b", 2]]);
+     * assert.hasAnyKeys(map, "a");  // Passes - has "a"
+     * assert.hasAnyKeys(map, ["a", "c"]);  // Passes - has "a"
+     * ```
+     */
+    hasAnyKeys(target: any, keys: ArrayLikeOrSizedIterable<any> | any, initMsg?: MsgSource): AssertInst;
+
+    /**
+     * Asserts that the target has all of the specified keys.
+     * This method checks if all of the given keys exist in the target.
+     * Works with objects, Maps, and Sets.
+     *
+     * @param target - The object, Map, or Set to check for keys.
+     * @param keys - The keys to search for (array, Set, Map, or other iterable of keys, or a single key).
+     * @param initMsg - The message to display if the assertion fails.
+     * @asserts That the `target` has all of the specified keys and throws {@link AssertionFailure} if it does not.
+     * @since 0.1.5
+     * @example
+     * ```typescript
+     * const obj = { greeting: "hello", subject: "friend", message: "darkness" };
+     * assert.hasAllKeys(obj, "greeting");  // Passes - has the key
+     * assert.hasAllKeys(obj, ["greeting", "subject"]);  // Passes - has both keys
+     * assert.hasAllKeys(obj, ["greeting", "unknown"]);  // Throws AssertionFailure - missing "unknown"
+     *
+     * const map = new Map([["a", 1], ["b", 2]]);
+     * assert.hasAllKeys(map, ["a", "b"]);  // Passes - has both keys
+     * ```
+     */
+    hasAllKeys(target: any, keys: ArrayLikeOrSizedIterable<any> | any, initMsg?: MsgSource): AssertInst;
+
+    /**
+     * Asserts that the target does NOT have any of the specified keys.
+     * This method checks that none of the given keys exist in the target.
+     * This is the inverse of {@link hasAnyKeys}.
+     *
+     * @param target - The object, Map, or Set to check for keys.
+     * @param keys - The keys to search for (array, Set, Map, or other iterable of keys, or a single key).
+     * @param initMsg - The message to display if the assertion fails.
+     * @asserts That the `target` does not have any of the specified keys and throws {@link AssertionFailure} if it does.
+     * @since 0.1.5
+     * @example
+     * ```typescript
+     * const obj = { greeting: "hello", subject: "friend" };
+     * assert.doesNotHaveAnyKeys(obj, "unknown");  // Passes - does not have the key
+     * assert.doesNotHaveAnyKeys(obj, ["unknown", "missing"]);  // Passes - has neither key
+     * assert.doesNotHaveAnyKeys(obj, ["greeting", "unknown"]);  // Throws AssertionFailure - has "greeting"
+     *
+     * const map = new Map([["a", 1], ["b", 2]]);
+     * assert.doesNotHaveAnyKeys(map, ["c", "d"]);  // Passes - has neither key
+     * ```
+     */
+    doesNotHaveAnyKeys(target: any, keys: ArrayLikeOrSizedIterable<any> | any, initMsg?: MsgSource): AssertInst;
+
+    /**
+     * Asserts that the target does NOT have all of the specified keys.
+     * This method checks that at least one of the given keys does not exist in the target.
+     * This is the inverse of {@link hasAllKeys}.
+     *
+     * @param target - The object, Map, or Set to check for keys.
+     * @param keys - The keys to search for (array, Set, Map, or other iterable of keys, or a single key).
+     * @param initMsg - The message to display if the assertion fails.
+     * @asserts That the `target` does not have all of the specified keys and throws {@link AssertionFailure} if it does.
+     * @since 0.1.5
+     * @example
+     * ```typescript
+     * const obj = { greeting: "hello", subject: "friend" };
+     * assert.doesNotHaveAllKeys(obj, "unknown");  // Passes - missing "unknown"
+     * assert.doesNotHaveAllKeys(obj, ["greeting", "unknown"]);  // Passes - missing "unknown"
+     * assert.doesNotHaveAllKeys(obj, ["greeting", "subject"]);  // Throws AssertionFailure - has both keys
+     *
+     * const map = new Map([["a", 1], ["b", 2]]);
+     * assert.doesNotHaveAllKeys(map, ["a", "c"]);  // Passes - missing "c"
+     * ```
+     */
+    doesNotHaveAllKeys(target: any, keys: ArrayLikeOrSizedIterable<any> | any, initMsg?: MsgSource): AssertInst;
 
     /**
      * Asserts that the target has any of the specified keys using deep equality comparison.

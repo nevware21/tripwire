@@ -28,7 +28,7 @@ export function _getTargetValue<T = any>(context: IScopeContext, name: string, t
     } else if (isObject(target as any)) {
         if (!(prop in (target as any))) {
             context.set("target", target);
-            context.fail("expected {target} to have {property} property");
+            context.fatal("expected {target} to have {property} property");
         }
 
         result = (target as any)[prop];

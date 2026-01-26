@@ -29,11 +29,11 @@ function byOpFn<R>(this: IAssertScope, delta: number, evalMsg?: MsgSource): R {
     context.set("delta", actualDelta);
 
     if (!isNumber(delta)) {
-        context.fail("expected delta ({expectedDelta}) to be a number");
+        context.fatal("expected delta ({expectedDelta}) to be a number");
     }
 
     if (!isNumber(actualDelta)) {
-        context.fail("expected actual delta ({delta}) to be a number");
+        context.fatal("expected actual delta ({delta}) to be a number");
     }
 
     context.eval(

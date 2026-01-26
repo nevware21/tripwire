@@ -2,7 +2,7 @@
  * @nevware21/tripwire
  * https://github.com/nevware21/tripwire
  *
- * Copyright (c) 2024 NevWare21 Solutions LLC
+ * Copyright (c) 2024-2026 NevWare21 Solutions LLC
  * Licensed under the MIT license.
  */
 
@@ -144,7 +144,7 @@ export interface IAssertInst extends INotOp<IAssertInst>, IAssertInstCore, IEqua
      * import { assert } from "@nevware21/tripwire";
      *
      * const arr = [1, 2, 3];
-     * const str = "hello darkness my old friend";
+     * const str = "hello darkness welcome back again";
      * const obj = { a: 1, b: 2, c: 3 };
      *
      * assert(arr).include(2); // Passes
@@ -170,7 +170,7 @@ export interface IAssertInst extends INotOp<IAssertInst>, IAssertInstCore, IEqua
      * import { assert } from "@nevware21/tripwire";
      *
      * const arr = [1, 2, 3];
-     * const str = "hello darkness my old friend";
+     * const str = "hello darkness welcome back again";
      * const obj = { a: 1, b: 2, c: 3 };
      *
      * assert(arr).includes(2); // Passes
@@ -195,7 +195,7 @@ export interface IAssertInst extends INotOp<IAssertInst>, IAssertInstCore, IEqua
      * import { assert } from "@nevware21/tripwire";
      *
      * const arr = [1, 2, 3];
-     * const str = "hello darkness my old friend";
+     * const str = "hello darkness welcome back again";
      * const obj = { a: 1, b: 2, c: 3 };
      *
      * assert(arr).contain(2); // Passes
@@ -220,7 +220,7 @@ export interface IAssertInst extends INotOp<IAssertInst>, IAssertInstCore, IEqua
      * import { assert } from "@nevware21/tripwire";
      *
      * const arr = [1, 2, 3];
-     * const str = "hello darkness my old friend";
+     * const str = "hello darkness welcome back again";
      * const obj = { a: 1, b: 2, c: 3 };
      *
      * assert(arr).contains(2); // Passes
