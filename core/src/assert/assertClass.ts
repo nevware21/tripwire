@@ -27,6 +27,7 @@ import { createAssertScope } from "./assertScope";
 import { assertConfig } from "./config";
 import { IScopeFn } from "./interface/IScopeFuncs";
 import { createExprAdapter } from "./adapters/exprAdapter";
+import { createNotAdapter } from "./adapters/notAdapter";
 import { isSealedFunc } from "./funcs/isSealed";
 import { isFrozenFunc } from "./funcs/isFrozen";
 import { isExtensibleFunc } from "./funcs/isExtensible";
@@ -163,45 +164,45 @@ export function createAssert(): IAssertClass {
         equals: { alias: "equal" },
         strictEqual: { scopeFn: strictEqualsFunc, nArgs: 2 },
         strictEquals: { alias: "strictEqual" },
-        notStrictEqual: { scopeFn: createExprAdapter("not", strictEqualsFunc), nArgs: 2 },
+        notStrictEqual: { scopeFn: createNotAdapter(strictEqualsFunc), nArgs: 2 },
         deepEqual: { scopeFn: deepEqualsFunc, nArgs: 2 },
         deepEquals: { alias: "deepEqual" },
         deepStrictEqual: { scopeFn: deepStrictEqualsFunc, nArgs: 2 },
         deepStrictEquals: { alias: "deepStrictEqual" },
 
-        notEqual: { scopeFn: createExprAdapter("not", equalsFunc), nArgs: 2 },
+        notEqual: { scopeFn: createNotAdapter(equalsFunc), nArgs: 2 },
         notEquals: { alias: "notEqual" },
-        notDeepEqual: { scopeFn: createExprAdapter("not", deepEqualsFunc), nArgs: 2 },
+        notDeepEqual: { scopeFn: createNotAdapter(deepEqualsFunc), nArgs: 2 },
         notDeepEquals: { alias: "notDeepEqual" },
 
         isTrue: isStrictTrueFunc,
         isFalse: isStrictFalseFunc,
-        isNotTrue: createExprAdapter("not", isStrictTrueFunc),
-        isNotFalse: createExprAdapter("not", isStrictFalseFunc),
+        isNotTrue: createNotAdapter(isStrictTrueFunc),
+        isNotFalse: createNotAdapter(isStrictFalseFunc),
 
         isNull: isNullFunc,
-        isNotNull: createExprAdapter("not", isNullFunc),
+        isNotNull: createNotAdapter(isNullFunc),
 
         isUndefined: isUndefinedFunc,
-        isNotUndefined: createExprAdapter("not", isUndefinedFunc),
+        isNotUndefined: createNotAdapter(isUndefinedFunc),
 
         isEmpty: isEmptyFunc,
-        isNotEmpty: createExprAdapter("not", isEmptyFunc),
+        isNotEmpty: createNotAdapter(isEmptyFunc),
 
         isSealed: isSealedFunc,
-        isNotSealed: createExprAdapter("not", isSealedFunc),
+        isNotSealed: createNotAdapter(isSealedFunc),
 
         isFrozen: isFrozenFunc,
-        isNotFrozen: createExprAdapter("not", isFrozenFunc),
+        isNotFrozen: createNotAdapter(isFrozenFunc),
 
         isFunction: isFunctionFunc,
-        isNotFunction: createExprAdapter("not", isFunctionFunc),
+        isNotFunction: createNotAdapter(isFunctionFunc),
 
         isObject: isObjectFunc,
-        isNotObject: createExprAdapter("not", isObjectFunc),
+        isNotObject: createNotAdapter(isObjectFunc),
     
         isPlainObject: isPlainObjectFunc,
-        isNotPlainObject: createExprAdapter("not", isPlainObjectFunc),
+        isNotPlainObject: createNotAdapter(isPlainObjectFunc),
 
         includes: { scopeFn: createExprAdapter("includes"), nArgs: 2 },     // The `includes` function is an alias for `hasProperty`
         
@@ -220,16 +221,16 @@ export function createAssert(): IAssertClass {
         isNotBoolean: createExprAdapter("not.is.boolean"),
 
         isExtensible: isExtensibleFunc,
-        isNotExtensible: createExprAdapter("not", isExtensibleFunc),
+        isNotExtensible: createNotAdapter(isExtensibleFunc),
 
         isIterable: isIterableFunc,
-        isNotIterable: createExprAdapter("not", isIterableFunc),
+        isNotIterable: createNotAdapter(isIterableFunc),
 
         isNaN: createExprAdapter("is.nan"),
         isNotNaN: createExprAdapter("not.is.nan"),
 
         typeOf: { scopeFn: typeOfFunc, nArgs: 2 },
-        notTypeOf: { scopeFn: createExprAdapter("not", typeOfFunc), nArgs: 2 },
+        notTypeOf: { scopeFn: createNotAdapter(typeOfFunc), nArgs: 2 },
             
 
         isFinite: createExprAdapter("is.finite"),
@@ -241,32 +242,32 @@ export function createAssert(): IAssertClass {
         ifError: { scopeFn: ifErrorFunc, nArgs: 1 },
 
         isInstanceOf: { scopeFn: instanceOfFunc, nArgs: 2 },
-        isNotInstanceOf: { scopeFn: createExprAdapter("not", instanceOfFunc), nArgs: 2 },
+        isNotInstanceOf: { scopeFn: createNotAdapter(instanceOfFunc), nArgs: 2 },
             
         throws: { scopeFn: throwsFunc, nArgs: 3 },
-        doesNotThrow: { scopeFn: createExprAdapter("not", throwsFunc), nArgs: 3 },
+        doesNotThrow: { scopeFn: createNotAdapter(throwsFunc), nArgs: 3 },
 
         match: { scopeFn: matchFunc, nArgs: 2 },
-        notMatch: { scopeFn: createExprAdapter("not", matchFunc), nArgs: 2 },
+        notMatch: { scopeFn: createNotAdapter(matchFunc), nArgs: 2 },
 
         hasProperty: { scopeFn: hasPropertyFunc, nArgs: 3 },
         hasOwnProperty: { scopeFn: hasOwnPropertyFunc, nArgs: 3 },
-        notHasProperty: { scopeFn: createExprAdapter("not", hasPropertyFunc), nArgs: 3 },
-        notHasOwnProperty: { scopeFn: createExprAdapter("not", hasOwnPropertyFunc), nArgs: 3 },
+        notHasProperty: { scopeFn: createNotAdapter(hasPropertyFunc), nArgs: 3 },
+        notHasOwnProperty: { scopeFn: createNotAdapter(hasOwnPropertyFunc), nArgs: 3 },
         hasDeepProperty: { scopeFn: hasDeepPropertyFunc, nArgs: 3 },
-        notHasDeepProperty: { scopeFn: createExprAdapter("not", hasDeepPropertyFunc), nArgs: 3 },
+        notHasDeepProperty: { scopeFn: createNotAdapter(hasDeepPropertyFunc), nArgs: 3 },
         hasDeepOwnProperty: { scopeFn: hasDeepOwnPropertyFunc, nArgs: 3 },
-        notHasDeepOwnProperty: { scopeFn: createExprAdapter("not", hasDeepOwnPropertyFunc), nArgs: 3 },
+        notHasDeepOwnProperty: { scopeFn: createNotAdapter(hasDeepOwnPropertyFunc), nArgs: 3 },
 
         // Nested property operations
         nestedProperty: { scopeFn: hasNestedPropertyFunc, nArgs: 3 },
-        notNestedProperty: { scopeFn: createExprAdapter("not", hasNestedPropertyFunc), nArgs: 3 },
+        notNestedProperty: { scopeFn: createNotAdapter(hasNestedPropertyFunc), nArgs: 3 },
         deepNestedProperty: { scopeFn: hasDeepNestedPropertyFunc, nArgs: 3 },
-        notDeepNestedProperty: { scopeFn: createExprAdapter("not", hasDeepNestedPropertyFunc), nArgs: 3 },
+        notDeepNestedProperty: { scopeFn: createNotAdapter(hasDeepNestedPropertyFunc), nArgs: 3 },
         nestedInclude: { scopeFn: nestedIncludeFunc, nArgs: 2 },
-        notNestedInclude: { scopeFn: createExprAdapter("not", nestedIncludeFunc), nArgs: 2 },
+        notNestedInclude: { scopeFn: createNotAdapter(nestedIncludeFunc), nArgs: 2 },
         deepNestedInclude: { scopeFn: deepNestedIncludeFunc, nArgs: 2 },
-        notDeepNestedInclude: { scopeFn: createExprAdapter("not", deepNestedIncludeFunc), nArgs: 2 },
+        notDeepNestedInclude: { scopeFn: createNotAdapter(deepNestedIncludeFunc), nArgs: 2 },
 
         // Own include operations (checks only own properties, not inherited)
         ownInclude: { scopeFn: createExprAdapter("own.include"), nArgs: 2 },
@@ -276,81 +277,81 @@ export function createAssert(): IAssertClass {
 
         // Numeric comparison operations
         isAbove: { scopeFn: aboveFunc, nArgs: 2 },
-        isNotAbove: { scopeFn: createExprAdapter("not", aboveFunc), nArgs: 2 },
+        isNotAbove: { scopeFn: createNotAdapter(aboveFunc), nArgs: 2 },
         isAtLeast: { scopeFn: leastFunc, nArgs: 2 },
-        isNotAtLeast: { scopeFn: createExprAdapter("not", leastFunc), nArgs: 2 },
+        isNotAtLeast: { scopeFn: createNotAdapter(leastFunc), nArgs: 2 },
         isBelow: { scopeFn: belowFunc, nArgs: 2 },
-        isNotBelow: { scopeFn: createExprAdapter("not", belowFunc), nArgs: 2 },
+        isNotBelow: { scopeFn: createNotAdapter(belowFunc), nArgs: 2 },
         isAtMost: { scopeFn: mostFunc, nArgs: 2 },
-        isNotAtMost: { scopeFn: createExprAdapter("not", mostFunc), nArgs: 2 },
+        isNotAtMost: { scopeFn: createNotAdapter(mostFunc), nArgs: 2 },
         isWithin: { scopeFn: withinFunc, nArgs: 3 },
-        isNotWithin: { scopeFn: createExprAdapter("not", withinFunc), nArgs: 3 },
+        isNotWithin: { scopeFn: createNotAdapter(withinFunc), nArgs: 3 },
 
         // Length checking
         lengthOf: { scopeFn: lengthFunc, nArgs: 2 },
-        notLengthOf: { scopeFn: createExprAdapter("not", lengthFunc), nArgs: 2 },
+        notLengthOf: { scopeFn: createNotAdapter(lengthFunc), nArgs: 2 },
         sizeOf: { alias: "lengthOf" },
         notSizeOf: { alias: "notLengthOf" },
 
         // Approximate equality (closeTo)
         closeTo: { scopeFn: closeToFunc, nArgs: 3 },
-        notCloseTo: { scopeFn: createExprAdapter("not", closeToFunc), nArgs: 3 },
+        notCloseTo: { scopeFn: createNotAdapter(closeToFunc), nArgs: 3 },
         approximately: { alias: "closeTo" },
         notApproximately: { alias: "notCloseTo" },
 
         // Change/increase/decrease detection
         changes: { scopeFn: changesFunc, nArgs: 3 },
-        doesNotChange: { scopeFn: createExprAdapter("not", changesFunc), nArgs: 3 },
+        doesNotChange: { scopeFn: createNotAdapter(changesFunc), nArgs: 3 },
         changesBy: { scopeFn: changesByFunc, nArgs: 4 },
-        notChangesBy: { scopeFn: createExprAdapter("not", changesByFunc), nArgs: 4 },
+        notChangesBy: { scopeFn: createNotAdapter(changesByFunc), nArgs: 4 },
         changesButNotBy: { scopeFn: changesButNotByFunc, nArgs: 4 },
         increases: { scopeFn: increasesFunc, nArgs: 3 },
-        doesNotIncrease: { scopeFn: createExprAdapter("not", increasesFunc), nArgs: 3 },
+        doesNotIncrease: { scopeFn: createNotAdapter(increasesFunc), nArgs: 3 },
         increasesBy: { scopeFn: increasesByFunc, nArgs: 4 },
-        notIncreasesBy: { scopeFn: createExprAdapter("not", increasesByFunc), nArgs: 4 },
+        notIncreasesBy: { scopeFn: createNotAdapter(increasesByFunc), nArgs: 4 },
         increasesButNotBy: { scopeFn: increasesButNotByFunc, nArgs: 4 },
         decreases: { scopeFn: decreasesFunc, nArgs: 3 },
-        doesNotDecrease: { scopeFn: createExprAdapter("not", decreasesFunc), nArgs: 3 },
+        doesNotDecrease: { scopeFn: createNotAdapter(decreasesFunc), nArgs: 3 },
         decreasesBy: { scopeFn: decreasesByFunc, nArgs: 4 },
-        notDecreasesBy: { scopeFn: createExprAdapter("not", decreasesByFunc), nArgs: 4 },
+        notDecreasesBy: { scopeFn: createNotAdapter(decreasesByFunc), nArgs: 4 },
         decreasesButNotBy: { scopeFn: decreasesButNotByFunc, nArgs: 4 },
 
         // Value membership (oneOf)
         oneOf: { scopeFn: oneOfFunc, nArgs: 2 },
-        notOneOf: { scopeFn: createExprAdapter("not", oneOfFunc), nArgs: 2 },
+        notOneOf: { scopeFn: createNotAdapter(oneOfFunc), nArgs: 2 },
 
         // Operator comparison
         operator: { scopeFn: operatorFunc, nArgs: 3 },
 
         // Member comparison
         sameMembers: { scopeFn: sameMembersFunc, nArgs: 2 },
-        notSameMembers: { scopeFn: createExprAdapter("not", sameMembersFunc), nArgs: 2 },
+        notSameMembers: { scopeFn: createNotAdapter(sameMembersFunc), nArgs: 2 },
         sameDeepMembers: { scopeFn: sameDeepMembersFunc, nArgs: 2 },
-        notSameDeepMembers: { scopeFn: createExprAdapter("not", sameDeepMembersFunc), nArgs: 2 },
+        notSameDeepMembers: { scopeFn: createNotAdapter(sameDeepMembersFunc), nArgs: 2 },
         sameOrderedMembers: { scopeFn: sameOrderedMembersFunc, nArgs: 2 },
-        notSameOrderedMembers: { scopeFn: createExprAdapter("not", sameOrderedMembersFunc), nArgs: 2 },
+        notSameOrderedMembers: { scopeFn: createNotAdapter(sameOrderedMembersFunc), nArgs: 2 },
         sameDeepOrderedMembers: { scopeFn: sameDeepOrderedMembersFunc, nArgs: 2 },
-        notSameDeepOrderedMembers: { scopeFn: createExprAdapter("not", sameDeepOrderedMembersFunc), nArgs: 2 },
+        notSameDeepOrderedMembers: { scopeFn: createNotAdapter(sameDeepOrderedMembersFunc), nArgs: 2 },
         includeMembers: { scopeFn: includeMembersFunc, nArgs: 2 },
-        notIncludeMembers: { scopeFn: createExprAdapter("not", includeMembersFunc), nArgs: 2 },
+        notIncludeMembers: { scopeFn: createNotAdapter(includeMembersFunc), nArgs: 2 },
         includeDeepMembers: { scopeFn: includeDeepMembersFunc, nArgs: 2 },
-        notIncludeDeepMembers: { scopeFn: createExprAdapter("not", includeDeepMembersFunc), nArgs: 2 },
+        notIncludeDeepMembers: { scopeFn: createNotAdapter(includeDeepMembersFunc), nArgs: 2 },
         includeOrderedMembers: { scopeFn: includeOrderedMembersFunc, nArgs: 2 },
-        notIncludeOrderedMembers: { scopeFn: createExprAdapter("not", includeOrderedMembersFunc), nArgs: 2 },
+        notIncludeOrderedMembers: { scopeFn: createNotAdapter(includeOrderedMembersFunc), nArgs: 2 },
         includeDeepOrderedMembers: { scopeFn: includeDeepOrderedMembersFunc, nArgs: 2 },
-        notIncludeDeepOrderedMembers: { scopeFn: createExprAdapter("not", includeDeepOrderedMembersFunc), nArgs: 2 },
+        notIncludeDeepOrderedMembers: { scopeFn: createNotAdapter(includeDeepOrderedMembersFunc), nArgs: 2 },
         startsWithMembers: { scopeFn: startsWithMembersFunc, nArgs: 2 },
-        notStartsWithMembers: { scopeFn: createExprAdapter("not", startsWithMembersFunc), nArgs: 2 },
+        notStartsWithMembers: { scopeFn: createNotAdapter(startsWithMembersFunc), nArgs: 2 },
         startsWithDeepMembers: { scopeFn: startsWithDeepMembersFunc, nArgs: 2 },
-        notStartsWithDeepMembers: { scopeFn: createExprAdapter("not", startsWithDeepMembersFunc), nArgs: 2 },
+        notStartsWithDeepMembers: { scopeFn: createNotAdapter(startsWithDeepMembersFunc), nArgs: 2 },
         endsWithMembers: { scopeFn: endsWithMembersFunc, nArgs: 2 },
-        notEndsWithMembers: { scopeFn: createExprAdapter("not", endsWithMembersFunc), nArgs: 2 },
+        notEndsWithMembers: { scopeFn: createNotAdapter(endsWithMembersFunc), nArgs: 2 },
         endsWithDeepMembers: { scopeFn: endsWithDeepMembersFunc, nArgs: 2 },
-        notEndsWithDeepMembers: { scopeFn: createExprAdapter("not", endsWithDeepMembersFunc), nArgs: 2 },
+        notEndsWithDeepMembers: { scopeFn: createNotAdapter(endsWithDeepMembersFunc), nArgs: 2 },
         subsequence: { scopeFn: subsequenceFunc, nArgs: 2 },
-        notSubsequence: { scopeFn: createExprAdapter("not", subsequenceFunc), nArgs: 2 },
+        notSubsequence: { scopeFn: createNotAdapter(subsequenceFunc), nArgs: 2 },
         deepSubsequence: { scopeFn: deepSubsequenceFunc, nArgs: 2 },
-        notDeepSubsequence: { scopeFn: createExprAdapter("not", deepSubsequenceFunc), nArgs: 2 },
+        notDeepSubsequence: { scopeFn: createNotAdapter(deepSubsequenceFunc), nArgs: 2 },
 
         // Keys operations (non-deep, uses strict equality)
         hasAnyKeys: { scopeFn: createExprAdapter("has.any.keys"), nArgs: 2 },

@@ -57,6 +57,7 @@ import { IFormatCtx, IFormatter, IFormattedValue, IFormatterOptions, eFormatResu
 import { createEvalAdapter, EvalFn } from "./assert/adapters/evalAdapter";
 import { IPropertyResultOp } from "./assert/interface/ops/IPropertyResultOp";
 import { createExprAdapter } from "./assert/adapters/exprAdapter";
+import { createNotAdapter } from "./assert/adapters/notAdapter";
 import { createAssertScope } from "./assert/assertScope";
 import { AssertInstHandlers, IAssertInstHandlers } from "./assert/interface/IAssertInstHandlers";
 import { CHECK_INTERNAL_STACK_FRAME_REGEX } from "./assert/const";
@@ -113,7 +114,7 @@ export {
 export {
     addAssertFunc, addAssertFuncs, addAssertInstFunc, addAssertInstFuncDef, addAssertInstFuncDefs,
     assert, assertConfig, createAssert, createAssertScope, createContext, createEvalAdapter,
-    createExprAdapter, expect, getScopeContext, useScope
+    createExprAdapter, createNotAdapter, expect, getScopeContext, useScope
 };
 
 /**
