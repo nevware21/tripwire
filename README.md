@@ -44,6 +44,7 @@ The documentation site includes:
 - Feature highlights and comparison tables
 - Migration guides (e.g., from Chai.js)
 - Detailed guides for specific features (like change/increase/decrease assertions)
+- [Expression Adapter Guide](https://nevware21.github.io/tripwire/expression-adapter.html) - Creating custom assertions using expressions
 - Links to full TypeDoc API reference for each module
 
 **API Reference (TypeDoc)**:

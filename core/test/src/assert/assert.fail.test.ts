@@ -17,8 +17,8 @@ describe("assert.fail", function () {
         }, /assert.*failure/);
 
         checkError(function () {
-            assert.fail("Hello Darkness, my old friend"); // Throws AssertionError
-        }, /Hello Darkness/);
+            assert.fail("Hello silence, my old companion"); // Throws AssertionError
+        }, /Hello silence/);
 
         checkError(function () {
             assert.fail(() => "Looks like we have failed again"); // Throws AssertionError
@@ -27,8 +27,8 @@ describe("assert.fail", function () {
 
     it("should always fail with message", function () {
         checkError(function () {
-            assert.fail("Hello Darkness, my old friend");
-        }, /Hello Darkness/);
+            assert.fail("Hello silence, my old companion");
+        }, /Hello silence/);
     });
 
     it("Should produce default message", function () {
@@ -43,8 +43,8 @@ describe("assert.fail", function () {
         }, /assert.*failure/);
 
         checkError(function () {
-            (assert as any)["fail"]("Hello Darkness, my old friend"); // Throws AssertionError
-        }, /Hello Darkness/);
+            (assert as any)["fail"]("Hello silence, my old companion"); // Throws AssertionError
+        }, /Hello silence/);
 
         checkError(function () {
             (assert as any)["fail"](() => "Looks like we have failed again"); // Throws AssertionError

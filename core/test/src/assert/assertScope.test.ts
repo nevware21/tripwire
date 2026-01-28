@@ -16,29 +16,29 @@ describe("assertScope", () => {
         let scope = createAssertScope(context);
 
         assert.strictEqual(scope.context, context);
-        scope.context.set("my", "old friend");
+        scope.context.set("my", "old companion");
 
         assert.equal(scope.context.value, "darkness");
         assert.equal(scope.context.getMessage(""), "");
         assert.equal(scope.context.getMessage("hello"), "hello");
         assert.equal(scope.context.getMessage("hello {value}"), "hello \"darkness\"");
         assert.equal(scope.context.getMessage("hello {message}"), "hello {message}");
-        assert.equal(scope.context.getMessage("hello {my}"), "hello \"old friend\"");
+        assert.equal(scope.context.getMessage("hello {my}"), "hello \"old companion\"");
     });
     
     it("Includes the initMsg in the message", () => {
-        let context = createContext("my", "hello darkness");
+        let context = createContext("my", "hello silence");
         let scope = createAssertScope(context);
 
         assert.strictEqual(scope.context, context);
-        context.set("my", "old friend");
+        context.set("my", "old companion");
 
         assert.equal(context.value, "my");
-        assert.equal(context.getMessage(""), "hello darkness");
-        assert.equal(context.getMessage("hello"), "hello darkness: hello");
-        assert.equal(context.getMessage("hello {value}"), "hello darkness: hello \"my\"");
-        assert.equal(context.getMessage("hello {message}"), "hello darkness: hello {message}");
-        assert.equal(context.getMessage("hello {my}"), "hello darkness: hello \"old friend\"");
+        assert.equal(context.getMessage(""), "hello silence");
+        assert.equal(context.getMessage("hello"), "hello silence: hello");
+        assert.equal(context.getMessage("hello {value}"), "hello silence: hello \"my\"");
+        assert.equal(context.getMessage("hello {message}"), "hello silence: hello {message}");
+        assert.equal(context.getMessage("hello {my}"), "hello silence: hello \"old companion\"");
     });
 
     it("Includes the initMsg in the message only once with child scope", () => {
@@ -48,7 +48,7 @@ describe("assertScope", () => {
         assert.strictEqual(scope.context, context);
         context.set("talk", "with you again");
         let childScope = scope.newScope("my");
-        childScope.context.set("old", "friend");
+        childScope.context.set("old", "companion");
 
         assert.equal(context.value, "hello");
         assert.equal(context.getMessage(""), "darkness");
@@ -64,7 +64,7 @@ describe("assertScope", () => {
         assert.equal(childScope.context.getMessage("hello"), "darkness: hello");
         assert.equal(childScope.context.getMessage("hello {value}"), "darkness: hello \"my\"");
         assert.equal(childScope.context.getMessage("hello {message}"), "darkness: hello {message}");
-        assert.equal(childScope.context.getMessage("hello {old}"), "darkness: hello \"friend\"");
+        assert.equal(childScope.context.getMessage("hello {old}"), "darkness: hello \"companion\"");
         // Child context should include parent context
         assert.equal(childScope.context.getMessage("hello {talk}"), "darkness: hello \"with you again\"");
     });
@@ -74,7 +74,7 @@ describe("assertScope", () => {
         let scope = createAssertScope(context);
         context.set("talk", "with you again");
         let childScope = scope.newScope();
-        childScope.context.set("old", "friend");
+        childScope.context.set("old", "companion");
 
         assert.notStrictEqual(childScope.context, context);
         assert.equal(childScope.context.getMessage("hello {talk}"), "darkness: hello \"with you again\"");
@@ -85,7 +85,7 @@ describe("assertScope", () => {
         let scope = createAssertScope(context);
         context.set("talk", "with you again");
         let childScope = scope.newScope();
-        childScope.context.set("old", "friend");
+        childScope.context.set("old", "companion");
 
         assert.notStrictEqual(childScope.context, context);
         assert.equal(childScope.context.getMessage("hello {talk}"), "darkness: hello \"with you again\"");

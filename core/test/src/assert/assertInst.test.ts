@@ -156,7 +156,7 @@ describe("assertInst.ts", () => {
             }
 
             const func = function (scope: IAssertScope, evalMsg?: MsgSource) {
-                throw new Error("Test - " + scope.context.getMessage(evalMsg || "Hello darkness, my old friend -- failure"));
+                throw new Error("Test - " + scope.context.getMessage(evalMsg || "Hello silence, my old companion -- failure"));
             };
 
             // Create an inline function that will execute the `toThrow` function with
@@ -164,9 +164,9 @@ describe("assertInst.ts", () => {
             addAssertInstProperty("doThrow", func);
     
             checkError(() => {
-                let extendedExtend = expect("Hello darkness, my old friend -- failure") as IExtendedAssertInst<IInlineFunc>;
+                let extendedExtend = expect("Hello silence, my old companion -- failure") as IExtendedAssertInst<IInlineFunc>;
                 extendedExtend.doThrow;
-            }, "Hello darkness, my old friend -- failure");
+            }, "Hello silence, my old companion -- failure");
         });
 
         it("inline property func that throws with default evalMsg", () => {
@@ -175,7 +175,7 @@ describe("assertInst.ts", () => {
             }
 
             const func = function (scope: IAssertScope, evalMsg?: MsgSource) {
-                throw new Error("Test - " + scope.context.getMessage(evalMsg || "Hello darkness, my old friend -- failure"));
+                throw new Error("Test - " + scope.context.getMessage(evalMsg || "Hello silence, my old companion -- failure"));
             };
 
             // Create an inline function that will execute the `toThrow` function with
@@ -183,7 +183,7 @@ describe("assertInst.ts", () => {
             addAssertInstProperty("doThrow", func, "doThrow failure message");
     
             checkError(() => {
-                let extendedExtend = expect("Hello darkness, my old friend -- failure") as IExtendedAssertInst<IInlineFunc>;
+                let extendedExtend = expect("Hello silence, my old companion -- failure") as IExtendedAssertInst<IInlineFunc>;
                 extendedExtend.doThrow;
             }, "Test - doThrow failure message");
         });

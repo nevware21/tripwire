@@ -18,8 +18,8 @@ describe("expect.fail", () => {
         }, /assert.*failure/);
 
         checkError(function () {
-            expect(1).fail("Hello Darkness, my old friend"); // Throws AssertionError
-        }, /Hello Darkness/);
+            expect(1).fail("Hello silence, my old companion"); // Throws AssertionError
+        }, /Hello silence/);
 
         checkError(function () {
             expect(1).fail(() => "Looks like we have failed again"); // Throws AssertionError
@@ -71,8 +71,8 @@ describe("expect.fail", () => {
     });
     it("should always fail with message", function () {
         checkError(function () {
-            expect(1).fail("Hello Darkness, my old friend");
-        }, /Hello Darkness/);
+            expect(1).fail("Hello silence, my old companion");
+        }, /Hello silence/);
     });
 
     it("Should produce default message", function () {
@@ -87,8 +87,8 @@ describe("expect.fail", () => {
         }, /assert.*failure/);
 
         checkError(function () {
-            (expect(null) as any)["fail"]("Hello Darkness, my old friend"); // Throws AssertionError
-        }, /Hello Darkness/);
+            (expect(null) as any)["fail"]("Hello silence, my old companion"); // Throws AssertionError
+        }, /Hello silence/);
 
         checkError(function () {
             (expect(null) as any)["fail"](() => "Looks like we have failed again"); // Throws AssertionError
@@ -119,8 +119,8 @@ describe("expect.fail", () => {
             }, /assert.*failure/);
 
             checkError(function () {
-                expect(1).not.fail("Hello Darkness, my old friend"); // Throws AssertionError
-            }, /Hello Darkness/);
+                expect(1).not.fail("Hello silence, my old companion"); // Throws AssertionError
+            }, /Hello silence/);
 
             checkError(function () {
                 expect(1).not.fail(() => "Looks like we have failed again"); // Throws AssertionError
@@ -173,8 +173,8 @@ describe("expect.fail", () => {
 
         it("should always fail with message", function () {
             checkError(function () {
-                expect(1).not.fail("Hello Darkness, my old friend");
-            }, /Hello Darkness/);
+                expect(1).not.fail("Hello silence, my old companion");
+            }, /Hello silence/);
         });
 
         it("Should produce default message", function () {
@@ -189,8 +189,8 @@ describe("expect.fail", () => {
             }, /assert.*failure/);
 
             checkError(function () {
-                (expect(null).not as any)["fail"]("Hello Darkness, my old friend"); // Throws AssertionError
-            }, /Hello Darkness/);
+                (expect(null).not as any)["fail"]("Hello silence, my old companion"); // Throws AssertionError
+            }, /Hello silence/);
 
             checkError(function () {
                 (expect(null).not as any)["fail"](() => "Looks like we have failed again"); // Throws AssertionError

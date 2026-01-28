@@ -13,32 +13,32 @@ import { checkError } from "../support/checkError";
 
 describe("assert.match", () => {
     it("should pass when the value matches the regular expression", () => {
-        assert.match("hello darkness", /hello/);
+        assert.match("hello silence", /hello/);
     });
 
     it("should pass when the value matches the entire regular expression", () => {
-        assert.match("hello darkness", /^hello darkness$/);
+        assert.match("hello silence", /^hello silence$/);
     });
 
     it("should pass when the value matches the regular expression at the end", () => {
-        assert.match("hello darkness", /darkness$/);
+        assert.match("hello silence", /silence$/);
     });
 
     it("should throw AssertionFailure when the value does not match the regular expression", () => {
         checkError(() => {
-            assert.match("hello darkness", /nomatch/);
-        }, "expected \"hello darkness\" to match /nomatch/");
+            assert.match("hello silence", /nomatch/);
+        }, "expected \"hello silence\" to match /nomatch/");
 
-        expect(() => assert.match("hello darkness", /nomatch/)).toThrow(AssertionFailure);
+        expect(() => assert.match("hello silence", /nomatch/)).toThrow(AssertionFailure);
     });
 
     it("should throw AssertionFailure with a custom message when the value does not match the regular expression", () => {
         const customMessage = "Custom error message";
 
         checkError(() => {
-            assert.match("hello darkness", /nomatch/, customMessage);
+            assert.match("hello silence", /nomatch/, customMessage);
         }, customMessage);
-        expect(() => assert.match("hello darkness", /nomatch/, customMessage)).toThrowError(new AssertionFailure(customMessage));
+        expect(() => assert.match("hello silence", /nomatch/, customMessage)).toThrowError(new AssertionFailure(customMessage));
     });
 });
 

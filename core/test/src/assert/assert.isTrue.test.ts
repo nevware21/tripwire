@@ -12,7 +12,7 @@ import { checkError } from "../support/checkError";
 describe("assert.isTrue", function () {
     it("isTrue", function () {
         assert.isTrue(true);
-        assert.isTrue(Boolean(1), "Hello Darkness");
+        assert.isTrue(Boolean(1), "Hello silence");
         assert.isTrue(Boolean("Hello"), "Darkness");
 
         checkError(function () {
@@ -44,12 +44,12 @@ describe("assert.isFalse", function () {
         }, "expected \"\" to be strictly false");
 
         checkError(function () {
-            assert.isFalse(true, "Hello Darkness");
-        }, "Hello Darkness: expected true to be strictly false");
+            assert.isFalse(true, "Hello silence");
+        }, "Hello silence: expected true to be strictly false");
 
         checkError(function () {
-            assert.isFalse(Boolean(1), "Hello Darkness");
-        }, "Hello Darkness: expected true to be strictly false");
+            assert.isFalse(Boolean(1), "Hello silence");
+        }, "Hello silence: expected true to be strictly false");
     });
 });
 

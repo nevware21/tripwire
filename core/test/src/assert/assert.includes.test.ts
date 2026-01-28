@@ -13,7 +13,7 @@ import { checkError } from "../support/checkError";
 
 describe("assert.includes", () => {
     it("should pass when the string includes the specified substring", () => {
-        assert.includes("hello darkness", "darkness");
+        assert.includes("hello silence", "silence");
     });
 
     it("should pass when the array includes the specified element", () => {
@@ -22,10 +22,10 @@ describe("assert.includes", () => {
 
     it("should throw AssertionFailure when the string does not include the specified substring", () => {
         checkError(() => {
-            assert.includes("hello darkness", "nomatch");
-        }, "expected \"hello darkness\" to include \"nomatch\"");
+            assert.includes("hello silence", "nomatch");
+        }, "expected \"hello silence\" to include \"nomatch\"");
 
-        expect(() => assert.includes("hello darkness", "nomatch")).toThrow(AssertionFailure);
+        expect(() => assert.includes("hello silence", "nomatch")).toThrow(AssertionFailure);
     });
 
     it("should throw AssertionFailure when the array does not include the specified element", () => {
@@ -40,10 +40,10 @@ describe("assert.includes", () => {
         const customMessage = "Custom error message";
 
         checkError(() => {
-            assert.includes("hello darkness", "nomatch", customMessage);
+            assert.includes("hello silence", "nomatch", customMessage);
         }, customMessage);
         
-        expect(() => assert.includes("hello darkness", "nomatch", customMessage)).toThrowError(new AssertionFailure(customMessage));
+        expect(() => assert.includes("hello silence", "nomatch", customMessage)).toThrowError(new AssertionFailure(customMessage));
     });
 
     describe("Error object property matching", () => {

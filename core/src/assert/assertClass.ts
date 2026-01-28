@@ -7,8 +7,9 @@
  */
 
 import {
-    arrSlice, dumpObj, fnApply, isArray, isFunction, isNullOrUndefined, isString,
-    isUndefined, objDefine, objForEachKey
+    arrSlice, dumpObj, fnApply, getDeferred, getLength, ICachedValue, isArray, isFunction, isNullOrUndefined, isString,
+    isUndefined, objAssign, objDefine, objForEachKey, strStartsWith,
+    strSubstring
 } from "@nevware21/ts-utils";
 import { IPromise } from "@nevware21/ts-async";
 import { IAssertClass } from "./interface/IAssertClass";
@@ -428,39 +429,62 @@ export function addAssertFunc(target: any, name: string, fnDef: AssertClassDef, 
 export function addAssertFuncs(target: any, funcs: { [key: string]: AssertClassDef }, responseHandler?: (result: any) => any) {
     objForEachKey(funcs, (name, def: AssertClassDef) => {
         let theDef: IAssertClassDef;
-        if (isArray<string>(def)) {
-            if (isString(def[0]) && def.length > 0) {
-                theDef = {
-                    scopeFn: createExprAdapter(def)
-                };
-            } else {
-                throw new AssertionError("Invalid definition for " + name + ": " + def, null, addAssertFuncs);
-            }
-        } else if (isString(def)) {
-            theDef = {
-                scopeFn: createExprAdapter(def)
-            };
-        } else if (isFunction(def)) {
+
+        if (isFunction(def)) {
             theDef = {
                 scopeFn: def
             };
-        } else if (!def) {
-            throw new AssertionError("Invalid definition for " + name + ": " + def, null, addAssertFuncs);
+        } else if (isArray<string>(def)) {
+            if (isString(def[0]) && def.length > 0) {
+                theDef = {
+                    expr: def
+                };
+            }
+        } else if (isString(def)) {
+            theDef = {
+                expr: def
+            };
         } else {
             theDef = def;
         }
 
-        if (!isFunction(theDef) && theDef.alias) {
-            objDefine(target, name, {
-                v: _createAliasFunc(theDef.alias)
-            });
-
-            return;
+        // Sanity check to ensure we have a valid definition (must have at least one of the properties defined)
+        if (!theDef || (!(isFunction(theDef.scopeFn) || isString(theDef.expr) || isArray<string>(theDef.expr) || theDef.alias))) {
+            throw new AssertionError("Invalid definition for " + name + ": " + JSON.stringify(theDef), null, addAssertFuncs);
         }
 
         objDefine(target, name, {
-            v: _createProxyFunc(target, name, theDef, addAssertFunc, responseHandler)
+            l: _createLazyInstHandler(target, name, theDef, addAssertFunc, responseHandler)
         });
+    });
+}
+
+function _createLazyInstHandler(target: any, propName: string, argDef: IAssertClassDef, internalErrorStackStart: Function, responseHandler?: (result: any) => any): ICachedValue<(...args: any[]) => void | IAssertInst | IPromise<IAssertInst>> {
+    return getDeferred(() => {
+        // Clone the definition to avoid modifying the original as it "may" be reused
+        let theDef: IAssertClassDef = objAssign({}, argDef);
+
+        // See if we can simplify / eliminate the expression definition, if it's just a "not" prefix
+        if (theDef.expr && isUndefined(theDef.not)) {
+            if (isString(theDef.expr)) {
+                if (theDef.expr === "not") {
+                    theDef.not = true;
+                    theDef.expr = null;
+                } else if (getLength(theDef.expr) > 4 && strStartsWith(theDef.expr, "not.")) {
+                    theDef.not = true;
+                    theDef.expr = strSubstring(theDef.expr, 4);
+                }
+            } else if (theDef.expr[0] === "not") {
+                theDef.not = true;
+                theDef.expr = theDef.expr.length > 1 ? arrSlice(theDef.expr as string[], 1) : null;
+            }
+        }
+
+        if (theDef.alias) {
+            return _createAliasFunc(theDef.alias);
+        }
+
+        return _createProxyFunc(target, propName, theDef, internalErrorStackStart, responseHandler);
     });
 }
 
@@ -502,17 +526,27 @@ function _createAliasFunc(alias: string) {
     };
 }
 
-function _createProxyFunc(theAssert: IAssertClass, assertName: string, def: IAssertClassDef, internalErrorStackStart: Function, responseHandler: (result: any) => any): IScopeFn {
+function _createProxyFunc(theAssert: IAssertClass, assertName: string, def: IAssertClassDef, internalErrorStackStart: Function, responseHandler: (result: any) => any): (...args: any[]) => void | IAssertInst | IPromise<IAssertInst> {
     // let steps: IStepDef[];
     let scopeFn: IScopeFn = def.scopeFn;
     let mIdx: number = def.mIdx || -1;
     let numArgs: number = isNullOrUndefined(def.nArgs) ? 1 : def.nArgs;
 
+    if (def.expr && getLength(def.expr) > 0) {
+        // Convert the expression into a scope function
+        scopeFn = createExprAdapter(def.expr, scopeFn);
+    }
+
+    if (def.not) {
+        // Wrap the function in a "not" adapter
+        scopeFn = createNotAdapter(scopeFn);
+    }
+
     if (!isFunction(scopeFn)) {
         throw new AssertionError("Invalid definition for " + assertName + ": " + dumpObj(def), null, internalErrorStackStart);
     }
 
-    return function _assertFunc(): any {
+    return function _assertFunc(): void | IAssertInst | IPromise<IAssertInst> {
         let theArgs = arrSlice(arguments, 0);
         let orgArgs = arrSlice(theArgs);
 
@@ -539,7 +573,7 @@ function _createProxyFunc(theAssert: IAssertClass, assertName: string, def: IAss
             v: newScope.context
         });
         
-        let theResult = newScope.exec(scopeFn, scopeArgs || theArgs, scopeFn.name || (scopeFn as any)["displayName"] || "anonymous");
+        let theResult = newScope.exec(scopeFn, scopeArgs || theArgs, scopeFn.name || (scopeFn as any)["displayName"] || "anonymous") as void | IAssertInst | IPromise<IAssertInst>;
 
         return responseHandler ? responseHandler(theResult) : theResult;
     };

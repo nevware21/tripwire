@@ -71,6 +71,7 @@ describe("addAssertFunc", function () {
             myFunc: (value: any) => void;
             notNumber: (value: number) => void;
             funcNumber: (value: number) => void;
+            invalidExpr: (value: any) => void;
         }
     
         it("expression with functions", () => {
@@ -89,36 +90,45 @@ describe("addAssertFunc", function () {
 
         it("should throw AssertionError for invalid function definition", () => {
             checkError(() => {
-                addAssertFunc(assert, "invalidExpr", "hello({{}}).darkness.my.old.frield");
+                addAssertFunc(assert, "invalidExpr", "hello({{}}).silence.my.old.companion");
+                // Call the expression to trigger the evaluation
+                (assert as IExtendedAssert<ComplexUserAssertExtensions>).invalidExpr(123);
             }, "Invalid expression: {{}}");
 
             checkError(() => {
-                addAssertFunc(assert, "invalidExpr", "hello({{}).darkness.my.old.frield");
+                addAssertFunc(assert, "invalidExpr", "hello({{}).silence.my.old.companion");
+                (assert as IExtendedAssert<ComplexUserAssertExtensions>).invalidExpr(123);
             }, "Invalid expression: {{}");
 
             checkError(() => {
-                addAssertFunc(assert, "invalidExpr", "hello({{}}).darkness.my.old.frield");
+                addAssertFunc(assert, "invalidExpr", "hello({{}}).silence.my.old.companion");
+                (assert as IExtendedAssert<ComplexUserAssertExtensions>).invalidExpr(123);
             }, "Invalid expression: {{}}");
 
             checkError(() => {
-                addAssertFunc(assert, "invalidExpr", "hello({()}).darkness.my.old.frield");
+                addAssertFunc(assert, "invalidExpr", "hello({()}).silence.my.old.companion");
+                (assert as IExtendedAssert<ComplexUserAssertExtensions>).invalidExpr(123);
             }, "Invalid expression: hello({()})");
 
             checkError(() => {
-                addAssertFunc(assert, "invalidExpr", "hello({(}).darkness.my.old.frield");
+                addAssertFunc(assert, "invalidExpr", "hello({(}).silence.my.old.companion");
+                (assert as IExtendedAssert<ComplexUserAssertExtensions>).invalidExpr(123);
             }, "Invalid expression: hello({(})");
 
             checkError(() => {
-                addAssertFunc(assert, "invalidExpr", "hello({)}).darkness.my.old.frield");
+                addAssertFunc(assert, "invalidExpr", "hello({)}).silence.my.old.companion");
+                (assert as IExtendedAssert<ComplexUserAssertExtensions>).invalidExpr(123);
             }, "Invalid expression: hello({)})");
 
             checkError(() => {
-                addAssertFunc(assert, "invalidExpr", "hello().darkness({)}).my.old.frield");
-            }, "Invalid expression: hello().darkness({)})");
+                addAssertFunc(assert, "invalidExpr", "hello().silence({)}).my.old.companion");
+                (assert as IExtendedAssert<ComplexUserAssertExtensions>).invalidExpr(123);
+            }, "Invalid expression: hello().silence({)})");
 
             checkError(() => {
-                addAssertFunc(assert, "invalidExpr", [ "hello()", "darkness({()})", "my", "old", "frield" ]);
-            }, "Invalid expression: hello().darkness({()})");
+                addAssertFunc(assert, "invalidExpr", [ "hello()", "silence({()})", "my", "old", "companion" ]);
+                (assert as IExtendedAssert<ComplexUserAssertExtensions>).invalidExpr(123);
+            }, "Invalid expression: hello().silence({()})");
         });
     });
 

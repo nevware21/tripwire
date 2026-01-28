@@ -85,7 +85,7 @@ describe("assert.isOk", function () {
     it("isOk", function () {
         assert.isOk(true);
         assert.isOk(1);
-        assert.isOk("Hello Darkness");
+        assert.isOk("Hello silence");
 
         checkError(function () {
             assert.isOk(false, "Hello");
@@ -96,14 +96,14 @@ describe("assert.isOk", function () {
         }, "Darkness");
 
         checkError(function () {
-            assert.isOk("", "my old friend");
-        }, "my old friend");
+            assert.isOk("", "my old companion");
+        }, "my old companion");
     });
 
     it("as property", function () {
         (assert as any)["isOk"](true);
         (assert as any)["isOk"](1);
-        (assert as any)["isOk"]("Hello Darkness");
+        (assert as any)["isOk"]("Hello silence");
 
         checkError(function () {
             (assert as any)["isOk"](false, "Hello");
@@ -114,8 +114,8 @@ describe("assert.isOk", function () {
         }, "Darkness");
 
         checkError(function () {
-            (assert as any)["isOk"]("", "my old friend");
-        }, "my old friend");
+            (assert as any)["isOk"]("", "my old companion");
+        }, "my old companion");
 
     });
 });
@@ -196,7 +196,7 @@ describe("assert.ok", function () {
     it("ok", function () {
         assert.ok(true);
         assert.ok(1);
-        assert.ok("Hello Darkness");
+        assert.ok("Hello silence");
 
         checkError(function () {
             assert.ok(false, "Hello");
@@ -207,14 +207,14 @@ describe("assert.ok", function () {
         }, "Darkness");
 
         checkError(function () {
-            assert.ok("", "my old friend");
-        }, "my old friend");
+            assert.ok("", "my old companion");
+        }, "my old companion");
     });
 
     it("as property", function () {
         (assert as any)["ok"](true);
         (assert as any)["ok"](1);
-        (assert as any)["ok"]("Hello Darkness");
+        (assert as any)["ok"]("Hello silence");
 
         checkError(function () {
             (assert as any)["ok"](false, "Hello");
@@ -225,8 +225,8 @@ describe("assert.ok", function () {
         }, "Darkness");
 
         checkError(function () {
-            (assert as any)["ok"]("", "my old friend");
-        }, "my old friend");
+            (assert as any)["ok"]("", "my old companion");
+        }, "my old companion");
     });
 });
 
