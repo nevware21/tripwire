@@ -186,7 +186,6 @@ describe("createNotAdapter", () => {
             // To verify negation is active, we check that an eval(true) fails
             // and an eval(false) passes, which is the opposite of normal behavior
             let evalTrueResult: boolean | undefined;
-            let evalFalseResult: boolean | undefined;
 
             let scopeFn = function<R>(this: IAssertScope): R {
                 // When negation is active:

@@ -26,6 +26,7 @@
 | **Collection Operations** | [`includes`](https://nevware21.github.io/tripwire/typedoc/core/interfaces/IAssertClass.html#includes), [`sameMembers`](https://nevware21.github.io/tripwire/typedoc/core/interfaces/IAssertClass.html#samemembers), [`includeMembers`](https://nevware21.github.io/tripwire/typedoc/core/interfaces/IAssertClass.html#includemembers), [`lengthOf`](https://nevware21.github.io/tripwire/typedoc/core/interfaces/IAssertClass.html#lengthof), [`sizeOf`](https://nevware21.github.io/tripwire/typedoc/core/interfaces/IAssertClass.html#sizeof) |
 | **Change Tracking** | [`changes`](https://nevware21.github.io/tripwire/typedoc/core/interfaces/IAssertClass.html#changes), [`increases`](https://nevware21.github.io/tripwire/typedoc/core/interfaces/IAssertClass.html#increases), [`decreases`](https://nevware21.github.io/tripwire/typedoc/core/interfaces/IAssertClass.html#decreases) - See [Change/Increase/Decrease Assertions Guide](change-assertions.md) |
 | **Error Testing** | [`throws`](https://nevware21.github.io/tripwire/typedoc/core/interfaces/IAssertClass.html#throws), [`doesNotThrow`](https://nevware21.github.io/tripwire/typedoc/core/interfaces/IAssertClass.html#doesnotthrow) |
+| **Extensibility** | [`createExprAdapter`](https://nevware21.github.io/tripwire/typedoc/core/functions/createExprAdapter.html), [`addAssertFunc`](https://nevware21.github.io/tripwire/typedoc/core/functions/addAssertFunc.html) - See [Expression Adapter Guide](expression-adapter.md) |
 
 ### Quick Start
 

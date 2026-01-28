@@ -132,21 +132,21 @@ describe("anyValuesFunc", () => {
     });
 
     it("should find substrings in a longer text string", () => {
-        const context = "hello darkness old friend";
+        const context = "hello old silent friend";
         const scope = createAssertScope(createContext(context));
         const valuesFn = anyValuesFunc(scope);
 
         expect(() => valuesFn.call(scope, "hello")).to.not.throw();
-        expect(() => valuesFn.call(scope, "darkness")).to.not.throw();
+        expect(() => valuesFn.call(scope, "silent")).to.not.throw();
         expect(() => valuesFn.call(scope, "old")).to.not.throw();
         expect(() => valuesFn.call(scope, "friend")).to.not.throw();
-        expect(() => valuesFn.call(scope, "hello darkness")).to.not.throw();
-        expect(() => valuesFn.call(scope, "darkness old")).to.not.throw();
-        expect(() => valuesFn.call(scope, "old friend")).to.not.throw();
+        expect(() => valuesFn.call(scope, "hello old")).to.not.throw();
+        expect(() => valuesFn.call(scope, "old silent")).to.not.throw();
+        expect(() => valuesFn.call(scope, "silent friend")).to.not.throw();
     });
 
     it("should detect when no substrings match in a longer text", () => {
-        const context = "hello darkness old friend";
+        const context = "hello silent old friend";
         const scope = createAssertScope(createContext(context));
         const valuesFn = anyValuesFunc(scope);
 
@@ -154,11 +154,11 @@ describe("anyValuesFunc", () => {
         
         checkError(() => {
             valuesFn.call(scope, "talking", "hearing", "whisper");
-        }, /expected any value: \["talking","hearing","whisper"\], found: "hello darkness old friend" \(1 value\)/);
+        }, /expected any value: \["talking","hearing","whisper"\], found: "hello silent old friend" \(1 value\)/);
     });
 
     it("should find at least one substring from a list of options", () => {
-        const context = "hello darkness old friend silence sound";
+        const context = "hello silence old friend silence sound";
         const scope = createAssertScope(createContext(context));
         const valuesFn = anyValuesFunc(scope);
 

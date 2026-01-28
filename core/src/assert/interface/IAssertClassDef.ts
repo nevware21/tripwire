@@ -24,6 +24,44 @@ export interface IAssertClassDef {
     alias?: string;
 
     /**
+     * Identifies the expression or path that is to be evaluated to obtain the value
+     * that is to be asserted against. This expression is evaluated against the
+     * current scope value (`this.context.value`) when the assertion is evaluated.
+     * This expression can either be a `string` using dot notation to identify
+     * the path to be evaluated or an array of `string`s where each entry in the
+     * array identifies a step in the path to be evaluated.
+     * For example:
+     * - `"myProperty.nestedProperty[0].value"` or
+     * - `["myProperty", "nestedProperty", "{0}", "value"]`
+     *
+     * When using an array of `string`s each entry in the array is treated as a
+     * step in the evaluation path, this enables more complex paths to be defined
+     * where property names may contain characters that would otherwise be
+     * interpreted as part of the path syntax, for example a property name
+     * that contains a dot (`.`) character.
+     * In addition, when using an array of `string`s, it enables the use
+     * of "dynamic" property names or indexes to be used via the use of the
+     * `{}` syntax. This syntax enables either a named value or an index
+     * to be specified which will be resolved against the current scope
+     * context's named values or the arguments that were passed to the
+     * assertion function.
+     * - Named values are resolved against the current scope context's
+     *   named values collection (`this.context.namedValues`).
+     * - Indexed values are resolved against the arguments that were
+     *  passed to the assertion function, where `{0}` identifies the
+     *  first argument, `{1}` the second argument and so on.
+     */
+    expr?: string | string[];
+
+    /**
+     * Indicates that the evaluation should be negated (i.e. NOT). This is equivalent to
+     * wrapping the evaluation within a logical NOT operation.
+     * For example if the evaluation would normally return `true` it would
+     * instead return `false` and vice versa.
+     */
+    not?: boolean;
+
+    /**
      * Identifies an {@link IScopeFn} function that will be called, this function
      * expects the current scope as the `this` value and any additional arguments
      * that are passed to the function. The function should return the current instance

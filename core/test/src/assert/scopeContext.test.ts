@@ -13,33 +13,33 @@ describe("scopeContext", () => {
     describe("getMessage", () => {
         it("creates a new scope context", () => {
             let context = createContext("darkness");
-            context.set("my", "old friend");
+            context.set("my", "old companion");
 
             assert.equal(context.value, "darkness");
             assert.equal(context.getMessage(""), "");
             assert.equal(context.getMessage("hello"), "hello");
             assert.equal(context.getMessage("hello {value}"), "hello \"darkness\"");
             assert.equal(context.getMessage("hello {message}"), "hello {message}");
-            assert.equal(context.getMessage("hello {my}"), "hello \"old friend\"");
+            assert.equal(context.getMessage("hello {my}"), "hello \"old companion\"");
         });
         
         it("Includes the initMsg in the message", () => {
-            let context = createContext("my", "hello darkness");
-            context.set("my", "old friend");
+            let context = createContext("my", "hello silence");
+            context.set("my", "old companion");
 
             assert.equal(context.value, "my");
-            assert.equal(context.getMessage(""), "hello darkness");
-            assert.equal(context.getMessage("hello"), "hello darkness: hello");
-            assert.equal(context.getMessage("hello {value}"), "hello darkness: hello \"my\"");
-            assert.equal(context.getMessage("hello {message}"), "hello darkness: hello {message}");
-            assert.equal(context.getMessage("hello {my}"), "hello darkness: hello \"old friend\"");
+            assert.equal(context.getMessage(""), "hello silence");
+            assert.equal(context.getMessage("hello"), "hello silence: hello");
+            assert.equal(context.getMessage("hello {value}"), "hello silence: hello \"my\"");
+            assert.equal(context.getMessage("hello {message}"), "hello silence: hello {message}");
+            assert.equal(context.getMessage("hello {my}"), "hello silence: hello \"old companion\"");
         });
 
         it("Includes the initMsg in the message only once with child context", () => {
             let context = createContext("hello", "darkness");
             context.set("talk", "with you again");
             let child = context.new("my");
-            child.set("old", "friend");
+            child.set("old", "companion");
 
             assert.equal(context.value, "hello");
             assert.equal(context.getMessage(""), "darkness");
@@ -55,7 +55,7 @@ describe("scopeContext", () => {
             assert.equal(child.getMessage("hello"), "darkness: hello");
             assert.equal(child.getMessage("hello {value}"), "darkness: hello \"my\"");
             assert.equal(child.getMessage("hello {message}"), "darkness: hello {message}");
-            assert.equal(child.getMessage("hello {old}"), "darkness: hello \"friend\"");
+            assert.equal(child.getMessage("hello {old}"), "darkness: hello \"companion\"");
             // Child context should include parent context
             assert.equal(child.getMessage("hello {talk}"), "darkness: hello \"with you again\"");
         });
@@ -64,7 +64,7 @@ describe("scopeContext", () => {
             let context = createContext("hello", "darkness");
             context.set("talk", "with you again");
             let child = context.new("my");
-            child.set("old", "friend");
+            child.set("old", "companion");
 
             assert.equal(context.getMessage("hello {{value}"), "darkness: hello {{value}");
             assert.equal(child.getMessage("hello {{value}"), "darkness: hello {{value}");
@@ -88,7 +88,7 @@ describe("scopeContext", () => {
             let context = createContext("hello", "darkness");
             context.set("talk", "with you again");
             let child = context.new("my");
-            child.set("old", "friend");
+            child.set("old", "companion");
 
             assert.equal(context._$stackFn.length, 0);
             assert.equal(child._$stackFn.length, 0);
@@ -107,7 +107,7 @@ describe("scopeContext", () => {
             context.set("talk", "with you again");
             context._$stackFn.push(hello);
             let child = context.new("my");
-            child.set("old", "friend");
+            child.set("old", "companion");
 
             assert.equal(context._$stackFn.length, 1);
             assert.equal(child._$stackFn.length, 1);
@@ -135,7 +135,7 @@ describe("scopeContext", () => {
             context.set("talk", "with you again");
             context._$stackFn.unshift(hello);
             let child = context.new("my");
-            child.set("old", "friend");
+            child.set("old", "companion");
 
             assert.equal(context._$stackFn.length, 1);
             assert.equal(child._$stackFn.length, 1);

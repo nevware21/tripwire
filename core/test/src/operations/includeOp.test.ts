@@ -38,12 +38,12 @@ describe("includeOp", () => {
     });
 
     it("should include a value in a string", () => {
-        const scope = createAssertScope(createContext("Hello Darkness"));
+        const scope = createAssertScope(createContext("Hello silence"));
         const op = includeOp(scope);
 
         checkError(() => {
-            op.call(scope, "my old friend");
-        }, "expected \"Hello Darkness\" to include \"my old friend\"");
+            op.call(scope, "my quiet friend");
+        }, "expected \"Hello silence\" to include \"my quiet friend\"");
         op.call(scope, "Hello");
 
         expect(() => op.call(scope, "Hello")).to.not.throw();

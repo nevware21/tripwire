@@ -101,11 +101,11 @@ export interface IToOp<R> extends INotOp<IToOp<R>> {
      * import { assert } from "@nevware21/tripwire";
      *
      * const arr = [1, 2, 3];
-     * const str = "hello darkness welcome back again";
+     * const str = "hello silence welcome back again";
      * const obj = { a: 1, b: 2, c: 3 };
      *
      * assert(arr).include(2); // Passes
-     * assert(str).include("darkness"); // Passes
+     * assert(str).include("silence"); // Passes
      * assert(obj).include.all.keys('a', 'b'); // Passes
      * assert(arr).include(4); // Fails
      * assert(str).include("planet"); // Fails
@@ -127,11 +127,11 @@ export interface IToOp<R> extends INotOp<IToOp<R>> {
      * import { assert } from "@nevware21/tripwire";
      *
      * const arr = [1, 2, 3];
-     * const str = "hello darkness welcome back again";
+     * const str = "hello silence welcome back again";
      * const obj = { a: 1, b: 2, c: 3 };
      *
      * assert(arr).includes(2); // Passes
-     * assert(str).includes("darkness"); // Passes
+     * assert(str).includes("silence"); // Passes
      * assert(obj).includes.all.keys('a', 'b'); // Passes
      * assert(arr).includes(4); // Fails
      * assert(str).includes("planet"); // Fails
@@ -152,11 +152,11 @@ export interface IToOp<R> extends INotOp<IToOp<R>> {
      * import { assert } from "@nevware21/tripwire";
      *
      * const arr = [1, 2, 3];
-     * const str = "hello darkness welcome back again";
+     * const str = "hello silence welcome back again";
      * const obj = { a: 1, b: 2, c: 3 };
      *
      * assert(arr).contain(2); // Passes
-     * assert(str).contain("darkness"); // Passes
+     * assert(str).contain("silence"); // Passes
      * assert(obj).contain.all.keys('a', 'b'); // Passes
      * assert(arr).contain(4); // Fails
      * assert(str).contain("planet"); // Fails
@@ -177,11 +177,11 @@ export interface IToOp<R> extends INotOp<IToOp<R>> {
      * import { assert } from "@nevware21/tripwire";
      *
      * const arr = [1, 2, 3];
-     * const str = "hello darkness welcome back again";
+     * const str = "hello silence welcome back again";
      * const obj = { a: 1, b: 2, c: 3 };
      *
      * assert(arr).contains(2); // Passes
-     * assert(str).contains("darkness"); // Passes
+     * assert(str).contains("silence"); // Passes
      * assert(obj).contains.all.keys('a', 'b'); // Passes
      * assert(arr).contains(4); // Fails
      * assert(str).contains("planet"); // Fails

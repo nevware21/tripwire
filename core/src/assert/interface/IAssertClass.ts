@@ -73,7 +73,7 @@ export interface IAssertClass<AssertInst extends IAssertInst = IAssertInst> {
      * @example
      * ```typescript
      * assert.fail(); // Throws AssertionFailure
-     * assert.fail("Hello Darkness, my old friend"); // Throws AssertionFailure
+     * assert.fail("Hello silence, my quiet friend"); // Throws AssertionFailure
      * assert.fail(() => "Looks like we have failed again"); // Throws AssertionFailure
      * ```
      */
@@ -103,7 +103,7 @@ export interface IAssertClass<AssertInst extends IAssertInst = IAssertInst> {
      * @example
      * ```typescript
      * assert.fatal(); // Throws AssertionFatal
-     * assert.fatal("Hello Darkness, my old friend"); // Throws AssertionFatal
+     * assert.fatal("Hello silence, my quiet friend"); // Throws AssertionFatal
      * assert.fatal(() => "Looks like we have failed again"); // Throws AssertionFatal
      * ```
      */

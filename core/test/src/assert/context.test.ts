@@ -108,7 +108,7 @@ describe("context", () => {
     
         describe("getMessage", () => {
             it("multiple messages with pre and post fixes", () => {
-                let ctx = createContext(1, "darkness");
+                let ctx = createContext(1, "silence");
                 let newCtx = ctx.new("newCtx", {
                     getMessage: (parent: IScopeContext, evalMsg?: MsgSource) => {
                         return "hello " + parent.getMessage(evalMsg);
@@ -116,7 +116,7 @@ describe("context", () => {
                 });
                 let subCtx = newCtx.new("subCtx", {
                     getMessage: (parent: IScopeContext, evalMsg?: MsgSource) => {
-                        return parent.getMessage(evalMsg) + ", my old friend";
+                        return parent.getMessage(evalMsg) + ", my old companion";
                     }
                 });
                 let childCtx = ctx.new("childCtx", {
@@ -125,11 +125,11 @@ describe("context", () => {
                     }
                 });
                     
-                assert.equal(ctx.getMessage(), "darkness");
+                assert.equal(ctx.getMessage(), "silence");
                 assert.equal(ctx.value, 1);
-                assert.equal(newCtx.getMessage(), "hello darkness");
+                assert.equal(newCtx.getMessage(), "hello silence");
                 assert.equal(newCtx.value, "newCtx");
-                assert.equal(subCtx.getMessage(), "hello darkness, my old friend");
+                assert.equal(subCtx.getMessage(), "hello silence, my old companion");
                 assert.equal(subCtx.value, "subCtx");
                 assert.equal(childCtx.getMessage(), "I've come to talk with you again");
                 assert.equal(childCtx.value, "childCtx");
