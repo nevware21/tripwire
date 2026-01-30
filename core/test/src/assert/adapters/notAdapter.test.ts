@@ -14,7 +14,7 @@ import { createContext } from "../../../../src/assert/scopeContext";
 import { createAssertScope } from "../../../../src/assert/assertScope";
 import { checkError } from "../../support/checkError";
 import { IAssertScope } from "../../../../src/assert/interface/IAssertScope";
-import { assertConfig } from "../../../../src/assert/config";
+import { assertConfig } from "../../../../src/config/assertConfig";
 
 describe("createNotAdapter", () => {
     let originalIsVerbose: boolean | undefined;

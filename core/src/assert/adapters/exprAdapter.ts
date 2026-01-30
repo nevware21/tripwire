@@ -15,7 +15,7 @@ import { doAwait, IPromise } from "@nevware21/ts-async";
 import { IAssertInstCore } from "../interface/IAssertInstCore";
 import { _isAssertInst } from "../internal/_instCreator";
 import { IAssertClass } from "../interface/IAssertClass";
-import { _formatValue } from "../internal/_formatValue";
+import { _formatValue } from "../../internal/_formatValue";
 
 interface IStepArgs {
     named?: string;
@@ -136,7 +136,7 @@ function _runExpr(theAssert: any, scope: IAssertScope, steps: IStepDef[], scopeF
 
         if (!(step.name in scope.that)) {
             throw new AssertionError(
-                "" + idx + " Invalid step: " + step.name + " for [" + steps.map((s: any) => s.name).join("->") + "] available steps: [" + objKeys(scope.that).join(";") + "] - " + _formatValue(scope.context, scope.that),
+                "" + idx + " Invalid step: " + step.name + " for [" + steps.map((s: any) => s.name).join("->") + "] available steps: [" + objKeys(scope.that).join(";") + "] - " + _formatValue(scope.context.opts, scope.that),
                 {
                     expected: step.name,
                     actual: objKeys(scope.that).join(";")
@@ -191,7 +191,7 @@ function _processFn(scope: IAssertScope, scopeFn: IScopeFn, theArgs: any[], theR
         // The last step is a function, so we call it
         theResult = scope.exec(theResult, theArgs);
         if (scope.context.opts.isVerbose) {
-            scope.context.setOp("=>[[r:" + _formatValue(scope.context, theResult) + "]]");
+            scope.context.setOp("=>[[r:" + _formatValue(scope.context.opts, theResult) + "]]");
         }
     }
 

@@ -8,7 +8,7 @@
 
 import { assert } from "../../../src/assert/assertClass";
 import { AssertionFailure } from "../../../src/assert/assertionError";
-import { assertConfig } from "../../../src/assert/config";
+import { assertConfig } from "../../../src/config/assertConfig";
 import { expect } from "../../../src/assert/expect";
 import { checkError } from "../support/checkError";
 
@@ -16,7 +16,7 @@ describe("assert.isFunction", () => {
 
     beforeEach(() => {
         // Setup code if needed
-        assertConfig.reset();
+        assertConfig.$ops.reset();
     });
 
     afterEach(() => {

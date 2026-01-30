@@ -51,9 +51,13 @@ import { EqualFn } from "./assert/interface/funcs/EqualFn";
 import { AssertFn } from "./assert/interface/funcs/AssertFn";
 import { ErrorLikeFn } from "./assert/interface/funcs/ErrorLikeFn";
 import { InstanceOfFn } from "./assert/interface/funcs/InstanceOfFn";
-import { assertConfig } from "./assert/config";
-import { IAssertConfig, IAssertConfigDefaults } from "./assert/interface/IAssertConfig";
-import { IFormatCtx, IFormatter, IFormattedValue, IFormatterOptions, eFormatResult } from "./assert/interface/IFormatter";
+import { assertConfig } from "./config/assertConfig";
+import { IConfig } from "./interface/IConfig";
+import { IConfigInst } from "./interface/IConfigInst";
+import { IConfigApi } from "./interface/IConfigApi";
+import { IFormatCtx, IFormatter, IFormattedValue, eFormatResult } from "./interface/IFormatter";
+import { IFormatManager } from "./interface/IFormatManager";
+import { IFormatterOptions } from "./interface/IFormatterOptions";
 import { createEvalAdapter, EvalFn } from "./assert/adapters/evalAdapter";
 import { IPropertyResultOp } from "./assert/interface/ops/IPropertyResultOp";
 import { createExprAdapter } from "./assert/adapters/exprAdapter";
@@ -63,7 +67,7 @@ import { AssertInstHandlers, IAssertInstHandlers } from "./assert/interface/IAss
 import { CHECK_INTERNAL_STACK_FRAME_REGEX } from "./assert/const";
 import { getScopeContext, createContext } from "./assert/scopeContext";
 import { SymbolFn } from "./assert/interface/funcs/SymbolFn";
-import { IRemovable } from "./assert/interface/IRemovable";
+import { IRemovable } from "./interface/IRemovable";
 import { OneOfFn } from "./assert/interface/funcs/OneOfFn";
 import { ChangeFn } from "./assert/interface/funcs/ChangeFn";
 import { ChangeByFn } from "./assert/interface/funcs/ChangeByFn";
@@ -82,11 +86,11 @@ export {
  * Export the interfaces
  */
 export {
-    IAllOp, IAnyOp, IAssertClass, IAssertClassDef, IAssertConfig, IAssertConfigDefaults,
+    IAllOp, IAnyOp, IAssertClass, IAssertClassDef, IConfig, IConfigInst, IConfigApi,
     IAssertInst, IAssertInstCore, IAssertInstHandlers, IAssertScope, IAssertScopeFuncDef,
     IChangeResultOp, IChangeResultValue, IDeepOp, IEqualOp, IExtendedAssert, IExtendedAssertInst,
-    IFormatCtx, IFormattedValue, IFormatter, IFormatterOptions, IHasOp, IIncludeOp, IIsOp,
-    IIsTypeOp, IKeysOp, INestedOp, INotOp, INumericOp, IOwnOp, IPropertyResultOp, IRemovable,
+    IFormatCtx, IFormattedValue, IFormatter, IFormatterOptions, IFormatManager, IHasOp, IIncludeOp,
+    IIsOp, IIsTypeOp, IKeysOp, INestedOp, INotOp, INumericOp, IOwnOp, IPropertyResultOp, IRemovable,
     IScopeContext, IScopeContextOverrides, IScopePropFn, IStrictlyOp, IThrowOp, IToOp,
     PropertyDescriptorFn, PropertyFn
 };

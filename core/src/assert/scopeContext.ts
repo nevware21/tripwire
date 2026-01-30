@@ -15,11 +15,12 @@ import { IScopeContext, IScopeContextOverrides } from "./interface/IScopeContext
 import { AssertionFailure, AssertionFatal } from "./assertionError";
 import { MsgSource } from "./type/MsgSource";
 import { EMPTY_STRING } from "./internal/const";
-import { assertConfig } from "./config";
-import { IAssertConfig } from "./interface/IAssertConfig";
+import { assertConfig } from "../config/assertConfig";
 import { _getAssertScope, _isAssertInst } from "./internal/_instCreator";
-import { _formatValue } from "./internal/_formatValue";
+import { _formatValue } from "../internal/_formatValue";
 import { useScope } from "./useScope";
+import { IConfigInst } from "../interface/IConfigInst";
+import { IConfig } from "../interface/IConfig";
 
 const cScopeContextTag = newSymbol("@nevware21/tripwire#IScopeContext");
 const DetailsSymbol = (/* #__PURE__*/getDeferred(() => newSymbol("_$details")));
@@ -180,9 +181,9 @@ export function getScopeContext(value: any): IScopeContext {
  * @group Scope
  * @since 0.1.0
  */
-export function createContext<T>(value?: T, initMsg?: MsgSource, stackStart?: Function, orgArgs?: any[], defOptions?: IAssertConfig): IScopeContext {
+export function createContext<T>(value?: T, initMsg?: MsgSource, stackStart?: Function, orgArgs?: any[], cfgOverrides?: IConfig): IScopeContext {
     let values: any = {};
-    let theOptions = getLazy<IAssertConfig>(() => assertConfig.clone(defOptions));
+    let cfgInst = getLazy<IConfigInst>(() => cfgOverrides ? assertConfig.$ops.clone(cfgOverrides) : assertConfig);
     let theStack: Function[] = _createStackTracker();
 
     function _resolveMessage(context: IScopeContext, theMsg: MsgSource) {
@@ -209,7 +210,7 @@ export function createContext<T>(value?: T, initMsg?: MsgSource, stackStart?: Fu
                 
                 let result = _getTokenValue(context, details, strSubstring(message, open + 1, close));
                 if (result.has) {
-                    let prefix = strLeft(message, open) + _formatValue(context, result.value);
+                    let prefix = strLeft(message, open) + _formatValue(context.opts, result.value);
                     message = prefix + strSubstring(message, close + 1);
                     start = prefix.length;
                 } else {
@@ -248,7 +249,7 @@ export function createContext<T>(value?: T, initMsg?: MsgSource, stackStart?: Fu
             let _this = this;
             let details: any = {
                 actual: _this.value,
-                showDiff: theOptions.v.showDiff
+                showDiff: cfgInst.v.showDiff
             };
             arrForEach(_this.keys(), (key) => {
                 details[key] = _this.get(key);
@@ -269,7 +270,7 @@ export function createContext<T>(value?: T, initMsg?: MsgSource, stackStart?: Fu
             let _this = this;
             let theStack: Function[] = null;
             
-            if (!theOptions.v.fullStack) {
+            if (!cfgInst.v.fullStack) {
                 theStack = _createStackTracker(_this._$stackFn);
                 if (stackStart) {
                     if (!isArray(stackStart)) {
@@ -292,7 +293,7 @@ export function createContext<T>(value?: T, initMsg?: MsgSource, stackStart?: Fu
             let _this = this;
             let theStack: Function[] = null;
             
-            if (!theOptions.v.fullStack) {
+            if (!cfgInst.v.fullStack) {
                 theStack = _createStackTracker(_this._$stackFn);
                 if (stackStart) {
                     if (!isArray(stackStart)) {
@@ -377,7 +378,7 @@ export function createContext<T>(value?: T, initMsg?: MsgSource, stackStart?: Fu
 
     return objDefineProps<IScopeContext>(context, {
         opts: {
-            g: () => theOptions.v
+            g: () => cfgInst.v
         },
         value: {
             g: () => value

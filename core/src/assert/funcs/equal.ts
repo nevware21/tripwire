@@ -9,7 +9,7 @@
 import { arrForEach, arrMap, asString, isDate, isFunction, isObject, isPlainObject, isPrimitive, isSymbol, iterForOf, objGetOwnPropertyDescriptor, objGetOwnPropertySymbols, objIs, objToString, strLower } from "@nevware21/ts-utils";
 import { MsgSource } from "../type/MsgSource";
 import { IAssertScope } from "../interface/IAssertScope";
-import { _formatValue } from "../internal/_formatValue";
+import { _formatValue } from "../../internal/_formatValue";
 import { IScopeContext } from "../interface/IScopeContext";
 
 /**
@@ -279,7 +279,7 @@ function _isVisiting<T>(value: any, options: IEqualOptions, cb: () => T): T {
             });
 
             if (visitCount > 10) {
-                let errorMsg = "Unresolvable Circular reference detected for " + _formatValue(options.context, options.visiting[0]) + " @ depth " + options.visiting.length + " reference count: " + visitCount;
+                let errorMsg = "Unresolvable Circular reference detected for " + _formatValue(options.context.opts, options.visiting[0]) + " @ depth " + options.visiting.length + " reference count: " + visitCount;
                 if (options.context) {
                     options.context.fatal(errorMsg);
                 } else {

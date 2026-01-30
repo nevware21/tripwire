@@ -2,19 +2,24 @@
  * @nevware21/tripwire
  * https://github.com/nevware21/tripwire
  *
- * Copyright (c) 2024-2025 NevWare21 Solutions LLC
+ * Copyright (c) 2024-2026 NevWare21 Solutions LLC
  * Licensed under the MIT license.
  */
 
-import { MsgSource } from "../type/MsgSource";
-import { IFormatter, IFormatterOptions } from "./IFormatter";
-import { IRemovable } from "./IRemovable";
+import { MsgSource } from "../assert/type/MsgSource";
+import { IFormatterOptions } from "./IFormatterOptions";
 
 /**
  * Provides the options for the current context
  */
-export interface IAssertConfig {
-    
+export interface IConfig {
+    /**
+     * Reserved for internal use only as the IConfigInst provides additional public operations
+     * that are not part of the configuration that can be modified.
+     * @internal
+     */
+    $ops?: never;
+
     /**
      * Identifies if the current context is verbose mode, which will include additional
      * information in the execution context and any resulting assertion failures.
@@ -45,9 +50,10 @@ export interface IAssertConfig {
     /**
      * Options for configuring value formatting.
      * @remarks These options allow you to customize how values are formatted in assertion error messages.
-     * You can provide custom formatters to override the default formatting behavior for specific types.
-     * These formatters will be checked before the default formatters, allowing you to provide specialized
-     * formatting for certain value types.
+     * Custom formatters can be added via the format manager (see {@link IConfigInst.formatMgr}).
+     * Custom formatters are checked in order: current context formatters first, then parent context formatters,
+     * and finally default formatters. This allows you to provide specialized formatting for certain value types
+     * that takes precedence over inherited and default formatting.
      *
      * Additionally, you can control post-processing of the formatted output using {@link IFormatterOptions.finalize}
      * and {@link IFormatterOptions.finalizeFn} to escape ANSI codes, wrap output, or apply other transformations.
@@ -61,36 +67,34 @@ export interface IAssertConfig {
      *
      * // Example 1: Custom formatters with default ANSI escaping
      * assertConfig.format = {
-     *     finalize: true,  // Enable default escapeAnsi
-     *     formatters: [
-     *         {
-     *             name: "stringFormatter",
-     *             value: (ctx, value) => {
-     *                 if (typeof value === 'string') {
-     *                     return { res: eFormatResult.Ok, val: `'${value}'` };
-     *                 }
-     *                 return { res: eFormatResult.Skip };
-     *             }
-     *         }
-     *     ]
+     *     finalize: true  // Enable default escapeAnsi
      * };
+     *
+     * assertConfig.formatMgr.addFormatter({
+     *     name: "stringFormatter",
+     *     value: (ctx, value) => {
+     *         if (typeof value === 'string') {
+     *             return { res: FormatResult.Ok, val: `'${value}'` };
+     *         }
+     *         return { res: FormatResult.Skip };
+     *     }
+     * });
      *
      * // Example 2: Custom formatters with custom finalization
      * assertConfig.format = {
      *     finalize: true,
-     *     finalizeFn: (value) => replaceAnsi(value, (match) => gray(escapeAnsi(match))),
-     *     formatters: [
-     *         {
-     *             name: "arrayFormatter",
-     *             value: (ctx, value) => {
-     *                 if (Array.isArray(value)) {
-     *                     return { res: eFormatResult.Ok, val: `[${value.length} items]` };
-     *                 }
-     *                 return { res: eFormatResult.Skip };
-     *             }
-     *         }
-     *     ]
+     *     finalizeFn: (value) => replaceAnsi(value, (match) => gray(escapeAnsi(match)))
      * };
+     *
+     * assertConfig.formatMgr.addFormatter({
+     *     name: "arrayFormatter",
+     *     value: (ctx, value) => {
+     *         if (Array.isArray(value)) {
+     *             return { res: FormatResult.Ok, val: `[${value.length} items]` };
+     *         }
+     *         return { res: FormatResult.Skip };
+     *     }
+     * });
      * ```
      */
     format?: IFormatterOptions;
@@ -116,33 +120,4 @@ export interface IAssertConfig {
      * @since 0.1.5
      */
     showDiff?: boolean;
-}
-
-export interface IAssertConfigDefaults extends IAssertConfig {
-
-    /**
-     * Resets the current config options to their default values removing any customizations
-     * @remarks This will restore all config options to their original default values as
-     * defined in package defaults.
-     */
-    reset: () => void;
-    
-    /**
-     * Returns the current config options in a new plain object
-     * @param options - The options to override the current config options
-     */
-    clone: (options?: IAssertConfig) => IAssertConfig;
-
-    /**
-     * Adds a new default value formatter that will be used to for all new assertion contexts
-     * @param formatter - The value formatter to add
-     * @remarks The returned IRemovable can be used to remove the formatter when it is no longer needed.
-     */
-    addFormatter: (formatter: IFormatter) => IRemovable;
-    
-    /**
-     * Removes a value formatter from the current context options
-     * @param formatter - The value formatter to remove
-     */
-    removeFormatter: (formatter: IFormatter) => void;
 }

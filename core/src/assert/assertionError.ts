@@ -11,7 +11,7 @@ import {
     newSymbol, objDefine, objDefineProps, objForEachKey, objKeys, strTrim
 } from "@nevware21/ts-utils";
 import { EMPTY_STRING } from "./internal/const";
-import { _formatValue } from "./internal/_formatValue";
+import { _formatValue } from "../internal/_formatValue";
 import { IParsedStack, parseStack } from "../internal/parseStack";
 import { captureStack } from "../internal/captureStack";
 import { IScopeContext } from "./interface/IScopeContext";
@@ -168,15 +168,15 @@ function _formatProps(ctx: IScopeContext | null, props: any): string {
                         thePath = props.opPath.join("->") + "->" + lastOp;
                     }
                 } else {
-                    thePath = _formatValue(ctx, props.opPath) + "->" + lastOp;
+                    thePath = _formatValue(ctx.opts, props.opPath) + "->" + lastOp;
                 }
             } else {
-                thePath = _formatValue(ctx, props.opPath);
+                thePath = _formatValue(ctx.opts, props.opPath);
             }
 
             formatted += "running \"" + thePath + "\"";
             if (props.actual) {
-                formatted += " with (" + _formatValue(ctx, props.actual) + ")";
+                formatted += " with (" + _formatValue(ctx.opts, props.actual) + ")";
             }
             let leftOver: any = {};
             objForEachKey(props, (key, value) => {
