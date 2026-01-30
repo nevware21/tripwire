@@ -6,8 +6,8 @@
  * Licensed under the MIT license.
  */
 
-import { IAssertConfig } from "./IAssertConfig";
 import { MsgSource } from "../type/MsgSource";
+import { IConfigInst } from "../../interface/IConfigInst";
 
 /**
  * The scope context is used to track the evaluation of the assertion and
@@ -23,9 +23,9 @@ export interface IScopeContext {
     readonly value: any;
 
     /**
-     * Returns the options for the current context.
+     * Returns the options (the current configuration) for the current context.
      */
-    readonly opts: IAssertConfig;
+    readonly opts: IConfigInst;
 
     /**
      * Returns the original arguments used during the initiation of the proxied request

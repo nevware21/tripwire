@@ -7,7 +7,7 @@
  */
 
 import { assert } from "../../../src/assert/assertClass";
-import { assertConfig } from "../../../src/assert/config";
+import { assertConfig } from "../../../src/config/assertConfig";
 import { checkError } from "../support/checkError";
 
 describe("assert.equal", function () {

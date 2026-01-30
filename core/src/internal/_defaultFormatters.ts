@@ -6,15 +6,9 @@
  * Licensed under the MIT license.
  */
 
-import {
-    arrForEach, arrIndexOf, asString, dumpObj, isArray, isError, isFunction, isMapLike, isPlainObject, isPrimitive,
-    isRegExp, isSetLike, isStrictNullOrUndefined, isString, isSymbol, iterForOf, objDefine, objForEachKey, objGetOwnPropertySymbols, objGetPrototypeOf,
-    strIndexOf
-} from "@nevware21/ts-utils";
-import { EMPTY_STRING } from "./const";
 import { eFormatResult, IFormatCtx, IFormattedValue, IFormatter } from "../interface/IFormatter";
-import { IScopeContext } from "../interface/IScopeContext";
-import { escapeAnsi, yellow } from "@nevware21/chromacon";
+import { arrForEach, arrIndexOf, asString, dumpObj, isArray, isError, isFunction, isMapLike, isPlainObject, isPrimitive, isRegExp, isSetLike, isStrictNullOrUndefined, isString, isSymbol, iterForOf, objForEachKey, objGetOwnPropertySymbols, objGetPrototypeOf, strIndexOf } from "@nevware21/ts-utils";
+import { EMPTY_STRING } from "../assert/internal/const";
 
 /**
  * @internal
@@ -354,7 +348,7 @@ const _defaultFallbackFormatter: IFormatter = {
  * @ignore
  * Default formatters in order of precedence
  */
-const _defaultFormatters: IFormatter[] = [
+export const _defaultFormatters: IFormatter[] = [
     _defaultArrayFormatter,
     _defaultStringFormatter,
     _defaultRegExpFormatter,
@@ -369,6 +363,7 @@ const _defaultFormatters: IFormatter[] = [
     _defaultToStringFormatter,
     _defaultFallbackFormatter
 ];
+
 
 function _getObjKeys<T>(target: T): (keyof T)[] {
     let keys: any[] = [];
@@ -418,148 +413,4 @@ function _isErrorType(value: any): boolean {
     }
 
     return false;
-}
-
-function _isVisited(value: any, visited: any[]): boolean {
-    if (isPrimitive(value)) {
-        return false;
-    }
-
-    for (let idx = 0; idx < visited.length; idx++) {
-        if (visited[idx] === value) {
-            return true;
-        }
-    }
-
-    return false;
-}
-
-function _processFormatters(formatters: IFormatter[], formatCtx: IFormatCtx, value: any): IFormattedValue {
-    let formattedValue: IFormattedValue;
-
-    if (formatters) {
-        let idx = 0;
-        while(idx < formatters.length) {
-            let formatter = formatters[idx];
-            if (formatter) {
-                try {
-                    let fn = formatter.value;
-                    if (isFunction(fn)) {
-                        let formatted = fn(formatCtx, value);
-                        if (formatted && (formatted.res === eFormatResult.Ok || formatted.res === eFormatResult.Continue)) {
-                            formattedValue = formatted;
-                            if (formatted.res === eFormatResult.Ok) {
-                                break;
-                            }
-                        }
-                    }
-                } catch (e) {
-                    formattedValue = {
-                        res: eFormatResult.Failed,
-                        err: e,
-                        val: asString(value)
-                    };
-                }
-            }
-            
-            idx++;
-        }
-    }
-
-    return formattedValue;
-}
-
-/**
- * Perform the default formatting of a value using the provided format context.
- * @param formatCtx The format context to use for formatting the value.
- * @param value The value to format.
- * @returns A string representation of the value.
- */
-function _doFormat(formatCtx: IFormatCtx, value: any): string {
-    let result: string;
-
-    let formatOpts = formatCtx.ctx.opts.format;
-    try {
-        let formattedValue: IFormattedValue = _processFormatters(formatOpts.formatters || [], formatCtx, value);
-        if (!formattedValue || formattedValue.res !== eFormatResult.Ok) {
-            // Iterate through the default formatters to find one that can format the value
-            formattedValue = _processFormatters(_defaultFormatters, formatCtx, value);
-        }
-
-        if (formattedValue) {
-            if (formattedValue.res === eFormatResult.Ok || formattedValue.res === eFormatResult.Continue) {
-                result = formattedValue.val;
-            } else if (formattedValue.res === eFormatResult.Failed) {
-                result = dumpObj(formattedValue.err);
-            } else {
-                result = asString(value);
-            }
-        } else {
-            result = asString(value);
-        }
-    } catch (e) {
-        result = yellow("(" + _doFormat(formatCtx, e) + ")");
-    }
-
-    return result;
-}
-
-/**
- * @internal
- * @ignore
- * Creates a format context bound to the supplied scope context.
- * The returned context handles circular references while formatting values.
- * @param ctx - The scope context used to resolve formatting options.
- * @returns A format context that can be passed to `_doFormat` or used via its `format` method.
- */
-function _createFormatCtx(ctx: IScopeContext): IFormatCtx {
-    let visited: any[] = [];
-
-    let formatCtx: IFormatCtx = {
-        ctx: ctx,
-        format: (value: any): string => {
-            let isVisited = _isVisited(value, visited);
-            if (isVisited) {
-                // Circular reference detected
-                return ctx.opts.circularMsg ? ctx.opts.circularMsg() : EMPTY_STRING;
-            }
-
-            visited.push(value);
-
-            let formattedValue: string;
-            try {
-                formattedValue = _doFormat(formatCtx, value);
-            } finally {
-                visited.pop();
-            }
-
-            return formattedValue;
-        }
-    };
-
-    return objDefine(formatCtx, "ctx", { v: ctx, w: false });
-}
-
-/**
- * @internal
- * @ignore
- * Internal helper to format a value for display in an error messages.
- * @param ctx - Format context containing the formatters to use.
- * @param value - The value to format.
- * @returns - A string representation of the value.
- */
-export function _formatValue(ctx: IScopeContext, value: any): string {
-    let formatCtx = _createFormatCtx(ctx);
-    let formatOpts = formatCtx.ctx.opts.format;
-    let result = _doFormat(formatCtx, value);
-    
-    if (formatOpts && formatOpts.finalize) {
-        if (isFunction(formatOpts.finalizeFn)) {
-            result = formatOpts.finalizeFn(result);
-        } else {
-            result = escapeAnsi(result);
-        }
-    }
-
-    return result;
 }

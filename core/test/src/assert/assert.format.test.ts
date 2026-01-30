@@ -7,9 +7,9 @@
  */
 
 import { assert } from "../../../src/assert/assertClass";
-import { assertConfig } from "../../../src/assert/config";
+import { assertConfig } from "../../../src/config/assertConfig";
 import { checkError } from "../support/checkError";
-import { IFormatter, eFormatResult } from "../../../src/assert/interface/IFormatter";
+import { IFormatter, eFormatResult } from "../../../src/interface/IFormatter";
 import { escapeAnsi, gray, red, replaceAnsi } from "@nevware21/chromacon";
 import { isString } from "@nevware21/ts-utils";
 
@@ -146,14 +146,11 @@ describe("assert format options", function () {
     });
 
     describe("custom formatters", function () {
-        let originalFormat: any;
-
         beforeEach(function () {
-            originalFormat = assertConfig.format;
         });
 
         afterEach(function () {
-            assertConfig.format = originalFormat;
+            assertConfig.$ops.reset();
         });
 
         it("should use custom formatter that finalizes ANSI codes in gray", function () {
@@ -174,9 +171,10 @@ describe("assert format options", function () {
             };
 
             assertConfig.format = {
-                finalize: false,
-                formatters: [ansiEscapeFormatter]
+                finalize: false
             };
+
+            assertConfig.$ops.addFormatter(ansiEscapeFormatter);
 
             const objWithAnsi = { message: red("Red Text") };
             const expected =  gray("\\x1b[31m") + "Red Text" + gray("\\x1b[39m");
@@ -216,9 +214,7 @@ describe("assert format options", function () {
                 }
             };
 
-            assertConfig.format = {
-                formatters: [basicFormatter, ansiEnhancer]
-            };
+            assertConfig.$ops.addFormatter([basicFormatter, ansiEnhancer]);
 
             const obj = { text: "\x1b[35mMagenta\x1b[0m" };
 
@@ -245,9 +241,7 @@ describe("assert format options", function () {
                 }
             };
 
-            assertConfig.format = {
-                formatters: [customClassFormatter]
-            };
+            assertConfig.$ops.addFormatter([customClassFormatter]);
 
             const custom1 = new CustomClass("value1");
             const custom2 = new CustomClass("value2");
@@ -287,9 +281,7 @@ describe("assert format options", function () {
                 }
             };
 
-            assertConfig.format = {
-                formatters: [numberFormatter, stringAnsiFormatter]
-            };
+            assertConfig.$ops.addFormatter([numberFormatter, stringAnsiFormatter]);
 
             const obj = {
                 count: 42,
@@ -320,9 +312,7 @@ describe("assert format options", function () {
                 }
             };
 
-            assertConfig.format = {
-                formatters: [failingFormatter]
-            };
+            assertConfig.$ops.addFormatter([failingFormatter]);
 
             // This should fall back to default formatting since the formatter fails
             const obj = { id: BigInt(12345) };
@@ -348,9 +338,9 @@ describe("assert format options", function () {
                 }
             };
 
+            assertConfig.$ops.addFormatter([customFormatter]);
             assertConfig.format = {
-                finalize: true,
-                formatters: [customFormatter]
+                finalize: true
             };
 
             const obj = { tag: "SPECIAL:\x1b[36mCyan\x1b[0m" };
@@ -365,7 +355,7 @@ describe("assert format options", function () {
         let originalFormat: any;
 
         beforeEach(function () {
-            assertConfig.reset();
+            assertConfig.$ops.reset();
             originalFormat = assertConfig.format;
         });
 
@@ -494,10 +484,10 @@ describe("assert format options", function () {
                 }
             };
 
+            assertConfig.$ops.addFormatter([numberFormatter]);
             assertConfig.format = {
                 finalize: true,
-                finalizeFn: customEscape,
-                formatters: [numberFormatter]
+                finalizeFn: customEscape
             };
 
             const obj = {

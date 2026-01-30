@@ -10,9 +10,9 @@ import { MsgSource } from "../assert/type/MsgSource";
 import { IAssertInst } from "./interface/IAssertInst";
 import { createAssertScope } from "./assertScope";
 import { createContext } from "./scopeContext";
-import { IAssertConfig } from "./interface/IAssertConfig";
 import { _tripwireAssertHandlers } from "./internal/_tripwireInst";
 import { arrSlice } from "@nevware21/ts-utils";
+import { IConfig } from "../interface/IConfig";
 
 /**
  * Creates a new {@link IAssertScope} and linked {@link IAssertInst} object with the
@@ -25,7 +25,7 @@ import { arrSlice } from "@nevware21/ts-utils";
  * @group Expect
  * @since 0.1.0
  */
-export function expect<T>(value: T, initMsg?: MsgSource, config?: IAssertConfig): IAssertInst {
+export function expect<T>(value: T, initMsg?: MsgSource, config?: IConfig): IAssertInst {
     let orgArgs = arrSlice(arguments);
     let scope = createAssertScope(createContext(value, initMsg, null, orgArgs, config), _tripwireAssertHandlers);
     

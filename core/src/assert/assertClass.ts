@@ -25,7 +25,6 @@ import { hasNestedPropertyFunc, hasDeepNestedPropertyFunc, nestedIncludeFunc, de
 import { AssertionError, AssertionFailure } from "./assertionError";
 import { createContext } from "./scopeContext";
 import { createAssertScope } from "./assertScope";
-import { assertConfig } from "./config";
 import { IScopeFn } from "./interface/IScopeFuncs";
 import { createExprAdapter } from "./adapters/exprAdapter";
 import { createNotAdapter } from "./adapters/notAdapter";
@@ -564,7 +563,7 @@ function _createProxyFunc(theAssert: IAssertClass, assertName: string, def: IAss
 
         // Create the initial scope `expect(value, initMsg)` and run any defined steps
         // Using either the current alias entry point or the current function
-        let newScope = createAssertScope(createContext(actualValue, initMsg, _aliasStackStart || _assertFunc, orgArgs, assertConfig));
+        let newScope = createAssertScope(createContext(actualValue, initMsg, _aliasStackStart || _assertFunc, orgArgs));
         newScope.context._$stackFn.push(_aliasStackStart || _assertFunc);
 
         newScope.context.setOp(assertName + "()");

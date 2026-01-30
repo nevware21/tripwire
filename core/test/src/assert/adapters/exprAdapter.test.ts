@@ -12,7 +12,7 @@ import { createContext } from "../../../../src/assert/scopeContext";
 import { createAssertScope } from "../../../../src/assert/assertScope";
 import { checkError } from "../../support/checkError";
 import { IAssertScope } from "../../../../src/assert/interface/IAssertScope";
-import { assertConfig } from "../../../../src/assert/config";
+import { assertConfig } from "../../../../src/config/assertConfig";
 import { addAssertInstFunc, addAssertInstFuncDefs, addAssertInstProperty } from "../../../../src/assert/assertInst";
 import { _clearAssertInstFuncs } from "../../../../src/assert/internal/_AssertInstCore";
 import { expect } from "../../../../src/assert/expect";
