@@ -88,6 +88,8 @@ npm install @nevware21/tripwire-chai --save-dev
 
 ### Migration from Chai
 
+[Migrating from Chai to Tripwire](migration/migrating-from-chai.md) - Guide for upgrading from Chai.js
+
 **Step 1: Update your imports**
 ```diff
 - import { assert } from 'chai';
