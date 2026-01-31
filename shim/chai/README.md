@@ -97,6 +97,8 @@ assert.include([1, 2, 3], 2);
 
 **Migration Guide & Examples**: [Documentation Guide](https://nevware21.github.io/tripwire)
 
+**Migrating from Chai**: [Migration Guide](https://nevware21.github.io/tripwire/migration/migrating-from-chai) - Complete guide for upgrading from Chai.js to Tripwire
+
 **API Reference**: [TypeDoc Documentation](https://nevware21.github.io/tripwire/typedoc/shim/chai/index.html)
 
 **Core Package**: [@nevware21/tripwire](https://www.npmjs.com/package/@nevware21/tripwire) - Consider migrating for better features
