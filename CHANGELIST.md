@@ -1,3 +1,77 @@
+# v0.1.5 January 30th, 2026
+
+## Breaking Changes
+
+- [#253](https://github.com/nevware21/tripwire/pull/253) refactor: Centralized format manager with parent-child hierarchy
+  - **BREAKING**: Formatter API completely restructured
+  - `assertConfig.format.formatters` replaced with `assertConfig.$ops.formatMgr`
+  - `assertConfig.reset()` → `assertConfig.$ops.reset()`
+  - `assertConfig.clone()` → `assertConfig.$ops.clone()`
+  - Import path changed: `assert/config` → `config/assertConfig`
+  - `IFormatter`, `IRemovable` moved from `assert/interface/` to `interface/`
+  - New formatter API methods: `addFormatter()`, `removeFormatter()`, `getFormatters()`, `forEach()`, `reset()`
+
+  **Migration:**
+  ```typescript
+  // Before
+  assertConfig.format.formatters = [myFormatter];
+  assertConfig.reset();
+
+  // After
+  assertConfig.$ops.addFormatter(myFormatter);
+  assertConfig.$ops.reset();
+  ```
+
+## New Features
+
+- [#251](https://github.com/nevware21/tripwire/pull/251) perf(core): Add lazy initialization for assert class functions
+  - Improves startup performance by deferring creation of ~100 assertion functions until first use
+  - Add `expr` and `not` properties to IAssertClassDef for cleaner definition parsing
+- [#250](https://github.com/nevware21/tripwire/pull/250) feat(core): Add optimized `createNotAdapter` for negation operations
+  - New function wraps scope functions with "not" operation more efficiently than `createExprAdapter("not", scopeFn)`
+  - Avoids expression parsing overhead by directly applying negation context
+- [#249](https://github.com/nevware21/tripwire/pull/249) feat(chai-shim): Enable ownInclude, deepOwnInclude, and Map/Set keys assertions
+  - Implement `own.include` operation for checking own properties only
+  - Add `deep.own.include` for deep equality comparison of own properties
+  - Enable tests for include, deepInclude, keys operations with Map/Set collections
+- [#248](https://github.com/nevware21/tripwire/pull/248) feat: Add `ifError` assertion for Node.js error handling
+  - Add `assert.ifError()` and `expect().to.ifError()` for Node.js-style callback error checking
+  - Passes for falsy values, throws Error instances, fails for truthy non-Error values
+- [#247](https://github.com/nevware21/tripwire/pull/247) feat: Implement deep keys assertions with ArrayLikeOrSizedIterable support
+  - Add `hasAnyDeepKeys`, `hasAllDeepKeys`, and their negations
+  - Keys parameter accepts Arrays, Sets, Maps, or any iterable collection
+- [#242](https://github.com/nevware21/tripwire/pull/242) feat: Add `isNumber` and `isBoolean` assertion methods
+- [#241](https://github.com/nevware21/tripwire/pull/241) feat: Add change/increase/decrease assertions with generic type support
+- [#240](https://github.com/nevware21/tripwire/pull/240) feat: Implement `oneOf` assertion with ArrayLikeOrSizedIterable support
+- [#239](https://github.com/nevware21/tripwire/pull/239) feat: Add `endsWith` and subsequence member comparison functions
+- [#238](https://github.com/nevware21/tripwire/pull/238) feat: Add array member comparison assertions and deep equality support
+- [#232](https://github.com/nevware21/tripwire/pull/232) feat: Add operator comparison function with typeof support
+- [#231](https://github.com/nevware21/tripwire/pull/231) feat: Implement approximate equality assertions (`closeTo`/`approximately`)
+- [#228](https://github.com/nevware21/tripwire/pull/228) feat(assertions): Implement `lengthOf`/`sizeOf` assertions
+- [#227](https://github.com/nevware21/tripwire/pull/227) feat: Add nested property operations with Chai compatibility
+- [#226](https://github.com/nevware21/tripwire/pull/226) feat: Add property value checking assertions with negation support
+- [#225](https://github.com/nevware21/tripwire/pull/225) feat: Implement `exists`/`notExists` assertions
+- [#224](https://github.com/nevware21/tripwire/pull/224) feat: Implement `instanceOf` assertion for type checking
+- [#223](https://github.com/nevware21/tripwire/pull/223) feat: Add `typeOf` assertion support and enhance error handling
+- [#219](https://github.com/nevware21/tripwire/pull/219) feat: Add `isFinite` assertion for finite number validation
+- [#218](https://github.com/nevware21/tripwire/pull/218) feat: Add `isNaN` assertion support
+- [#217](https://github.com/nevware21/tripwire/pull/217) feat: Add numeric comparison operations (`above`/`below`/`within`)
+
+## Refactoring
+
+- [#233](https://github.com/nevware21/tripwire/pull/233) refactor(core): Reorganize MsgSource type to dedicated type folder
+
+## Documentation & Maintenance
+
+- [#255](https://github.com/nevware21/tripwire/pull/255) docs: Add migration guide for migrating from Chai to Tripwire
+- [#254](https://github.com/nevware21/tripwire/pull/254) chore(codecov): Add explicit slug property to upload
+- [#243](https://github.com/nevware21/tripwire/pull/243) chore: Update docs site
+- [#230](https://github.com/nevware21/tripwire/pull/230) docs(copyright): Update copyright headers for 2025 changes
+- [#220](https://github.com/nevware21/tripwire/pull/220) chore: Add Node.js 22 and 24 support, limit codecov to node 22
+- [#235](https://github.com/nevware21/tripwire/pull/235) build(deps-dev): Bump @microsoft/rush from 5.165.0 to 5.166.0
+
+For full details see [v0.1.4...v0.1.5](https://github.com/nevware21/tripwire/compare/v0.1.4...v0.1.5)
+
 # v0.1.4 January 3rd, 2026
 
 ## Changelog
