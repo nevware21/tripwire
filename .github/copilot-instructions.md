@@ -129,7 +129,7 @@ expect(() => { doSomething(); }).to.not.throw();
 ## Dependencies
 
 ### Runtime Dependencies
-- `@nevware21/ts-utils` - Core utility functions (>= 0.12.3 < 2.x)
+- `@nevware21/ts-utils` - Core utility functions (>= 0.12.6 < 2.x)
 - `@nevware21/ts-async` - Async utilities (>= 0.5.4 < 2.x)
 - `tslib` - TypeScript runtime helpers
 
