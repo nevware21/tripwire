@@ -7,7 +7,7 @@
  */
 
 import { AssertClassDef, assert, addAssertFunc, addAssertFuncs, createAssert } from "./assert/assertClass";
-import { AssertionError, AssertionErrorConstructor, AssertionFailure, AssertionFailureConstructor, AssertionFatal, AssertionFatalConstructor } from "./assert/assertionError";
+import { AssertionError, AssertionErrorConstructor, AssertionFailure, AssertionFailureConstructor, AssertionFatal, AssertionFatalConstructor, IAssertionErrorOrgValues } from "./assert/assertionError";
 import { useScope } from "./assert/useScope";
 import { addAssertInstFuncDefs, addAssertInstFunc, addAssertInstFuncDef } from "./assert/assertInst";
 import { expect } from "./assert/expect";
@@ -79,7 +79,7 @@ import { IChangeResultValue } from "./assert/interface/ops/IChangeResultValue";
  */
 export {
     AssertionError, AssertionErrorConstructor, AssertionFailure, AssertionFailureConstructor,
-    AssertionFatal, AssertionFatalConstructor
+    AssertionFatal, AssertionFatalConstructor, IAssertionErrorOrgValues
 };
 
 /**

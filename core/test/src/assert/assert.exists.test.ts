@@ -136,10 +136,10 @@ describe("exists combinations", () => {
     it("should work with other assertions", () => {
         expect(123).to.exist();
         expect(123).is.number();
-        
+
         expect("test").to.exist();
         expect("test").is.string();
-        
+
         expect([1, 2, 3]).to.exist();
         expect([1, 2, 3]).is.array();
     });
@@ -148,7 +148,7 @@ describe("exists combinations", () => {
         let value: any = "hello";
 
         expect(value).to.exist();
-        
+
         value = null;
         expect(value).to.not.exist();
     });
@@ -157,13 +157,13 @@ describe("exists combinations", () => {
         // exists passes for empty values
         expect("").to.exist();
         expect("").is.empty();
-        
+
         expect([]).to.exist();
         expect([]).is.empty();
-        
+
         expect({}).to.exist();
         expect({}).is.empty();
-        
+
         // null/undefined fail exists but are considered empty in some contexts
         expect(null).to.not.exist();
         expect(undefined).to.not.exist();

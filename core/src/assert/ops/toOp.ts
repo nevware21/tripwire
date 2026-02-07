@@ -54,6 +54,6 @@ export function toOp<R>(scope: IAssertScope): IToOp<R> {
         decreasesBy: { scopeFn: decreasesByFunc },
         decreasesButNotBy: { scopeFn: decreasesButNotByFunc }
     };
-    
+
     return scope.createOperation(props);
 }

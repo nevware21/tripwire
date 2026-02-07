@@ -34,7 +34,7 @@ describe("assert.isNotFrozen", function () {
         assert.isNotFrozen({}); // Passes
         assert.isNotFrozen([]); // Passes
         assert.isNotFrozen({ key: "value" }); // Passes
-        
+
         checkError(function () {
             assert.isNotFrozen(Object.freeze({})); // Throws AssertionFailure
         }, "not expected {} to be frozen");

@@ -55,7 +55,7 @@ describe("assert.isFunction", () => {
         checkError(() => {
             assert.isFunction("string");
         }, "expected \"string\" to be a function");
-        
+
         expect(() => assert.isFunction("string")).toThrow(AssertionFailure);
     });
 

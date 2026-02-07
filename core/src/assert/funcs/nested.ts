@@ -20,7 +20,7 @@ export function _parseNestedPath(value: string): string[] {
 
     while (value && lp < value.length) {
         let ch = value.charAt(lp++);
-        
+
         if (!inEscape) {
             if (ch === "\\") {
                 inEscape = true;
@@ -83,7 +83,7 @@ function _getNestedProperty(target: any, path: string): { value: any; exists: bo
         result = true;
         while (result && lp < tokens.length) {
             let token = tokens[lp++];
-            
+
             if (isStrictNullOrUndefined(current) || (!isObject(current) && !isArray(current)) || !(token in current)) {
                 result = false;
             } else {

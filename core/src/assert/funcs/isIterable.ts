@@ -15,7 +15,7 @@ export function isIterableFunc<R>(this: IAssertScope, evalMsg?: MsgSource): R{
     let context = scope.context;
     let symIterator = getKnownSymbol(WellKnownSymbols.iterator);
     let symAsyncIterator = getKnownSymbol(WellKnownSymbols.asyncIterator);
-    
+
     context.eval(!isStrictNullOrUndefined(context.value) ? isFunction(context.value[symIterator]) || isFunction(context.value[symAsyncIterator]) : false, evalMsg || "expected {value} to be an iterable");
 
     return scope.that;

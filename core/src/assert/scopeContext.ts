@@ -207,7 +207,7 @@ export function createContext<T>(value?: T, initMsg?: MsgSource, stackStart?: Fu
                 if (close == -1) {
                     break;
                 }
-                
+
                 let result = _getTokenValue(context, details, strSubstring(message, open + 1, close));
                 if (result.has) {
                     let prefix = strLeft(message, open) + _formatValue(context.opts, result.value);
@@ -263,13 +263,13 @@ export function createContext<T>(value?: T, initMsg?: MsgSource, stackStart?: Fu
             if (!expr) {
                 _this.fail(evalMsg, _this.getDetails(), this._$stackFn, causedBy);
             }
-        
+
             return _this;
         },
         fail: function (msg: MsgSource, details: any, stackStart?: Function | Function[], causedBy?: Error): never {
             let _this = this;
             let theStack: Function[] = null;
-            
+
             if (!cfgInst.v.fullStack) {
                 theStack = _createStackTracker(_this._$stackFn);
                 if (stackStart) {
@@ -292,7 +292,7 @@ export function createContext<T>(value?: T, initMsg?: MsgSource, stackStart?: Fu
         fatal: function (msg: MsgSource, details: any, stackStart?: Function | Function[], causedBy?: Error): never {
             let _this = this;
             let theStack: Function[] = null;
-            
+
             if (!cfgInst.v.fullStack) {
                 theStack = _createStackTracker(_this._$stackFn);
                 if (stackStart) {
@@ -313,7 +313,7 @@ export function createContext<T>(value?: T, initMsg?: MsgSource, stackStart?: Fu
                 let theInitMsg = _resolveMessage(_this, initMsg);
                 let path = _this.get("opPath");
                 let message = _resolveMessage(_this, msg) || (path ? path.join(" ") : EMPTY_STRING);
-                
+
                 if (theInitMsg) {
                     message = theInitMsg + (message ? ": " + message : EMPTY_STRING);
                 }
@@ -324,7 +324,7 @@ export function createContext<T>(value?: T, initMsg?: MsgSource, stackStart?: Fu
         setOp: function (opName: string) {
             let _this = this;
             _this.set("operation", opName);
-            
+
             // Track the operation path
             let path = _this.get("opPath");
             if (!path) {
@@ -333,7 +333,7 @@ export function createContext<T>(value?: T, initMsg?: MsgSource, stackStart?: Fu
             }
 
             path.push(opName);
-            
+
             return _this;
         },
         get: function (name: string) {
@@ -371,7 +371,7 @@ export function createContext<T>(value?: T, initMsg?: MsgSource, stackStart?: Fu
         v: true,
         e: false
     });
-    
+
     if (stackStart) {
         context._$stackFn.push(stackStart);
     }

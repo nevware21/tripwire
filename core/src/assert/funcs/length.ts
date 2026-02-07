@@ -39,7 +39,7 @@ export function lengthFunc<R>(this: IAssertScope, length: number, evalMsg?: MsgS
     // For strings and objects (includes arrays, functions, etc.)
     let hasLength = false;
     let hasSize = false;
-    
+
     if (!isNullOrUndefined(value)) {
         // Strings have length as a property
         if (isString(value)) {
@@ -59,7 +59,7 @@ export function lengthFunc<R>(this: IAssertScope, length: number, evalMsg?: MsgS
     } else {
         let actualLength = hasLength ? (value as any).length : (value as any).size;
         context.set("length", actualLength);
-        
+
         if (hasLength) {
             context.eval(
                 actualLength === length,

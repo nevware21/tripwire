@@ -20,7 +20,7 @@ describe("assert.isNull", () => {
         checkError(() => {
             assert.isNull(undefined);
         }, "expected undefined to be null");
-        
+
         expect(() => assert.isNull(undefined)).toThrow(AssertionFailure);
     });
 
@@ -57,7 +57,7 @@ describe("assert.isNull", () => {
         expect(() => assert.isNull(1, customMessage)).toThrow(new AssertionFailure(customMessage));
     });
 });
-    
+
 describe("assert.isNotNull", () => {
     it("should pass when the value is a number", () => {
         assert.isNotNull(1);

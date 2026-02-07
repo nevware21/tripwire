@@ -24,7 +24,7 @@
         "no-case-declarations": "off",
         "no-prototype-builtins": "off",
         "no-useless-escape": "off",                                 // Suppressing Error -- need to Review Later
-        "no-trailing-spaces": [ "warn", { "skipBlankLines": true }],// Enabled for auto fixing
+        "no-trailing-spaces": [ "warn", { "skipBlankLines": false }],// Enabled for auto fixing
         "no-const-assign": "error",
         "comma-dangle": [ "error", "never" ],                       // Enabled for auto fixing
         "semi": [ "error", "always" ],                              // Enabled for auto fixing

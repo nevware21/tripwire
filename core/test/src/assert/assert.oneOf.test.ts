@@ -52,7 +52,7 @@ describe("assert.oneOf", () => {
     describe("strict equality", () => {
         it("should use strict equality (===)", () => {
             assert.oneOf(1, [1, 2, 3]);
-            
+
             checkError(
                 () => assert.oneOf(1, ["1", 2, 3]),
                 /expected 1 to be one of/
@@ -61,7 +61,7 @@ describe("assert.oneOf", () => {
 
         it("should distinguish between null and undefined", () => {
             assert.oneOf(null, [null, 0, false]);
-            
+
             checkError(
                 () => assert.oneOf(null, [undefined, 0, false]),
                 /expected null to be one of/
@@ -70,7 +70,7 @@ describe("assert.oneOf", () => {
 
         it("should distinguish between false and 0", () => {
             assert.oneOf(false, [false, null]);
-            
+
             checkError(
                 () => assert.oneOf(false, [0, null]),
                 /expected false to be one of/
@@ -80,7 +80,7 @@ describe("assert.oneOf", () => {
         it("should not match objects by content", () => {
             const obj = { a: 1 };
             assert.oneOf(obj, [obj, { b: 2 }]);
-            
+
             checkError(
                 () => assert.oneOf({ a: 1 }, [{ a: 1 }, { b: 2 }]),
                 /expected .* to be one of/
@@ -116,7 +116,7 @@ describe("assert.oneOf", () => {
             const obj1 = { a: 1 };
             const obj2 = { b: 2 };
             const obj3 = { c: 3 };
-            
+
             assert.oneOf(obj1, [obj1, obj2, obj3]);
             assert.oneOf(obj2, [obj1, obj2, obj3]);
         });
@@ -124,14 +124,14 @@ describe("assert.oneOf", () => {
         it("should work with arrays (by reference)", () => {
             const arr1 = [1, 2, 3];
             const arr2 = [4, 5, 6];
-            
+
             assert.oneOf(arr1, [arr1, arr2]);
         });
 
         it("should work with symbols", () => {
             const sym1 = Symbol("test1");
             const sym2 = Symbol("test2");
-            
+
             assert.oneOf(sym1, [sym1, sym2]);
         });
 
@@ -160,10 +160,10 @@ describe("assert.oneOf", () => {
             const obj1 = { a: 1 };
             const obj2 = { b: 2 };
             const mySet = new Set([obj1, obj2]);
-            
+
             assert.oneOf(obj1, mySet);
             assert.oneOf(obj2, mySet);
-            
+
             // Different object with same content should fail
             checkError(() => assert.oneOf({ a: 1 }, mySet), /expected .* to be one of/);
         });
@@ -172,7 +172,7 @@ describe("assert.oneOf", () => {
             const mySet = new Set([1, 2, 3]);
             assert.notOneOf(4, mySet);
             assert.notOneOf("a", mySet);
-            
+
             checkError(() => assert.notOneOf(2, mySet), /not expected 2 to be one of/);
         });
 
@@ -189,7 +189,7 @@ describe("assert.oneOf", () => {
             // Map iteration yields [key, value] pairs
             const entry1 = ["a", 1];
             const entry2 = ["b", 2];
-            
+
             // Since Maps are iterable but don't use reference equality for arrays
             // The converted array contains new arrays from iteration
             checkError(() => assert.oneOf(entry1, myMap), /expected .* to be one of/);
@@ -202,7 +202,7 @@ describe("assert.oneOf", () => {
             (function(...args: any[]) {
                 assert.oneOf(2, arguments as any);
             })(1, 2, 3);
-            
+
             (function(...args: any[]) {
                 checkError(function() {
                     assert.oneOf(5, arguments as any);
@@ -215,7 +215,7 @@ describe("assert.oneOf", () => {
             assert.oneOf("a", arrayLike);
             assert.oneOf("b", arrayLike);
             assert.oneOf("c", arrayLike);
-            
+
             checkError(() => assert.oneOf("d", arrayLike), /expected "d" to be one of/);
         });
 
@@ -224,7 +224,7 @@ describe("assert.oneOf", () => {
             assert.oneOf(1, uint8);
             assert.oneOf(3, uint8);
             assert.oneOf(5, uint8);
-            
+
             checkError(() => assert.oneOf(6, uint8), /expected 6 to be one of/);
         });
 
@@ -232,7 +232,7 @@ describe("assert.oneOf", () => {
             const sparse = { 0: "a", 2: "c", length: 3 };
             assert.oneOf("a", sparse);
             assert.oneOf("c", sparse);
-            
+
             // Note: arrForEach skips indices that don't exist in the object,
             // so index 1 is never checked. undefined is NOT in the iteration.
             checkError(() => assert.oneOf(undefined, sparse), /expected undefined to be one of/);
@@ -250,7 +250,7 @@ describe("assert.oneOf", () => {
 
         it("should work with single element list", () => {
             assert.oneOf(1, [1]);
-            
+
             checkError(
                 () => assert.oneOf(2, [1]),
                 /expected 2 to be one of/
@@ -393,7 +393,7 @@ describe("assert.oneOf", () => {
         it("should work after type assertions", () => {
             expect(1).is.a.number();
             expect(1).is.oneOf([1, 2, 3]);
-            
+
             expect("a").is.a.string();
             expect("a").is.oneOf(["a", "b", "c"]);
         });
@@ -401,7 +401,7 @@ describe("assert.oneOf", () => {
         it("should allow chaining after oneOf", () => {
             expect(1).is.oneOf([1, 2, 3]);
             expect(1).is.a.number();
-            
+
             expect("a").is.oneOf(["a", "b", "c"]);
             expect("a").is.a.string();
         });

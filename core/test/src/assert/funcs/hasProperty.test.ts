@@ -37,7 +37,7 @@ describe("hasPropertyFunc", () => {
         const scope = createAssertScope(createContext(obj), _tripwireAssertHandlers);
         expect(() => hasPropertyFunc.call(scope, "a", 2)).to.throw();
     });
-    
+
     it("null", () => {
         const obj: any = null;
         const scope = createAssertScope(createContext(obj), _tripwireAssertHandlers);

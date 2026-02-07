@@ -6,7 +6,7 @@
  * Licensed under the MIT license.
  */
 
-import { AssertionFailure, addAssertFuncs, IAssertScope, AssertClassDef, createExprAdapter, getScopeContext } from "@nevware21/tripwire";
+import { AssertionFailure, addAssertFuncs, AssertClassDef, createExprAdapter, getScopeContext } from "@nevware21/tripwire";
 import { IChaiAssert } from "./interfaces/IChaiAssert";
 import { chaiFailFunc } from "./funcs/chaiFailFunc";
 import { isFunction } from "@nevware21/ts-utils";
@@ -159,7 +159,7 @@ function _createChaiAssert(): IChaiAssert {
 
         doesNotChange: { scopeFn: createExprAdapter("not.change"), nArgs: 3 },
         changesButNotBy: { scopeFn: createExprAdapter("changesButNotBy"), nArgs: 4 },
-        
+
         increases: { scopeFn: createExprAdapter("increase"), nArgs: 3 },
         increasesBy: { scopeFn: createExprAdapter("increaseBy"), nArgs: 4 },
         doesNotIncrease: { scopeFn: createExprAdapter("not.increase"), nArgs: 3 },

@@ -26,7 +26,7 @@ export function hasSymbolFunc(theSymbol: symbol): SymbolFn {
         let scope = this;
         let context = scope.context;
         let value = context.value;
-    
+
         context.eval(!isStrictNullOrUndefined(value) && value[theSymbol], evalMsg || "expected {value} to be an iterable");
 
         return propertyResultOp(scope, value ? value[theSymbol] : null);
@@ -51,7 +51,7 @@ export function hasOwnSymbolFunc(theSymbol: symbol): SymbolFn {
         let value = context.value;
 
         context.eval(!isStrictNullOrUndefined(value) && objHasOwnProperty(value, theSymbol), evalMsg || "expected {value} to be an iterable");
-    
+
         return propertyResultOp(scope, value ? value[theSymbol] : value);
     };
 }

@@ -197,7 +197,7 @@ export function checkError(fn: () => void, match: string | RegExp | Object, chec
     }
 
     assert.isFunction(fn, "checkError() fn must be a function");
-    
+
     let preContext: IScopeContext = assert._$lastContext;
     try {
         fn();
@@ -236,7 +236,7 @@ export function checkError(fn: () => void, match: string | RegExp | Object, chec
         if (newErr) {
             throw newErr;
         }
-            
+
         if (checkFrames !== false) {
             let theStack = parseStack(e.stack).removeInnerStack().formatStack(99);
             expect(theStack).is.string();

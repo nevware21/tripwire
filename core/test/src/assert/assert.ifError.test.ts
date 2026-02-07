@@ -264,14 +264,14 @@ describe("assert.ifError", () => {
 
         it("should work with try-catch error handling", () => {
             let err: Error | null = null;
-            
+
             try {
                 // Some operation that might throw
                 throw new Error("Something went wrong");
             } catch (e: any) {
                 err = e;
             }
-            
+
             try {
                 assert.ifError(err);
                 throw new Error("Should have thrown the error");
@@ -284,7 +284,7 @@ describe("assert.ifError", () => {
 
         it("should work when no error occurs", () => {
             let err: Error | null = null;
-            
+
             try {
                 // Some operation that doesn't throw
                 let x = 1 + 1;
@@ -292,7 +292,7 @@ describe("assert.ifError", () => {
             } catch (e: any) {
                 err = e;
             }
-            
+
             // Should pass since err is null
             assert.ifError(err);
         });

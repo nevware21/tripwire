@@ -16,7 +16,7 @@ describe("useScope", () => {
     it("should execute callback with the given scope context", () => {
         let context = createContext("test value");
         let callbackExecuted = false;
-        
+
         let result = useScope(context, () => {
             callbackExecuted = true;
             return "callback result";
@@ -28,7 +28,7 @@ describe("useScope", () => {
 
     it("should return the callback's return value", () => {
         let context = createContext(42);
-        
+
         let result = useScope(context, () => {
             return context.value * 2;
         });
@@ -39,7 +39,7 @@ describe("useScope", () => {
     it("should restore previous scope after callback completes", () => {
         let context1 = createContext("first");
         let context2 = createContext("second");
-        
+
         useScope(context1, () => {
             useScope(context2, () => {
                 // Inside second scope
@@ -51,13 +51,13 @@ describe("useScope", () => {
 
     it("should restore previous scope even if callback throws", () => {
         let context = createContext("test");
-        
+
         checkError(() => {
             useScope(context, () => {
                 throw new Error("Test error");
             });
         }, "Test error");
-        
+
         // Scope should be restored even after error
     });
 
@@ -99,19 +99,19 @@ describe("useScope", () => {
 
     it("should allow modifying context within useScope", () => {
         let context = createContext("initial");
-        
+
         useScope(context, () => {
             context.set("key", "value");
             assert.equal(context.get("key"), "value");
         });
-        
+
         // Context changes should persist after useScope
         assert.equal(context.get("key"), "value");
     });
 
     it("should handle async callbacks", async () => {
         let context = createContext("async");
-        
+
         let result = await useScope(context, async () => {
             await new Promise(resolve => setTimeout(resolve, 1));
             return "async result";
@@ -150,7 +150,7 @@ describe("useScope", () => {
 
     it("should work with expect inside useScope", () => {
         let context = createContext(10);
-        
+
         useScope(context, () => {
             expect(5).to.be.equal(5);
             expect([1, 2, 3]).to.include(2);
@@ -160,7 +160,7 @@ describe("useScope", () => {
 
     it("should handle exceptions from assertions inside useScope", () => {
         let context = createContext("test");
-        
+
         checkError(() => {
             useScope(context, () => {
                 assert.equal(1, 2, "Should fail");

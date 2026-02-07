@@ -25,7 +25,7 @@ type KeyFilterOpProps = {
  * @template R - The type of the key filter operation result.
  */
 export function anyKeyFilterOp<R>(scope: IAssertScope): IKeysOp<R> {
-    
+
     const props: KeyFilterOpProps = {
         keys: { g: () => anyKeysFunc(scope) }
     };
@@ -41,7 +41,7 @@ export function anyKeyFilterOp<R>(scope: IAssertScope): IKeysOp<R> {
  * @returns The keys operation.
  */
 export function allKeyFilterOp<R>(scope: IAssertScope): IKeysOp<R> {
-    
+
     const props: KeyFilterOpProps = {
         keys: { g: () => allKeysFunc(scope) }
     };
@@ -74,7 +74,7 @@ export function allKeyFilterOp<R>(scope: IAssertScope): IKeysOp<R> {
  * ```
  */
 export function anyDeepKeyFilterOp<R>(scope: IAssertScope): IKeysOp<R> {
-    
+
     const props: KeyFilterOpProps = {
         keys: { g: () => anyDeepKeysFunc(scope) }
     };
@@ -109,7 +109,7 @@ export function anyDeepKeyFilterOp<R>(scope: IAssertScope): IKeysOp<R> {
  * ```
  */
 export function allDeepKeyFilterOp<R>(scope: IAssertScope): IKeysOp<R> {
-    
+
     const props: KeyFilterOpProps = {
         keys: { g: () => allDeepKeysFunc(scope) }
     };
@@ -146,9 +146,9 @@ export function allDeepKeyFilterOp<R>(scope: IAssertScope): IKeysOp<R> {
  */
 export function deepKeysOp<R>(scope: IAssertScope): IKeysOp<R> {
     let context = scope.context;
-    
+
     // Check if we're in ANY context
     let isAny = context.get(ANY) === true;
-    
+
     return isAny ? anyDeepKeyFilterOp(scope) : allDeepKeyFilterOp(scope);
 }

@@ -64,7 +64,7 @@ export interface IAssertScope {
      * returns an object that does not inherit or have access to the {@link IAssertInst} functions.
      */
     newEmptyInst(): any;
-    
+
     /**
      * Updates the current context with the given value and optional overrides, this is
      * used to update the current context with the new value and overrides.
@@ -86,7 +86,7 @@ export interface IAssertScope {
      * @returns The result of the function.
      */
     exec<F extends IScopeFn, R = ReturnType<F>>(fn: F, args: Parameters<F>, funcName?: string): R;
-    
+
     /**
      * Throws an {@link AssertionFailure} exception with the given message and optional
      * details which are obtained via the `getDetails` function.

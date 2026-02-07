@@ -28,7 +28,7 @@ export function createFormatMgr(parent?: IFormatManager): IFormatManager {
 
     function _addFormatter(formatter: IFormatter | Array<IFormatter>): IRemovable {
         arrAppend(_formatters, formatter);
-        
+
         let result: IRemovable = {
             rm: () => {
                 _removeFormatter(formatter);

@@ -91,7 +91,7 @@ function _hasSameDeepMembers(actual: ArrayLikeOrSizedIterable<any>, expected: Ar
             return -1;
         }
     });
-    
+
     return result;
 }
 
@@ -308,7 +308,7 @@ export function includeMembersFunc<R>(this: IAssertScope, expected: ArrayLikeOrS
 
     let result = true;
     let valueArray = arrFrom(value);
-    
+
     _iterateForEachItem(expected, (expItem) => {
         let index = arrIndexOf(valueArray, expItem);
         if (index === -1) {
@@ -496,7 +496,7 @@ export function includeDeepOrderedMembersFunc<R>(this: IAssertScope, expected: A
     }
 
     context.eval(result, evalMsg || "expected {value} to include deep ordered members {expected}");
-    
+
     return this.that;
 }
 

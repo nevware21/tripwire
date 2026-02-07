@@ -80,10 +80,10 @@ function _handleChangeFunc<V>(scope: IAssertScope, theArgs: unknown[], callback:
 
     // Get the initial value
     let initialValue = _getTargetValue(context, "initial", targetOrFn, property);
-    
+
     // Execute the function
     fn();
-    
+
     // Get the final value
     let finalValue = _getTargetValue(context, "final", targetOrFn, property);
 
@@ -131,7 +131,7 @@ export function changesFunc(this: IAssertScope): IChangeResultOp {
     return _handleChangeFunc(scope, arrSlice(arguments), (context, resultValue, theMsg) => {
         // Check if the value changed
         let changed = resultValue.initial !== resultValue.value;
-        
+
         context.eval(changed, theMsg || (resultValue.property
             ? "expected {value} to change {property} from {initial} to a different value"
             : "expected {value} to change the monitored value from {initial} to a different value"));
@@ -178,7 +178,7 @@ export function increasesFunc(this: IAssertScope): IChangeResultOp {
         if (!isNumber(resultValue.value)) {
             scope.fatal("expected final value ({final}) to be a number");
         }
-    
+
         // Assert if increased
         context.eval(resultValue.delta > 0, theMsg || (resultValue.property
             ? "expected {value} to increase {property} from {initial} but it changed by {delta}"
@@ -232,7 +232,7 @@ export function decreasesFunc(this: IAssertScope): IChangeResultOp {
 
         // Invert the delta to be positive for potential .by() chaining
         resultValue.delta = -resultValue.delta;
-        
+
         // Create a new scope with the absolute delta for potential .by() chaining
         return changeResultOp(scope, resultValue);
     });

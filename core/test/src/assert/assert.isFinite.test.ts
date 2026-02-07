@@ -289,7 +289,7 @@ describe("expect.is.not.finite", function () {
     it("with not operator", function () {
         expect(123).to.not.be.not.finite();
         expect(0).is.not.not.finite();
-        
+
         checkError(function () {
             expect(NaN).to.not.be.not.finite();
         }, "expected NaN to be finite");
