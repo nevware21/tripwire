@@ -26,7 +26,7 @@ export function ownOp<R>(scope: IAssertScope): IOwnOp<R> {
         propertyDescriptor: { scopeFn: hasOwnPropertyDescriptorFunc },
         iterator: { scopeFn: hasOwnSymbolFunc(Symbol.iterator) }
     };
-    
+
     return scope.createOperation(props);
 }
 
@@ -42,6 +42,6 @@ export function ownDeepOp<R>(scope: IAssertScope): IOwnOp<R> {
         propertyDescriptor: { scopeFn: hasOwnPropertyDescriptorFunc },
         iterator: { scopeFn: hasOwnSymbolFunc(Symbol.iterator) }
     };
-    
+
     return scope.createOperation(props);
 }

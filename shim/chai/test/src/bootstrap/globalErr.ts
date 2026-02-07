@@ -27,11 +27,11 @@ function _type(obj: any): string {
     if (typeof obj === "undefined") {
         return "undefined";
     }
-    
+
     if (obj === null) {
         return "null";
     }
-  
+
     const stringTag = obj[Symbol.toStringTag];
     if (typeof stringTag === "string") {
         return stringTag;
@@ -41,7 +41,7 @@ function _type(obj: any): string {
 
     return type;
 }
-  
+
 /**
  * Validate that the given function throws an error.
  *
@@ -89,7 +89,7 @@ export function globalErr<T>(fn: Function, val?: T, skipStackTest?: boolean) {
                 if (theStack.indexOf("globalErr") === -1) {
                     console.error("globalErr missing - " + dumpObj(err));
                 }
-                
+
                 expect(theStack).contains("globalErr").not.match(
                     CHECK_INTERNAL_STACK_FRAME_REGEX,
                     "implementation frames not properly filtered from stack trace {value}"

@@ -45,7 +45,7 @@ export function _addAssertInstFuncs<T>(target: any, funcs: AssertScopeFuncDefs<T
                 e: false
             });
         }
-        
+
         userTags = target[_userFuncsSymbol];
     }
 

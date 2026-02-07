@@ -26,7 +26,7 @@ export function nestedOp<R>(scope: IAssertScope): INestedOp<R> {
         contain: { scopeFn: nestedIncludeFunc },
         contains: { scopeFn: nestedIncludeFunc }
     };
-    
+
     return scope.createOperation(props);
 }
 
@@ -45,7 +45,7 @@ export function deepNestedOp<R>(scope: IAssertScope): INestedOp<R> {
         contain: { scopeFn: deepNestedIncludeFunc },
         contains: { scopeFn: deepNestedIncludeFunc }
     };
-    
+
     return scope.createOperation(props);
 }
 

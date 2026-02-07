@@ -121,7 +121,7 @@ describe("allValuesFunc", () => {
         const valuesFn = allValuesFunc(scope);
 
         expect(() => valuesFn.call(scope, "")).to.not.throw();
-        
+
         checkError(() => {
             valuesFn.call(scope, "", "a");
         }, /expected all values: \["","a"\], missing: \["a"\], found: "" \(1 value\)/);
@@ -133,7 +133,7 @@ describe("allValuesFunc", () => {
         const valuesFn = allValuesFunc(scope);
 
         expect(() => valuesFn.call(scope, null)).to.not.throw();
-        
+
         checkError(() => {
             valuesFn.call(scope, null, "a");
         }, /expected all values: \[null,"a"\], missing: \["a"\], found: null \(1 value\)/);
@@ -145,7 +145,7 @@ describe("allValuesFunc", () => {
         const valuesFn = allValuesFunc(scope);
 
         expect(() => valuesFn.call(scope, undefined)).to.not.throw();
-        
+
         checkError(() => {
             valuesFn.call(scope, undefined, "a");
         }, /expected all values: \[undefined,"a"\], missing: \["a"\], found: undefined \(1 value\)/);
@@ -159,7 +159,7 @@ describe("allValuesFunc", () => {
         // These words are all in the string
         expect(() => valuesFn.call(scope, "walking", "and", "talking", "into", "darkness")).to.not.throw();
         expect(() => valuesFn.call(scope, ["walking", "and", "talking", "into", "darkness"])).to.not.throw();
-        
+
         // These partial substrings are all in the string
         expect(() => valuesFn.call(scope, "walk", "and", "talk", "into", "dark")).to.not.throw();
     });
@@ -173,7 +173,7 @@ describe("allValuesFunc", () => {
         checkError(() => {
             valuesFn.call(scope, "hello", "running", "silence", "sound");
         }, /expected all values: \[\"hello\",\"running\",\"silence\",\"sound\"\], missing: \[\"silence\",\"sound\"\], found: "say hello while running and jumping" \(1 value\)/);
-        
+
         // Missing words: walking, talking, seeing
         checkError(() => {
             valuesFn.call(scope, ["hello", "running", "and", "walking", "talking", "seeing"]);
@@ -188,7 +188,7 @@ describe("allValuesFunc", () => {
 
         // These parts are all in the phrase
         expect(() => valuesFn.call(scope, "said hello", "walking through", "darkness and")).to.not.throw();
-        
+
         // Missing parts: swimming, climbing, flying
         checkError(() => {
             valuesFn.call(scope, "said hello", "swimming", "climbing", "flying");

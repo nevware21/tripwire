@@ -22,7 +22,7 @@ export interface ValuesFn<R> {
      * {@link IAssertScope#that} object.
      */
     (...values: string[]): R;
-    
+
     /**
      * Asserts that the current context value has the given value(s).
      * @since 0.1.2

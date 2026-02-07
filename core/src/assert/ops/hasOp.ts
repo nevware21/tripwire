@@ -28,7 +28,7 @@ export function hasOp<R>(scope: IAssertScope): IHasOp<R> {
         lengthOf: { scopeFn: lengthFunc },
         sizeOf: { scopeFn: lengthFunc }
     };
-    
+
     return scope.createOperation(props);
 }
 
@@ -44,6 +44,6 @@ export function hasOwnOp<R>(scope: IAssertScope): IHasOp<R> {
         lengthOf: { scopeFn: lengthFunc },
         sizeOf: { scopeFn: lengthFunc }
     };
-    
+
     return scope.createOperation(props);
 }

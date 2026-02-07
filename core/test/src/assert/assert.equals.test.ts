@@ -19,7 +19,7 @@ describe("assert.equal", function () {
         checkError(function () {
             assert.equal(1, 2); // Throws AssertionError
         }, "expected 1 to equal 2");
-        
+
         checkError(function () {
             assert.equal("a", "b"); // Throws AssertionError
         }, "expected \"a\" to equal \"b\"");
@@ -135,13 +135,13 @@ describe("assert.equal", function () {
         }, "Boolean and null mismatch: expected 0 to equal null");
 
         assert.equal("", false, "Boolean and string mismatch");
-        
+
         checkError(function () {
             assert.equal("", null, "String and null mismatch");
         }, "String and null mismatch: expected \"\" to equal null");
-        
+
         assert.equal("", 0, "String and number mismatch");
-        
+
         checkError(function () {
             assert.equal("", undefined, "String and undefined mismatch");
         }, "String and undefined mismatch: expected \"\" to equal undefined");
@@ -180,7 +180,7 @@ describe("assert.equal", function () {
         const date3 = new Date(Date.UTC(2021, 1, 2, 0, 0, 0));
 
         assert.equal(date1, date1); // Same reference
-        
+
         checkError(function () {
             assert.equal(date1, date2); // Same date but different reference (loose equality)
         }, "expected [Date:\"2021-02-01T00:00:00.000Z\"] to equal [Date:\"2021-02-01T00:00:00.000Z\"]");
@@ -234,7 +234,7 @@ describe("assert.equals", function () {
         checkError(function () {
             assert.equals(1, 2); // Throws AssertionError
         }, "expected 1 to equal 2");
-        
+
         checkError(function () {
             assert.equals("a", "b"); // Throws AssertionError
         }, "expected \"a\" to equal \"b\"");
@@ -365,13 +365,13 @@ describe("assert.equals", function () {
         }, "Boolean and null mismatch: expected 0 to equal null");
 
         assert.equals("", false, "Boolean and string mismatch");
-        
+
         checkError(function () {
             assert.equals("", null, "String and null mismatch");
         }, "String and null mismatch: expected \"\" to equal null");
-        
+
         assert.equals("", 0, "String and number mismatch");
-        
+
         checkError(function () {
             assert.equals("", undefined, "String and undefined mismatch");
         }, "String and undefined mismatch: expected \"\" to equal undefined");
@@ -670,13 +670,13 @@ describe("assert.deepEqual", function () {
         }, "Boolean and null mismatch: expected 0 to deeply equal null");
 
         assert.deepEqual("", false, "Boolean and string mismatch");
-        
+
         checkError(function () {
             assert.deepEqual("", null, "String and null mismatch");
         }, "String and null mismatch: expected \"\" to deeply equal null");
-        
+
         assert.deepEqual("", 0, "String and number mismatch");
-        
+
         checkError(function () {
             assert.deepEqual("", undefined, "String and undefined mismatch");
         }, "String and undefined mismatch: expected \"\" to deeply equal undefined");
@@ -751,14 +751,14 @@ describe("assert.deepEqual", function () {
 
     it("should use custom circularMsg", function() {
         const originalMsg = assertConfig.circularMsg;
-        
+
         try {
             // Set custom message
             assertConfig.circularMsg = () => "[CUSTOM_CIRCULAR]";
-            
+
             let aObj = {} as any;
             aObj.field = aObj;
-            
+
             checkError(function() {
                 aObj.mismatch = true;
                 assert.deepEqual(aObj, { field: {} });
@@ -770,7 +770,7 @@ describe("assert.deepEqual", function () {
                 aObj.mismatch = true;
                 assert.deepEqual(aObj, { field: {} });
             }, "expected {field:{field:[ANOTHER_CUSTOM],mismatch:true},mismatch:true} to deeply equal {field:{}}");
-            
+
         } finally {
             assertConfig.circularMsg = originalMsg;
         }
@@ -778,14 +778,14 @@ describe("assert.deepEqual", function () {
 
     it("should reset circularMsg to default with null", function() {
         const originalMsg = assertConfig.circularMsg;
-        
+
         try {
             // Set custom message
             assertConfig.circularMsg = () => "[CUSTOM]";
-            
+
             let aObj = {} as any;
             aObj.field = aObj;
-            
+
             checkError(function() {
                 aObj.mismatch = true;
                 assert.deepEqual(aObj, { field: {} });
@@ -793,7 +793,7 @@ describe("assert.deepEqual", function () {
 
             // Reset to default by setting to null
             assertConfig.circularMsg = null as any;
-            
+
             let defaultCircular = assertConfig.circularMsg?.();
             assert.equal(defaultCircular, originalMsg?.());
 
@@ -811,14 +811,14 @@ describe("assert.deepEqual", function () {
 
     it("should reset circularMsg to default with undefined", function() {
         const originalMsg = assertConfig.circularMsg;
-        
+
         try {
             // Set custom message
             assertConfig.circularMsg = () => "[ANOTHER_CUSTOM]";
-            
+
             let aObj = {} as any;
             aObj.field = aObj;
-            
+
             checkError(function() {
                 aObj.mismatch = true;
                 assert.deepEqual(aObj, { field: {} });
@@ -826,7 +826,7 @@ describe("assert.deepEqual", function () {
 
             // Reset to default by setting to undefined
             assertConfig.circularMsg = undefined as any;
-            
+
             let defaultCircular = assertConfig.circularMsg?.();
             assert.equal(defaultCircular, originalMsg?.());
 
@@ -888,13 +888,13 @@ describe("assert.deepEquals", function () {
         }, "Boolean and null mismatch: expected 0 to deeply equal null");
 
         assert.deepEquals("", false, "Boolean and string mismatch");
-        
+
         checkError(function () {
             assert.deepEquals("", null, "String and null mismatch");
         }, "String and null mismatch: expected \"\" to deeply equal null");
-        
+
         assert.deepEquals("", 0, "String and number mismatch");
-        
+
         checkError(function () {
             assert.deepEquals("", undefined, "String and undefined mismatch");
         }, "String and undefined mismatch: expected \"\" to deeply equal undefined");
@@ -1010,7 +1010,7 @@ describe("assert.deepStrictEqual", function () {
     it("Combination of objects and arrays match", function () {
         const combo1 = { a: [1, 2, { b: 3 }] };
         const combo2 = { a: [1, 2, { b: 3 }] };
-        
+
         assert.deepStrictEquals(combo1, combo1);
         assert.deepStrictEquals(combo2, combo2);
 
@@ -1048,15 +1048,15 @@ describe("assert.deepStrictEqual", function () {
         checkError(function () {
             assert.deepStrictEquals("", false, "Boolean and string mismatch");
         }, "Boolean and string mismatch: expected \"\" to deeply and strictly equal false");
-        
+
         checkError(function () {
             assert.deepStrictEquals("", null, "String and null mismatch");
         }, "String and null mismatch: expected \"\" to deeply and strictly equal null");
-        
+
         checkError(function () {
             assert.deepStrictEquals("", 0, "String and number mismatch");
         }, "String and number mismatch: expected \"\" to deeply and strictly equal 0");
-        
+
         checkError(function () {
             assert.deepStrictEquals("", undefined, "String and undefined mismatch");
         }, "String and undefined mismatch: expected \"\" to deeply and strictly equal undefined");

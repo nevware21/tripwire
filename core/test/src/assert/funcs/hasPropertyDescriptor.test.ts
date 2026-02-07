@@ -24,7 +24,7 @@ describe("hasPropertyDescriptorFunc", () => {
 
         scope = createAssertScope(createContext(context));
         hasPropertyDescriptorFunc.call(scope, "a", { value: 1, writable: true, enumerable: true, configurable: true });
-        
+
         scope = createAssertScope(createContext(context));
         expect(() => hasPropertyDescriptorFunc.call(scope, "a", 1)).to.throw();
 
@@ -34,7 +34,7 @@ describe("hasPropertyDescriptorFunc", () => {
         scope = createAssertScope(createContext(context));
         expect(() => hasPropertyDescriptorFunc.call(scope, "a", descriptor)).to.not.throw();
     });
-    
+
     it("null", () => {
         const obj: any = null;
         const scope = createAssertScope(createContext(obj));

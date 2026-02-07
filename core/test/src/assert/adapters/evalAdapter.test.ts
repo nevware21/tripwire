@@ -19,7 +19,7 @@ describe("createEvalAdapter", () => {
             let adapter = createEvalAdapter((value: any) => value > 5);
             let context = createContext(10);
             let scope = createAssertScope(context);
-            
+
             let result = adapter.call(scope);
             assert.ok(result);
         });
@@ -28,7 +28,7 @@ describe("createEvalAdapter", () => {
             let adapter = createEvalAdapter((value: any) => value > 5, "Value must be greater than 5");
             let context = createContext(3);
             let scope = createAssertScope(context);
-            
+
             checkError(() => {
                 adapter.call(scope);
             }, "Value must be greater than 5");
@@ -40,11 +40,11 @@ describe("createEvalAdapter", () => {
                 capturedValue = value;
                 return true;
             });
-            
+
             let context = createContext(42);
             let scope = createAssertScope(context);
             adapter.call(scope);
-            
+
             assert.equal(capturedValue, 42);
         });
 
@@ -54,11 +54,11 @@ describe("createEvalAdapter", () => {
                 capturedArgs = [value, arg1, arg2];
                 return true;
             });
-            
+
             let context = createContext(10);
             let scope = createAssertScope(context);
             adapter.call(scope, 20, 30);
-            
+
             assert.deepEqual(capturedArgs, [10, 20, 30]);
         });
     });
@@ -68,7 +68,7 @@ describe("createEvalAdapter", () => {
             let adapter = createEvalAdapter((value: any) => value.length > 3);
             let context = createContext("hello");
             let scope = createAssertScope(context);
-            
+
             let result = adapter.call(scope);
             assert.ok(result);
         });
@@ -77,7 +77,7 @@ describe("createEvalAdapter", () => {
             let adapter = createEvalAdapter((value: any) => value.length === 3);
             let context = createContext([1, 2, 3]);
             let scope = createAssertScope(context);
-            
+
             let result = adapter.call(scope);
             assert.ok(result);
         });
@@ -86,7 +86,7 @@ describe("createEvalAdapter", () => {
             let adapter = createEvalAdapter((value: any) => value.hasOwnProperty("name"));
             let context = createContext({ name: "test", age: 25 });
             let scope = createAssertScope(context);
-            
+
             let result = adapter.call(scope);
             assert.ok(result);
         });
@@ -95,7 +95,7 @@ describe("createEvalAdapter", () => {
             let adapter = createEvalAdapter((value: any) => value === null);
             let context = createContext(null);
             let scope = createAssertScope(context);
-            
+
             let result = adapter.call(scope);
             assert.ok(result);
         });
@@ -104,7 +104,7 @@ describe("createEvalAdapter", () => {
             let adapter = createEvalAdapter((value: any) => value === undefined);
             let context = createContext(undefined);
             let scope = createAssertScope(context);
-            
+
             let result = adapter.call(scope);
             assert.ok(result);
         });
@@ -113,7 +113,7 @@ describe("createEvalAdapter", () => {
             let adapter = createEvalAdapter((value: any) => value === true);
             let context = createContext(true);
             let scope = createAssertScope(context);
-            
+
             let result = adapter.call(scope);
             assert.ok(result);
         });
@@ -125,10 +125,10 @@ describe("createEvalAdapter", () => {
                 (value: any) => value > 10,
                 "Expected value to be greater than 10"
             );
-            
+
             let context = createContext(5);
             let scope = createAssertScope(context);
-            
+
             checkError(() => {
                 adapter.call(scope);
             }, "Expected value to be greater than 10");
@@ -139,10 +139,10 @@ describe("createEvalAdapter", () => {
                 (value: any) => value > 10,
                 () => "Dynamic message: value too small"
             );
-            
+
             let context = createContext(5);
             let scope = createAssertScope(context);
-            
+
             checkError(() => {
                 adapter.call(scope);
             }, "Dynamic message: value too small");
@@ -157,7 +157,7 @@ describe("createEvalAdapter", () => {
                 "Error message",
                 "isGreaterThanFive"
             );
-            
+
             assert.ok(adapter);
             // Function name is used internally for verbose mode tracking
         });
@@ -166,7 +166,7 @@ describe("createEvalAdapter", () => {
             function myCustomCheck(value: any): boolean {
                 return value > 5;
             }
-            
+
             let adapter = createEvalAdapter(myCustomCheck);
             assert.ok(adapter);
         });
@@ -199,7 +199,7 @@ describe("createEvalAdapter", () => {
                 }
                 return value.age >= 18;
             }, "Must be an adult with name and age");
-            
+
             let context = createContext({ name: "John", age: 25 });
             let scope = createAssertScope(context);
             let result = adapter.call(scope);
@@ -219,10 +219,10 @@ describe("createEvalAdapter", () => {
                 }
                 return value.age >= 18;
             }, "Must be an adult with name and age");
-            
+
             let context = createContext({ name: "Child", age: 10 });
             let scope = createAssertScope(context);
-            
+
             checkError(() => {
                 adapter.call(scope);
             }, "Must be an adult with name and age");
@@ -234,7 +234,7 @@ describe("createEvalAdapter", () => {
             let adapter = createEvalAdapter((actual: any, expected: any) => {
                 return actual === expected;
             }, "Values must be equal");
-            
+
             let context = createContext(10);
             let scope = createAssertScope(context);
             let result = adapter.call(scope, 10);
@@ -245,7 +245,7 @@ describe("createEvalAdapter", () => {
             let adapter = createEvalAdapter((actual: any, expected: any, tolerance: any) => {
                 return Math.abs(actual - expected) <= tolerance;
             }, "Value must be within tolerance");
-            
+
             let context = createContext(10.5);
             let scope = createAssertScope(context);
             let result = adapter.call(scope, 10, 1);
@@ -256,10 +256,10 @@ describe("createEvalAdapter", () => {
             let adapter = createEvalAdapter((actual: any, expected: any) => {
                 return actual === expected;
             }, "Values must be equal");
-            
+
             let context = createContext(10);
             let scope = createAssertScope(context);
-            
+
             checkError(() => {
                 adapter.call(scope, 20);
             }, "Values must be equal");
@@ -271,10 +271,10 @@ describe("createEvalAdapter", () => {
             let adapter = createEvalAdapter(() => {
                 throw new Error("EvalFn error");
             });
-            
+
             let context = createContext(10);
             let scope = createAssertScope(context);
-            
+
             checkError(() => {
                 adapter.call(scope);
             }, "EvalFn error");
@@ -285,7 +285,7 @@ describe("createEvalAdapter", () => {
             let adapter = createEvalAdapter((value: any) => {
                 return value as any; // Truthy/falsy value
             });
-            
+
             let context = createContext(1);
             let scope = createAssertScope(context);
             let result = adapter.call(scope);
@@ -299,7 +299,7 @@ describe("createEvalAdapter", () => {
             let adapter = createEvalAdapter((value: any) => value > 5);
             let context = createContext(10);
             let scope = createAssertScope(context);
-            
+
             let result = adapter.call(scope);
             // The adapter should return the assertion instance
             assert.ok(result);
@@ -313,10 +313,10 @@ describe("createEvalAdapter", () => {
                 "Error",
                 "customFunction"
             );
-            
+
             let context = createContext(10, undefined, undefined, undefined, { isVerbose: true });
             let scope = createAssertScope(context);
-            
+
             let result = adapter.call(scope);
             assert.ok(result);
             // In verbose mode, operation tracking happens internally

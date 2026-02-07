@@ -91,7 +91,7 @@ export function createAssertScope(context: IScopeContext, handlerCreator?: Asser
         updateCtx(value);
         return creators.v.newEmptyAssertInst(theScope);
     }
-    
+
     /**
      * Updates the current context with the given value and optional overrides, this is
      * used to update the current context with the new value and overrides.
@@ -106,7 +106,7 @@ export function createAssertScope(context: IScopeContext, handlerCreator?: Asser
         if (value !== _context.value || overrides) {
             _context = _context.new(value, overrides);
         }
-    
+
         return theScope;
     }
 
@@ -148,7 +148,7 @@ export function createAssertScope(context: IScopeContext, handlerCreator?: Asser
             // the scope can be used for any chained operations.
             _setAssertScope(obj, theScope);
         }
-        
+
         _addAssertInstFuncs(obj, funcs, true, createOperation);
 
         return obj;

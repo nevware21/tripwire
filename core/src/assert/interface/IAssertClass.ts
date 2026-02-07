@@ -55,7 +55,6 @@ export interface IAssertClass<AssertInst extends IAssertInst = IAssertInst> {
      * @param operator - The operator used in the evaluation
      */
     (actual: any, expected: any, failMsg?: MsgSource, operator?: string): never;
-        
 
     /**
      * Returns the last executed {@link IScopeContext} of the assertion chain of the immediately preceeding
@@ -1482,7 +1481,7 @@ export interface IAssertClass<AssertInst extends IAssertInst = IAssertInst> {
      * ```
      */
     doesNotThrow(fn: () => void, msgMatch?: string | RegExp | null, initMsg?: MsgSource): AssertInst;
-    
+
     /**
      * Asserts that the provided value matches the specified regular expression.
      * If the value does not match the regular expression, it throws an {@link AssertionFailure}

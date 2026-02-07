@@ -42,7 +42,7 @@ describe("assert.includes", () => {
         checkError(() => {
             assert.includes("hello silence", "nomatch", customMessage);
         }, customMessage);
-        
+
         expect(() => assert.includes("hello silence", "nomatch", customMessage)).toThrowError(new AssertionFailure(customMessage));
     });
 

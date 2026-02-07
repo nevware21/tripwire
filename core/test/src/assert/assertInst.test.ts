@@ -23,7 +23,7 @@ describe("assertInst.ts", () => {
     afterEach(() => {
         _clearAssertInstFuncs();
     });
-    
+
     describe("create inst and scope", () => {
         it("should create a new inst object", () => {
             const value = "test";
@@ -122,7 +122,7 @@ describe("assertInst.ts", () => {
             assert(inst["testFunc2"] !== undefined);
             expect(inst, "Property should not exist before adding functions").hasProperty("testFunc1");
             expect(inst, "Property should not exist before adding functions").hasProperty("testFunc2");
-            
+
             // Test the functions
             (expect(false) as IExtendedAssertInst<ITestFuncs>).testFunc1().is.false("Function should return the original instance object");
             (expect(false) as IExtendedAssertInst<ITestFuncs>).testFunc2().is.true("Function should return the new instance object");
@@ -143,7 +143,7 @@ describe("assertInst.ts", () => {
             expect(inst).not.hasProperty("singleFunc");
             addAssertInstFunc("singleFunc", func);
             expect(inst).hasProperty("singleFunc");
-            
+
             // Test the functions (which will return a different "value" for the instance)
             (expect("Hello").not as IExtendedAssertInst<ISingleFunc>).singleFunc().is.false();
             (expect("Darkness") as IExtendedAssertInst<ISingleFunc>).singleFunc().is.true();
@@ -162,7 +162,7 @@ describe("assertInst.ts", () => {
             // Create an inline function that will execute the `toThrow` function with
             // no arguments when referenced, this is the same as calling `assert.toThrow()`.
             addAssertInstProperty("doThrow", func);
-    
+
             checkError(() => {
                 let extendedExtend = expect("Hello silence, my old companion -- failure") as IExtendedAssertInst<IInlineFunc>;
                 extendedExtend.doThrow;
@@ -181,13 +181,13 @@ describe("assertInst.ts", () => {
             // Create an inline function that will execute the `toThrow` function with
             // no arguments when referenced, this is the same as calling `assert.toThrow()`.
             addAssertInstProperty("doThrow", func, "doThrow failure message");
-    
+
             checkError(() => {
                 let extendedExtend = expect("Hello silence, my old companion -- failure") as IExtendedAssertInst<IInlineFunc>;
                 extendedExtend.doThrow;
             }, "Test - doThrow failure message");
         });
-        
+
         it("inline property func", () => {
             interface IInlineFunc {
                 myFailFunc: () => IAssertInst;
@@ -200,7 +200,7 @@ describe("assertInst.ts", () => {
             // Create an inline function that will execute the `toThrow` function with
             // no arguments when referenced, this is the same as calling `assert.toThrow()`.
             addAssertInstProperty("myFailFunc", func, "expected my function to fail");
-    
+
             checkError(() => {
                 let extendedExtend = expect("Hello") as IExtendedAssertInst<IInlineFunc>;
                 extendedExtend.myFailFunc;

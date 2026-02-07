@@ -7,8 +7,8 @@
  */
 
 import {
-    arrMap, arrSlice, asString, createCustomError, CustomErrorConstructor, getLazy, isArray, isError,
-    newSymbol, objDefine, objDefineProps, objForEachKey, objKeys, strTrim
+    arrMap, arrSlice, asString, createCustomError, CustomErrorConstructor, getWritableDeferred, isArray, isError,
+    isObject, newSymbol, objDefine, objDefineProps, objForEachKey, objHasOwnProperty, objIs, objKeys, strTrim
 } from "@nevware21/ts-utils";
 import { EMPTY_STRING } from "./internal/const";
 import { _formatValue } from "../internal/_formatValue";
@@ -31,6 +31,40 @@ function _formatLines(value: string, indent: string): string {
 }
 
 /**
+ * For backward compatibility with older versions of frameworks (like mocha), we need to support the original properties
+ * being replaced on the error object itself. This interface defines the original properties that may be present on
+ * the error object so that they can be referenced if needed, while still allowing the properties to be modified for
+ * compatibility reasons. This interface and its properties are readonly
+ * @since 0.1.6
+ */
+export interface IAssertionErrorOrgValues {
+    /**
+     * The original actual value that was seen.
+     * @since 0.1.6
+     */
+    readonly actual?: any;
+
+    /**
+     * The original value that was expected.
+     * @since 0.1.6
+     */
+    readonly expected?: any;
+
+    /**
+     * The original operator used in the assertion.
+     * @since 0.1.6
+     */
+    readonly operator?: string;
+
+    /**
+     * The original value indicating whether to show the difference between expected and actual values
+     * in the error message.
+     * @since 0.1.6
+     */
+    readonly showDiff?: boolean;
+}
+
+/**
  * @ignore
  * An error that is thrown when an error occurs within the module and is also
  * used as the base class for all {@link AssertionFailure} errors thrown by the module.
@@ -43,29 +77,46 @@ export interface AssertionError<T> extends Error {
     readonly props?: T;
 
     /**
-     * The actual value that was seen
+     * The actual value that was seen.
+     * Changed to Mutable (from readonly) for backward compatibility in 0.1.6, but should be treated as read-only
      * @since 0.1.5
      */
-    readonly actual?: any;
+    actual?: any;
 
     /**
      * The value that was expected
+     * Changed to Mutable (from readonly) for backward compatibility in 0.1.6, but should be treated as read-only
      * @since 0.1.5
      */
-    readonly expected?: any;
+    expected?: any;
 
     /**
      * The operator used in the assertion
+     * Changed to Mutable (from readonly) for backward compatibility in 0.1.6, but should be treated as read-only
      * @since 0.1.5
      */
-    readonly operator?: string;
+    operator?: string;
 
     /**
      * Indicates whether to show the difference between expected and actual values
      * in the error message.
+     * Changed to Mutable (from readonly) for backward compatibility in 0.1.6, but should be treated as read-only
      * @since 0.1.5
      */
-    readonly showDiff?: boolean;
+    showDiff?: boolean;
+
+    /**
+     * The original values of the properties before any modifications were made for backward compatibility with older
+     * versions of frameworks (like mocha). This allows for referencing the original values if needed, while still
+     * allowing the properties to be modified for compatibility reasons. This property and its properties are readonly
+     * to prevent modification and will only be set if any of the original properties (actual, expected, operator, showDiff)
+     * are present on the error object AND the values are modified to be different than the original values. If the original
+     * values are the same as the modified values, then this property will not be set.
+     * While the `actual` and `expected` properties are commonly also in the `props` object, these top-level properties are
+     * mutable and therefore it is possible that some frameworks may modify these properties directly on the error object.
+     * @since 0.1.6
+     */
+    readonly orgValues?: IAssertionErrorOrgValues;
 }
 
 /**
@@ -128,12 +179,12 @@ export interface AssertionErrorConstructor<T> extends CustomErrorConstructor<Ass
      *
      * @returns The full stack trace as a string.
      */
-    get fullStack(): string;
+    fullStack: () => string;
 
     /**
      * The error that caused this error to be thrown.
      */
-    get innerException(): Error | null;
+    innerException: () => Error | null;
 
     /**
      * Converts the error to a JSON object.
@@ -156,7 +207,7 @@ export interface AssertionErrorConstructor<T> extends CustomErrorConstructor<Ass
 function _formatProps(ctx: IScopeContext | null, props: any): string {
     if (props && ctx) {
         let formatted = " ::: ";
-        
+
         if (props.operation || isArray(props.opPath)) {
             let thePath = EMPTY_STRING;
             let lastOp = props.operation || EMPTY_STRING;
@@ -243,7 +294,7 @@ function _pruneStack(stackDetail: IParsedStack, newStack: IParsedStack, funcName
 function _setStack(theError: Error, stack: string) {
     try {
         objDefine(theError, "stack", {
-            l: getLazy(() => {
+            l: getWritableDeferred(() => {
                 let theStack = stack;
 
                 // If we have an inner exception, then we need to add the inner exception stack
@@ -268,7 +319,7 @@ function _setStack(theError: Error, stack: string) {
 function _setMessage(theError: Error, message: string) {
     try {
         objDefine(theError, "message", {
-            l: getLazy(() => {
+            l: getWritableDeferred(() => {
                 let theMessage = message || EMPTY_STRING;
 
                 if ((theError as any).props) {
@@ -303,7 +354,7 @@ function _captureStackTrace(theError: Error, orgStackDetail: IParsedStack, stack
         // Create a copy of the stack start array
         stackCandidates = stackStart ? arrSlice(stackStart) : [];
     }
-    
+
     // Try to capture full stack (ie. not limited to 10 frames)
     let newStack = captureStack(theError.constructor);
     let stackDetail = _pruneStack(orgStackDetail, newStack, theError.constructor.name);
@@ -327,7 +378,7 @@ function _captureStackTrace(theError: Error, orgStackDetail: IParsedStack, stack
         stackDetail.message = orgStackDetail.message;
         stackDetail.trailMessage = orgStackDetail.trailMessage;
     }
-    
+
     objDefine(theError as any, cStackDetail, {
         g: () => stackDetail
     });
@@ -337,14 +388,50 @@ function _captureStackTrace(theError: Error, orgStackDetail: IParsedStack, stack
     return stackDetail;
 }
 
+function _setOrgValue(target: any, prop: any, value: any) {
+    let orgValues: IAssertionErrorOrgValues = target.orgValues;
+    if (!orgValues || !isObject(orgValues)) {
+        orgValues = {};
+        objDefine(target, "orgValues", {
+            g: () => orgValues,
+            s: (newOrgValues: IAssertionErrorOrgValues) => {
+                // Ignore any attempts to set the orgValues directly -- avoids assertion error when trying to replace
+            }
+        });
+    }
+
+    if (!objHasOwnProperty(orgValues, prop)) {
+        objDefine(orgValues, prop, {
+            g: () => value,
+            s: (newValue: any) => {
+                // Ignore any attempts to set the orgValues properties directly -- avoids assertion error when trying to replace
+            }
+        });
+    }
+}
+
 function _setPropValue(target: any, prop: any, altProp?: any) {
     try {
         if (target.props && ((prop in target.props) || (altProp && (altProp in target.props)))) {
-            let value = target.props[altProp] || target.props[prop];
+            let value = (altProp && altProp in target.props) ? target.props[altProp] : target.props[prop];
+            let orgSet = false;
 
             objDefine(target, prop, {
                 g: () => {
                     return value;
+                },
+                s: (newValue: any) => {
+                    // Support older frameworks (like mocha) that may replace the actual/expected/operator/showDiff properties directly
+                    // on the error object.
+                    if (!objIs(value, newValue)) {
+                        if (!orgSet) {
+                            // Store the original values before we change them for backward compatibility reasons
+                            _setOrgValue(target, prop, value);
+                            orgSet = true;
+                        }
+
+                        value = newValue;
+                    }
                 }
             });
         }
@@ -393,7 +480,7 @@ function _setPropValue(target: any, prop: any, altProp?: any) {
  */
 export const AssertionError = createCustomError<AssertionErrorConstructor<any>>("AssertionError", function _createError(self, args) {
     let len = args.length;
-    
+
     // default values <T>(message?: string, props?: T, stackStart?: Function | Function[]): AssertionError<T>;
     let lp = 1;
     let _innerEx = (lp < len && (len === 4 || isError(args[lp]))) ? args[lp++] : null;
@@ -430,6 +517,10 @@ export const AssertionError = createCustomError<AssertionErrorConstructor<any>>(
             name: self.name,
             message: self.message,
             props: self.props,
+            actual: self.actual,
+            expected: self.expected,
+            operator: self.operator,
+            showDiff: self.showDiff,
             stack: stack ? self.stack : undefined,
             innerException: _innerEx
         };

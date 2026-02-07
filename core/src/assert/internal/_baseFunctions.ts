@@ -94,7 +94,7 @@ export const coreFunctions: _AssertInstScopeFuncs = {
     is: _asPropFn(isOp),
     to: _asPropFn(toOp),
     has: _asPropFn(hasOp),
-    
+
     ok: _asFunc(truthyFunc),
     equal: _asFunc(equalsFunc),
     equals: _asFunc(equalsFunc),
@@ -107,7 +107,7 @@ export const coreFunctions: _AssertInstScopeFuncs = {
     match: _asFunc(matchFunc),
     hasProperty: _asFunc(hasPropertyFunc),
     hasOwnProperty: _asFunc(hasOwnPropertyFunc),
-    
+
     change: _asFunc(changesFunc),
     changes: _asFunc(changesFunc),
     changeBy: _asFunc(changesByFunc),

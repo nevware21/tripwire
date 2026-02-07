@@ -25,7 +25,7 @@ describe("assertScope", () => {
         assert.equal(scope.context.getMessage("hello {message}"), "hello {message}");
         assert.equal(scope.context.getMessage("hello {my}"), "hello \"old companion\"");
     });
-    
+
     it("Includes the initMsg in the message", () => {
         let context = createContext("my", "hello silence");
         let scope = createAssertScope(context);

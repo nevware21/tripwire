@@ -272,7 +272,7 @@ describe("assert.isNotOk", function () {
         checkError(function () {
             assert.isNotOk(new Map()); // Throws AssertionError
         }, /not expected .*Map.* to be truthy/);
-        
+
         checkError(function () {
             assert.isNotOk(new Map([["a", 1]])); // Throws AssertionError
         }, /not expected .*Map.* to be truthy/);

@@ -24,7 +24,7 @@ describe("hasSymbolFunc", () => {
             let context = createContext(obj);
             let scope = createAssertScope(context);
             let fn = hasSymbolFunc(testSymbol);
-            
+
             let result = fn.call(scope);
             assert.ok(result);
         });
@@ -35,7 +35,7 @@ describe("hasSymbolFunc", () => {
             let context = createContext(obj);
             let scope = createAssertScope(context);
             let fn = hasSymbolFunc(testSymbol);
-            
+
             checkError(() => {
                 fn.call(scope);
             }, /expected/);
@@ -48,7 +48,7 @@ describe("hasSymbolFunc", () => {
             let context = createContext(obj);
             let scope = createAssertScope(context);
             let fn = hasSymbolFunc(testSymbol);
-            
+
             let result = fn.call(scope);
             assert.ok(result);
         });
@@ -59,7 +59,7 @@ describe("hasSymbolFunc", () => {
             let context = createContext(null);
             let scope = createAssertScope(context);
             let fn = hasSymbolFunc(testSymbol);
-            
+
             checkError(() => {
                 fn.call(scope);
             }, /expected/);
@@ -69,7 +69,7 @@ describe("hasSymbolFunc", () => {
             let context = createContext(undefined);
             let scope = createAssertScope(context);
             let fn = hasSymbolFunc(testSymbol);
-            
+
             checkError(() => {
                 fn.call(scope);
             }, /expected/);
@@ -82,7 +82,7 @@ describe("hasSymbolFunc", () => {
             let context = createContext(arr);
             let scope = createAssertScope(context);
             let fn = hasSymbolFunc(testSymbol);
-            
+
             let result = fn.call(scope);
             assert.ok(result);
         });
@@ -94,7 +94,7 @@ describe("hasSymbolFunc", () => {
             let context = createContext(func);
             let scope = createAssertScope(context);
             let fn = hasSymbolFunc(testSymbol);
-            
+
             let result = fn.call(scope);
             assert.ok(result);
         });
@@ -108,7 +108,7 @@ describe("hasSymbolFunc", () => {
             let context = createContext(instance);
             let scope = createAssertScope(context);
             let fn = hasSymbolFunc(testSymbol);
-            
+
             let result = fn.call(scope);
             assert.ok(result);
         });
@@ -122,7 +122,7 @@ describe("hasSymbolFunc", () => {
             let context = createContext(obj);
             let scope = createAssertScope(context);
             let fn = hasSymbolFunc(testSymbol);
-            
+
             let result = fn.call(scope);
             assert.ok(result);
         });
@@ -135,7 +135,7 @@ describe("hasSymbolFunc", () => {
             let context = createContext(obj);
             let scope = createAssertScope(context);
             let fn = hasSymbolFunc(testSymbol);
-            
+
             checkError(() => {
                 fn.call(scope, "Custom symbol error");
             }, /Custom symbol error/);
@@ -168,7 +168,7 @@ describe("hasSymbolFunc", () => {
             let context = createContext(obj);
             let scope = createAssertScope(context);
             let fn = hasSymbolFunc(testSymbol2);
-            
+
             checkError(() => {
                 fn.call(scope);
             }, /expected/);
@@ -188,7 +188,7 @@ describe("hasOwnSymbolFunc", () => {
             let context = createContext(obj);
             let scope = createAssertScope(context);
             let fn = hasOwnSymbolFunc(testSymbol);
-            
+
             let result = fn.call(scope);
             assert.ok(result);
         });
@@ -199,7 +199,7 @@ describe("hasOwnSymbolFunc", () => {
             let context = createContext(obj);
             let scope = createAssertScope(context);
             let fn = hasOwnSymbolFunc(testSymbol);
-            
+
             checkError(() => {
                 fn.call(scope);
             }, /expected/);
@@ -208,13 +208,13 @@ describe("hasOwnSymbolFunc", () => {
         it("should fail when symbol property is inherited", () => {
             let proto: any = {};
             proto[testSymbol] = "inherited value";
-            
+
             let obj = Object.create(proto);
 
             let context = createContext(obj);
             let scope = createAssertScope(context);
             let fn = hasOwnSymbolFunc(testSymbol);
-            
+
             checkError(() => {
                 fn.call(scope);
             }, /expected/);
@@ -226,7 +226,7 @@ describe("hasOwnSymbolFunc", () => {
             let context = createContext(null);
             let scope = createAssertScope(context);
             let fn = hasOwnSymbolFunc(testSymbol);
-            
+
             checkError(() => {
                 fn.call(scope);
             }, /expected/);
@@ -236,7 +236,7 @@ describe("hasOwnSymbolFunc", () => {
             let context = createContext(undefined);
             let scope = createAssertScope(context);
             let fn = hasOwnSymbolFunc(testSymbol);
-            
+
             checkError(() => {
                 fn.call(scope);
             }, /expected/);
@@ -249,7 +249,7 @@ describe("hasOwnSymbolFunc", () => {
             let context = createContext(arr);
             let scope = createAssertScope(context);
             let fn = hasOwnSymbolFunc(testSymbol);
-            
+
             let result = fn.call(scope);
             assert.ok(result);
         });
@@ -261,7 +261,7 @@ describe("hasOwnSymbolFunc", () => {
             let context = createContext(func);
             let scope = createAssertScope(context);
             let fn = hasOwnSymbolFunc(testSymbol);
-            
+
             let result = fn.call(scope);
             assert.ok(result);
         });
@@ -275,7 +275,7 @@ describe("hasOwnSymbolFunc", () => {
             let context = createContext(obj);
             let scope = createAssertScope(context);
             let fn = hasOwnSymbolFunc(testSymbol);
-            
+
             let result = fn.call(scope);
             assert.ok(result);
         });
@@ -287,7 +287,7 @@ describe("hasOwnSymbolFunc", () => {
             let context = createContext(obj);
             let scope = createAssertScope(context);
             let fn = hasOwnSymbolFunc(testSymbol);
-            
+
             let result = fn.call(scope);
             assert.ok(result);
         });
@@ -300,7 +300,7 @@ describe("hasOwnSymbolFunc", () => {
             let context = createContext(obj);
             let scope = createAssertScope(context);
             let fn = hasOwnSymbolFunc(testSymbol);
-            
+
             checkError(() => {
                 fn.call(scope, "Custom own symbol error");
             }, /Custom own symbol error/);
@@ -311,7 +311,7 @@ describe("hasOwnSymbolFunc", () => {
         it("should pass for own property but fail for inherited", () => {
             let proto: any = {};
             proto[testSymbol2] = "inherited";
-            
+
             let obj: any = Object.create(proto);
             obj[testSymbol] = "own";
 
@@ -343,7 +343,7 @@ describe("hasOwnSymbolFunc", () => {
             let context = createContext(obj);
             let scope = createAssertScope(context);
             let fn = hasOwnSymbolFunc(testSymbol);
-            
+
             let result = fn.call(scope);
             assert.ok(result);
         });
@@ -360,7 +360,7 @@ describe("hasOwnSymbolFunc", () => {
             let context = createContext(obj);
             let scope = createAssertScope(context);
             let fn = hasOwnSymbolFunc(Symbol.iterator);
-            
+
             let result = fn.call(scope);
             assert.ok(result);
         });
@@ -368,13 +368,13 @@ describe("hasOwnSymbolFunc", () => {
         it("should handle symbols with same description but different identity", () => {
             const sym1 = Symbol("test");
             const sym2 = Symbol("test");
-            
+
             let obj: any = {};
             obj[sym1] = "value1";
 
             let context = createContext(obj);
             let scope = createAssertScope(context);
-            
+
             // Should pass for sym1
             let fn1 = hasOwnSymbolFunc(sym1);
             let result1 = fn1.call(scope);

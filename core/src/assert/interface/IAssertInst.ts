@@ -61,7 +61,7 @@ import { ChangeByFn } from "./funcs/ChangeByFn";
  * @group Expect
  */
 export interface IAssertInst extends INotOp<IAssertInst>, IAssertInstCore, IEqualOp<IAssertInst>, IThrowOp {
-       
+
     /**
      * This operation provides access to operations that will deeplyallows you to assert that the target value deeply equals the expected value.
      * It is useful for comparing objects, arrays, and other complex structures.

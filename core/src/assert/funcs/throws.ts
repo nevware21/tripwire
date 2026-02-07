@@ -105,7 +105,7 @@ export function throwsFunc<R>(this: IAssertScope, errorLike?: ErrorConstructor |
         let msgResult = _isErrorMessageCompatible(expCaught, msgMatch);
 
         let combinedMsg = cThrowsErrors[errorLikeResult.matchError | msgResult.matchError] || "expected {function} to throw an error but {error} was thrown";
-        
+
         newContext.eval(errorLikeResult.result && msgResult.result, theMsg || combinedMsg, e);
 
         return newScope.that;
@@ -115,7 +115,7 @@ export function throwsFunc<R>(this: IAssertScope, errorLike?: ErrorConstructor |
     // Running through the context will throw an error unless
     // the context was negated like (not.throws(...))
     context.eval(false, theMsg || "expected {value} to throw an error");
-            
+
     // If the context was not negated, then we need to throw an error and we would not get here
     newScope = scope.newScope(result);
 
@@ -171,7 +171,7 @@ function _isErrorLikeCompatible(errorValue: any, errorLike: ErrorConstructor | E
                 matchError: MatchError.ErrorInstance
             };
         }
-        
+
         if ((isObject(errType) || isFunction(errType)) && "constructor" in errType) {
             // The error is a constructor, so check if the value is an instance of the error
             return {
@@ -188,7 +188,7 @@ function _isErrorLikeCompatible(errorValue: any, errorLike: ErrorConstructor | E
             matchError: MatchError.ErrorType
         };
     }
-    
+
     // We where not given a specific error to compare to, so just check if the value is an error
     return {
         result: true,

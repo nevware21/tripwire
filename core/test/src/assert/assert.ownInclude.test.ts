@@ -81,12 +81,12 @@ describe("Own Include Operations", () => {
         it("should not match inherited properties from prototype", () => {
             function Parent(this: any) {}
             Parent.prototype.inheritedProp = "inherited";
-            
+
             function Child(this: any) {
                 this.ownProp = "own";
             }
             Child.prototype = new (Parent as any)();
-            
+
             const instance = new (Child as any)();
             assert.ownInclude(instance, { ownProp: "own" });
             assert.notOwnInclude(instance, { inheritedProp: "inherited" });
@@ -273,12 +273,12 @@ describe("Own Include Operations", () => {
         it("should not match inherited properties", () => {
             function Parent(this: any) {}
             Parent.prototype.inheritedObj = { value: "inherited" };
-            
+
             function Child(this: any) {
                 this.ownObj = { value: "own" };
             }
             Child.prototype = new (Parent as any)();
-            
+
             const instance = new (Child as any)();
             assert.deepOwnInclude(instance, { ownObj: { value: "own" } });
             assert.notDeepOwnInclude(instance, { inheritedObj: { value: "inherited" } });

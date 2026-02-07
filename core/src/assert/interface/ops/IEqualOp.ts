@@ -73,7 +73,7 @@ export interface IEqualOp<R> {
      * assert.equals([1, 2], [1, 2]); // Throws AssertionError
      */
     equals: EqualFn<R>;
-    
+
     /**
      * Performs an equality check between the `actual` and `expected` values, throwing an
      * `AssertionFailure` with the given message when the `actual` value is not equal to

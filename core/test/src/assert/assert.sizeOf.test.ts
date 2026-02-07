@@ -51,7 +51,7 @@ describe("assert.sizeOf", () => {
     describe("Map support", () => {
         it("should pass for Maps with correct size", () => {
             assert.sizeOf(new Map(), 0);
-            
+
             const map = new Map();
             map.set("a", 1);
             map.set("b", 2);
@@ -62,7 +62,7 @@ describe("assert.sizeOf", () => {
             const map = new Map();
             map.set("a", 1);
             map.set("b", 2);
-            
+
             checkError(
                 () => assert.sizeOf(map, 3),
                 /expected .+ to have a size of 3 but got 2/
@@ -72,7 +72,7 @@ describe("assert.sizeOf", () => {
         it("should work with custom message for Maps", () => {
             const map = new Map();
             map.set("a", 1);
-            
+
             checkError(
                 () => assert.sizeOf(map, 2, "Map size mismatch"),
                 "Map size mismatch"
@@ -83,7 +83,7 @@ describe("assert.sizeOf", () => {
     describe("Set support", () => {
         it("should pass for Sets with correct size", () => {
             assert.sizeOf(new Set(), 0);
-            
+
             const set = new Set();
             set.add(1);
             set.add(2);
@@ -94,7 +94,7 @@ describe("assert.sizeOf", () => {
             const set = new Set();
             set.add(1);
             set.add(2);
-            
+
             checkError(
                 () => assert.sizeOf(set, 3),
                 /expected .+ to have a size of 3 but got 2/
@@ -104,7 +104,7 @@ describe("assert.sizeOf", () => {
         it("should work with custom message for Sets", () => {
             const set = new Set();
             set.add(1);
-            
+
             checkError(
                 () => assert.sizeOf(set, 2, "Set size mismatch"),
                 "Set size mismatch"
@@ -200,7 +200,7 @@ describe("assert.sizeOf", () => {
         it("should prefer length over size when both are present", () => {
             const customObj = { length: 5, size: 3 };
             assert.sizeOf(customObj, 5);
-            
+
             checkError(
                 () => assert.sizeOf(customObj, 3),
                 "expected {length:5,size:3} to have a length of 3 but got 5"

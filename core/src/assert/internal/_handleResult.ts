@@ -71,6 +71,6 @@ export function _handleResult<T>(result: T, scope: IAssertScope, funcName?: stri
 
     _setAssertScope(theResult, scope);
     scope.that = theResult;
-    
+
     return theResult;
 }

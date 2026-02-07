@@ -97,7 +97,7 @@ describe("assertConfig", () => {
     describe("clone method", () => {
         it("should create a copy of the configuration", () => {
             let clone = assertConfig.$ops.clone();
-            
+
             assert.notStrictEqual(clone, assertConfig);
             assert.equal(clone.isVerbose, assertConfig.isVerbose);
             assert.equal(clone.fullStack, assertConfig.fullStack);
@@ -107,14 +107,14 @@ describe("assertConfig", () => {
 
         it("should create independent copies", () => {
             let clone = assertConfig.$ops.clone();
-            
+
             clone.isVerbose = !assertConfig.isVerbose;
             assert.notEqual(clone.isVerbose, assertConfig.isVerbose);
         });
 
         it("should deep clone format configuration", () => {
             let clone = assertConfig.$ops.clone();
-            
+
             assert.notStrictEqual(clone.format, assertConfig.format);
             assert.equal(clone.format.finalize, assertConfig.format.finalize);
         });
@@ -125,7 +125,7 @@ describe("assertConfig", () => {
                 value: () => ({ res: 0, val: "test" })
             };
             assertConfig.$ops.addFormatter([formatter]);
-            
+
             let clone = assertConfig.$ops.clone();
             let formatters = assertConfig.$ops.formatMgr.getFormatters();
             let cloneFormatters = clone.$ops.formatMgr.getFormatters();
@@ -141,7 +141,7 @@ describe("assertConfig", () => {
         it("should handle empty formatters array", () => {
             assertConfig.$ops.addFormatter([]);
             let clone = assertConfig.$ops.clone();
-            
+
             assert.isArray(clone.$ops.formatMgr.getFormatters());
             assert.equal(clone.$ops.formatMgr.getFormatters().length, 0);
         });
@@ -199,7 +199,7 @@ describe("assertConfig", () => {
         it("verbose mode should affect assertion output", () => {
             assertConfig.isVerbose = false;
             // Test assertion behavior (implementation-specific)
-            
+
             assertConfig.isVerbose = true;
             // Test verbose assertion behavior
         });
@@ -254,7 +254,7 @@ describe("assertConfig", () => {
             };
 
             assertConfig.$ops.addFormatter([formatter1, formatter2]);
-            
+
             assert.equal(assertConfig.$ops.formatMgr.getFormatters().length, 2);
             assertConfig.$ops.reset();
             assert.equal(assertConfig.$ops.formatMgr.getFormatters().length, 0);
@@ -263,10 +263,10 @@ describe("assertConfig", () => {
         it("should preserve finalizeFn reference", () => {
             let fn = (value: string) => value.toUpperCase();
             assertConfig.format.finalizeFn = fn;
-            
+
             let clone = assertConfig.$ops.clone();
             assert.equal(clone.format.finalizeFn, fn);
-            
+
             // Test that the function works
             if (clone.format.finalizeFn) {
                 assert.equal(clone.format.finalizeFn("test"), "TEST");
@@ -286,7 +286,7 @@ describe("assertConfig", () => {
 
             assertConfig.$ops.addFormatter([complexFormatter]);
             assert.equal(assertConfig.$ops.formatMgr.getFormatters()[0].name, "complex");
-            
+
             let result = complexFormatter.value(null, 42);
             assert.equal(result.res, 0);
             assert.equal(result.val, "Number: 42");

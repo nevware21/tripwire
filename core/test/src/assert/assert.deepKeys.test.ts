@@ -27,7 +27,7 @@ describe("assert deep keys", () => {
             const set = new Set();
             set.add({ greeting: "hello", subject: "friend" });
             set.add({ message: "darkness", type: "familiar" });
-            
+
             expect(set).to.have.any.deep.keys({ greeting: "hello", subject: "friend" });
             expect(set).to.have.any.deep.keys({ message: "darkness", type: "familiar" });
             expect(set).to.have.any.deep.keys([{ greeting: "hello", subject: "friend" }, { echo: "calling" }]);
@@ -37,7 +37,7 @@ describe("assert deep keys", () => {
             const obj: any = {};
             obj[JSON.stringify({ greeting: "hello", subject: "friend" })] = "value1";
             obj[JSON.stringify({ message: "darkness", type: "familiar" })] = "value2";
-            
+
             // Note: Regular objects can't have deep object keys, so this tests string keys
             expect(obj).to.have.any.deep.keys(JSON.stringify({ greeting: "hello", subject: "friend" }));
         });
@@ -46,11 +46,11 @@ describe("assert deep keys", () => {
             const map = new Map();
             map.set({ greeting: "hello", subject: "friend" }, "value1");
             map.set({ message: "darkness", type: "familiar" }, "value2");
-            
+
             expect(() => {
                 expect(map).to.have.any.deep.keys({ echo: "calling", void: "silence" });
             }).to.throw(AssertionFailure);
-            
+
             expect(() => {
                 expect(map).to.have.any.deep.keys([{ echo: "calling" }, { vision: "softly" }]);
             }).to.throw(AssertionFailure);
@@ -59,7 +59,7 @@ describe("assert deep keys", () => {
         it("should work with expect syntax", () => {
             const map = new Map();
             map.set({ greeting: "hello", subject: "friend" }, "val");
-            
+
             expect(map).to.have.any.deep.keys({ greeting: "hello", subject: "friend" });
             expect(() => expect(map).to.have.any.deep.keys({ echo: "calling" })).to.throw();
         });
@@ -67,7 +67,7 @@ describe("assert deep keys", () => {
         it("should work with complex nested objects as keys", () => {
             const map = new Map();
             map.set({ nested: { value: [1, 2, 3] } }, "data");
-            
+
             expect(map).to.have.any.deep.keys({ nested: { value: [1, 2, 3] } });
         });
     });
@@ -78,7 +78,7 @@ describe("assert deep keys", () => {
             map.set({ greeting: "hello", subject: "friend" }, "value1");
             map.set({ message: "darkness", type: "familiar" }, "value2");
             map.set({ echo: "calling", void: "silence" }, "value3");
-            
+
             expect(map).to.have.all.deep.keys([{ greeting: "hello", subject: "friend" }, { message: "darkness", type: "familiar" }]);
             expect(map).to.have.all.deep.keys([{ greeting: "hello", subject: "friend" }, { message: "darkness", type: "familiar" }, { echo: "calling", void: "silence" }]);
         });
@@ -87,7 +87,7 @@ describe("assert deep keys", () => {
             const set = new Set();
             set.add({ greeting: "hello", subject: "friend" });
             set.add({ message: "darkness", type: "familiar" });
-            
+
             expect(set).to.have.all.deep.keys([{ greeting: "hello", subject: "friend" }, { message: "darkness", type: "familiar" }]);
         });
 
@@ -95,7 +95,7 @@ describe("assert deep keys", () => {
             const map = new Map();
             map.set({ greeting: "hello", subject: "friend" }, "value1");
             map.set({ message: "darkness", type: "familiar" }, "value2");
-            
+
             expect(() => {
                 expect(map).to.have.all.deep.keys([{ greeting: "hello", subject: "friend" }, { echo: "calling" }]);
             }).to.throw(AssertionFailure);
@@ -105,7 +105,7 @@ describe("assert deep keys", () => {
             const map = new Map();
             map.set({ greeting: "hello", subject: "friend" }, "val1");
             map.set({ message: "darkness", type: "familiar" }, "val2");
-            
+
             expect(map).to.have.all.deep.keys([{ greeting: "hello", subject: "friend" }, { message: "darkness", type: "familiar" }]);
             expect(() => expect(map).to.have.all.deep.keys([{ greeting: "hello", subject: "friend" }, { echo: "calling" }])).to.throw();
         });
@@ -113,7 +113,7 @@ describe("assert deep keys", () => {
         it("should work with single key", () => {
             const map = new Map();
             map.set({ greeting: "hello", subject: "friend" }, "value");
-            
+
             expect(map).to.have.all.deep.keys({ greeting: "hello", subject: "friend" });
         });
     });
@@ -123,7 +123,7 @@ describe("assert deep keys", () => {
             const map = new Map();
             map.set({ greeting: "hello", subject: "friend" }, "value1");
             map.set({ message: "darkness", type: "familiar" }, "value2");
-            
+
             expect(map).to.not.have.any.deep.keys({ echo: "calling", void: "silence" });
             expect(map).to.not.have.any.deep.keys([{ echo: "calling" }, { vision: "softly" }]);
         });
@@ -132,11 +132,11 @@ describe("assert deep keys", () => {
             const map = new Map();
             map.set({ greeting: "hello", subject: "friend" }, "value1");
             map.set({ message: "darkness", type: "familiar" }, "value2");
-            
+
             expect(() => {
                 expect(map).to.not.have.any.deep.keys({ greeting: "hello", subject: "friend" });
             }).to.throw(AssertionFailure);
-            
+
             expect(() => {
                 expect(map).to.not.have.any.deep.keys([{ greeting: "hello", subject: "friend" }, { echo: "calling" }]);
             }).to.throw(AssertionFailure);
@@ -145,7 +145,7 @@ describe("assert deep keys", () => {
         it("should work with expect syntax", () => {
             const map = new Map();
             map.set({ greeting: "hello", subject: "friend" }, "val");
-            
+
             expect(map).to.not.have.any.deep.keys({ message: "darkness" });
             expect(() => expect(map).to.not.have.any.deep.keys({ greeting: "hello", subject: "friend" })).to.throw();
         });
@@ -156,7 +156,7 @@ describe("assert deep keys", () => {
             const map = new Map();
             map.set({ greeting: "hello", subject: "friend" }, "value1");
             map.set({ message: "darkness", type: "familiar" }, "value2");
-            
+
             expect(map).to.not.have.all.deep.keys([{ greeting: "hello", subject: "friend" }, { echo: "calling" }]);
             expect(map).to.not.have.all.deep.keys([{ echo: "calling" }, { vision: "softly" }]);
         });
@@ -165,7 +165,7 @@ describe("assert deep keys", () => {
             const map = new Map();
             map.set({ greeting: "hello", subject: "friend" }, "value1");
             map.set({ message: "darkness", type: "familiar" }, "value2");
-            
+
             expect(() => {
                 expect(map).to.not.have.all.deep.keys([{ greeting: "hello", subject: "friend" }, { message: "darkness", type: "familiar" }]);
             }).to.throw(AssertionFailure);
@@ -175,7 +175,7 @@ describe("assert deep keys", () => {
             const map = new Map();
             map.set({ greeting: "hello", subject: "friend" }, "val1");
             map.set({ message: "darkness", type: "familiar" }, "val2");
-            
+
             expect(map).to.not.have.all.deep.keys([{ greeting: "hello", subject: "friend" }, { echo: "calling" }]);
             expect(() => expect(map).to.not.have.all.deep.keys([{ greeting: "hello", subject: "friend" }, { message: "darkness", type: "familiar" }])).to.throw();
         });
@@ -187,7 +187,7 @@ describe("assert deep keys", () => {
             map.set({ greeting: "hello", subject: "friend" }, "value1");
             map.set({ message: "darkness", type: "familiar" }, "value2");
             map.set({ echo: "calling", void: "silence" }, "value3");
-            
+
             expect(map).to.contain.all.deep.keys([{ greeting: "hello", subject: "friend" }, { message: "darkness", type: "familiar" }]);
         });
 
@@ -195,7 +195,7 @@ describe("assert deep keys", () => {
             const map = new Map();
             map.set({ greeting: "hello", subject: "friend" }, "val1");
             map.set({ message: "darkness", type: "familiar" }, "val2");
-            
+
             expect(map).to.contain.all.deep.keys([{ greeting: "hello", subject: "friend" }]);
         });
     });
@@ -205,7 +205,7 @@ describe("assert deep keys", () => {
             const sym1 = Symbol("test");
             const obj: any = {};
             obj[sym1] = "value";
-            
+
             expect(obj).to.have.any.deep.keys(sym1);
         });
 
@@ -216,7 +216,7 @@ describe("assert deep keys", () => {
 
         it("should work with empty Map", () => {
             const map = new Map();
-            
+
             expect(() => {
                 expect(map).to.have.any.deep.keys({ a: 1 });
             }).to.throw(AssertionFailure);
@@ -227,17 +227,17 @@ describe("assert deep keys", () => {
             const nullProtoKey = Object.create(null);
             nullProtoKey.a = 1;
             map.set(nullProtoKey, "value");
-            
+
             const testKey = Object.create(null);
             testKey.a = 1;
-            
+
             expect(map).to.have.any.deep.keys(testKey);
         });
 
         it("should distinguish between similar but not equal objects", () => {
             const map = new Map();
             map.set({ greeting: "hello", subject: "friend", extra: "data" }, "value");
-            
+
             expect(() => {
                 expect(map).to.have.any.deep.keys({ greeting: "hello", subject: "friend" });
             }).to.throw(AssertionFailure);
@@ -246,7 +246,7 @@ describe("assert deep keys", () => {
         it("should work with arrays as Map keys", () => {
             const map = new Map();
             map.set([1, 2, 3], "value");
-            
+
             // Use double array wrapping to check for array as literal key
             expect(map).to.have.any.deep.keys([[1, 2, 3]]);
         });
@@ -255,7 +255,7 @@ describe("assert deep keys", () => {
             const map = new Map();
             const date = new Date("2020-01-01");
             map.set(date, "value");
-            
+
             expect(map).to.have.any.deep.keys(new Date("2020-01-01"));
         });
     });
@@ -288,7 +288,7 @@ describe("assert.hasAnyDeepKeys", () => {
             const map = new Map();
             map.set({ id: 1 }, "value1");
             map.set({ id: 2 }, "value2");
-            
+
             assert.hasAnyDeepKeys(map, { id: 1 });
             assert.hasAnyDeepKeys(map, [{ id: 1 }, { id: 3 }]);
         });
@@ -297,7 +297,7 @@ describe("assert.hasAnyDeepKeys", () => {
             const set = new Set();
             set.add({ id: 1 });
             set.add({ id: 2 });
-            
+
             assert.hasAnyDeepKeys(set, { id: 1 });
             assert.hasAnyDeepKeys(set, [{ id: 3 }, { id: 2 }]);
         });
@@ -307,7 +307,7 @@ describe("assert.hasAnyDeepKeys", () => {
         it("should work with nested object keys", () => {
             const map = new Map();
             map.set({ nested: { value: 1 } }, "data");
-            
+
             assert.hasAnyDeepKeys(map, { nested: { value: 1 } });
         });
 
@@ -317,7 +317,7 @@ describe("assert.hasAnyDeepKeys", () => {
         it("should work with array keys", () => {
             const map = new Map();
             map.set([1, 2, 3], "value");
-            
+
             assert.hasAnyDeepKeys(map, [[1, 2, 3]]);
         });
 
@@ -326,7 +326,7 @@ describe("assert.hasAnyDeepKeys", () => {
         it("should work with Set as keys parameter", () => {
             const obj = { greeting: "hello", subject: "friend", message: "darkness" };
             const keysSet = new Set(["greeting", "unknown"]);
-            
+
             assert.hasAnyDeepKeys(obj, keysSet);
         });
 
@@ -336,7 +336,7 @@ describe("assert.hasAnyDeepKeys", () => {
             const key2 = new Map([[2, "b"]]);
             map.set(key1, "value1");
             map.set(key2, "value2");
-            
+
             assert.hasAnyDeepKeys(map, [new Map([[1, "a"]]), new Map([[999, "z"]])]);
         });
     });
@@ -369,7 +369,7 @@ describe("assert.hasAllDeepKeys", () => {
             const map = new Map();
             map.set({ id: 1 }, "value1");
             map.set({ id: 2 }, "value2");
-            
+
             assert.hasAllDeepKeys(map, { id: 1 });
             assert.hasAllDeepKeys(map, [{ id: 1 }, { id: 2 }]);
         });
@@ -377,7 +377,7 @@ describe("assert.hasAllDeepKeys", () => {
         it("should fail when Map is missing any object key", () => {
             const map = new Map();
             map.set({ id: 1 }, "value1");
-            
+
             checkError(() => {
                 assert.hasAllDeepKeys(map, [{ id: 1 }, { id: 2 }]);
             }, /expected all deep keys.*missing/);
@@ -387,7 +387,7 @@ describe("assert.hasAllDeepKeys", () => {
             const set = new Set();
             set.add({ id: 1 });
             set.add({ id: 2 });
-            
+
             assert.hasAllDeepKeys(set, [{ id: 1 }, { id: 2 }]);
         });
     });
@@ -396,7 +396,7 @@ describe("assert.hasAllDeepKeys", () => {
         it("should distinguish similar but not equal objects", () => {
             const map = new Map();
             map.set({ greeting: "hello", subject: "friend" }, "value");
-            
+
             checkError(() => {
                 assert.hasAllDeepKeys(map, { greeting: "hello" });
             }, /expected all deep keys.*missing/);
@@ -417,7 +417,7 @@ describe("assert.notHaveAnyDeepKeys", () => {
             checkError(() => {
                 assert.notHaveAnyDeepKeys(obj, "greeting");
             }, /not expected any deep key/);
-            
+
             checkError(() => {
                 assert.notHaveAnyDeepKeys(obj, ["unknown", "subject"]);
             }, /not expected any deep key/);
@@ -433,7 +433,7 @@ describe("assert.notHaveAnyDeepKeys", () => {
         it("should work with Map containing object keys", () => {
             const map = new Map();
             map.set({ id: 1 }, "value1");
-            
+
             assert.notHaveAnyDeepKeys(map, { id: 2 });
             assert.notHaveAnyDeepKeys(map, [{ id: 2 }, { id: 3 }]);
         });
@@ -441,7 +441,7 @@ describe("assert.notHaveAnyDeepKeys", () => {
         it("should fail when Map has a matching object key", () => {
             const map = new Map();
             map.set({ id: 1 }, "value1");
-            
+
             checkError(() => {
                 assert.notHaveAnyDeepKeys(map, { id: 1 });
             }, /not expected any deep key/);
@@ -466,9 +466,9 @@ describe("assert.doesNotHaveAnyDeepKeys (alias)", () => {
     it("should work with Map containing object keys", () => {
         const map = new Map();
         map.set({ id: 1 }, "value1");
-        
+
         assert.doesNotHaveAnyDeepKeys(map, { id: 2 });
-        
+
         checkError(() => {
             assert.doesNotHaveAnyDeepKeys(map, { id: 1 });
         }, /not expected any deep key/);
@@ -489,7 +489,7 @@ describe("assert.notHaveAllDeepKeys", () => {
             checkError(() => {
                 assert.notHaveAllDeepKeys(obj, "greeting");
             }, /not expected all deep keys/);
-            
+
             checkError(() => {
                 assert.notHaveAllDeepKeys(obj, ["greeting", "subject"]);
             }, /not expected all deep keys/);
@@ -506,7 +506,7 @@ describe("assert.notHaveAllDeepKeys", () => {
             const map = new Map();
             map.set({ id: 1 }, "value1");
             map.set({ id: 2 }, "value2");
-            
+
             assert.notHaveAllDeepKeys(map, [{ id: 1 }, { id: 3 }]);
         });
 
@@ -514,7 +514,7 @@ describe("assert.notHaveAllDeepKeys", () => {
             const map = new Map();
             map.set({ id: 1 }, "value1");
             map.set({ id: 2 }, "value2");
-            
+
             checkError(() => {
                 assert.notHaveAllDeepKeys(map, [{ id: 1 }, { id: 2 }]);
             }, /not expected all deep keys/);
@@ -539,9 +539,9 @@ describe("assert.doesNotHaveAllDeepKeys (alias)", () => {
     it("should work with Map containing object keys", () => {
         const map = new Map();
         map.set({ id: 1 }, "value1");
-        
+
         assert.doesNotHaveAllDeepKeys(map, [{ id: 1 }, { id: 2 }]);
-        
+
         checkError(() => {
             assert.doesNotHaveAllDeepKeys(map, { id: 1 });
         }, /not expected all deep keys/);

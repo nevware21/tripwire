@@ -50,7 +50,7 @@ describe("assert.isError", () => {
         checkError(() => {
             assert.isError({}, Error, customMessage);
         }, customMessage);
-        
+
         expect(() => assert.isError({}, Error, customMessage)).toThrowError(new AssertionFailure(customMessage));
     });
 });

@@ -15,7 +15,7 @@ describe("expect change/increase/decrease", () => {
             const fn = () => {
                 obj.val = 20;
             };
-            
+
             expect(fn).to.change(obj, "val");
         });
 
@@ -25,7 +25,7 @@ describe("expect change/increase/decrease", () => {
             const fn = () => {
                 value = 20;
             };
-            
+
             expect(fn).to.change(getValue);
         });
 
@@ -34,21 +34,21 @@ describe("expect change/increase/decrease", () => {
             const fn = () => {
                 obj.val = 15;
             };
-            
+
             expect(fn).to.change(obj, "val").by(5);
         });
 
         it("should fail when function doesn't change value", () => {
             const obj = { val: 10 };
             const fn = () => { /* no change */ };
-            
+
             expect(() => expect(fn).to.change(obj, "val")).to.throw();
         });
 
         it("should fail with correct error message when value doesn't change", () => {
             const obj = { val: 10 };
             const fn = () => { /* no change */ };
-            
+
             expect(() => expect(fn).to.change(obj, "val")).to.throw(/expected.*to change.*val/);
         });
 
@@ -57,7 +57,7 @@ describe("expect change/increase/decrease", () => {
             const fn = () => {
                 obj.val = 15;
             };
-            
+
             expect(() => expect(fn).to.change(obj, "val").by(10)).to.throw();
         });
 
@@ -66,7 +66,7 @@ describe("expect change/increase/decrease", () => {
             const fn = () => {
                 obj.val = 15;
             };
-            
+
             expect(() => expect(fn).to.change(obj, "val").by(10)).to.throw(/expected.*to change by 10.*but.*changed by 5/);
         });
 
@@ -75,14 +75,14 @@ describe("expect change/increase/decrease", () => {
             const fn = () => {
                 obj.val = 5;
             };
-            
+
             expect(fn).to.change(obj, "val").by(-5);
         });
 
         it("should work with not operator", () => {
             const obj = { val: 10 };
             const fn = () => { /* no change */ };
-            
+
             expect(fn).to.not.change(obj, "val");
         });
     });
@@ -93,7 +93,7 @@ describe("expect change/increase/decrease", () => {
             const fn = () => {
                 obj.count = 10;
             };
-            
+
             expect(fn).to.increase(obj, "count");
         });
 
@@ -103,7 +103,7 @@ describe("expect change/increase/decrease", () => {
             const fn = () => {
                 count++;
             };
-            
+
             expect(fn).to.increase(getCount);
         });
 
@@ -112,7 +112,7 @@ describe("expect change/increase/decrease", () => {
             const fn = () => {
                 obj.count += 10;
             };
-            
+
             expect(fn).to.increase(obj, "count").by(10);
         });
 
@@ -121,7 +121,7 @@ describe("expect change/increase/decrease", () => {
             const fn = () => {
                 obj.count = 5;
             };
-            
+
             expect(() => expect(fn).to.increase(obj, "count")).to.throw();
         });
 
@@ -130,21 +130,21 @@ describe("expect change/increase/decrease", () => {
             const fn = () => {
                 obj.count = 5;
             };
-            
+
             expect(() => expect(fn).to.increase(obj, "count")).to.throw(/expected.*to increase.*count/);
         });
 
         it("should fail when function doesn't change value", () => {
             const obj = { count: 10 };
             const fn = () => { /* no change */ };
-            
+
             expect(() => expect(fn).to.increase(obj, "count")).to.throw();
         });
 
         it("should fail with correct error message when value doesn't change", () => {
             const obj = { count: 10 };
             const fn = () => { /* no change */ };
-            
+
             expect(() => expect(fn).to.increase(obj, "count")).to.throw(/expected.*to increase.*count/);
         });
 
@@ -153,7 +153,7 @@ describe("expect change/increase/decrease", () => {
             const fn = () => {
                 obj.count += 10;
             };
-            
+
             expect(() => expect(fn).to.increase(obj, "count").by(5)).to.throw();
         });
 
@@ -162,7 +162,7 @@ describe("expect change/increase/decrease", () => {
             const fn = () => {
                 obj.count += 10;
             };
-            
+
             expect(() => expect(fn).to.increase(obj, "count").by(5)).to.throw(/expected.*to change by 5.*but.*changed by 10/);
         });
 
@@ -171,14 +171,14 @@ describe("expect change/increase/decrease", () => {
             const fn = () => {
                 obj.count = 5;
             };
-            
+
             expect(fn).to.not.increase(obj, "count");
         });
 
         it("should work with not operator when value stays same", () => {
             const obj = { count: 10 };
             const fn = () => { /* no change */ };
-            
+
             expect(fn).to.not.increase(obj, "count");
         });
     });
@@ -189,7 +189,7 @@ describe("expect change/increase/decrease", () => {
             const fn = () => {
                 obj.count = 5;
             };
-            
+
             expect(fn).to.decrease(obj, "count");
         });
 
@@ -199,7 +199,7 @@ describe("expect change/increase/decrease", () => {
             const fn = () => {
                 count--;
             };
-            
+
             expect(fn).to.decrease(getCount);
         });
 
@@ -208,7 +208,7 @@ describe("expect change/increase/decrease", () => {
             const fn = () => {
                 obj.count -= 3;
             };
-            
+
             expect(fn).to.decrease(obj, "count").by(3);
         });
 
@@ -217,7 +217,7 @@ describe("expect change/increase/decrease", () => {
             const fn = () => {
                 obj.count = 10;
             };
-            
+
             expect(() => expect(fn).to.decrease(obj, "count")).to.throw();
         });
 
@@ -226,21 +226,21 @@ describe("expect change/increase/decrease", () => {
             const fn = () => {
                 obj.count = 10;
             };
-            
+
             expect(() => expect(fn).to.decrease(obj, "count")).to.throw(/expected.*to decrease.*count/);
         });
 
         it("should fail when function doesn't change value", () => {
             const obj = { count: 10 };
             const fn = () => { /* no change */ };
-            
+
             expect(() => expect(fn).to.decrease(obj, "count")).to.throw();
         });
 
         it("should fail with correct error message when value doesn't change", () => {
             const obj = { count: 10 };
             const fn = () => { /* no change */ };
-            
+
             expect(() => expect(fn).to.decrease(obj, "count")).to.throw(/expected.*to decrease.*count/);
         });
 
@@ -249,7 +249,7 @@ describe("expect change/increase/decrease", () => {
             const fn = () => {
                 obj.count -= 3;
             };
-            
+
             expect(() => expect(fn).to.decrease(obj, "count").by(5)).to.throw();
         });
 
@@ -258,7 +258,7 @@ describe("expect change/increase/decrease", () => {
             const fn = () => {
                 obj.count -= 3;
             };
-            
+
             expect(() => expect(fn).to.decrease(obj, "count").by(5)).to.throw(/expected.*to change by 5.*but.*changed by 3/);
         });
 
@@ -267,14 +267,14 @@ describe("expect change/increase/decrease", () => {
             const fn = () => {
                 obj.count = 10;
             };
-            
+
             expect(fn).to.not.decrease(obj, "count");
         });
 
         it("should work with not operator when value stays same", () => {
             const obj = { count: 10 };
             const fn = () => { /* no change */ };
-            
+
             expect(fn).to.not.decrease(obj, "count");
         });
     });
@@ -285,7 +285,7 @@ describe("expect change/increase/decrease", () => {
             const fn = () => {
                 obj.val = 20;
             };
-            
+
             expect(fn).to.changes(obj, "val");
         });
 
@@ -294,7 +294,7 @@ describe("expect change/increase/decrease", () => {
             const fn = () => {
                 obj.count = 10;
             };
-            
+
             expect(fn).to.increases(obj, "count");
         });
 
@@ -303,7 +303,7 @@ describe("expect change/increase/decrease", () => {
             const fn = () => {
                 obj.count = 5;
             };
-            
+
             expect(fn).to.decreases(obj, "count");
         });
     });
@@ -314,7 +314,7 @@ describe("expect change/increase/decrease", () => {
             const fn = () => {
                 obj.val = 15;
             };
-            
+
             expect(fn).to.changeBy(obj, "val", 5);
         });
 
@@ -324,7 +324,7 @@ describe("expect change/increase/decrease", () => {
             const fn = () => {
                 value = 15;
             };
-            
+
             expect(fn).to.changeBy(getValue, 5);
         });
 
@@ -333,7 +333,7 @@ describe("expect change/increase/decrease", () => {
             const fn = () => {
                 obj.val = 5;
             };
-            
+
             expect(fn).to.changeBy(obj, "val", -5);
         });
 
@@ -342,7 +342,7 @@ describe("expect change/increase/decrease", () => {
             const fn = () => {
                 obj.val = 5;  // actual delta is -5
             };
-            
+
             // Should pass because changeBy ignores sign (|-5| === |5|)
             expect(fn).to.changeBy(obj, "val", 5);
         });
@@ -352,7 +352,7 @@ describe("expect change/increase/decrease", () => {
             const fn = () => {
                 obj.val = 15;  // actual delta is 5
             };
-            
+
             // Should pass because changeBy ignores sign (|5| === |-5|)
             expect(fn).to.changeBy(obj, "val", -5);
         });
@@ -363,7 +363,7 @@ describe("expect change/increase/decrease", () => {
             const fn = () => {
                 value = 3;  // actual delta is -7
             };
-            
+
             // Should pass because changeBy ignores sign (|-7| === |7|)
             expect(fn).to.changeBy(getValue, 7);
         });
@@ -373,7 +373,7 @@ describe("expect change/increase/decrease", () => {
             const fn = () => {
                 obj.val = 15;
             };
-            
+
             expect(() => expect(fn).to.changeBy(obj, "val", 10)).to.throw();
         });
 
@@ -382,7 +382,7 @@ describe("expect change/increase/decrease", () => {
             const fn = () => {
                 obj.val = 15;
             };
-            
+
             expect(() => expect(fn).to.changeBy(obj, "val", 10)).to.throw(/expected.*to change.*"val".*by 10.*but.*changed by 5/);
         });
 
@@ -391,7 +391,7 @@ describe("expect change/increase/decrease", () => {
             const fn = () => {
                 obj.val = 20;
             };
-            
+
             expect(fn).to.changesBy(obj, "val", 10);
         });
     });
@@ -402,7 +402,7 @@ describe("expect change/increase/decrease", () => {
             const fn = () => {
                 obj.count += 10;
             };
-            
+
             expect(fn).to.increaseBy(obj, "count", 10);
         });
 
@@ -412,7 +412,7 @@ describe("expect change/increase/decrease", () => {
             const fn = () => {
                 count += 10;
             };
-            
+
             expect(fn).to.increaseBy(getCount, 10);
         });
 
@@ -421,7 +421,7 @@ describe("expect change/increase/decrease", () => {
             const fn = () => {
                 obj.count += 10;
             };
-            
+
             expect(() => expect(fn).to.increaseBy(obj, "count", 5)).to.throw();
         });
 
@@ -430,7 +430,7 @@ describe("expect change/increase/decrease", () => {
             const fn = () => {
                 obj.count += 10;
             };
-            
+
             expect(() => expect(fn).to.increaseBy(obj, "count", 5)).to.throw(/expected.*to increase.*"count".*by 5.*but.*increased by 10/);
         });
 
@@ -439,7 +439,7 @@ describe("expect change/increase/decrease", () => {
             const fn = () => {
                 obj.count = 5;
             };
-            
+
             expect(() => expect(fn).to.increaseBy(obj, "count", 5)).to.throw();
         });
 
@@ -448,21 +448,21 @@ describe("expect change/increase/decrease", () => {
             const fn = () => {
                 obj.count = 5;
             };
-            
+
             expect(() => expect(fn).to.increaseBy(obj, "count", 5)).to.throw(/expected.*to increase.*count/);
         });
 
         it("should fail when value doesn't change", () => {
             const obj = { count: 10 };
             const fn = () => { /* no change */ };
-            
+
             expect(() => expect(fn).to.increaseBy(obj, "count", 5)).to.throw();
         });
 
         it("should fail with correct error message when value doesn't change", () => {
             const obj = { count: 10 };
             const fn = () => { /* no change */ };
-            
+
             expect(() => expect(fn).to.increaseBy(obj, "count", 5)).to.throw(/expected.*to increase.*count/);
         });
 
@@ -471,7 +471,7 @@ describe("expect change/increase/decrease", () => {
             const fn = () => {
                 obj.count += 7;
             };
-            
+
             expect(fn).to.increasesBy(obj, "count", 7);
         });
     });
@@ -482,7 +482,7 @@ describe("expect change/increase/decrease", () => {
             const fn = () => {
                 obj.count -= 3;
             };
-            
+
             expect(fn).to.decreaseBy(obj, "count", 3);
         });
 
@@ -492,7 +492,7 @@ describe("expect change/increase/decrease", () => {
             const fn = () => {
                 count -= 3;
             };
-            
+
             expect(fn).to.decreaseBy(getCount, 3);
         });
 
@@ -501,7 +501,7 @@ describe("expect change/increase/decrease", () => {
             const fn = () => {
                 obj.count -= 3;
             };
-            
+
             expect(() => expect(fn).to.decreaseBy(obj, "count", 5)).to.throw();
         });
 
@@ -510,7 +510,7 @@ describe("expect change/increase/decrease", () => {
             const fn = () => {
                 obj.count -= 3;
             };
-            
+
             expect(() => expect(fn).to.decreaseBy(obj, "count", 5)).to.throw(/expected.*to decrease.*"count".*by 5.*but.*changed by -3/);
         });
 
@@ -519,7 +519,7 @@ describe("expect change/increase/decrease", () => {
             const fn = () => {
                 obj.count = 10;
             };
-            
+
             expect(() => expect(fn).to.decreaseBy(obj, "count", 3)).to.throw();
         });
 
@@ -528,21 +528,21 @@ describe("expect change/increase/decrease", () => {
             const fn = () => {
                 obj.count = 10;
             };
-            
+
             expect(() => expect(fn).to.decreaseBy(obj, "count", 3)).to.throw(/expected.*to decrease.*count/);
         });
 
         it("should fail when value doesn't change", () => {
             const obj = { count: 10 };
             const fn = () => { /* no change */ };
-            
+
             expect(() => expect(fn).to.decreaseBy(obj, "count", 3)).to.throw();
         });
 
         it("should fail with correct error message when value doesn't change", () => {
             const obj = { count: 10 };
             const fn = () => { /* no change */ };
-            
+
             expect(() => expect(fn).to.decreaseBy(obj, "count", 3)).to.throw(/expected.*to decrease.*count/);
         });
 
@@ -551,7 +551,7 @@ describe("expect change/increase/decrease", () => {
             const fn = () => {
                 obj.count -= 4;
             };
-            
+
             expect(fn).to.decreasesBy(obj, "count", 4);
         });
     });

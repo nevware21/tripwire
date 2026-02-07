@@ -31,7 +31,7 @@ function _handleChangeByFunc<R>(scope: IAssertScope, theArgs: unknown[], callbac
     let property: (string | symbol | number) = null;
     let expectedDelta: number;
     let theMsg: MsgSource = null;
-    
+
     if (!targetOrFn) {
         context.set("targetOrFn", targetOrFn);
         scope.fatal("expected {targetOrFn} to be function or an object");
@@ -71,17 +71,17 @@ function _handleChangeByFunc<R>(scope: IAssertScope, theArgs: unknown[], callbac
 
     // Get the initial value
     let initialValue = _getTargetValue(context, "initial", targetOrFn, property);
-    
+
     if (!isNumber(initialValue)) {
         scope.fatal("expected initial value ({initial}) to be a number");
     }
-    
+
     // Execute the function
     fn();
-    
+
     // Get the final value
     let finalValue = _getTargetValue(context, "final", targetOrFn, property);
-    
+
     if (!isNumber(finalValue)) {
         scope.fatal("expected final value ({final}) to be a number");
     }
@@ -162,11 +162,11 @@ export function changesByFunc<R>(this: IAssertScope): R {
     return _handleChangeByFunc<R>(scope, arrSlice(arguments), (context: IScopeContext, resultDelta: IChangeDeltaResult) => {
         // Check if the absolute delta matches (sign is ignored for changeBy)
         let matches = (resultDelta.delta === resultDelta.expected) || (resultDelta.delta === -resultDelta.expected);
-        
+
         let defaultMsg = resultDelta.property
             ? "expected {value} to change {property} by {expectedDelta} but it changed by {delta}"
             : "expected {value} to change the monitored value by {expectedDelta} but it changed by {delta}";
-        
+
         context.eval(matches, resultDelta.theMsg || defaultMsg);
 
         return scope.that;
@@ -212,16 +212,16 @@ export function changesButNotByFunc<R>(this: IAssertScope): R {
     return _handleChangeByFunc<R>(scope, arrSlice(arguments), (context: IScopeContext, resultDelta: IChangeDeltaResult) => {
         let actualDelta = mathAbs(resultDelta.delta);
         let expectedDelta = mathAbs(resultDelta.expected);
-        
+
         // Must have changed (delta != 0) AND must not match the specified delta (considering sign)
         let changed = resultDelta.initial !== resultDelta.final;
         let notByExpectedDelta = (actualDelta !== expectedDelta);
         let matches = changed && notByExpectedDelta;
-        
+
         let defaultMsg = resultDelta.property
             ? "expected {value} to change {property} but not by {expectedDelta}, it changed by {delta}"
             : "expected {value} to change the monitored value but not by {expectedDelta}, it changed by {delta}";
-        
+
         context.eval(matches, resultDelta.theMsg || defaultMsg);
 
         return scope.that;
@@ -252,18 +252,18 @@ export function increasesByFunc<R, T = any>(this: IAssertScope, getter: (() => a
     return _handleChangeByFunc<R>(scope, arrSlice(arguments), (context: IScopeContext, resultDelta: IChangeDeltaResult) => {
         let expectedDelta = resultDelta.expected;
         let actualDelta = resultDelta.delta;
-        
+
         if (expectedDelta < 0) {
             scope.fatal("expected delta ({expectedDelta}) to be positive for increases");
         }
 
         // Check if increased by expected amount
         let matches = actualDelta >= 0 && actualDelta === expectedDelta;
-        
+
         let defaultMsg = resultDelta.property
             ? "expected {value} to increase {property} by {expectedDelta} but it increased by {delta}"
             : "expected {value} to increase the monitored value by {expectedDelta} but it increased by {delta}";
-        
+
         context.eval(matches, resultDelta.theMsg || defaultMsg);
 
         return scope.that;
@@ -286,7 +286,7 @@ export function increasesButNotByFunc<R, T = any>(this: IAssertScope, getter: ((
     return _handleChangeByFunc<R>(scope, arrSlice(arguments), (context: IScopeContext, resultDelta: IChangeDeltaResult) => {
         let expectedDelta = resultDelta.expected;
         let actualDelta = resultDelta.delta;
-        
+
         if (expectedDelta < 0) {
             scope.fatal("expected delta ({expectedDelta}) to be positive for increases");
         }
@@ -295,11 +295,11 @@ export function increasesButNotByFunc<R, T = any>(this: IAssertScope, getter: ((
         let increased = actualDelta > 0;
         let notByExpectedDelta = actualDelta !== expectedDelta;
         let matches = increased && notByExpectedDelta;
-        
+
         let defaultMsg = resultDelta.property
             ? "expected {value} to increase {property} but not by {expectedDelta}, it increased by {delta}"
             : "expected {value} to increase the monitored value but not by {expectedDelta}, it increased by {delta}";
-        
+
         context.eval(matches, resultDelta.theMsg || defaultMsg);
 
         return scope.that;
@@ -333,14 +333,14 @@ export function decreasesByFunc<R, T = any>(this: IAssertScope, getter: (() => a
         let expectedDelta = resultDelta.expected;
         let actualDelta = resultDelta.delta;
         let actualDecrease = -actualDelta;
-        
+
         // Check if decreased by expected amount
         let matches = actualDelta <= 0 && actualDecrease === expectedDelta;
-        
+
         let defaultMsg = resultDelta.property
             ? "expected {value} to decrease {property} by {expectedDelta} but it changed by {delta}"
             : "expected {value} to decrease the monitored value by {expectedDelta} but it changed by {delta}";
-        
+
         context.eval(matches, resultDelta.theMsg || defaultMsg);
 
         return scope.that;
@@ -364,16 +364,16 @@ export function decreasesButNotByFunc<R, T = any>(this: IAssertScope, getter: ((
         let expectedDelta = resultDelta.expected;
         let actualDelta = resultDelta.delta;
         let actualDecrease = -actualDelta;
-        
+
         // Must have decreased (delta < 0) AND must not match the expected decrease
         let decreased = actualDelta < 0;
         let notByExpectedDelta = actualDecrease !== expectedDelta;
         let matches = decreased && notByExpectedDelta;
-        
+
         let defaultMsg = resultDelta.property
             ? "expected {value} to decrease {property} but not by {expectedDelta}, it changed by {delta}"
             : "expected {value} to decrease the monitored value but not by {expectedDelta}, it changed by {delta}";
-        
+
         context.eval(matches, resultDelta.theMsg || defaultMsg);
 
         return scope.that;
