@@ -58,7 +58,7 @@ Install the npm package: `npm install @nevware21/tripwire --save-dev`
 > Recommended: Use the following definition in your `package.json` to stay compatible with future releases.
 > We do not intend to make runtime / environment breaking changes until at least v2.x
 > ```json
-> "@nevware21/tripwire": ">= 0.1.5 < 2.x"
+> "@nevware21/tripwire": ">= 0.1.6 < 2.x"
 > ```
 
 ## Usage
