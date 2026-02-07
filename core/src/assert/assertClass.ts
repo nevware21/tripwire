@@ -200,14 +200,14 @@ export function createAssert(): IAssertClass {
 
         isObject: isObjectFunc,
         isNotObject: createNotAdapter(isObjectFunc),
-    
+
         isPlainObject: isPlainObjectFunc,
         isNotPlainObject: createNotAdapter(isPlainObjectFunc),
 
         includes: { scopeFn: createExprAdapter("includes"), nArgs: 2 },     // The `includes` function is an alias for `hasProperty`
-        
+
         isError: { scopeFn: isErrorFunc, nArgs: 2 },
-        
+
         isString: createExprAdapter("is.string"),
         isNotString: createExprAdapter("not.is.string"),
 
@@ -231,7 +231,7 @@ export function createAssert(): IAssertClass {
 
         typeOf: { scopeFn: typeOfFunc, nArgs: 2 },
         notTypeOf: { scopeFn: createNotAdapter(typeOfFunc), nArgs: 2 },
-            
+
 
         isFinite: createExprAdapter("is.finite"),
         isNotFinite: createExprAdapter("not.is.finite"),
@@ -243,7 +243,7 @@ export function createAssert(): IAssertClass {
 
         isInstanceOf: { scopeFn: instanceOfFunc, nArgs: 2 },
         isNotInstanceOf: { scopeFn: createNotAdapter(instanceOfFunc), nArgs: 2 },
-            
+
         throws: { scopeFn: throwsFunc, nArgs: 3 },
         doesNotThrow: { scopeFn: createNotAdapter(throwsFunc), nArgs: 3 },
 
@@ -567,11 +567,11 @@ function _createProxyFunc(theAssert: IAssertClass, assertName: string, def: IAss
         newScope.context._$stackFn.push(_aliasStackStart || _assertFunc);
 
         newScope.context.setOp(assertName + "()");
-        
+
         objDefine(theAssert, "_$lastContext", {
             v: newScope.context
         });
-        
+
         let theResult = newScope.exec(scopeFn, scopeArgs || theArgs, scopeFn.name || (scopeFn as any)["displayName"] || "anonymous") as void | IAssertInst | IPromise<IAssertInst>;
 
         return responseHandler ? responseHandler(theResult) : theResult;

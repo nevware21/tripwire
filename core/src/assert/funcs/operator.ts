@@ -50,7 +50,7 @@ export function operatorFunc<R>(this: IAssertScope, operator: string, expected: 
     // val1 comes from context.value (the first argument passed to assert.operator)
     let value = context.value;
     let result: boolean;
-    
+
     switch (operator) {
         case "==":
             // eslint-disable-next-line eqeqeq

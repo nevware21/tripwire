@@ -21,7 +21,7 @@ import { deepKeysOp } from "./keysOp";
 
 export function deepOp<R>(scope: IAssertScope): IDeepOp<R> {
     scope.context.set(DEEP, true);
-    
+
     let props: AssertScopeFuncDefs<IDeepOp<R>> = {
         not: { propFn: notOp },
         strictly: { propFn: deepStrictlyOp },

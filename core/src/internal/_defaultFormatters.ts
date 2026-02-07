@@ -114,7 +114,7 @@ const _defaultPlainObjectFormatter: IFormatter = {
             let idx = 0;
             arrForEach(_getObjKeys(value), (key) => {
                 let formattedValue = ctx.format(value[key]);
-                
+
                 if (isSymbol(key)) {
                     theValue += (idx > 0 ? "," : EMPTY_STRING) + "[" + asString(key) + "]:" + formattedValue;
                 } else {
@@ -239,7 +239,7 @@ const _defaultMapFormatter: IFormatter = {
             let idx = 0;
             iterForOf(value.keys(), (key: any) => {
                 let formattedValue = ctx.format(value.get(key));
-                
+
                 if (isSymbol(key)) {
                     theValue += (idx > 0 ? "," : EMPTY_STRING) + "[" + asString(key) + "]:" + formattedValue;
                 } else if (isString(key) && strIndexOf(key, " ") >= 0) {
@@ -370,7 +370,7 @@ function _getObjKeys<T>(target: T): (keyof T)[] {
     let currentObj = target;
 
     while (!isStrictNullOrUndefined(currentObj)) {
-        
+
         objForEachKey(currentObj, (key: any) => {
             if (arrIndexOf(keys, key) === -1) {
                 keys.push(key);
@@ -383,7 +383,7 @@ function _getObjKeys<T>(target: T): (keyof T)[] {
                 keys.push(symbol);
             }
         });
-        
+
         let newObj = objGetPrototypeOf(currentObj);
         if (newObj === currentObj) {
             break;

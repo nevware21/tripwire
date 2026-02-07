@@ -868,7 +868,7 @@ export interface IChaiAssert {
     notPropertyVal<T, V>(object: T, property: string, /* keyof T */ value: V, message?: MsgSource): void;
 
     notDeepOwnPropertyVal<T, V>(object: T, property: string, value: V, message?: MsgSource): void;
-    
+
     /**
      * Asserts that object does not have its own property named by property with value given by value.
      *
@@ -1062,7 +1062,7 @@ export interface IChaiAssert {
     sameMembers<T>(set1: T[], set2: T[], message?: MsgSource): void;
 
     notSameMembers<T>(set1: T[], set2: T[], message?: MsgSource): void;
-    
+
     /**
      * Asserts that set1 and set2 have the same members using deep equality checking.
      * Order is not take into account.
@@ -1270,7 +1270,7 @@ export interface IChaiAssert {
 
     changesButNotBy<T>(modifier: Function, object: T, property: string, /* keyof T */ change: number, message?: MsgSource): void;
     changesButNotBy<T>(modifier: Function, object: T, change: number, message?: MsgSource): void;
-    
+
     /**
      * Asserts that a function increases an object property.
      *

@@ -58,7 +58,7 @@ describe("assert", function () {
 
         it("should produce a default message when called without any arguments", function () {
             //assertConfig.fullStack = false;
-            
+
             err(function() {
                 assert.fail();
             }, /assert\.fail()/);
@@ -165,18 +165,18 @@ describe("assert", function () {
         assert.typeOf("test", "string");
         assert.typeOf(true, "boolean");
         assert.typeOf(5, "number");
-    
+
         assert.typeOf(() => {}, "function");
         assert.typeOf(function() {}, "function");
         assert.typeOf(async function() {}, "asyncfunction");
         assert.typeOf(function*() {}, "generatorfunction");
         assert.typeOf(async function*() {}, "asyncgeneratorfunction");
         assert.typeOf(Symbol(), "symbol");
-    
+
         err(function () {
             assert.typeOf(5, "function", "blah");
         }, "blah: expected 5 to be of type function but got number");
-    
+
         err(function () {
             assert.typeOf(function() {}, "asyncfunction", "blah");
         }, "blah: expected [Function] to be of type asyncfunction but got function");
@@ -188,7 +188,7 @@ describe("assert", function () {
 
     it("notTypeOf", function () {
         assert.notTypeOf("test", "number");
-    
+
         assert.notTypeOf(() => {}, "string");
         assert.notTypeOf(function() {}, "string");
         assert.notTypeOf(async function() {}, "string");
@@ -198,7 +198,7 @@ describe("assert", function () {
         err(function () {
             assert.notTypeOf(5, "number", "blah");
         }, "blah: not expected 5 to be of type number");
-    
+
         err(function () {
             assert.notTypeOf(() => {}, "function", "blah");
         }, "blah: not expected [Function] to be of type function");
@@ -574,7 +574,7 @@ describe("assert", function () {
             assert.isCallable({}, "blah");
         }, "blah: expected {} to be a function");
     });
-  
+
     it("isNotCallable", function() {
         assert.isNotCallable(false);
         assert.isNotCallable(10);
@@ -769,7 +769,7 @@ describe("assert", function () {
         err(function () {
             assert.include({foo: {a: 1}, bar: {b: 2}}, {foo: {a: 1}}, "blah");
         }, "blah: expected {foo:{a:1},bar:{b:2}} to include {foo:{a:1}}");
-        
+
         err(function(){
             assert.include(true, true, "blah");
         },
@@ -903,7 +903,7 @@ describe("assert", function () {
         err(function() {
             assert.deepInclude(new WeakSet() as any, {}, "foo");
         }, "foo: argument [WeakSet:{}] (\"WeakSet\") cannot be used for deep include operation");
-        
+
         err(function () {
             assert.deepInclude([obj1, obj2], {a: 9}, "blah");
         }, "blah: expected [{a:1},{b:2}] to deep include {a:9}");
@@ -2111,7 +2111,7 @@ describe("assert", function () {
         assert.includeDeepMembers([{a:1}, {b:2}, {c:3}], []);
         assert.includeDeepMembers([{a:1}, {b:2}, {c:3}], [{c:3}]);
         assert.includeDeepMembers([{a:1}, {b:2}, {c:3}, {c:3}], [{c:3}, {c:3}]);
-        
+
         // This should fail because superset only has one {c:3}, but subset expects two
         err(function() {
             assert.includeDeepMembers([{a:1}, {b:2}, {c:3}], [{c:3}, {c:3}]);

@@ -33,7 +33,7 @@ function _throwInvalidExpr(isValid: boolean, expr: string | string[], internalEr
         if (isArray(expr)) {
             expr = expr.join(".");
         }
-        
+
         throw new AssertionError("Invalid expression: " + expr, null, internalErrorStackStart);
     }
 }
@@ -67,7 +67,7 @@ function _parseStep(expr: string, fullExpr: string | string[], internalErrorStac
     let name = expr;
     let args: IStepArgs[];
     let parts = expr.split("(");
-    
+
     _throwInvalidExpr(parts.length <= 2, fullExpr, internalErrorStackStart);
     if (parts.length == 2) {
         name = parts[0];
@@ -100,7 +100,7 @@ function _runExpr(theAssert: any, scope: IAssertScope, steps: IStepDef[], scopeF
                 objDefine(theAssert, "_$lastContext", {
                     v: lastScope.context
                 });
-    
+
                 lastSetContext = lastScope.context;
             }
         };
@@ -154,19 +154,19 @@ function _runExpr(theAssert: any, scope: IAssertScope, steps: IStepDef[], scopeF
                         context.getDetails(),
                         context._$stackFn);
                 }
-    
+
                 // And only if it returns a function do we call it
                 stepResult = fnApply(stepResult, scope.that, args);
             }
 
             scope.that = stepResult;
             _setLastContext(scope);
-    
+
             if (idx < steps.length - 1) {
                 // More steps to run
                 return _runOp(scope, idx + 1);
             }
-    
+
             return _processFn(scope, scopeFn, theArgs, stepResult, true);
         });
     }
@@ -225,7 +225,7 @@ export function createExprAdapter(theExpr: string | string[], scopeFn?: IScopeFn
         let theArgs = arrSlice(arguments);
 
         context._$stackFn.push(_exprFn);
-    
+
         // Track the operation path and set the stack start position
         if (context.opts.isVerbose) {
             let theFuncName = theExpr;

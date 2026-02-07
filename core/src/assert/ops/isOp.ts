@@ -62,7 +62,7 @@ export function isOp<R>(scope: IAssertScope): IIsOp<R> {
         iterable: { scopeFn: hasSymbolFunc(Symbol.iterator) },
         nan: { scopeFn: isNaNFunc },
         finite: { scopeFn: isFiniteFunc },
-        
+
         /**
          * Asserts that the value is an instance of the specified constructor.
          * This is an alias for `instanceOf` to support the JavaScript `instanceof` keyword style.
@@ -77,7 +77,7 @@ export function isOp<R>(scope: IAssertScope): IIsOp<R> {
          * ```
          */
         instanceof: { scopeFn: instanceOfFunc },
-        
+
         /**
          * Asserts that the value is an instance of the specified constructor.
          * Uses the JavaScript `instanceof` operator for type checking.
@@ -126,6 +126,6 @@ export function isOp<R>(scope: IAssertScope): IIsOp<R> {
         // Value membership
         oneOf: { scopeFn: oneOfFunc }
     };
-    
+
     return scope.createOperation(props);
 }

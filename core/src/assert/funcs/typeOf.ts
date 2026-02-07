@@ -40,7 +40,7 @@ export function typeOfFunc<R>(this: IAssertScope, type: string, evalMsg?: MsgSou
     let value = context.value;
     let actualType = typeof value;
     let specificType: string;
-    
+
     if (value === null) {
         specificType = "null";
     } else if (isFunction(value)) {

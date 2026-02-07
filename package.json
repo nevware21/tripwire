@@ -25,7 +25,7 @@
     "scripts": {
         "postinstall": "node common/scripts/install-run-rush.js update --full",
         "build": "rush build",
-        "rebuild": "rush rebuild",
+        "rebuild": "grunt lint-fix && rush rebuild",
         "test": "rush test",
         "clean": "git clean -xdf && npm install",
         "cleanBuild": "npm run clean && npm run rebuild",

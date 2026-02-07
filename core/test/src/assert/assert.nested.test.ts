@@ -194,7 +194,7 @@ describe("Nested Property Operations", () => {
             checkError(() => {
                 assert.nestedInclude({ a: { b: { c: 1 } } }, { "a.b.c": 2 });
             }, "to have a nested property \"a.b.c\" equal 2");
-            
+
             checkError(() => {
                 assert.nestedInclude({ a: { b: 2 } }, { "a.b.c": 1 });
             }, "to have a nested property \"a.b.c\" equal 1");

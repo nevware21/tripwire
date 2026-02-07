@@ -20,7 +20,7 @@ export interface KeysFn<R> {
      * {@link IAssertScope.that} object.
      */
     (...keys: string[]): R;
-    
+
     /**
      * Asserts that the current value has the given keys.
      * @param {...string[]} keys - A single array of keys or an object containing the expected keys to assert.

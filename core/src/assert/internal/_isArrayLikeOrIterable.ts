@@ -35,7 +35,7 @@ export function _isArrayLikeOrIterable(value: any): boolean {
             }
         }
     }
-    
+
     return result;
 }
 

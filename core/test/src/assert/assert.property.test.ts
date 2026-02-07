@@ -130,7 +130,7 @@ describe("assert.notHasProperty", () => {
     it("should work with expect syntax", () => {
         expect({ a: 1 }).to.not.have.property("b");
         expect({ a: 1 }).to.not.have.property("a", 2);
-        
+
         expect(() => expect({ a: 1 }).to.not.have.property("a")).toThrow(AssertionFailure);
         expect(() => expect({ a: 1 }).to.not.have.property("a", 1)).toThrow(AssertionFailure);
     });
@@ -241,7 +241,7 @@ describe("assert.notHasOwnProperty", () => {
 
     it("should work with expect syntax", () => {
         expect({ a: 1 }).to.not.have.own.property("b");
-        
+
         expect(() => expect({ a: 1 }).to.not.have.own.property("a")).toThrow(AssertionFailure);
         expect(() => expect({ a: 1 }).to.not.have.own.property("a", 1)).toThrow(AssertionFailure);
     });
@@ -314,7 +314,7 @@ describe("assert.notHasDeepProperty", () => {
 
     it("should work with expect syntax", () => {
         expect({ a: { b: 1 } }).to.not.deep.property("a", { b: 2 });
-        
+
         expect(() => expect({ a: { b: 1 } }).to.not.deep.property("a", { b: 1 })).toThrow(AssertionFailure);
     });
 });
@@ -385,7 +385,7 @@ describe("assert.notHasDeepOwnProperty", () => {
 
     it("should work with expect syntax", () => {
         expect({ a: { b: 1 } }).to.not.deep.own.property("a", { b: 2 });
-        
+
         expect(() => expect({ a: { b: 1 } }).to.not.deep.own.property("a", { b: 1 })).toThrow(AssertionFailure);
     });
 });

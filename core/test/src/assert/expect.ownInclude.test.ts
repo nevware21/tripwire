@@ -9,7 +9,7 @@
 import { expect } from "../../../src/assert/expect";
 
 describe("ownInclude and notOwnInclude", () => {
-    
+
     describe("ownInclude - basic functionality", () => {
         it("should pass when object has own property with matching value", () => {
             expect({ a: 1 }).own.include({ a: 1 });
@@ -110,12 +110,12 @@ describe("ownInclude and notOwnInclude", () => {
         it("should not match inherited properties from prototype", () => {
             function Parent(this: any) {}
             Parent.prototype.inheritedProp = "inherited";
-            
+
             function Child(this: any) {
                 this.ownProp = "own";
             }
             Child.prototype = new (Parent as any)();
-            
+
             const instance = new (Child as any)();
             expect(instance).own.include({ ownProp: "own" });
             expect(instance).not.own.include({ inheritedProp: "inherited" });
@@ -172,7 +172,7 @@ describe("ownInclude and notOwnInclude", () => {
 });
 
 describe("deepOwnInclude and notDeepOwnInclude", () => {
-    
+
     describe("deepOwnInclude - basic functionality", () => {
         it("should pass when object has own property with deeply equal value", () => {
             expect({ a: { b: 2 } }).deep.own.include({ a: { b: 2 } });
@@ -287,12 +287,12 @@ describe("deepOwnInclude and notDeepOwnInclude", () => {
         it("should not match inherited properties", () => {
             function Parent(this: any) {}
             Parent.prototype.inheritedObj = { value: "inherited" };
-            
+
             function Child(this: any) {
                 this.ownObj = { value: "own" };
             }
             Child.prototype = new (Parent as any)();
-            
+
             const instance = new (Child as any)();
             expect(instance).deep.own.include({ ownObj: { value: "own" } });
             expect(instance).not.deep.own.include({ inheritedObj: { value: "inherited" } });

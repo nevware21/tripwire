@@ -27,7 +27,7 @@ export interface IStrictlyOp<R> extends INotOp<IStrictlyOp<R>>, IEqualOp<R> {
      * is not strictly equal to `true`.
      */
     true: AssertFn<R>;
-    
+
     /**
      * Asserts that the value is strictly equal to `false`.
      * @param expected - The expected value.

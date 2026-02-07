@@ -73,7 +73,7 @@ describe("addAssertFunc", function () {
             funcNumber: (value: number) => void;
             invalidExpr: (value: any) => void;
         }
-    
+
         it("expression with functions", () => {
             addAssertFunc(assert, "myFunc", createEvalAdapter(() => true));
             addAssertFunc(assert, "notNumber", "not().is.number");
@@ -138,7 +138,7 @@ describe("addAssertFunc", function () {
         //     notNumber: (value: number) => void;
         //     funcNumber: (value: number) => void;
         // }
-    
+
         it("numeric expression", () => {
             addAssertFunc(assert, "myFunc", createEvalAdapter(() => true));
             addAssertFunc(assert, "notNumber", "not({0}).is.number");

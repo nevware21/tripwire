@@ -58,6 +58,6 @@ export function createNotAdapter(scopeFn: IScopeFn): IScopeFn {
         return scope.exec(scopeFn, theArgs);
     }
 
-    
+
     return _blockLength(_notFn, scopeFn.name, [], _notFn);
 }

@@ -222,7 +222,7 @@ describe("assert.operator", () => {
 
         it("should work with custom message", () => {
             assert.operator("test", "typeof", "string", "Should be a string");
-            
+
             checkError(() => {
                 assert.operator(123, "typeof", "string", "Value must be a string");
             }, "Value must be a string");

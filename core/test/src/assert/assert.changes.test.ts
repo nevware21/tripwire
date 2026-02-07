@@ -18,7 +18,7 @@ describe("assert.changes", () => {
             const changeValue = () => {
                 value = 2;
             };
-            
+
             assert.changes(changeValue, getValue);
         });
 
@@ -26,7 +26,7 @@ describe("assert.changes", () => {
             let value = 1;
             const getValue = () => value;
             const noOp = () => { /* do nothing */ };
-            
+
             checkError(
                 () => assert.changes(noOp, getValue),
                 /expected.*to change/
@@ -37,7 +37,7 @@ describe("assert.changes", () => {
             let value = 1;
             const getValue = () => value;
             const noOp = () => { /* do nothing */ };
-            
+
             checkError(
                 () => assert.changes(noOp, getValue, "custom error"),
                 "custom error"
@@ -51,14 +51,14 @@ describe("assert.changes", () => {
             const increment = () => {
                 obj.count++;
             };
-            
+
             assert.changes(increment, obj, "count");
         });
 
         it("should fail when property does not change", () => {
             const obj = { count: 5 };
             const noOp = () => { /* do nothing */ };
-            
+
             checkError(
                 () => assert.changes(noOp, obj, "count"),
                 /expected.*to change/
@@ -71,14 +71,14 @@ describe("assert.changes", () => {
             const changeValue = () => {
                 obj[sym] = 20;
             };
-            
+
             assert.changes(changeValue, obj, sym);
         });
 
         it("should work with custom message", () => {
             const obj = { value: 1 };
             const noOp = () => { /* do nothing */ };
-            
+
             checkError(
                 () => assert.changes(noOp, obj, "value", "custom message"),
                 "custom message"
@@ -93,7 +93,7 @@ describe("assert.changes", () => {
             const increment = () => {
                 value++;
             };
-            
+
             assert.changes(increment, getValue);
         });
 
@@ -103,7 +103,7 @@ describe("assert.changes", () => {
             const decrement = () => {
                 value--;
             };
-            
+
             assert.changes(decrement, getValue);
         });
 
@@ -113,7 +113,7 @@ describe("assert.changes", () => {
             const changeValue = () => {
                 value = "world";
             };
-            
+
             assert.changes(changeValue, getValue);
         });
     });
@@ -125,7 +125,7 @@ describe("assert.doesNotChange", () => {
             let value = 1;
             const getValue = () => value;
             const noOp = () => { /* do nothing */ };
-            
+
             assert.doesNotChange(noOp, getValue);
         });
 
@@ -135,7 +135,7 @@ describe("assert.doesNotChange", () => {
             const changeValue = () => {
                 value = 2;
             };
-            
+
             checkError(
                 () => assert.doesNotChange(changeValue, getValue),
                 "not expected"
@@ -147,7 +147,7 @@ describe("assert.doesNotChange", () => {
         it("should pass when property does not change", () => {
             const obj = { count: 5 };
             const noOp = () => { /* do nothing */ };
-            
+
             assert.doesNotChange(noOp, obj, "count");
         });
 
@@ -156,7 +156,7 @@ describe("assert.doesNotChange", () => {
             const increment = () => {
                 obj.count++;
             };
-            
+
             checkError(
                 () => assert.doesNotChange(increment, obj, "count"),
                 /not expected.*to change/
@@ -173,7 +173,7 @@ describe("assert.changesBy", () => {
             const addFive = () => {
                 value += 5;
             };
-            
+
             assert.changesBy(addFive, getValue, 5);
         });
 
@@ -183,7 +183,7 @@ describe("assert.changesBy", () => {
             const subtractThree = () => {
                 value -= 3;
             };
-            
+
             assert.changesBy(subtractThree, getValue, -3);
         });
 
@@ -193,7 +193,7 @@ describe("assert.changesBy", () => {
             const addTwo = () => {
                 value += 2;
             };
-            
+
             checkError(
                 () => assert.changesBy(addTwo, getValue, 5),
                 /expected.*to change.*by.*but.*changed by/
@@ -207,7 +207,7 @@ describe("assert.changesBy", () => {
             const addFive = () => {
                 obj.count += 5;
             };
-            
+
             assert.changesBy(addFive, obj, "count", 5);
         });
 
@@ -216,7 +216,7 @@ describe("assert.changesBy", () => {
             const increment = () => {
                 obj.count++;
             };
-            
+
             checkError(
                 () => assert.changesBy(increment, obj, "count", 5),
                 /expected.*to change.*by.*but.*changed by/
@@ -232,7 +232,7 @@ describe("assert.notChangesBy", () => {
         const addTwo = () => {
             value += 2;
         };
-        
+
         assert.notChangesBy(addTwo, getValue, 5);
     });
 
@@ -242,7 +242,7 @@ describe("assert.notChangesBy", () => {
         const addFive = () => {
             value += 5;
         };
-        
+
         checkError(
             () => assert.notChangesBy(addFive, getValue, 5),
             /not expected.*to change.*by/
@@ -253,7 +253,7 @@ describe("assert.notChangesBy", () => {
         let value = 0;
         const getValue = () => value;
         const noOp = () => { /* do nothing */ };
-        
+
         assert.notChangesBy(noOp, getValue, 5);
     });
 
@@ -263,7 +263,7 @@ describe("assert.notChangesBy", () => {
         const addTwo = () => {
             value += 2;
         };
-        
+
         // Passes: value changes by 2, not by 5
         assert.changesButNotBy(addTwo, getValue, 5);
     });
@@ -272,7 +272,7 @@ describe("assert.notChangesBy", () => {
         let value = 0;
         const getValue = () => value;
         const noOp = () => { /* do nothing */ };
-        
+
         checkError(
             () => assert.changesButNotBy(noOp, getValue, 5),
             /expected.*to change/
@@ -285,7 +285,7 @@ describe("assert.notChangesBy", () => {
         const addFive = () => {
             value += 5;
         };
-        
+
         checkError(
             () => assert.changesButNotBy(addFive, getValue, 5),
             /expected.*to change.*but not by/
@@ -301,7 +301,7 @@ describe("assert.increases", () => {
             const increment = () => {
                 value++;
             };
-            
+
             assert.increases(increment, getValue);
         });
 
@@ -311,7 +311,7 @@ describe("assert.increases", () => {
             const decrement = () => {
                 value--;
             };
-            
+
             checkError(
                 () => assert.increases(decrement, getValue),
                 /expected.*to increase/
@@ -322,7 +322,7 @@ describe("assert.increases", () => {
             let value = 5;
             const getValue = () => value;
             const noOp = () => { /* do nothing */ };
-            
+
             checkError(
                 () => assert.increases(noOp, getValue),
                 /expected.*to increase/
@@ -336,7 +336,7 @@ describe("assert.increases", () => {
             const addFive = () => {
                 obj.count += 5;
             };
-            
+
             assert.increases(addFive, obj, "count");
         });
 
@@ -345,7 +345,7 @@ describe("assert.increases", () => {
             const subtractOne = () => {
                 obj.count--;
             };
-            
+
             checkError(
                 () => assert.increases(subtractOne, obj, "count"),
                 /expected.*to increase/
@@ -359,7 +359,7 @@ describe("assert.doesNotIncrease", () => {
         let value = 5;
         const getValue = () => value;
         const noOp = () => { /* do nothing */ };
-        
+
         assert.doesNotIncrease(noOp, getValue);
     });
 
@@ -369,7 +369,7 @@ describe("assert.doesNotIncrease", () => {
         const decrement = () => {
             value--;
         };
-        
+
         assert.doesNotIncrease(decrement, getValue);
     });
 
@@ -379,7 +379,7 @@ describe("assert.doesNotIncrease", () => {
         const increment = () => {
             value++;
         };
-        
+
         checkError(
             () => assert.doesNotIncrease(increment, getValue),
             /not expected.*to increase/
@@ -394,7 +394,7 @@ describe("assert.increasesBy", () => {
         const addFive = () => {
             value += 5;
         };
-        
+
         assert.increasesBy(addFive, getValue, 5);
     });
 
@@ -404,7 +404,7 @@ describe("assert.increasesBy", () => {
         const addTwo = () => {
             value += 2;
         };
-        
+
         checkError(
             () => assert.increasesBy(addTwo, getValue, 5),
             /expected.*to increase.*by.*but.*increased by/
@@ -417,7 +417,7 @@ describe("assert.increasesBy", () => {
         const subtractThree = () => {
             value -= 3;
         };
-        
+
         checkError(
             () => assert.increasesBy(subtractThree, getValue, 3),
             /expected.*to increase/
@@ -432,7 +432,7 @@ describe("assert.notIncreasesBy", () => {
         const addTwo = () => {
             value += 2;
         };
-        
+
         assert.notIncreasesBy(addTwo, getValue, 5);
     });
 
@@ -442,7 +442,7 @@ describe("assert.notIncreasesBy", () => {
         const addFive = () => {
             value += 5;
         };
-        
+
         checkError(
             () => assert.notIncreasesBy(addFive, getValue, 5),
             /not expected.*to increase.*by/
@@ -455,7 +455,7 @@ describe("assert.notIncreasesBy", () => {
         const addTwo = () => {
             value += 2;
         };
-        
+
         // Passes: value increases by 2, not by 5
         assert.increasesButNotBy(addTwo, getValue, 5);
     });
@@ -464,7 +464,7 @@ describe("assert.notIncreasesBy", () => {
         let value = 0;
         const getValue = () => value;
         const noOp = () => { /* do nothing */ };
-        
+
         checkError(
             () => assert.increasesButNotBy(noOp, getValue, 5),
             /expected.*to increase/
@@ -477,7 +477,7 @@ describe("assert.notIncreasesBy", () => {
         const addFive = () => {
             value += 5;
         };
-        
+
         checkError(
             () => assert.increasesButNotBy(addFive, getValue, 5),
             /expected.*to increase.*but not by/
@@ -493,7 +493,7 @@ describe("assert.decreases", () => {
             const decrement = () => {
                 value--;
             };
-            
+
             assert.decreases(decrement, getValue);
         });
 
@@ -503,7 +503,7 @@ describe("assert.decreases", () => {
             const increment = () => {
                 value++;
             };
-            
+
             checkError(
                 () => assert.decreases(increment, getValue),
                 /expected.*to decrease/
@@ -514,7 +514,7 @@ describe("assert.decreases", () => {
             let value = 5;
             const getValue = () => value;
             const noOp = () => { /* do nothing */ };
-            
+
             checkError(
                 () => assert.decreases(noOp, getValue),
                 /expected.*to decrease/
@@ -528,7 +528,7 @@ describe("assert.decreases", () => {
             const subtractThree = () => {
                 obj.count -= 3;
             };
-            
+
             assert.decreases(subtractThree, obj, "count");
         });
 
@@ -537,7 +537,7 @@ describe("assert.decreases", () => {
             const addOne = () => {
                 obj.count++;
             };
-            
+
             checkError(
                 () => assert.decreases(addOne, obj, "count"),
                 /expected.*to decrease/
@@ -551,7 +551,7 @@ describe("assert.doesNotDecrease", () => {
         let value = 5;
         const getValue = () => value;
         const noOp = () => { /* do nothing */ };
-        
+
         assert.doesNotDecrease(noOp, getValue);
     });
 
@@ -561,7 +561,7 @@ describe("assert.doesNotDecrease", () => {
         const increment = () => {
             value++;
         };
-        
+
         assert.doesNotDecrease(increment, getValue);
     });
 
@@ -571,7 +571,7 @@ describe("assert.doesNotDecrease", () => {
         const decrement = () => {
             value--;
         };
-        
+
         checkError(
             () => assert.doesNotDecrease(decrement, getValue),
             /not expected.*to decrease/
@@ -586,7 +586,7 @@ describe("assert.decreasesBy", () => {
         const subtractFive = () => {
             value -= 5;
         };
-        
+
         assert.decreasesBy(subtractFive, getValue, 5);
     });
 
@@ -596,7 +596,7 @@ describe("assert.decreasesBy", () => {
         const subtractTwo = () => {
             value -= 2;
         };
-        
+
         checkError(
             () => assert.decreasesBy(subtractTwo, getValue, 5),
             /expected.*to decrease.*by.*but.*changed by/
@@ -609,7 +609,7 @@ describe("assert.decreasesBy", () => {
         const addThree = () => {
             value += 3;
         };
-        
+
         checkError(
             () => assert.decreasesBy(addThree, getValue, 3),
             /expected.*to decrease/
@@ -624,7 +624,7 @@ describe("assert.notDecreasesBy", () => {
         const subtractTwo = () => {
             value -= 2;
         };
-        
+
         assert.notDecreasesBy(subtractTwo, getValue, 5);
     });
 
@@ -634,7 +634,7 @@ describe("assert.notDecreasesBy", () => {
         const subtractFive = () => {
             value -= 5;
         };
-        
+
         checkError(
             () => assert.notDecreasesBy(subtractFive, getValue, 5),
             /not expected.*to decrease.*by/
@@ -647,7 +647,7 @@ describe("assert.notDecreasesBy", () => {
         const subtractTwo = () => {
             value -= 2;
         };
-        
+
         // Passes: value decreases by 2, not by 5
         assert.decreasesButNotBy(subtractTwo, getValue, 5);
     });
@@ -656,7 +656,7 @@ describe("assert.notDecreasesBy", () => {
         let value = 10;
         const getValue = () => value;
         const noOp = () => { /* do nothing */ };
-        
+
         checkError(
             () => assert.decreasesButNotBy(noOp, getValue, 5),
             /expected.*to decrease/
@@ -669,7 +669,7 @@ describe("assert.notDecreasesBy", () => {
         const subtractFive = () => {
             value -= 5;
         };
-        
+
         checkError(
             () => assert.decreasesButNotBy(subtractFive, getValue, 5),
             /expected.*to decrease.*but not by/
@@ -684,7 +684,7 @@ describe("expect flow: changesButNotBy, increasesButNotBy, decreasesButNotBy", (
         const addTwo = () => {
             value += 2;
         };
-        
+
         // Should pass - changed by 2, not by 5
         expect(addTwo).to.changesButNotBy(getValue, 5);
     });
@@ -695,7 +695,7 @@ describe("expect flow: changesButNotBy, increasesButNotBy, decreasesButNotBy", (
         const addTwo = () => {
             value += 2;
         };
-        
+
         // Should pass - increased by 2, not by 5
         expect(addTwo).to.increasesButNotBy(getValue, 5);
     });
@@ -706,7 +706,7 @@ describe("expect flow: changesButNotBy, increasesButNotBy, decreasesButNotBy", (
         const subtractTwo = () => {
             value -= 2;
         };
-        
+
         // Should pass - decreased by 2, not by 5
         expect(subtractTwo).to.decreasesButNotBy(getValue, 5);
     });
@@ -720,7 +720,7 @@ describe("expect flow: change/increase/decrease with .not.by()", () => {
             const addTwo = () => {
                 value += 2;
             };
-            
+
             // Should pass - changed by 2, not by 5
             expect(addTwo).to.change(getValue).not.by(5);
         });
@@ -731,7 +731,7 @@ describe("expect flow: change/increase/decrease with .not.by()", () => {
             const addFive = () => {
                 value += 5;
             };
-            
+
             checkError(
                 () => expect(addFive).to.change(getValue).not.by(5),
                 /expected.*to change by.*but it changed by/
@@ -743,7 +743,7 @@ describe("expect flow: change/increase/decrease with .not.by()", () => {
             const addTwo = () => {
                 obj.count += 2;
             };
-            
+
             // Should pass - changed by 2, not by 5
             expect(addTwo).to.change(obj, "count").not.by(5);
         });
@@ -756,7 +756,7 @@ describe("expect flow: change/increase/decrease with .not.by()", () => {
             const addTwo = () => {
                 value += 2;
             };
-            
+
             // Should pass - increased by 2, not by 5
             expect(addTwo).to.increase(getValue).not.by(5);
         });
@@ -767,7 +767,7 @@ describe("expect flow: change/increase/decrease with .not.by()", () => {
             const addFive = () => {
                 value += 5;
             };
-            
+
             checkError(
                 () => expect(addFive).to.increase(getValue).not.by(5),
                 /expected.*to change by.*but it changed by/
@@ -780,7 +780,7 @@ describe("expect flow: change/increase/decrease with .not.by()", () => {
             const addThree = () => {
                 value += 3;
             };
-            
+
             checkError(
                 () => expect(addThree).to.increase(getValue).not.by(3),
                 /expected.*to change by.*but it changed by 3/
@@ -795,7 +795,7 @@ describe("expect flow: change/increase/decrease with .not.by()", () => {
             const subtractTwo = () => {
                 value -= 2;
             };
-            
+
             // Should pass - decreased by 2, not by 5
             expect(subtractTwo).to.decrease(getValue).not.by(5);
         });
@@ -806,7 +806,7 @@ describe("expect flow: change/increase/decrease with .not.by()", () => {
             const subtractFive = () => {
                 value -= 5;
             };
-            
+
             checkError(
                 () => expect(subtractFive).to.decrease(getValue).not.by(5),
                 /expected.*to change by.*but it changed by/
@@ -819,7 +819,7 @@ describe("expect flow: change/increase/decrease with .not.by()", () => {
             const subtractThree = () => {
                 value -= 3;
             };
-            
+
             checkError(
                 () => expect(subtractThree).to.decrease(getValue).not.by(3),
                 /expected.*to change by.*but it changed by.*3/

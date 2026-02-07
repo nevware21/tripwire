@@ -318,7 +318,7 @@ export function allDeepKeysFunc<R>(_scope: IAssertScope): KeysFn<R> {
         context.set("theKeys", theKeys);
         context.set("missingKeys", missingKeys);
         context.set("valueKeys", valueKeys);
-        
+
         context.eval(missingKeys.length === 0, "expected all deep keys: {theKeys}, missing: {missingKeys}, found: {valueKeys}");
 
         return scope.that;

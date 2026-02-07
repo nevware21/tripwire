@@ -44,17 +44,17 @@ export function createEvalAdapter(evalFn: EvalFn, evalMsg?: MsgSource, funcName?
         let theArgs = arrSlice(arguments);
 
         context._$stackFn.push(_evalFn);
-    
+
         // Track the operation path and set the stack start position
         if (context.opts.isVerbose) {
             let theFuncName = funcName || evalFn.name || (evalFn as any)["displayName"] || "anonymous";
-    
+
             context.setOp("[[ev:" + theFuncName + "]]");
         }
-    
+
         theArgs.unshift(context.value);
         context.eval(evalFn.apply(scope.that || scope, theArgs), evalMsg);
-    
+
         return scope.that;
     }
 

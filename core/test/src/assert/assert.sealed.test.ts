@@ -34,7 +34,7 @@ describe("assert.isNotSealed", function () {
         assert.isNotSealed({}); // Passes
         assert.isNotSealed([]); // Passes
         assert.isNotSealed({ key: "value" }); // Passes
-        
+
         checkError(function () {
             assert.isNotSealed(Object.seal({})); // Throws AssertionFailure
         }, "not expected {} to be sealed");

@@ -38,21 +38,21 @@ describe("createExprAdapter", () => {
 
         it("should call scope function exactly once with simple expression", () => {
             let callCount = 0;
-            
+
             let scopeFn = function<R>(this: IAssertScope): R {
                 callCount++;
                 this.context.setOp("scopeFn");
                 return this.that;
             };
-            
+
             let context = createContext(10);
             let scope = createAssertScope(context);
             let adapter = createExprAdapter("not", scopeFn);
-            
+
             adapter.call(scope);
-            
+
             assert.equal(callCount, 1, "Scope function should be called exactly once");
-            
+
             // Verify via opPath that scopeFn was called once
             let opPath = scope.context.get("opPath");
             let scopeFnCount = opPath.filter((op: string) => op === "scopeFn").length;
@@ -61,21 +61,21 @@ describe("createExprAdapter", () => {
 
         it("should call scope function exactly once with multi-step expression", () => {
             let callCount = 0;
-            
+
             let scopeFn = function<R>(this: IAssertScope): R {
                 callCount++;
                 this.context.setOp("scopeFn");
                 return this.that;
             };
-            
+
             let context = createContext(true);
             let scope = createAssertScope(context);
             let adapter = createExprAdapter("to.be", scopeFn);
-            
+
             adapter.call(scope);
-            
+
             assert.equal(callCount, 1, "Scope function should be called exactly once with multi-step expression");
-            
+
             // Verify via opPath
             let opPath = scope.context.get("opPath");
             let scopeFnCount = opPath.filter((op: string) => op === "scopeFn").length;
@@ -85,23 +85,23 @@ describe("createExprAdapter", () => {
         it("should call scope function exactly once with arguments", () => {
             let callCount = 0;
             let receivedArgs: any[] = [];
-            
+
             let scopeFn = function<R>(this: IAssertScope, ...args: any[]): R {
                 callCount++;
                 receivedArgs = args;
                 this.context.setOp("scopeFn");
                 return this.that;
             };
-            
+
             let context = createContext(10);
             let scope = createAssertScope(context);
             let adapter = createExprAdapter("not", scopeFn);
-            
+
             adapter.call(scope, 1, 2, 3);
-            
+
             assert.equal(callCount, 1, "Scope function should be called exactly once");
             assert.deepEqual(receivedArgs, [1, 2, 3], "Scope function should receive all arguments");
-            
+
             // Verify via opPath
             let opPath = scope.context.get("opPath");
             let scopeFnCount = opPath.filter((op: string) => op === "scopeFn").length;
@@ -110,23 +110,23 @@ describe("createExprAdapter", () => {
 
         it("should not call scope function multiple times during expression evaluation", () => {
             let callCount = 0;
-            
+
             let scopeFn = function<R>(this: IAssertScope): R {
                 callCount++;
                 this.context.setOp("scopeFn");
                 return this.that;
             };
-            
+
             let context = createContext(10);
             let scope = createAssertScope(context);
-            
+
             // Create adapter with longer expression chain
             let adapter = createExprAdapter("to.be.not", scopeFn);
-            
+
             adapter.call(scope);
-            
+
             assert.equal(callCount, 1, "Scope function should not be called during step execution");
-            
+
             // Verify via opPath
             let opPath = scope.context.get("opPath");
             let scopeFnCount = opPath.filter((op: string) => op === "scopeFn").length;
@@ -145,18 +145,18 @@ describe("createExprAdapter", () => {
                 this.context.setOp("scopeFn");
                 return this.that;
             };
-            
+
             let context = createContext(10);
             let scope = createAssertScope(context);
-            
+
             let adapter = createExprAdapter("not", scopeFn);
             adapter.call(scope, 5);
-            
+
             // Check opPath to verify execution order
             let opPath = scope.context.get("opPath");
             let scopeFnIndex = opPath.indexOf("scopeFn");
             let notIndex = opPath.indexOf("not");
-            
+
             assert.isTrue(notIndex >= 0, "not step should be in opPath");
             assert.isTrue(scopeFnIndex >= 0, "scopeFn should be in opPath");
             assert.isTrue(notIndex < scopeFnIndex, "not step should execute before scopeFn");
@@ -167,20 +167,20 @@ describe("createExprAdapter", () => {
                 this.context.setOp("scopeFn");
                 return this.that;
             };
-            
+
             let context = createContext(true);
             let scope = createAssertScope(context);
-            
+
             let adapter = createExprAdapter("to.be.not", scopeFn);
             adapter.call(scope);
-            
+
             // Check opPath to verify scopeFn appears after expression steps
             let opPath = scope.context.get("opPath");
             let scopeFnIndex = opPath.indexOf("scopeFn");
             let toIndex = opPath.indexOf("to");
             let beIndex = opPath.indexOf("be");
             let notIndex = opPath.indexOf("not");
-            
+
             assert.isTrue(scopeFnIndex >= 0, "scopeFn should be in opPath");
             assert.isTrue(toIndex >= 0 && toIndex < scopeFnIndex, "'to' should execute before scopeFn");
             assert.isTrue(beIndex >= 0 && beIndex < scopeFnIndex, "'be' should execute before scopeFn");
@@ -189,37 +189,37 @@ describe("createExprAdapter", () => {
 
         it("should pass arguments to scope function after expression evaluation", () => {
             let receivedArgs: any[] = [];
-            
+
             let scopeFn = function<R>(this: IAssertScope, ...args: any[]): R {
                 receivedArgs = args;
                 return this.that;
             };
-            
+
             let context = createContext(10);
             let scope = createAssertScope(context);
             let adapter = createExprAdapter("not", scopeFn);
-            
+
             adapter.call(scope, 5, "test", true);
-            
+
             assert.deepEqual(receivedArgs, [5, "test", true], "Arguments should be passed to scope function");
         });
 
         it("should execute scope function with correct context", () => {
             let receivedThis: any;
             let receivedValue: any;
-            
+
             let scopeFn = function<R>(this: IAssertScope): R {
                 receivedThis = this;
                 receivedValue = this.context.value;
                 return this.that;
             };
-            
+
             let context = createContext(42);
             let scope = createAssertScope(context);
             let adapter = createExprAdapter("not", scopeFn);
-            
+
             adapter.call(scope);
-            
+
             assert.equal(receivedThis, scope, "Scope function should receive correct scope as 'this'");
             assert.equal(receivedValue, 42, "Scope function should have access to context value");
         });
@@ -233,21 +233,21 @@ describe("createExprAdapter", () => {
 
         it("should call scope function independently for each adapter invocation", () => {
             let calls: number[] = [];
-            
+
             let scopeFn = function<R>(this: IAssertScope, id: number): R {
                 calls.push(id);
                 return this.that;
             };
-            
+
             let adapter = createExprAdapter("not", scopeFn);
-            
+
             // Multiple independent calls
             for (let i = 1; i <= 5; i++) {
                 let context = createContext(i * 10);
                 let scope = createAssertScope(context);
                 adapter.call(scope, i);
             }
-            
+
             // Should have been called 5 times, once per invocation
             assert.equal(calls.length, 5, "Scope function should be called once per adapter invocation");
             assert.deepEqual(calls, [1, 2, 3, 4, 5], "Each invocation should be independent");
@@ -255,22 +255,22 @@ describe("createExprAdapter", () => {
 
         it("should not share state between scope function calls", () => {
             let stateTracker: any[] = [];
-            
+
             let scopeFn = function<R>(this: IAssertScope, value: any): R {
                 stateTracker.push({ context: this.context.value, arg: value });
                 return this.that;
             };
-            
+
             let adapter = createExprAdapter("not", scopeFn);
-            
+
             let context1 = createContext(10);
             let scope1 = createAssertScope(context1);
             adapter.call(scope1, "first");
-            
+
             let context2 = createContext(20);
             let scope2 = createAssertScope(context2);
             adapter.call(scope2, "second");
-            
+
             assert.equal(stateTracker.length, 2, "Scope function should be called twice");
             assert.deepEqual(stateTracker[0], { context: 10, arg: "first" }, "First call should have correct state");
             assert.deepEqual(stateTracker[1], { context: 20, arg: "second" }, "Second call should have correct state");
@@ -286,20 +286,20 @@ describe("createExprAdapter", () => {
         it("should work correctly without a scope function", () => {
             let context = createContext(true);
             let scope = createAssertScope(context);
-            
+
             let adapter = createExprAdapter("to.be");
             let result = adapter.call(scope);
-            
+
             assert.ok(result, "Adapter should work without scope function");
         });
 
         it("should execute expression steps when no scope function provided", () => {
             let context = createContext([1, 2, 3]);
             let scope = createAssertScope(context);
-            
+
             let adapter = createExprAdapter("to");
             adapter.call(scope);
-            
+
             // Verify expression steps were executed via opPath
             let opPath = scope.context.get("opPath");
             assert.ok(opPath && opPath.length > 0, "Expression steps should execute even without scope function");
@@ -317,48 +317,48 @@ describe("createExprAdapter", () => {
             let scopeFn = function<R>(this: IAssertScope): R {
                 return this.that;
             };
-            
+
             let context = createContext(10);
             let scope = createAssertScope(context);
             let adapter = createExprAdapter("not", scopeFn);
-            
+
             let result = adapter.call(scope);
             assert.ok(result, "Should handle scope function returning scope");
         });
 
         it("should handle scope function that modifies context", () => {
             let modified = false;
-            
+
             let scopeFn = function<R>(this: IAssertScope): R {
                 modified = true;
                 this.context.set("custom", "value");
                 return this.that;
             };
-            
+
             let context = createContext(10);
             let scope = createAssertScope(context);
             let adapter = createExprAdapter("not", scopeFn);
-            
+
             adapter.call(scope);
-            
+
             assert.isTrue(modified, "Scope function should have executed");
             assert.equal(scope.context.get("custom"), "value", "Context should be modified");
         });
 
         it("should execute scope function only once even when chained", () => {
             let callCount = 0;
-            
+
             let scopeFn = function<R>(this: IAssertScope): R {
                 callCount++;
                 return this.that;
             };
-            
+
             let context = createContext(10);
             let scope = createAssertScope(context);
             let adapter = createExprAdapter("to.not.be", scopeFn);
-            
+
             adapter.call(scope);
-            
+
             assert.equal(callCount, 1, "Scope function should only be called once even with longer expression chain");
         });
     });
@@ -371,53 +371,53 @@ describe("createExprAdapter", () => {
 
         it("should work like isNotNull assertion (not expression + scope function)", () => {
             let callCount = 0;
-            
+
             let isNullFunc = function<R>(this: IAssertScope): R {
                 callCount++;
                 this.context.eval(this.context.value === null, "expected {value} to be null");
                 return this.that;
             };
-            
+
             let adapter = createExprAdapter("not", isNullFunc);
-            
+
             let context1 = createContext(10);
             let scope1 = createAssertScope(context1);
             adapter.call(scope1);
-            
+
             assert.equal(callCount, 1, "Scope function should be called once for successful assertion");
-            
+
             let context2 = createContext(null);
             let scope2 = createAssertScope(context2);
-            
+
             checkError(() => {
                 adapter.call(scope2);
             }, /not expected/);
-            
+
             assert.equal(callCount, 2, "Scope function should be called once more for failing assertion");
         });
 
         it("should maintain call count across multiple invocations", () => {
             let callCount = 0;
-            
+
             let scopeFn = function<R>(this: IAssertScope): R {
                 callCount++;
                 return this.that;
             };
-            
+
             let adapter = createExprAdapter("not", scopeFn);
-            
+
             // First invocation
             let context1 = createContext(10);
             let scope1 = createAssertScope(context1);
             adapter.call(scope1);
             assert.equal(callCount, 1, "First invocation should call scope function once");
-            
+
             // Second invocation
             let context2 = createContext(20);
             let scope2 = createAssertScope(context2);
             adapter.call(scope2);
             assert.equal(callCount, 2, "Second invocation should call scope function once");
-            
+
             // Third invocation
             let context3 = createContext(30);
             let scope3 = createAssertScope(context3);
@@ -469,7 +469,7 @@ describe("createExprAdapter", () => {
                 let adapter2 = createExprAdapter(["to", "be", "not"]);
 
                 let result1 = adapter1.call(scope);
-                
+
                 let context2 = createContext(10);
                 let scope2 = createAssertScope(context2);
                 let result2 = adapter2.call(scope2);
@@ -679,7 +679,7 @@ describe("createExprAdapter", () => {
             let context = createContext({ a: { b: 1 } });
             let scope = createAssertScope(context);
             adapter.call(scope);
-            
+
             assert.isTrue(deepFlagSet, "Deep flag should be set after deep expression");
         });
 
@@ -695,7 +695,7 @@ describe("createExprAdapter", () => {
             let context = createContext({ a: 1, b: 2 });
             let scope = createAssertScope(context);
             adapter.call(scope);
-            
+
             assert.isTrue(ownFlagSet, "Own flag should be set after own expression");
         });
 
@@ -713,7 +713,7 @@ describe("createExprAdapter", () => {
             let context = createContext({ a: { b: 1 } });
             let scope = createAssertScope(context);
             adapter.call(scope);
-            
+
             assert.isTrue(deepFlagSet, "Deep flag should be set after deep.own expression");
             assert.isTrue(ownFlagSet, "Own flag should be set after deep.own expression");
         });
@@ -730,7 +730,7 @@ describe("createExprAdapter", () => {
             let context = createContext({ a: 1, b: 2 });
             let scope = createAssertScope(context);
             adapter.call(scope);
-            
+
             assert.isTrue(anyFlagSet, "Any flag should be set after has.any expression");
         });
 
@@ -746,14 +746,14 @@ describe("createExprAdapter", () => {
             let context = createContext({ a: 1, b: 2 });
             let scope = createAssertScope(context);
             adapter.call(scope);
-            
+
             assert.isTrue(allFlagSet, "All flag should be set after has.all expression");
         });
 
         it("should work with not.deep.own expression setting negation and flags", () => {
             // Test combined negation and modifiers
             let adapter = createExprAdapter("not.deep.own.include");
-            
+
             // This should work: checking that {} does NOT deeply include something
             let context = createContext({});
             let scope = createAssertScope(context);
@@ -875,9 +875,9 @@ describe("createExprAdapter", () => {
                 callCount++;
                 return this.that;
             };
-            
+
             let adapter = createExprAdapter("to.be", scopeFn);
-            
+
             // Multiple calls should not re-parse, the expression is already parsed
             let results: any[] = [];
             for (let i = 0; i < 10; i++) {
@@ -905,7 +905,7 @@ describe("createExprAdapter", () => {
 
             let opPath = scope.context.get("opPath");
             assert.isTrue(opPath.length > 0, "opPath should have entries");
-            
+
             // Check that the expression was tracked
             let foundExpr = opPath.some((op: string) => op.indexOf("to.be.not") >= 0);
             assert.isTrue(foundExpr, "Expression should be tracked in opPath");
@@ -953,7 +953,7 @@ describe("createExprAdapter", () => {
 
         it("should work with assert.isString which uses is.string expression", () => {
             assert.isString("hello");
-            
+
             checkError(() => {
                 assert.isString(123);
             }, /string/);
@@ -961,7 +961,7 @@ describe("createExprAdapter", () => {
 
         it("should work with assert.isNotString which uses not.is.string expression", () => {
             assert.isNotString(123);
-            
+
             checkError(() => {
                 assert.isNotString("hello");
             }, /not/);
@@ -971,7 +971,7 @@ describe("createExprAdapter", () => {
             assert.exists("value");
             assert.exists(0);
             assert.exists(false);
-            
+
             checkError(() => {
                 assert.exists(null);
             }, /exist/);
@@ -980,7 +980,7 @@ describe("createExprAdapter", () => {
         it("should work with assert.notExists which uses not.to.exist expression", () => {
             assert.notExists(null);
             assert.notExists(undefined);
-            
+
             checkError(() => {
                 assert.notExists("value");
             }, /not/);
@@ -988,7 +988,7 @@ describe("createExprAdapter", () => {
 
         it("should work with assert.isNaN which uses is.nan expression", () => {
             assert.isNaN(NaN);
-            
+
             checkError(() => {
                 assert.isNaN(123);
             }, /NaN/);
@@ -996,7 +996,7 @@ describe("createExprAdapter", () => {
 
         it("should work with assert.isNotNaN which uses not.is.nan expression", () => {
             assert.isNotNaN(123);
-            
+
             checkError(() => {
                 assert.isNotNaN(NaN);
             }, /not/);
@@ -1006,7 +1006,7 @@ describe("createExprAdapter", () => {
             assert.isFinite(100);
             assert.isFinite(-50);
             assert.isFinite(0);
-            
+
             checkError(() => {
                 assert.isFinite(Infinity);
             }, /finite/);
@@ -1015,7 +1015,7 @@ describe("createExprAdapter", () => {
         it("should work with assert.isNotFinite which uses not.is.finite expression", () => {
             assert.isNotFinite(Infinity);
             assert.isNotFinite(-Infinity);
-            
+
             checkError(() => {
                 assert.isNotFinite(100);
             }, /not/);

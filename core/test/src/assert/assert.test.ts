@@ -22,7 +22,7 @@ describe("assert", function () {
             assert(new Map()); // Passes
             assert(new Set()); // Passes
             assert(new Date()); // Passes
-            
+
             checkError(function () {
                 assert(false, "expected failure"); // Throws AssertionError
             }, "expected failure");
@@ -43,7 +43,7 @@ describe("assert", function () {
                 assert(undefined); // Throws AssertionError
             }, "Assertion failed");
         });
-        
+
         it("assert", function () {
             var hello = "darkness";
             assert(hello == "darkness", "expected hello to equal `darkness`");

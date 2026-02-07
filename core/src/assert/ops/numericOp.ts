@@ -79,7 +79,7 @@ export function leastFunc<R>(this: IAssertScope, n: number | Date, evalMsg?: Msg
     let value = context.value;
 
     context.set("expected", n);
-    
+
     _checkTypes(context, value, n, evalMsg);
 
     let actualValue = _getNumericValue(value);
@@ -104,7 +104,7 @@ export function belowFunc<R>(this: IAssertScope, n: number | Date, evalMsg?: Msg
     let value = context.value;
 
     context.set("expected", n);
-    
+
     _checkTypes(context, value, n, evalMsg);
 
     let actualValue = _getNumericValue(value);
@@ -129,7 +129,7 @@ export function mostFunc<R>(this: IAssertScope, n: number | Date, evalMsg?: MsgS
     let value = context.value;
 
     context.set("expected", n);
-    
+
     _checkTypes(context, value, n, evalMsg);
 
     let actualValue = _getNumericValue(value);
@@ -156,7 +156,7 @@ export function withinFunc<R>(this: IAssertScope, start: number | Date, finish: 
 
     context.set("start", start);
     context.set("finish", finish);
-    
+
     _checkTypes(context, value, start, evalMsg);
     _checkTypes(context, value, finish, evalMsg);
 
@@ -183,19 +183,19 @@ export function numericOp<R>(scope: IAssertScope): INumericOp<R> {
         above: { scopeFn: aboveFunc },
         gt: { scopeFn: aboveFunc },
         greaterThan: { scopeFn: aboveFunc },
-        
+
         least: { scopeFn: leastFunc },
         gte: { scopeFn: leastFunc },
         greaterThanOrEqual: { scopeFn: leastFunc },
-        
+
         below: { scopeFn: belowFunc },
         lt: { scopeFn: belowFunc },
         lessThan: { scopeFn: belowFunc },
-        
+
         most: { scopeFn: mostFunc },
         lte: { scopeFn: mostFunc },
         lessThanOrEqual: { scopeFn: mostFunc },
-        
+
         within: { scopeFn: withinFunc }
     };
 

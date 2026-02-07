@@ -9,7 +9,7 @@
 import { assert, AssertionFailure, expect } from "../../../src/index";
 
 describe("assert.isInstanceOf", () => {
-    
+
     it("should pass for Date instance", () => {
         assert.isInstanceOf(new Date(), Date);
     });
@@ -34,7 +34,7 @@ describe("assert.isInstanceOf", () => {
     it("should pass for custom class instance", () => {
         class MyClass {}
         class MySubClass extends MyClass {}
-        
+
         assert.isInstanceOf(new MyClass(), MyClass);
         assert.isInstanceOf(new MySubClass(), MySubClass);
         assert.isInstanceOf(new MySubClass(), MyClass); // Inheritance
@@ -139,7 +139,7 @@ describe("assert.isInstanceOf", () => {
 });
 
 describe("assert.isNotInstanceOf", () => {
-    
+
     it("should pass for primitive string not being String object", () => {
         assert.isNotInstanceOf("hello", Number);
         assert.isNotInstanceOf("hello", Date);
@@ -178,7 +178,7 @@ describe("assert.isNotInstanceOf", () => {
     it("should pass for custom class not being another class", () => {
         class MyClass {}
         class OtherClass {}
-        
+
         assert.isNotInstanceOf(new MyClass(), OtherClass);
     });
 
@@ -232,7 +232,7 @@ describe("assert.isNotInstanceOf", () => {
 });
 
 describe("expect chaining with instanceof", () => {
-    
+
     it("should support is.instanceOf", () => {
         expect(new Date()).is.instanceOf(Date);
         expect([]).is.instanceOf(Array);
@@ -325,9 +325,9 @@ describe("instanceof edge cases", () => {
     it("should handle inheritance correctly", () => {
         class Parent {}
         class Child extends Parent {}
-        
+
         let child = new Child();
-        
+
         assert.isInstanceOf(child, Child);
         assert.isInstanceOf(child, Parent); // Child is also instance of Parent
         assert.isInstanceOf(child, Object); // Everything is instance of Object
@@ -335,7 +335,7 @@ describe("instanceof edge cases", () => {
 
     it("should handle Error subclasses", () => {
         let typeError = new TypeError("test");
-        
+
         assert.isInstanceOf(typeError, TypeError);
         assert.isInstanceOf(typeError, Error); // TypeError extends Error
         assert.isInstanceOf(typeError, Object);
@@ -350,14 +350,14 @@ describe("instanceof edge cases", () => {
     it("should handle function constructors", () => {
         function MyConstructor() {}
         let instance = new (MyConstructor as any)();
-        
+
         assert.isInstanceOf(instance, MyConstructor as any);
     });
 
     it("should handle anonymous constructors", () => {
         let AnonymousClass = class {};
         let instance = new AnonymousClass();
-        
+
         assert.isInstanceOf(instance, AnonymousClass);
     });
 });

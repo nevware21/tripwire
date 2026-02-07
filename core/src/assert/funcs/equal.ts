@@ -109,7 +109,7 @@ function _isEqual<T>(value: T, expected: T, options: IEqualOptions): boolean {
 
         return null;
     }
-    
+
     return _isLooseEquals(value, expected);
 }
 
@@ -208,7 +208,7 @@ function _getTypeComparer(value: any): (value: any, expected: any, options: IEqu
     if (value === null) {
         return null;
     }
-    
+
     let theType = typeof value;
     let objType;
     if (theType === "object") {
@@ -290,7 +290,7 @@ function _isVisiting<T>(value: any, options: IEqualOptions, cb: () => T): T {
             options.visiting.push(value);
             tracking = true;
         }
-    
+
         return cb();
     } finally {
         if (tracking) {
@@ -339,7 +339,7 @@ function _isChecked(value: any, expected: any, options: IEqualOptions, cb:() => 
     };
     theMap.values.push(theMatch);
     theMatch.res = cb();
-                    
+
     return theMatch.res;
 }
 
@@ -356,7 +356,7 @@ function _matchKeys<T>(theKeys: T[]): (value: any, expected: any, options: IEqua
                     return false;
                 }
             }
-    
+
             return true;
         });
     };
@@ -527,7 +527,7 @@ function _mapKeys(values: Array<string | number | symbol>): Array<string|number>
         if (isSymbol(key)) {
             return key.toString();
         }
-        
+
         return key;
     });
 }

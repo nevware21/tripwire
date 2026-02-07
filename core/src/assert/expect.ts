@@ -28,6 +28,6 @@ import { IConfig } from "../interface/IConfig";
 export function expect<T>(value: T, initMsg?: MsgSource, config?: IConfig): IAssertInst {
     let orgArgs = arrSlice(arguments);
     let scope = createAssertScope(createContext(value, initMsg, null, orgArgs, config), _tripwireAssertHandlers);
-    
+
     return scope.that;
 }

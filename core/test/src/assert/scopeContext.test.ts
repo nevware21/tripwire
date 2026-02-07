@@ -22,7 +22,7 @@ describe("scopeContext", () => {
             assert.equal(context.getMessage("hello {message}"), "hello {message}");
             assert.equal(context.getMessage("hello {my}"), "hello \"old companion\"");
         });
-        
+
         it("Includes the initMsg in the message", () => {
             let context = createContext("my", "hello silence");
             context.set("my", "old companion");

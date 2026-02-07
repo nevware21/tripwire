@@ -657,7 +657,7 @@ describe("Member Comparison Tests", () => {
             const sparseArrayLike = {length: 5, 0: "a", 4: "e"};
             // Array.from converts this to ['a', undefined, undefined, undefined, 'e']
             assert.sameMembers(sparseArrayLike as any, ["a", undefined, undefined, undefined, "e"]);
-            
+
             // Verify it works with member comparison functions
             assert.includeMembers(sparseArrayLike as any, ["a", "e"]);
         });
@@ -675,15 +675,15 @@ describe("Member Comparison Tests", () => {
             const uint8Array = new Uint8Array([1, 2, 3]);
             assert.sameMembers(uint8Array, [1, 2, 3]);
             assert.sameMembers([3, 2, 1], uint8Array);
-            
+
             // Int32Array
             const int32Array = new Int32Array([10, 20, 30]);
             assert.sameMembers(int32Array, [30, 20, 10]);
-            
+
             // Float64Array
             const float64Array = new Float64Array([1.5, 2.5, 3.5]);
             assert.sameMembers(float64Array, [3.5, 1.5, 2.5]);
-            
+
             // TypedArray vs TypedArray
             const uint8Array2 = new Uint8Array([3, 2, 1]);
             assert.sameMembers(uint8Array, uint8Array2);
@@ -693,11 +693,11 @@ describe("Member Comparison Tests", () => {
             const uint8Array = new Uint8Array([1, 2, 3, 4, 5]);
             assert.includeMembers(uint8Array, [2, 4]);
             assert.includeMembers([1, 2, 3, 4, 5], new Uint8Array([2, 4]));
-            
+
             // With duplicates
             const int16Array = new Int16Array([1, 2, 2, 3]);
             assert.includeMembers(int16Array, [2, 2]);
-            
+
             expect(() => {
                 assert.includeMembers(uint8Array, [2, 2, 2]);
             }).to.throw();
@@ -714,11 +714,11 @@ describe("Member Comparison Tests", () => {
             const uint8Array = new Uint8Array([1, 2, 3, 4, 5]);
             assert.sameOrderedMembers(uint8Array, [1, 2, 3, 4, 5]);
             assert.includeOrderedMembers(uint8Array, [2, 3, 4]);
-            
+
             // startsWithMembers
             assert.startsWithMembers(uint8Array, [1, 2, 3]);
             assert.startsWithMembers([1, 2, 3, 4, 5], new Uint8Array([1, 2]));
-            
+
             expect(() => {
                 assert.startsWithMembers(uint8Array, [2, 3, 4]);
             }).to.throw();
@@ -728,7 +728,7 @@ describe("Member Comparison Tests", () => {
             // Even though both are TypedArrays, different values should fail
             const uint8Array = new Uint8Array([1, 2, 3]);
             const int32Array = new Int32Array([1, 2, 4]);
-            
+
             expect(() => {
                 assert.sameMembers(uint8Array, int32Array);
             }).to.throw();
@@ -1103,10 +1103,10 @@ describe("Member Comparison Tests", () => {
         it("should handle circular references in sameDeepMembers without null pointer exception", () => {
             const obj1: any = {a: 1};
             obj1.self = obj1;
-            
+
             const obj2: any = {a: 1};
             obj2.self = obj2;
-            
+
             // This should pass - both objects have the same circular structure
             assert.sameDeepMembers([obj1], [obj2]);
         });
@@ -1114,10 +1114,10 @@ describe("Member Comparison Tests", () => {
         it("should handle circular references in includeDeepMembers without null pointer exception", () => {
             const obj1: any = {a: 1};
             obj1.self = obj1;
-            
+
             const obj2: any = {a: 1};
             obj2.self = obj2;
-            
+
             // This should pass - checking if array includes circular object
             assert.includeDeepMembers([obj1, {b: 2}], [obj2]);
         });
@@ -1137,7 +1137,7 @@ describe("Member Comparison Tests", () => {
 
             const obj1 = createDeepCircular();
             const obj2 = createDeepCircular();
-            
+
             // This should not throw a null pointer exception (the bug we fixed)
             // It may pass or fail the assertion, but shouldn't crash with null pointer
             try {

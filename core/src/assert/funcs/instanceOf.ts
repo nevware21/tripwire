@@ -24,14 +24,14 @@ import { isFunction } from "@nevware21/ts-utils";
 export function instanceOfFunc<R>(this: IAssertScope, constructor: Function, evalMsg?: MsgSource): R {
     let context = this.context;
     let value = context.value;
-    
+
     // Validate that the constructor is a function
     if (!isFunction(constructor)) {
         context.fatal("The instanceOf check requires the constructor to be a function, got " + typeof constructor);
     }
 
     let constructorName = constructor.name || "Anonymous";
-    
+
     context.set("expected", constructorName);
     context.set("constructorFn", constructor);
 

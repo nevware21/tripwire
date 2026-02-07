@@ -103,7 +103,7 @@ export function includeOp<R>(scope: IAssertScope): IIncludeOp<R> {
 
         return scope.newInst();
     }
-    
+
     const props: AssertScopeDefs<IIncludeOp<R>> = {
         any: { propFn: anyOp },
         all: { propFn: allOp },
@@ -197,7 +197,7 @@ export function deepIncludeOp<R>(scope: IAssertScope): IIncludeOp<R> {
 
         return scope.that;
     }
-    
+
     const props: AssertScopeDefs<IIncludeOp<R>> = {
         any: { propFn: anyOp },
         all: { propFn: allOp },
@@ -272,7 +272,7 @@ export function ownIncludeOp<R>(scope: IAssertScope): IIncludeOp<R> {
 
         return scope.newInst();
     }
-    
+
     const props: AssertScopeDefs<IIncludeOp<R>> = {
         any: { propFn: anyOp },
         all: { propFn: allOp },
@@ -357,7 +357,7 @@ export function deepOwnIncludeOp<R>(scope: IAssertScope): IIncludeOp<R> {
 
         return scope.that;
     }
-    
+
     const props: AssertScopeDefs<IIncludeOp<R>> = {
         any: { propFn: anyOp },
         all: { propFn: allOp },

@@ -60,7 +60,7 @@ function _doFormat(formatCtx: IFormatCtx, value: any): string {
             };
         }
     }
-    
+
     try {
         // Process the custom formatters first
         formatCtx.cfg.$ops.formatMgr.forEach(_format);
@@ -135,7 +135,7 @@ export function _formatValue(cfg: IConfigInst, value: any): string {
     let formatCtx = _createFormatCtx(cfg);
     let formatOpts = formatCtx.cfg.format;
     let result = _doFormat(formatCtx, value);
-    
+
     if (formatOpts && formatOpts.finalize) {
         if (isFunction(formatOpts.finalizeFn)) {
             result = formatOpts.finalizeFn(result);

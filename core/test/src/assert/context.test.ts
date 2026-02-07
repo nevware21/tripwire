@@ -18,7 +18,7 @@ describe("context", () => {
 
     it("createContext", () => {
         let ctx = createContext(1, "first");
-        
+
         assert.equal(ctx.value, 1, "value should be 1");
         assert.equal(ctx.getMessage(), "first", "message should be first");
         assert.equal(ctx.getDetails().actual, 1, "actual should be 1");
@@ -28,7 +28,7 @@ describe("context", () => {
     it("new child value", () => {
         let ctx = createContext(1, "first");
         let ctx2 = ctx.new(2);
-        
+
         assert.equal(ctx.value, 1, "value should be 1");
         assert.equal(ctx.getMessage(), "first", "message should be first");
         assert.equal(ctx.getDetails().actual, 1, "actual should be 1");
@@ -43,7 +43,7 @@ describe("context", () => {
     it("getDetails", () => {
         let ctx = createContext(1, "first");
         let details = ctx.getDetails();
-        
+
         assert.equal(details.actual, 1, "actual should be 1");
         assert.equal(objKeys(details).length, 2, "details should have 2 keys - " + JSON.stringify(details));
         assert.deepEqual(details, { actual: 1, showDiff: true });
@@ -85,7 +85,7 @@ describe("context", () => {
     describe("overrides", () => {
 
         describe("eval", () => {
-            
+
             it("simulate not", () => {
                 let ctx = createContext(1, "first");
                 let newCtx = ctx.new(ctx.value, {
@@ -93,19 +93,19 @@ describe("context", () => {
                         return parent.eval(!expr, evalMsg);
                     }
                 });
-                    
+
                 ctx.eval(true);
                 checkError(() => {
                     ctx.eval(false);
                 }, "first");
-    
+
                 newCtx.eval(false);
                 checkError(() => {
                     newCtx.eval(true);
                 }, "first");
             });
         });
-    
+
         describe("getMessage", () => {
             it("multiple messages with pre and post fixes", () => {
                 let ctx = createContext(1, "silence");
@@ -124,7 +124,7 @@ describe("context", () => {
                         return "I've come to talk with you again";
                     }
                 });
-                    
+
                 assert.equal(ctx.getMessage(), "silence");
                 assert.equal(ctx.value, 1);
                 assert.equal(newCtx.getMessage(), "hello silence");
@@ -135,7 +135,7 @@ describe("context", () => {
                 assert.equal(childCtx.value, "childCtx");
             });
         });
-    
+
         describe("getDetails", () => {
             it("child should inherit parents", () => {
                 let ctx = createContext(1, "first");
@@ -144,15 +144,15 @@ describe("context", () => {
                         return objAssign({ hello: "darkness" }, parent.getDetails());
                     }
                 });
-    
+
                 let details = ctx.getDetails();
-                
+
                 assert.equal(details.actual, 1, "actual should be 1");
                 assert.equal(objKeys(details).length, 2, "details should have 2 keys");
                 assert.deepEqual(details, { actual: 1, showDiff: true });
-    
+
                 let newDetails = newCtx.getDetails();
-                
+
                 assert.equal(newDetails.actual, 2, "actual should be 2");
                 assert.equal(objKeys(newDetails).length, 3, "details should have 3 keys");
                 checkError(() => {

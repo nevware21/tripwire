@@ -19,7 +19,7 @@ export const enum eFormatResult {
      * The value was successfully formatted and should be used.
      */
     Ok = 0,
-    
+
     /**
      * The value was formatted, but continue trying other formatters to find a better result.
      */
@@ -29,7 +29,7 @@ export const enum eFormatResult {
      * The formatter could not format this value. Try the next formatter.
      */
     Skip = 2,
-    
+
     /**
      * An error occurred while formatting the value, this indicates a failure in the formatting process
      * either explicitly set by the formatter or due to an exception being thrown.
@@ -48,13 +48,13 @@ export interface IFormattedValue {
      * Indicates the result of the formatting operation.
      */
     res: eFormatResult;
-    
+
     /**
      * The formatted string representation of the value.
      * Only meaningful when {@link res} is {@link eFormatResult.Ok} or {@link eFormatResult.Continue}.
      */
     val?: string;
-    
+
     /**
      * The Error that occurred during formatting, set when {@link res} is {@link eFormatResult.Failed}
      * This can be either an error explicitly thrown by the formatter or an error that occurred

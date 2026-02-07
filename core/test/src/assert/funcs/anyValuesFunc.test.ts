@@ -101,7 +101,7 @@ describe("anyValuesFunc", () => {
         const valuesFn = anyValuesFunc(scope);
 
         expect(() => valuesFn.call(scope, "")).to.not.throw();
-        
+
         checkError(() => {
             valuesFn.call(scope, "a");
         }, /expected any value: \["a"\], found: "" \(1 value\)/);
@@ -113,7 +113,7 @@ describe("anyValuesFunc", () => {
         const valuesFn = anyValuesFunc(scope);
 
         expect(() => valuesFn.call(scope, null)).to.not.throw();
-        
+
         checkError(() => {
             valuesFn.call(scope, "a");
         }, /expected any value: \["a"\], found: null \(1 value\)/);
@@ -125,7 +125,7 @@ describe("anyValuesFunc", () => {
         const valuesFn = anyValuesFunc(scope);
 
         expect(() => valuesFn.call(scope, undefined)).to.not.throw();
-        
+
         checkError(() => {
             valuesFn.call(scope, "a");
         }, /expected any value: \["a"\], found: undefined \(1 value\)/);
@@ -151,7 +151,7 @@ describe("anyValuesFunc", () => {
         const valuesFn = anyValuesFunc(scope);
 
         expect(() => valuesFn.call(scope, "vision", "sound", "silence")).to.throw();
-        
+
         checkError(() => {
             valuesFn.call(scope, "talking", "hearing", "whisper");
         }, /expected any value: \["talking","hearing","whisper"\], found: "hello silent old friend" \(1 value\)/);
@@ -165,7 +165,7 @@ describe("anyValuesFunc", () => {
         // At least one word exists in the string
         expect(() => valuesFn.call(scope, "silence", "talking", "hearing")).to.not.throw();
         expect(() => valuesFn.call(scope, "whisper", "sound", "vision")).to.not.throw();
-        
+
         // Different combinations of existing and non-existing words
         expect(() => valuesFn.call(scope, ["hello", "whisper", "vision"])).to.not.throw();
         expect(() => valuesFn.call(scope, ["silence", "sound", "echo"])).to.not.throw();

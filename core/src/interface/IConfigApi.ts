@@ -37,7 +37,7 @@ export interface IConfigApi<T> {
      * defined in package defaults.
      */
     reset: () => void;
-    
+
     /**
      * Returns the current config options in a new plain object
      * @param options - The options to override the current config options

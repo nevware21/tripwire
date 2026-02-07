@@ -36,7 +36,7 @@ describe("assert.isNaN", () => {
         checkError(() => {
             assert.isNaN(123);
         }, "expected 123 to be NaN");
-        
+
         expect(() => assert.isNaN(123)).toThrow(AssertionFailure);
     });
 
@@ -137,7 +137,7 @@ describe("assert.isNaN", () => {
         expect(() => assert.isNaN(123, customMessage)).toThrow(new AssertionFailure(customMessage));
     });
 });
-    
+
 describe("assert.isNotNaN", () => {
     it("should pass when the value is a number", () => {
         assert.isNotNaN(123);
@@ -235,7 +235,7 @@ describe("expect.is.nan", () => {
         checkError(() => {
             expect(123).is.nan();
         }, "expected 123 to be NaN");
-        
+
         expect(() => expect(123).is.nan()).toThrow(AssertionFailure);
     });
 
@@ -275,7 +275,7 @@ describe("expect.is.not.nan", () => {
         checkError(() => {
             expect(NaN).is.not.nan();
         }, "not expected NaN to be NaN");
-        
+
         expect(() => expect(NaN).is.not.nan()).toThrow(AssertionFailure);
     });
 
