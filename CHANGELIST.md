@@ -1,3 +1,20 @@
+# v0.1.6 February 7th, 2026
+
+## Changelog
+
+- [#262](https://github.com/nevware21/tripwire/pull/262) feat: Add Mocha Assertion Compatibility for updating actual, expected values
+  - Make assertion error properties mutable, preserving their original values in new `orgValues` property when changed
+  - Support "silent" readonly of immutable properties to avoid unexpected exceptions
+  - Enables better compatibility with Mocha and other test frameworks that modify assertion error properties
+- [#260](https://github.com/nevware21/tripwire/pull/260) build(deps-dev): Bump @microsoft/rush from 5.166.0 to 5.167.0 in the dev group
+- [#258](https://github.com/nevware21/tripwire/pull/258) Bump @nevware21/ts-utils to 0.12.6
+
+## Refactoring
+
+- Added lint-fix as part of the rebuild process for code quality
+
+For full details see [v0.1.5...v0.1.6](https://github.com/nevware21/tripwire/compare/v0.1.5...v0.1.6)
+
 # v0.1.5 January 30th, 2026
 
 ## Breaking Changes
