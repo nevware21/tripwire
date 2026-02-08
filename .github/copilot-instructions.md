@@ -223,7 +223,7 @@ Edit `CHANGELIST.md` at the repository root:
    ```bash
    rush update --recheck
    ```
-   This updates the npm-shrinkwrap.json file to reflect current dependencies
+   This updates the `common/config/rush/npm-shrinkwrap.json` file to reflect current dependencies
 
 2. **Review all changes** - Verify version numbers, changelog, and shrinkwrap updates before committing
 
