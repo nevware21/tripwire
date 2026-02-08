@@ -240,7 +240,7 @@ Edit `CHANGELIST.md` at the repository root:
    Runs tests in all three environments (node, browser, worker)
 
 5. **Verify build artifacts**:
-   - Check that referenced files, entry points and types in each of the package.json files are present (except for the root package.json which is not published and does not have entry points or types)
+   - Check that referenced files, entry points and types in each of the package.json files are present (for published packages; the root package.json is not published, even though it defines entry points and types)
 
 ## CI/CD
 
