@@ -178,7 +178,7 @@ expect(() => { doSomething(); }).to.not.throw();
 ### Version Management
 
 #### Determine Version Number
-Follow semantic versioning (semver) default release type is a patch unless requested otherwise:
+Follow semantic versioning (semver). The default release type is a patch unless requested otherwise:
 - **Patch** (0.1.x → 0.1.y)
 - **Minor** (0.x.0 → 0.y.0)
 - **Major** (x.0.0 → y.0.0)
