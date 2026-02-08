@@ -172,7 +172,7 @@ expect(() => { doSomething(); }).to.not.throw();
 
 ### Prepare Release Branch
 
-1. **Work on current branch** - Make all changes on your current branch 
+1. **Work on current branch** - Make all changes on your current branch
 2. **Do NOT commit changes** - Leave changes uncommitted so you can review them before creating the PR
 
 ### Version Management
