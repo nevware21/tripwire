@@ -168,11 +168,79 @@ expect(() => { doSomething(); }).to.not.throw();
 3. Run `npm install` at root
 4. Test all environments to ensure compatibility
 
-### Release Process
-1. Run `npm run cleanBuild` - Full clean rebuild
-2. Run `npm run npm-pack` - Create npm packages
-3. Verify packages work correctly
-4. Use `npm run npm-publish` for publishing
+## Creating a Release PR
+
+### Prepare Release Branch
+
+1. **Work on current branch** - Make all changes on your current branch
+2. **Do NOT commit changes** - Leave changes uncommitted so you can review them before creating the PR
+
+### Version Management
+
+#### Determine Version Number
+Follow semantic versioning (semver). The default release type is a patch unless requested otherwise:
+- **Patch** (0.1.x → 0.1.y)
+- **Minor** (0.x.0 → 0.y.0)
+- **Major** (x.0.0 → y.0.0)
+
+#### Update Version Numbers
+Update `version` field in all repo package.json files:
+- `core/package.json` - Main tripwire package
+- `shim/chai/package.json` - Chai shim package
+- Root `package.json` - Monorepo version (should match core)
+
+### Update Changelog
+
+Edit `CHANGELIST.md` at the repository root:
+
+1. **Add version header** with date:
+   ```markdown
+   # v0.1.7 Month Day, Year
+   ```
+
+2. **Organize significant changes by category** (only include meaningful changes):
+   - `## Breaking Changes` - Breaking API changes (if any)
+   - `## New Features` - New functionality added
+   - `## Bug Fixes` - Bug fixes and corrections
+   - `## Refactoring` - Code improvements without behavior changes
+   - `## Documentation & Maintenance` - Docs, dependencies, CI/CD changes
+
+3. **Link to PRs** for each significant change:
+   ```markdown
+   - [#123](https://github.com/nevware21/tripwire/pull/123) feat: Description
+   ```
+
+4. **Add comparison link** at the end (this provides full details of every PR):
+   ```markdown
+   For full details see [v0.1.6...v0.1.7](https://github.com/nevware21/tripwire/compare/v0.1.6...v0.1.7)
+   ```
+
+   **Note**: Only include significant, meaningful changes in the categories above. The comparison link provides complete details of all PRs, so minor changes can be omitted from the summary.
+
+### Build and Test
+
+1. **Update npm shrinkwrap**:
+   ```bash
+   rush update --recheck
+   ```
+   This updates the `common/config/rush/npm-shrinkwrap.json` file to reflect current dependencies
+
+2. **Review all changes** - Verify version numbers, changelog, and shrinkwrap updates before committing
+
+3. **Clean build**:
+   ```bash
+   npm run cleanBuild
+   ```
+   This runs: `git clean -xdf && npm install && grunt lint-fix && rush rebuild`
+
+4. **Run all tests**:
+   ```bash
+   npm run test
+   ```
+   Runs tests in all three environments (node, browser, worker)
+
+5. **Verify build artifacts**:
+   - Check that referenced files, entry points and types in each of the package.json files are present (for published packages; the root package.json is not published, even though it defines entry points and types)
 
 ## CI/CD
 
