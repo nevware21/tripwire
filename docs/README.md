@@ -60,6 +60,25 @@ expect("hello").to.be.a.string;
 expect({ a: 1 }).to.deep.equal({ a: 1 });
 ```
 
+## Migration Guides
+
+### Migrating from Node.js Native Assert
+
+[Migrating from Node.js Assert to Tripwire](migration/migrating-from-node-assert.md) - Complete guide for migrating from Node.js native assert module
+
+**Key difference to be aware of:**
+```diff
+// Node.js: deepStrictEqual uses structural equality
+const result = Object.assign({}, { a: 1 });
+assert.deepStrictEqual(result, { a: 1 }); // ✅ Passes
+
+// Tripwire: deepStrictEqual requires same instances
+- assert.deepStrictEqual(result, { a: 1 }); // ❌ Fails
++ assert.deepEqual(result, { a: 1 });        // ✅ Passes
+```
+
+See the [full migration guide](migration/migrating-from-node-assert.md) for complete details and examples.
+
 ## Shim Chai
 
 [![npm version](https://badge.fury.io/js/%40nevware21%2Ftripwire-chai.svg)](https://badge.fury.io/js/%40nevware21%2Ftripwire-chai)
