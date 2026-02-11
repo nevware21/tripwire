@@ -569,13 +569,13 @@ assert.throws(() => fn(), /error pattern/);
 
 ### Problem: Some Node.js assert features are missing
 
-**Solution:** Use Tripwire's `expect` API or custom assertions:
+**Solution:** Use Tripwire's `assert`/`expect` APIs or custom assertions:
 ```js
-// Instead of assert.match()
-expect(string).to.match(/pattern/);
+// Use assert.match() for regex matching
+assert.match(string, /pattern/);
 
-// Instead of assert.rejects()
-await expect(async () => await fn()).to.throw();
+// For async failures, use assert.rejects() with async/await
+await assert.rejects(async () => fn(), /error pattern/);
 ```
 
 ---
