@@ -173,8 +173,8 @@ The following Node.js assert methods are not currently available in Tripwire:
 
 - `assert.match(string, regexp)` - Use `expect(string).to.match(regexp)` instead
 - `assert.doesNotMatch(string, regexp)` - Use `expect(string).to.not.match(regexp)` instead
-- `assert.rejects(asyncFn)` - Use async/await with `assert.throws`
-- `assert.doesNotReject(asyncFn)` - Use async/await with `assert.doesNotThrow`
+- `assert.rejects(asyncFn)` - Tripwire does not currently provide a direct equivalent for asserting Promise rejections; use `async`/`await` with `try`/`catch` and normal assertions on the caught error.
+- `assert.doesNotReject(asyncFn)` - Tripwire does not currently provide a direct equivalent; `await` the Promise and let the test fail if it rejects, or use `try`/`catch` and call `assert.fail` on rejection.
 
 ---
 
