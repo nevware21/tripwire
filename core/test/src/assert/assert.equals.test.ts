@@ -1001,6 +1001,10 @@ describe("assert.deepStrictEqual", function () {
         assert.deepStrictEqual(obj4, obj5);
         assert.deepStrictEqual(obj4, obj6);
 
+        assert.deepStrictEqual(obj1, { a: 1, b: 2 });
+        assert.deepStrictEqual(obj3, { a: 1, b: 2, c: 3 });
+        assert.deepStrictEqual(obj4, { a: 1, b: { c: 2, d: 3 } });
+
         // Different values - should fail
         checkError(function () {
             assert.deepStrictEqual(obj1, obj3, "Object mismatch");
