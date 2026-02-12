@@ -29,7 +29,7 @@ npm install @nevware21/tripwire --save-dev
 ```json
 {
   "devDependencies": {
-    "@nevware21/tripwire": ">= 0.1.6 < 2.x"
+    "@nevware21/tripwire": ">= 0.1.7 < 2.x"
   }
 }
 ```

@@ -1,4 +1,4 @@
-# v0.1.7 Feb 13th, 2026
+# v0.1.7 February 13th, 2026
 
 ## Bug Fixes
 
