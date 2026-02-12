@@ -1,3 +1,15 @@
+# v0.1.7 February 13th, 2026
+
+## Bug Fixes
+
+- [#273](https://github.com/nevware21/tripwire/pull/273) Fix deepStrictEqual to perform deep value comparison
+  - Changed `deepStrictEqual` to use deep value comparison instead of strict instance comparison
+  - Now properly compares nested object values, arrays, and complex structures
+  - Aligns behavior with Node.js assert.deepStrictEqual semantics
+  - Maintains strict type checking while performing recursive value comparison
+
+For full details see [v0.1.6...v0.1.7](https://github.com/nevware21/tripwire/compare/v0.1.6...v0.1.7)
+
 # v0.1.6 February 7th, 2026
 
 ## Changelog
