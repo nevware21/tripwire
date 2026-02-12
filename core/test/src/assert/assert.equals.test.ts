@@ -841,6 +841,34 @@ describe("assert.deepEqual", function () {
             assertConfig.circularMsg = originalMsg;
         }
     });
+
+    it("Deep comparison examples with loose equality", function () {
+        // Objects with same values should pass
+        assert.deepEqual({ a: 1 }, { a: 1 });
+
+        // Objects with different types should pass (loose equality)
+        assert.deepEqual({ a: 1 }, { a: "1" });
+
+        // Arrays with same values should pass
+        assert.deepEqual([1, 2], [1, 2]);
+
+        // Arrays with different order should fail (order matters)
+        checkError(function () {
+            assert.deepEqual([1, 2], [2, 1]);
+        }, "expected [1,2] to deeply equal [2,1]");
+
+        // Nested objects with same values should pass
+        assert.deepEqual({ a: { b: 1 } }, { a: { b: 1 } });
+
+        // Nested objects with different types should pass (loose equality)
+        assert.deepEqual({ a: { b: 1 } }, { a: { b: "1" } });
+
+        // Arrays with objects with same values should pass
+        assert.deepEqual([{ a: 1 }], [{ a: 1 }]);
+
+        // Arrays with objects with different types should pass (loose equality)
+        assert.deepEqual([{ a: 1 }], [{ a: "1" }]);
+    });
 });
 
 describe("assert.deepEquals", function () {
