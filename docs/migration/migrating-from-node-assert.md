@@ -49,78 +49,73 @@ Replace Node.js assert imports:
 
 ## 3. Key Behavioral Differences
 
-### 3.1. `deepStrictEqual` - Instance vs. Structural Equality
+### 3.1. `deepStrictEqual` - Behavior Change in v0.1.7
 
-**This is the most important difference to understand.**
+> **⚠️ IMPORTANT:** The behavior of `deepStrictEqual` changed in **v0.1.7** to match Node.js behavior.
 
-#### Node.js Behavior
-Node.js's `assert.deepStrictEqual` performs **structural equality** comparison. It checks if objects have the same structure and values, even if they are different instances:
-
-```js
-// Node.js native assert
-const assert = require('assert');
-
-const obj1 = { a: 1, b: 2 };
-const obj2 = { a: 1, b: 2 };
-
-assert.deepStrictEqual(obj1, obj2); // ✅ PASSES - structurally identical
-
-const result = Object.assign({}, { a: 1 });
-assert.deepStrictEqual(result, { a: 1 }); // ✅ PASSES
-```
-
-#### Tripwire Behavior
-Tripwire's `assert.deepStrictEqual` requires **exact instance identity** for objects. It checks both structure and that nested objects are the same instances:
+#### Versions < 0.1.7 (Old Behavior)
+Prior to v0.1.7, Tripwire's `assert.deepStrictEqual` required **exact instance identity** for objects:
 
 ```js
-// Tripwire
+// Tripwire < 0.1.7 (OLD BEHAVIOR)
 import { assert } from '@nevware21/tripwire';
 
 const obj1 = { a: 1, b: 2 };
 const obj2 = { a: 1, b: 2 };
 
-assert.deepStrictEqual(obj1, obj2); // ❌ FAILS - different instances
-
-const result = Object.assign({}, { a: 1 });
-assert.deepStrictEqual(result, { a: 1 }); // ❌ FAILS - different instances
-
-// Same reference works
-assert.deepStrictEqual(obj1, obj1); // ✅ PASSES
+assert.deepStrictEqual(obj1, obj2); // ❌ FAILED - different instances
 ```
 
-#### Migration Strategy
-
-When migrating code that compares different object instances, use `deepEqual` instead of `deepStrictEqual`:
-
-```diff
-// Before (Node.js)
-const result = deepMerge({ a: 1 }, { b: 2 });
-- assert.deepStrictEqual(result, { a: 1, b: 2 });
-
-// After (Tripwire)
-const result = deepMerge({ a: 1 }, { b: 2 });
-+ assert.deepEqual(result, { a: 1, b: 2 });
-```
-
-Or use the fluent `expect` API:
+#### Versions >= 0.1.7 (Current Behavior - Matches Node.js)
+Starting in v0.1.7, Tripwire's `assert.deepStrictEqual` now performs **deep structural equality** with strict type checking, matching Node.js behavior:
 
 ```js
-import { expect } from '@nevware21/tripwire';
+// Tripwire >= 0.1.7 and Node.js native assert
+import { assert } from '@nevware21/tripwire';
 
+const obj1 = { a: 1, b: 2 };
+const obj2 = { a: 1, b: 2 };
+
+assert.deepStrictEqual(obj1, obj2); // ✅ PASSES - same structure and values
+
+const result = Object.assign({}, { a: 1 });
+assert.deepStrictEqual(result, { a: 1 }); // ✅ PASSES - deep value equality
+
+// Strict type checking still enforced
+assert.deepStrictEqual({ a: 1 }, { a: "1" }); // ❌ FAILS - different types (number vs string)
+```
+
+#### Migration from Versions < 0.1.7
+
+If you were using Tripwire < 0.1.7 and had changed `deepStrictEqual` to `deepEqual` as a workaround, you can now change them back:
+
+```diff
+// If you migrated from deepStrictEqual to deepEqual in older versions
 const result = deepMerge({ a: 1 }, { b: 2 });
-expect(result).to.deep.equal({ a: 1, b: 2 }); // ✅ PASSES
+- assert.deepEqual(result, { a: 1, b: 2 });
++ assert.deepStrictEqual(result, { a: 1, b: 2 }); // Now works in v0.1.7+
+```
+
+#### Migration from Node.js
+
+If you're migrating from Node.js to Tripwire >= 0.1.7, `deepStrictEqual` works the same way - **no changes needed**:
+
+```js
+// Works identically in both Node.js and Tripwire >= 0.1.7
+const result = processData({ input: 'test' });
+assert.deepStrictEqual(result, { output: 'processed' }); // ✅ PASSES
 ```
 
 ### 3.2. When to Use Each Assertion
 
-| Assertion | Use Case | Node.js Behavior | Tripwire Behavior |
-|-----------|----------|------------------|-------------------|
+| Assertion | Use Case | Node.js Behavior | Tripwire >= 0.1.7 Behavior |
+|-----------|----------|------------------|---------------------------|
 | `equal` | Loose equality (==) | Coerces types | Coerces types |
 | `strictEqual` | Strict equality (===) | Same reference/value | Same reference/value |
-| `deepEqual` | Deep structural equality with type coercion | Structural comparison | Structural comparison |
-| `deepStrictEqual` | Deep strict equality | Structural + strict type check | **Requires same instances** |
+| `deepEqual` | Deep structural equality with type coercion | Structural comparison with type coercion | Structural comparison with type coercion |
+| `deepStrictEqual` | Deep strict equality | Structural + strict type check | **Structural + strict type check** (matches Node.js) |
 
-**Recommendation:** For most test cases involving object comparison, use `deepEqual` instead of `deepStrictEqual` when migrating to Tripwire.
+**Note:** In Tripwire >= 0.1.7, `deepStrictEqual` now matches Node.js behavior exactly. Use it when you need deep structural comparison with strict type checking (e.g., `1` !== `"1"`).
 
 ---
 
@@ -140,8 +135,8 @@ Most Node.js assert methods are supported in Tripwire with the same or similar b
 | `assert.notStrictEqual(actual, expected)` | `assert.notStrictEqual(actual, expected)` | Identical |
 | `assert.deepEqual(actual, expected)` | `assert.deepEqual(actual, expected)` | Identical |
 | `assert.notDeepEqual(actual, expected)` | `assert.notDeepEqual(actual, expected)` | Identical |
-| `assert.deepStrictEqual(actual, expected)` | `assert.deepStrictEqual(actual, expected)` | ⚠️ **Different behavior** (see section 3.1) |
-| `assert.notDeepStrictEqual(actual, expected)` | `assert.notDeepStrictEqual(actual, expected)` | ⚠️ **Different behavior** (see section 3.1) |
+| `assert.deepStrictEqual(actual, expected)` | `assert.deepStrictEqual(actual, expected)` | ✅ **Identical in v0.1.7+** (structural + strict type check) |
+| `assert.notDeepStrictEqual(actual, expected)` | `assert.notDeepStrictEqual(actual, expected)` | ✅ **Identical in v0.1.7+** |
 | `assert.throws(fn, error?)` | `assert.throws(fn, error?)` | Similar (error messages may differ) |
 | `assert.doesNotThrow(fn)` | `assert.doesNotThrow(fn)` | Similar |
 | `assert.fail(message)` | `assert.fail(message)` | Similar |
@@ -202,25 +197,19 @@ assert.strictEqual(actual, expected);
 assert.notEqual(actual, unexpected);
 ```
 
-### 5.2. Deep Equality (Most Common Migration)
+### 5.2. Deep Equality
 
-**Before (Node.js):**
-```js
-const assert = require('assert');
+> **Note:** In Tripwire >= 0.1.7, `deepStrictEqual` works the same as Node.js - no migration needed!
 
-const result = processData({ input: 'test' });
-assert.deepStrictEqual(result, { output: 'processed' });
-```
-
-**After (Tripwire) - Option 1: Use deepEqual**
+**Node.js and Tripwire >= 0.1.7:**
 ```js
 import { assert } from '@nevware21/tripwire';
 
 const result = processData({ input: 'test' });
-assert.deepEqual(result, { output: 'processed' });
+assert.deepStrictEqual(result, { output: 'processed' }); // ✅ Works in both!
 ```
 
-**After (Tripwire) - Option 2: Use expect**
+**Alternative - Using expect API:**
 ```js
 import { expect } from '@nevware21/tripwire';
 
@@ -228,39 +217,34 @@ const result = processData({ input: 'test' });
 expect(result).to.deep.equal({ output: 'processed' });
 ```
 
-### 5.3. Array Comparisons
-
-**Before (Node.js):**
+**Using deepEqual for type coercion:**
 ```js
-const assert = require('assert');
-
-const arr = [1, 2, 3];
-assert.deepStrictEqual(arr, [1, 2, 3]);
+// Use deepEqual when you want loose type checking
+assert.deepEqual({ a: 1 }, { a: "1" }); // ✅ PASSES (1 == "1")
+assert.deepStrictEqual({ a: 1 }, { a: "1" }); // ❌ FAILS (1 !== "1")
 ```
 
-**After (Tripwire):**
+### 5.3. Array Comparisons
+
+> **Note:** In Tripwire >= 0.1.7, array comparisons work the same as Node.js!
+
+**Node.js and Tripwire >= 0.1.7:**
 ```js
 import { assert } from '@nevware21/tripwire';
 
 const arr = [1, 2, 3];
-assert.deepEqual(arr, [1, 2, 3]); // Use deepEqual for new array instances
+assert.deepStrictEqual(arr, [1, 2, 3]); // ✅ Works in both!
+
+// Type checking still enforced
+assert.deepStrictEqual([1, 2], ["1", "2"]); // ❌ FAILS - different types
+assert.deepEqual([1, 2], ["1", "2"]); // ✅ PASSES - loose equality
 ```
 
 ### 5.4. Object Merging/Transformation
 
-**Before (Node.js):**
-```js
-const assert = require('assert');
+> **Note:** In Tripwire >= 0.1.7, object transformations work the same as Node.js!
 
-function mergeOptions(defaults, overrides) {
-    return Object.assign({}, defaults, overrides);
-}
-
-const result = mergeOptions({ a: 1 }, { b: 2 });
-assert.deepStrictEqual(result, { a: 1, b: 2 });
-```
-
-**After (Tripwire):**
+**Node.js and Tripwire >= 0.1.7:**
 ```js
 import { assert } from '@nevware21/tripwire';
 
@@ -269,7 +253,7 @@ function mergeOptions(defaults, overrides) {
 }
 
 const result = mergeOptions({ a: 1 }, { b: 2 });
-assert.deepEqual(result, { a: 1, b: 2 }); // deepEqual for new instances
+assert.deepStrictEqual(result, { a: 1, b: 2 }); // ✅ Works in both!
 ```
 
 ### 5.5. Error Testing
@@ -346,23 +330,33 @@ expect(arr).to.have.lengthOf(3);
 4. **Review error messages** - they may differ from Node.js
 5. **Remove Node.js assert** once migration is complete
 
-### 6.2. Find and Replace Strategy
+### 6.2. Migration Strategy for Tripwire >= 0.1.7
 
-Use these patterns to help with migration:
+**Good news:** If you're migrating from Node.js to Tripwire >= 0.1.7, `deepStrictEqual` works identically - **no changes needed**!
 
-**Find `deepStrictEqual` with new instances:**
-```bash
-# Search for patterns that likely create new instances
-grep -r "deepStrictEqual.*{" test/
-grep -r "deepStrictEqual.*\[" test/
-grep -r "deepStrictEqual.*Object\." test/
-grep -r "deepStrictEqual.*Array\." test/
+**Update imports only:**
+```diff
+- const assert = require('assert');
++ import { assert } from '@nevware21/tripwire';
+
+// All deepStrictEqual calls work the same
+assert.deepStrictEqual(obj1, obj2); // ✅ No changes needed
 ```
 
-**Replace pattern:**
-```diff
-- assert.deepStrictEqual(result, expectedObject);
-+ assert.deepEqual(result, expectedObject);
+**Key differences to remember:**
+- `deepStrictEqual`: Deep structural equality with strict type checking (1 !== "1")
+- `deepEqual`: Deep structural equality with type coercion (1 == "1")
+
+**Example:**
+```js
+import { assert } from '@nevware21/tripwire';
+
+// Strict type checking
+assert.deepStrictEqual({ a: 1 }, { a: 1 }); // ✅ PASSES
+assert.deepStrictEqual({ a: 1 }, { a: "1" }); // ❌ FAILS - different types
+
+// Loose type coercion
+assert.deepEqual({ a: 1 }, { a: "1" }); // ✅ PASSES - 1 == "1"
 ```
 
 ### 6.3. Running Tests
@@ -392,27 +386,27 @@ GitHub Copilot can help automate the migration. Use these prompts:
 ### Basic Import Migration
 ```
 Replace all Node.js 'assert' or 'node:assert' imports with '@nevware21/tripwire' imports.
-Keep all assertion calls unchanged initially.
+All assertion calls work the same in Tripwire >= 0.1.7.
 ```
 
-### Deep Equality Migration
+### For Tripwire < 0.1.7 Upgrades
 ```
-Find all uses of assert.deepStrictEqual that compare objects or arrays that are 
-different instances (created via Object.assign, spread operator, or factory functions).
-Replace them with assert.deepEqual.
+We're upgrading from Tripwire < 0.1.7 to >= 0.1.7.
+Find uses of assert.deepEqual that were changed from deepStrictEqual as a workaround.
+Change them back to deepStrictEqual since v0.1.7 matches Node.js behavior.
 ```
 
 ### Full Migration to Expect
 ```
 Convert Node.js assert style to Tripwire expect style:
 - assert.equal(a, b) → expect(a).to.equal(b)
-- assert.deepEqual(a, b) → expect(a).to.deep.equal(b)
+- assert.deepStrictEqual(a, b) → expect(a).to.deep.equal(b)
 - assert.throws(fn, Error) → expect(fn).to.throw(Error)
 Keep same test logic and behavior.
 ```
 
 ### Tips for Copilot
-- Review suggestions for `deepStrictEqual` → `deepEqual` conversions
+- Tripwire >= 0.1.7 `deepStrictEqual` works identically to Node.js
 - Test in all environments after migration
 - Check that error message assertions still work (they may need regex patterns)
 
@@ -420,80 +414,49 @@ Keep same test logic and behavior.
 
 ## 8. Common Migration Patterns
 
+> **Note:** In Tripwire >= 0.1.7, these patterns work identically to Node.js - no migration needed!
+
 ### Pattern 1: Object Factory Functions
 
-**Before:**
+**Node.js and Tripwire >= 0.1.7:**
 ```js
 function createUser(name, age) {
     return { name, age };
 }
 
-assert.deepStrictEqual(createUser('Alice', 30), { name: 'Alice', age: 30 });
-```
-
-**After:**
-```js
-function createUser(name, age) {
-    return { name, age };
-}
-
-assert.deepEqual(createUser('Alice', 30), { name: 'Alice', age: 30 });
+assert.deepStrictEqual(createUser('Alice', 30), { name: 'Alice', age: 30 }); // ✅ Works!
 ```
 
 ### Pattern 2: Array Transformations
 
-**Before:**
+**Node.js and Tripwire >= 0.1.7:**
 ```js
 const doubled = [1, 2, 3].map(x => x * 2);
-assert.deepStrictEqual(doubled, [2, 4, 6]);
-```
-
-**After:**
-```js
-const doubled = [1, 2, 3].map(x => x * 2);
-assert.deepEqual(doubled, [2, 4, 6]);
+assert.deepStrictEqual(doubled, [2, 4, 6]); // ✅ Works!
 ```
 
 ### Pattern 3: Spread Operator
 
-**Before:**
+**Node.js and Tripwire >= 0.1.7:**
 ```js
 const merged = { ...defaults, ...overrides };
-assert.deepStrictEqual(merged, { a: 1, b: 2 });
-```
-
-**After:**
-```js
-const merged = { ...defaults, ...overrides };
-assert.deepEqual(merged, { a: 1, b: 2 });
+assert.deepStrictEqual(merged, { a: 1, b: 2 }); // ✅ Works!
 ```
 
 ### Pattern 4: Object.assign
 
-**Before:**
+**Node.js and Tripwire >= 0.1.7:**
 ```js
 const result = Object.assign({}, obj1, obj2);
-assert.deepStrictEqual(result, expected);
-```
-
-**After:**
-```js
-const result = Object.assign({}, obj1, obj2);
-assert.deepEqual(result, expected);
+assert.deepStrictEqual(result, expected); // ✅ Works!
 ```
 
 ### Pattern 5: JSON Parse/Stringify
 
-**Before:**
+**Node.js and Tripwire >= 0.1.7:**
 ```js
 const clone = JSON.parse(JSON.stringify(original));
-assert.deepStrictEqual(clone, original);
-```
-
-**After:**
-```js
-const clone = JSON.parse(JSON.stringify(original));
-assert.deepEqual(clone, original);
+assert.deepStrictEqual(clone, original); // ✅ Works!
 ```
 
 ---
@@ -556,9 +519,14 @@ See the [Tripwire documentation](https://nevware21.github.io/tripwire/index.html
 
 ## 11. Troubleshooting
 
-### Problem: Tests fail with "different instances" errors
+### Problem: Using Tripwire < 0.1.7
 
-**Solution:** Replace `deepStrictEqual` with `deepEqual` for comparing objects/arrays that are different instances.
+If you're using an older version of Tripwire (< 0.1.7), `deepStrictEqual` required instance identity.
+
+**Solution:** Upgrade to Tripwire >= 0.1.7 for Node.js-compatible behavior:
+```bash
+npm install @nevware21/tripwire@latest --save-dev
+```
 
 ### Problem: Error message tests are failing
 
@@ -582,23 +550,32 @@ await assert.rejects(async () => fn(), /error pattern/);
 
 ## 12. Best Practices
 
-1. **Prefer `deepEqual` over `deepStrictEqual`** for object comparisons unless you specifically need instance identity
-2. **Use the `expect` API** for more expressive tests:
+1. **Use `deepStrictEqual` for strict type checking** - In Tripwire >= 0.1.7, it works just like Node.js
+   ```js
+   assert.deepStrictEqual({ a: 1 }, { a: 1 }); // ✅ PASSES
+   assert.deepStrictEqual({ a: 1 }, { a: "1" }); // ❌ FAILS - type mismatch
+   ```
+2. **Use `deepEqual` for loose type coercion** when you want `1 == "1"` to pass:
+   ```js
+   assert.deepEqual({ a: 1 }, { a: "1" }); // ✅ PASSES
+   ```
+3. **Use the `expect` API** for more expressive tests:
    ```js
    expect(result).to.deep.equal(expected);
    expect(value).to.be.a.string();
    ```
-3. **Use regex for error message matching** instead of exact strings
-4. **Test in all target environments** (Node.js, browser, worker)
-5. **Leverage Tripwire's additional assertions** for cleaner test code
+4. **Use regex for error message matching** instead of exact strings
+5. **Test in all target environments** (Node.js, browser, worker)
+6. **Leverage Tripwire's additional assertions** for cleaner test code
 
 ---
 
 ## 13. Summary: Migration Checklist
 
-- [ ] Install `@nevware21/tripwire` as a dev dependency
+- [ ] Install `@nevware21/tripwire` >= 0.1.7 as a dev dependency
 - [ ] Update imports from `assert`/`node:assert` to `@nevware21/tripwire`
-- [ ] Replace `assert.deepStrictEqual` with `assert.deepEqual` for object/array comparisons
+- [ ] **No changes needed** for `deepStrictEqual` if using v0.1.7+ (it matches Node.js behavior)
+- [ ] Use `deepEqual` when you need loose type coercion (e.g., `1 == "1"`)
 - [ ] Update error message assertions to use regex patterns
 - [ ] Test in all target environments (node, browser, worker)
 - [ ] Consider migrating to the `expect` API for new tests
