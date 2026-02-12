@@ -42,7 +42,9 @@ As part of the Mono-Repo it also provides some shim implementations which are de
 The documentation site includes:
 - Quick start guides and usage examples
 - Feature highlights and comparison tables
-- Migration guides (e.g., from Chai.js)
+- Migration guides:
+  - [From Node.js Native Assert](https://nevware21.github.io/tripwire/migration/migrating-from-node-assert.html)
+  - [From Chai.js](https://nevware21.github.io/tripwire/migration/migrating-from-chai.html)
 - Detailed guides for specific features (like change/increase/decrease assertions)
 - [Expression Adapter Guide](https://nevware21.github.io/tripwire/expression-adapter.html) - Creating custom assertions using expressions
 - Links to full TypeDoc API reference for each module
