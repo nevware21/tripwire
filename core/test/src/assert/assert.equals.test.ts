@@ -841,6 +841,34 @@ describe("assert.deepEqual", function () {
             assertConfig.circularMsg = originalMsg;
         }
     });
+
+    it("Deep comparison examples with loose equality", function () {
+        // Objects with same values should pass
+        assert.deepEqual({ a: 1 }, { a: 1 });
+
+        // Objects with different types should pass (loose equality)
+        assert.deepEqual({ a: 1 }, { a: "1" });
+
+        // Arrays with same values should pass
+        assert.deepEqual([1, 2], [1, 2]);
+
+        // Arrays with different order should fail (order matters)
+        checkError(function () {
+            assert.deepEqual([1, 2], [2, 1]);
+        }, "expected [1,2] to deeply equal [2,1]");
+
+        // Nested objects with same values should pass
+        assert.deepEqual({ a: { b: 1 } }, { a: { b: 1 } });
+
+        // Nested objects with different types should pass (loose equality)
+        assert.deepEqual({ a: { b: 1 } }, { a: { b: "1" } });
+
+        // Arrays with objects with same values should pass
+        assert.deepEqual([{ a: 1 }], [{ a: 1 }]);
+
+        // Arrays with objects with different types should pass (loose equality)
+        assert.deepEqual([{ a: 1 }], [{ a: "1" }]);
+    });
 });
 
 describe("assert.deepEquals", function () {
@@ -960,29 +988,27 @@ describe("assert.deepStrictEqual", function () {
         const obj5 = { a: 1, b: child2 };
         const obj6 = { a: 1, b: child1 };
 
-        assert.deepStrictEqual(obj1, obj1); // Same reference
-        assert.deepStrictEqual(obj2, obj2); // Same reference
-        assert.deepStrictEqual(obj3, obj3); // Same reference
-        assert.deepStrictEqual(obj4, obj4); // Same reference
-        assert.deepStrictEqual(obj5, obj5); // Same reference
-        assert.deepStrictEqual(obj6, obj6); // Same reference
-        checkError(function () {
-            assert.deepStrictEqual(obj4, obj6);
-        }, "expected {a:1,b:{c:2,d:3}} to deeply and strictly equal {a:1,b:{c:2,d:3}}");
+        // Same reference - should pass
+        assert.deepStrictEqual(obj1, obj1);
+        assert.deepStrictEqual(obj2, obj2);
+        assert.deepStrictEqual(obj3, obj3);
+        assert.deepStrictEqual(obj4, obj4);
+        assert.deepStrictEqual(obj5, obj5);
+        assert.deepStrictEqual(obj6, obj6);
 
+        // Same values - should pass (deep value equality)
+        assert.deepStrictEqual(obj1, obj2);
+        assert.deepStrictEqual(obj4, obj5);
+        assert.deepStrictEqual(obj4, obj6);
 
-        checkError(function () {
-            assert.deepStrictEqual(obj1, obj2, "Object mismatch"); // Same looking object
-        }, "Object mismatch: expected {a:1,b:2} to deeply and strictly equal {a:1,b:2}");
+        assert.deepStrictEqual(obj1, { a: 1, b: 2 });
+        assert.deepStrictEqual(obj3, { a: 1, b: 2, c: 3 });
+        assert.deepStrictEqual(obj4, { a: 1, b: { c: 2, d: 3 } });
 
-
+        // Different values - should fail
         checkError(function () {
             assert.deepStrictEqual(obj1, obj3, "Object mismatch");
         }, "Object mismatch: expected {a:1,b:2} to deeply and strictly equal {a:1,b:2,c:3}");
-
-        checkError(function () {
-            assert.deepStrictEquals(obj4, obj5);
-        }, "expected {a:1,b:{c:2,d:3}} to deeply and strictly equal {a:1,b:{c:2,d:3}}");
 
         checkError(function () {
             const obj7 = { a: 1, b: { c: 2, d: 4 } };
@@ -994,13 +1020,14 @@ describe("assert.deepStrictEqual", function () {
         const arr1 = [1, [2, 3], 4];
         const arr2 = [1, [2, 3], 4];
 
-        assert.deepStrictEqual(arr1, arr1); // Same reference
-        assert.deepStrictEqual(arr2, arr2); // Same reference
+        // Same reference - should pass
+        assert.deepStrictEqual(arr1, arr1);
+        assert.deepStrictEqual(arr2, arr2);
 
-        checkError(function () {
-            assert.deepStrictEquals(arr1, arr2);
-        }, "expected [1,[2,3],4] to deeply and strictly equal [1,[2,3],4]");
+        // Same values - should pass (deep value equality)
+        assert.deepStrictEqual(arr1, arr2);
 
+        // Different values - should fail
         checkError(function () {
             const arr3 = [1, [2, 4], 4];
             assert.deepStrictEquals(arr1, arr3, "Nested array mismatch");
@@ -1011,13 +1038,14 @@ describe("assert.deepStrictEqual", function () {
         const combo1 = { a: [1, 2, { b: 3 }] };
         const combo2 = { a: [1, 2, { b: 3 }] };
 
+        // Same reference - should pass
         assert.deepStrictEquals(combo1, combo1);
         assert.deepStrictEquals(combo2, combo2);
 
-        checkError(function () {
-            assert.deepStrictEquals(combo1, combo2);
-        }, "expected {a:[1,2,{b:3}]} to deeply and strictly equal {a:[1,2,{b:3}]}");
+        // Same values - should pass (deep value equality)
+        assert.deepStrictEquals(combo1, combo2);
 
+        // Different values - should fail
         checkError(function () {
             const combo3 = { a: [1, 2, { b: 4 }] };
             assert.deepStrictEquals(combo1, combo3, "Combination mismatch");
@@ -1100,5 +1128,39 @@ describe("assert.deepStrictEqual", function () {
         checkError(function () {
             assert.deepStrictEquals(0, false, "Number and boolean mismatch");
         }, "Number and boolean mismatch: expected 0 to deeply and strictly equal false");
+    });
+
+    it("Deep comparison examples from requirements", function () {
+        // Objects with same values should pass
+        assert.deepStrictEqual({ a: 1 }, { a: 1 });
+
+        // Objects with different types should fail
+        checkError(function () {
+            assert.deepStrictEqual({ a: 1 }, { a: "1" });
+        }, "expected {a:1} to deeply and strictly equal {a:\"1\"}");
+
+        // Arrays with same values should pass
+        assert.deepStrictEqual([1, 2], [1, 2]);
+
+        // Arrays with different order should fail
+        checkError(function () {
+            assert.deepStrictEqual([1, 2], [2, 1]);
+        }, "expected [1,2] to deeply and strictly equal [2,1]");
+
+        // Nested objects with same values should pass
+        assert.deepStrictEqual({ a: { b: 1 } }, { a: { b: 1 } });
+
+        // Nested objects with different types should fail
+        checkError(function () {
+            assert.deepStrictEqual({ a: { b: 1 } }, { a: { b: "1" } });
+        }, "expected {a:{b:1}} to deeply and strictly equal {a:{b:\"1\"}}");
+
+        // Arrays with objects with same values should pass
+        assert.deepStrictEqual([{ a: 1 }], [{ a: 1 }]);
+
+        // Arrays with objects with different types should fail
+        checkError(function () {
+            assert.deepStrictEqual([{ a: 1 }], [{ a: "1" }]);
+        }, "expected [{a:1}] to deeply and strictly equal [{a:\"1\"}]");
     });
 });

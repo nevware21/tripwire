@@ -495,11 +495,6 @@ function _deepEquals<T>(value: T, expected: T, options: IEqualOptions): boolean 
             return isEquals;
         }
 
-        if (options.strict === true) {
-            // If strict is set and we get here, then the values are not strictly equal
-            return false;
-        }
-
         if (isPlainObject(value) && isPlainObject(expected)) {
             return _objEquals(value, expected, options);
         }
