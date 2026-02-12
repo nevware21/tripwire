@@ -1163,4 +1163,41 @@ describe("assert.deepStrictEqual", function () {
             assert.deepStrictEqual([{ a: 1 }], [{ a: "1" }]);
         }, "expected [{a:1}] to deeply and strictly equal [{a:\"1\"}]");
     });
+
+    it("Objects/arrays containing different Promises/functions should fail", function () {
+        // Regression test for issue #273
+        // _deepEquals() must not return null for types like Promise/function/WeakMap/etc
+        // in nested comparisons, as null is treated as "equal" (not === false)
+
+        const promise1 = Promise.resolve(1);
+        const promise2 = Promise.resolve(2);
+        const func1 = () => 1;
+        const func2 = () => 2;
+
+        // Different promises in nested objects should fail
+        checkError(function () {
+            assert.deepStrictEqual({ p: promise1 }, { p: promise2 });
+        }, /expected .* to deeply and strictly equal .*/);
+
+        // Different functions in nested objects should fail
+        checkError(function () {
+            assert.deepStrictEqual({ f: func1 }, { f: func2 });
+        }, /expected .* to deeply and strictly equal .*/);
+
+        // Different promises in arrays should fail
+        checkError(function () {
+            assert.deepStrictEqual([promise1], [promise2]);
+        }, /expected .* to deeply and strictly equal .*/);
+
+        // Different functions in arrays should fail
+        checkError(function () {
+            assert.deepStrictEqual([func1], [func2]);
+        }, /expected .* to deeply and strictly equal .*/);
+
+        // Same reference should pass
+        assert.deepStrictEqual({ p: promise1 }, { p: promise1 });
+        assert.deepStrictEqual({ f: func1 }, { f: func1 });
+        assert.deepStrictEqual([promise1], [promise1]);
+        assert.deepStrictEqual([func1], [func1]);
+    });
 });
