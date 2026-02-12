@@ -177,6 +177,15 @@ interface IEqualOptions {
     visiting: any[];
 }
 
+/**
+ * Wraps _strictEquals to ensure it always returns a boolean (never null).
+ * For types that should only be equal if reference-equal (Promise, function, WeakMap, etc.),
+ * this treats non-reference-equal values as not equal.
+ */
+const _strictEqualsBool = (value: any, expected: any, options: IEqualOptions): boolean => {
+    return _strictEquals(value, expected) === true;
+};
+
 const _typeEquals: { [key: string]: (value: any, expected: any, options: IEqualOptions) => boolean } = {
     "string": _valueOfEquals,
     "number": _valueOfEquals,
@@ -184,11 +193,11 @@ const _typeEquals: { [key: string]: (value: any, expected: any, options: IEqualO
     "undefined": _valueOfEquals,
     "date": _valueOfEquals,
 
-    "promise": _strictEquals,
-    "function": _strictEquals,
-    "symbol": _strictEquals,
-    "weakmap": _strictEquals,
-    "weakset": _strictEquals,
+    "promise": _strictEqualsBool,
+    "function": _strictEqualsBool,
+    "symbol": _strictEqualsBool,
+    "weakmap": _strictEqualsBool,
+    "weakset": _strictEqualsBool,
 
     "error": _matchKeys(["name", "message", "code"]),
 
@@ -215,7 +224,7 @@ function _getTypeComparer(value: any): (value: any, expected: any, options: IEqu
         objType = strLower(objToString(value).slice(8, -1));
     }
 
-    let compareFn = _typeEquals[objType] || _typeEquals[theType];
+    let compareFn = (objType && _typeEquals[objType]) || _typeEquals[theType];
     if (!compareFn) {
         try {
             if (isObject(value) && isFunction(value[Symbol.iterator])) {
