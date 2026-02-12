@@ -78,6 +78,11 @@ expect({ a: 1 }).to.deep.equal({ a: 1 });
 
 **Guides**:
 - [Change/Increase/Decrease Assertions](https://nevware21.github.io/tripwire/change-assertions)
+- [Expression Adapter Guide](https://nevware21.github.io/tripwire/expression-adapter)
+
+**Migration Guides**:
+- [Migrating from Node.js Native Assert](https://nevware21.github.io/tripwire/migration/migrating-from-node-assert)
+- [Migrating from Chai](https://nevware21.github.io/tripwire/migration/migrating-from-chai)
 
 **Repository**: [github.com/nevware21/tripwire](https://github.com/nevware21/tripwire)
 
