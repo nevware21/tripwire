@@ -166,7 +166,7 @@ export function hasDeepNestedPropertyFunc(this: IAssertScope, path: string, valu
         context.set("expected", value);
         if (valueResult.exists) {
             context.set("nestedValue", valueResult.value);
-            context.eval(valueResult.exists && _deepEqual(valueResult.value, value), evalMsg || "expected {value} to have a nested property {property} deeply equal {expected}, but got {nestedValue}");
+            context.eval(valueResult.exists && _deepEqual(valueResult.value, value, false, context), evalMsg || "expected {value} to have a nested property {property} deeply equal {expected}, but got {nestedValue}");
         } else {
             // Property doesn't exist - fail the assertion
             context.eval(false, evalMsg || "expected {value} to have a nested property {property} deeply equal {expected}");
@@ -249,7 +249,7 @@ export function deepNestedIncludeFunc(this: IAssertScope, expected: any, evalMsg
             context.set("expected", expectedValue);
             if (valueResult.exists) {
                 context.set("nestedValue", valueResult.value);
-                context.eval(valueResult.exists && _deepEqual(valueResult.value, expectedValue), evalMsg || "expected {value} to have a nested property {property} deeply equal {expected}, but got {nestedValue}");
+                context.eval(valueResult.exists && _deepEqual(valueResult.value, expectedValue, false, context), evalMsg || "expected {value} to have a nested property {property} deeply equal {expected}, but got {nestedValue}");
             } else {
                 context.eval(false, evalMsg || "expected {value} to have a nested property {property} deeply equal {expected}, but the property does not exist");
             }

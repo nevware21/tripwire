@@ -15,12 +15,21 @@ import { IConfigInst } from "../interface/IConfigInst";
 import { _defaultFormatters } from "./_defaultFormatters";
 
 
-function _isVisited(value: any, visited: any[]): boolean {
+function _isVisited(value: any, visited: any[], maxDepth?: number): boolean {
     if (isPrimitive(value)) {
         return false;
     }
 
-    for (let idx = 0; idx < visited.length; idx++) {
+    // Depth limit optimization - most structures don't go beyond 50 levels
+    // This prevents pathological cases while maintaining reasonable depth
+    let depth = visited.length;
+    if (maxDepth && depth > maxDepth) {
+        return true; // Treat as circular to prevent deep recursion
+    }
+
+    // Search backwards - more likely to find recent values
+    // Most circular references are to recently visited objects (better cache locality)
+    for (let idx = depth - 1; idx >= 0; idx--) {
         if (visited[idx] === value) {
             return true;
         }
@@ -101,9 +110,9 @@ function _createFormatCtx(cfg: IConfigInst): IFormatCtx {
     let formatCtx: IFormatCtx = {
         cfg: cfg,
         format: (value: any): string => {
-            let isVisited = _isVisited(value, visited);
+            let isVisited = _isVisited(value, visited, cfg.maxFormatDepth);
             if (isVisited) {
-                // Circular reference detected
+                // Circular reference detected or max depth exceeded
                 return cfg.circularMsg() || EMPTY_STRING;
             }
 

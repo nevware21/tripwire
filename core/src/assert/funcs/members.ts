@@ -61,11 +61,12 @@ function _hasSameMembers(actual: ArrayLikeOrSizedIterable<any>, expected: ArrayL
 
 /**
  * Helper function to check if two arrays have the same members with deep equality (regardless of order).
+ * @param context - The scope context for configuration.
  * @param actual - The actual array or Set.
  * @param expected - The expected array or Set.
  * @returns True if arrays have same members (regardless of order) with deep equality, false otherwise.
  */
-function _hasSameDeepMembers(actual: ArrayLikeOrSizedIterable<any>, expected: ArrayLikeOrSizedIterable<any>): boolean {
+function _hasSameDeepMembers(context: IScopeContext, actual: ArrayLikeOrSizedIterable<any>, expected: ArrayLikeOrSizedIterable<any>): boolean {
     if (_getArrayLikeOrIterableSize(actual) !== _getArrayLikeOrIterableSize(expected)) {
         return false;
     }
@@ -75,16 +76,23 @@ function _hasSameDeepMembers(actual: ArrayLikeOrSizedIterable<any>, expected: Ar
     // Create a copy of expected to track used items
     // While this will use more memory its faster than searching the expected for each actual item
     let expectedArray: any[] = arrFrom(expected);
+    // Track which indices have been matched (ES5 compatible)
+    // Avoids O(n) splice operation inside loop, improving from O(n² × m) to O(n × m)
+    let matchedIndices: boolean[] = [];
+    for (let i = 0; i < expectedArray.length; i++) {
+        matchedIndices[i] = false;
+    }
 
     _iterateForEachItem(actual, (actItem) => {
         let found = false;
-        arrForEach(expectedArray, (expItem, idx) => {
-            if (_deepEqual(actItem, expItem)) {
-                expectedArray.splice(idx, 1);
+        // Find first unmatched item that deep equals
+        for (let idx = 0; idx < expectedArray.length; idx++) {
+            if (!matchedIndices[idx] && _deepEqual(actItem, expectedArray[idx], false, context)) {
+                matchedIndices[idx] = true; // Mark as used
                 found = true;
-                return -1; // Stop iteration
+                break; // Stop searching
             }
-        });
+        }
 
         if (!found) {
             result = false;
@@ -166,7 +174,7 @@ export function sameDeepMembersFunc<R>(this: IAssertScope, expected: ArrayLikeOr
 
     // Check if arrays have the same members with deep equality
     context.eval(
-        _hasSameDeepMembers(value, expected),
+        _hasSameDeepMembers(context, value, expected),
         evalMsg || "expected {value} to have the same deeply equal members as {expected}"
     );
 
@@ -262,7 +270,7 @@ export function sameDeepOrderedMembersFunc<R>(this: IAssertScope, expected: Arra
 
     // Check if all members match in order
     _iterateForEachItem(value, (actItem, index) => {
-        if (!_deepEqual(actItem, expectedArray[index])) {
+        if (!_deepEqual(actItem, expectedArray[index], false, context)) {
             result = false;
             return -1;
         }
@@ -422,7 +430,7 @@ export function includeDeepMembersFunc<R>(this: IAssertScope, expected: ArrayLik
 
         // Search for a deep equal match in the actual value
         arrForEach(valueArray, (valItem, j) => {
-            if (_deepEqual(valItem, expItem)) {
+            if (_deepEqual(valItem, expItem, false, context)) {
                 // Remove the matched element so it can't be matched again
                 valueArray.splice(j, 1);
                 found = true;
@@ -482,7 +490,7 @@ export function includeDeepOrderedMembersFunc<R>(this: IAssertScope, expected: A
 
             // Check for match starting at this position
             arrForEach(expectedArray, (expItem, idx) => {
-                if (!_deepEqual(valueArray[lp + idx], expItem)) {
+                if (!_deepEqual(valueArray[lp + idx], expItem, false, context)) {
                     match = false;
                     return -1; // Stop iteration
                 }
@@ -585,7 +593,7 @@ export function startsWithDeepMembersFunc<R>(this: IAssertScope, expected: Array
 
         // Check if the sequence matches from the start
         arrForEach(expectedArray, (expItem, i) => {
-            if (!_deepEqual(valueArray[i], expItem)) {
+            if (!_deepEqual(valueArray[i], expItem, false, context)) {
                 result = false;
                 return -1; // Stop iteration
             }
@@ -683,7 +691,7 @@ export function endsWithDeepMembersFunc<R>(this: IAssertScope, expected: ArrayLi
         // Check if the sequence matches from the end with strict equality
         let offset = valueArray.length - expectedArray.length;
         arrForEach(expectedArray, (expItem, i) => {
-            if (!_deepEqual(valueArray[offset + i], expItem)) {
+            if (!_deepEqual(valueArray[offset + i], expItem, false, context)) {
                 result = false;
                 return -1; // Stop iteration
             }
@@ -776,7 +784,7 @@ export function deepSubsequenceFunc<R>(this: IAssertScope, expected: ArrayLikeOr
     let expectedIdx = 0;
 
     while (valueIdx < valueArray.length && expectedIdx < expectedArray.length) {
-        if (_deepEqual(valueArray[valueIdx], expectedArray[expectedIdx])) {
+        if (_deepEqual(valueArray[valueIdx], expectedArray[expectedIdx], false, context)) {
             expectedIdx++;
         }
         valueIdx++;

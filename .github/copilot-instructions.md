@@ -99,11 +99,15 @@ grunt lint lint-fix            # Lint with auto-fix
 - No non-null assertions (`!` operator) - use proper null checks
 
 ### Versioning for New Features
-- **@since tags**: Check `core/package.json` version before adding new features
-- Current version in package.json is the **last published** version
-- Use the **next minor version** for @since tags on new features
-- Example: If package.json shows `0.1.4`, use `@since 0.1.5` for new features
-- This follows semver: new features increment the minor version
+- **@since tags**: Always use the **next unreleased version** for new features being added
+- Check `core/package.json` version - this is the version **currently being developed**, not yet released
+- For features added during development of version X.Y.Z, use `@since X.Y.Z` if unreleased, or `@since X.Y.(Z+1)` if X.Y.Z is already released
+- **Key rule**: If the version in package.json is already in a release PR or tagged, increment to the next patch/minor version
+- Example scenarios:
+  - package.json shows `0.1.7` and you're working on release branch `0.1.7` → use `@since 0.1.8` for new features
+  - package.json shows `0.1.7` and there's no release PR yet → use `@since 0.1.7` for new features
+  - package.json shows `0.1.7` and main branch already has commits after 0.1.7 release → use `@since 0.1.8`
+- This follows semver: new features should use the version they'll be released in
 
 ## Testing Patterns
 
