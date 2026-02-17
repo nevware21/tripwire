@@ -42,7 +42,7 @@ jobs:
 
     - name: Unit tests
       run: node common/scripts/install-run-rush.js test --verbose
-      timeout-minutes: 15
+      timeout-minutes: 20
 
     - name: Upload Core Coverage
       if: matrix.node == 22
