@@ -6,7 +6,7 @@
  * Licensed under the MIT license.
  */
 
-import { arrForEach, arrFrom, arrIndexOf } from "@nevware21/ts-utils";
+import { arrForEach, arrFrom } from "@nevware21/ts-utils";
 import { IAssertScope } from "../interface/IAssertScope";
 import { MsgSource } from "../type/MsgSource";
 import { ArrayLikeOrSizedIterable } from "../type/ArrayLikeOrIterable";
@@ -42,18 +42,28 @@ function _hasSameMembers(actual: ArrayLikeOrSizedIterable<any>, expected: ArrayL
     let result = true;
 
     // Create a copy of expected to track used items
-    // While this will use more memory its faster than searching the expected for each actual item
     let expectedArray: any[] = arrFrom(expected);
+    let expectedLen = expectedArray.length;
+    // Track which indices have been matched (ES5 compatible)
+    // Avoids O(n) splice operation inside loop, improving from O(n²) to O(n)
+    let matchedIndices: boolean[] = [];
+    matchedIndices.length = expectedLen;
 
     _iterateForEachItem(actual, (actItem) => {
-        let idx = arrIndexOf(expectedArray, actItem);
-        if (idx === -1) {
+        let found = false;
+        // Find first unmatched item that matches
+        for (let idx = 0; idx < expectedLen; idx++) {
+            if (!matchedIndices[idx] && expectedArray[idx] === actItem) {
+                matchedIndices[idx] = true; // Mark as used
+                found = true;
+                break; // Stop searching
+            }
+        }
+
+        if (!found) {
             result = false;
             return -1;
         }
-
-        // Remove the matched item so duplicates are handled correctly
-        expectedArray.splice(idx, 1);
     });
 
     return result;
@@ -76,17 +86,16 @@ function _hasSameDeepMembers(context: IScopeContext, actual: ArrayLikeOrSizedIte
     // Create a copy of expected to track used items
     // While this will use more memory its faster than searching the expected for each actual item
     let expectedArray: any[] = arrFrom(expected);
+    let expectedLen = expectedArray.length;
     // Track which indices have been matched (ES5 compatible)
     // Avoids O(n) splice operation inside loop, improving from O(n² × m) to O(n × m)
     let matchedIndices: boolean[] = [];
-    for (let i = 0; i < expectedArray.length; i++) {
-        matchedIndices[i] = false;
-    }
+    matchedIndices.length = expectedLen;
 
     _iterateForEachItem(actual, (actItem) => {
         let found = false;
         // Find first unmatched item that deep equals
-        for (let idx = 0; idx < expectedArray.length; idx++) {
+        for (let idx = 0; idx < expectedLen; idx++) {
             if (!matchedIndices[idx] && _deepEqual(actItem, expectedArray[idx], false, context)) {
                 matchedIndices[idx] = true; // Mark as used
                 found = true;
@@ -316,16 +325,26 @@ export function includeMembersFunc<R>(this: IAssertScope, expected: ArrayLikeOrS
 
     let result = true;
     let valueArray = arrFrom(value);
+    let valueLen = valueArray.length;
+    // Track which indices have been matched (ES5 compatible)
+    let matchedIndices: boolean[] = [];
+    matchedIndices.length = valueLen;
 
     _iterateForEachItem(expected, (expItem) => {
-        let index = arrIndexOf(valueArray, expItem);
-        if (index === -1) {
+        let found = false;
+        // Find first unmatched item that matches
+        for (let idx = 0; idx < valueLen; idx++) {
+            if (!matchedIndices[idx] && valueArray[idx] === expItem) {
+                matchedIndices[idx] = true; // Mark as used
+                found = true;
+                break; // Stop searching
+            }
+        }
+
+        if (!found) {
             result = false;
             return -1;
         }
-
-        // Remove the matched element so it can't be matched again
-        valueArray.splice(index, 1);
     });
 
     context.eval(result, evalMsg || "expected {value} to include members {expected}");
@@ -369,9 +388,11 @@ export function includeOrderedMembersFunc<R>(this: IAssertScope, expected: Array
     let result = false;
     let valueArray = arrFrom(value);
     let expectedArray: any[] = arrFrom(expected);
+    let valueLen = valueArray.length;
+    let expectedLen = expectedArray.length;
 
     // Check if all expected members are present (with strict equality)
-    for (let lp = 0; lp <= valueArray.length - expectedArray.length; lp++) {
+    for (let lp = 0; lp <= valueLen - expectedLen; lp++) {
         if (valueArray[lp] === expectedArray[0]) {
             let match = true;
 
@@ -424,19 +445,22 @@ export function includeDeepMembersFunc<R>(this: IAssertScope, expected: ArrayLik
     let result = true;
     let valueArray = arrFrom(value);
     let expectedArray: any[] = arrFrom(expected);
+    let valueLen = valueArray.length;
+    // Track which indices have been matched (ES5 compatible)
+    let matchedIndices: boolean[] = [];
+    matchedIndices.length = valueLen;
 
     arrForEach(expectedArray, (expItem) => {
         let found = false;
 
         // Search for a deep equal match in the actual value
-        arrForEach(valueArray, (valItem, j) => {
-            if (_deepEqual(valItem, expItem, false, context)) {
-                // Remove the matched element so it can't be matched again
-                valueArray.splice(j, 1);
+        for (let idx = 0; idx < valueLen; idx++) {
+            if (!matchedIndices[idx] && _deepEqual(valueArray[idx], expItem, false, context)) {
+                matchedIndices[idx] = true; // Mark as used
                 found = true;
-                return -1; // Stop iteration
+                break; // Stop searching
             }
-        });
+        }
 
         if (!found) {
             result = false;
@@ -479,13 +503,14 @@ export function includeDeepOrderedMembersFunc<R>(this: IAssertScope, expected: A
     if (_getArrayLikeOrIterableSize(expected) > 0) {
         let valueArray = arrFrom(value);
         let expectedArray: any[] = arrFrom(expected);
+        let valueLen = valueArray.length;
         let expLen = expectedArray.length;
 
         // Assume no match until found
         result = false;
 
         // Check if all expected members are present (with deep equality)
-        for (let lp = 0; lp <= valueArray.length - expLen; lp++) {
+        for (let lp = 0; lp <= valueLen - expLen; lp++) {
             let match = true;
 
             // Check for match starting at this position
@@ -635,12 +660,14 @@ export function endsWithMembersFunc<R>(this: IAssertScope, expected: ArrayLikeOr
     if (_getArrayLikeOrIterableSize(value) >= _getArrayLikeOrIterableSize(expected)) {
         let valueArray = arrFrom(value);
         let expectedArray: any[] = arrFrom(expected);
+        let valueLen = valueArray.length;
+        let expectedLen = expectedArray.length;
 
         // Assume a match until proven otherwise
         result = true;
 
         // Check if the sequence matches from the end with strict equality
-        let offset = valueArray.length - expectedArray.length;
+        let offset = valueLen - expectedLen;
         arrForEach(expectedArray, (expItem, i) => {
             if (valueArray[offset + i] !== expItem) {
                 result = false;
@@ -732,10 +759,12 @@ export function subsequenceFunc<R>(this: IAssertScope, expected: ArrayLikeOrSize
     // Check if all expected members appear in order (non-consecutive)
     let valueArray = arrFrom(value);
     let expectedArray = arrFrom(expected);
+    let valueLen = valueArray.length;
+    let expectedLen = expectedArray.length;
     let valueIdx = 0;
     let expectedIdx = 0;
 
-    while (valueIdx < valueArray.length && expectedIdx < expectedArray.length) {
+    while (valueIdx < valueLen && expectedIdx < expectedLen) {
         if (valueArray[valueIdx] === expectedArray[expectedIdx]) {
             expectedIdx++;
         }
@@ -780,10 +809,12 @@ export function deepSubsequenceFunc<R>(this: IAssertScope, expected: ArrayLikeOr
     // Check if all expected members appear in order (non-consecutive) with deep equality
     let valueArray = arrFrom(value);
     let expectedArray = arrFrom(expected);
+    let valueLen = valueArray.length;
+    let expectedLen = expectedArray.length;
     let valueIdx = 0;
     let expectedIdx = 0;
 
-    while (valueIdx < valueArray.length && expectedIdx < expectedArray.length) {
+    while (valueIdx < valueLen && expectedIdx < expectedLen) {
         if (_deepEqual(valueArray[valueIdx], expectedArray[expectedIdx], false, context)) {
             expectedIdx++;
         }

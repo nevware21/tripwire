@@ -157,7 +157,7 @@ describe("assert.hasOwnProperty", () => {
         const obj = Object.create({ a: 1 });
         checkError(() => {
             assert.hasOwnProperty(obj, "a");
-        }, /expected \[Object.*\] to have its own \"a\" property/);
+        }, /expected \[{a:.*\] to have its own \"a\" property/);
 
         expect(() => assert.hasOwnProperty(obj, "a")).toThrow(AssertionFailure);
     });

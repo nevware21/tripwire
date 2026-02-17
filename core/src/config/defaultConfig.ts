@@ -28,11 +28,12 @@ export const DEFAULT_CONFIG: Readonly<IConfig> = (/* $__PURE__ */objFreeze({
     defFatalMsg: "fatal assertion failure",
     format: {
         finalize: false,
-        finalizeFn: undefined
+        finalizeFn: undefined,
+        maxProps: 8,
+        maxFormatDepth: 50
     },
     circularMsg: () => cyan("[<Circular>]"),
     showDiff: true,
-    maxFormatDepth: 50,
     maxCompareDepth: 100,
     maxCompareCheckDepth: 50
 }));

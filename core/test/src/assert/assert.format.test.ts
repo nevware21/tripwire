@@ -15,14 +15,8 @@ import { isString } from "@nevware21/ts-utils";
 
 describe("assert format options", function () {
     describe("finalize", function () {
-        let originalFormat: any;
-
-        beforeEach(function () {
-            originalFormat = assertConfig.format;
-        });
-
         afterEach(function () {
-            assertConfig.format = originalFormat;
+            assertConfig.$ops.reset();
         });
 
         it("should escape ANSI codes when finalize is true", function () {
@@ -352,15 +346,8 @@ describe("assert format options", function () {
     });
 
     describe("custom finalizeFn", function () {
-        let originalFormat: any;
-
-        beforeEach(function () {
-            assertConfig.$ops.reset();
-            originalFormat = assertConfig.format;
-        });
-
         afterEach(function () {
-            assertConfig.format = originalFormat;
+            assertConfig.$ops.reset();
         });
 
         it("should use custom finalizeFn when finalize is true", function () {

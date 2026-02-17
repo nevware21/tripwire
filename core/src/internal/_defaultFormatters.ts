@@ -7,7 +7,12 @@
  */
 
 import { eFormatResult, IFormatCtx, IFormattedValue, IFormatter } from "../interface/IFormatter";
-import { arrForEach, arrIndexOf, asString, dumpObj, isArray, isError, isFunction, isMapLike, isPlainObject, isPrimitive, isRegExp, isSetLike, isStrictNullOrUndefined, isString, isSymbol, iterForOf, objForEachKey, objGetOwnPropertySymbols, objGetPrototypeOf, strIndexOf } from "@nevware21/ts-utils";
+import {
+    arrForEach, asString, dumpObj, isArray, isDate, isError, isFunction, isMapLike, isPlainObject,
+    isPrimitive, isRegExp, isSetLike, isStrictNullOrUndefined, isString, isSymbol, iterForOf,
+    objCreate,
+    objForEachKey, objGetOwnPropertySymbols, objGetPrototypeOf, strIndexOf
+} from "@nevware21/ts-utils";
 import { EMPTY_STRING } from "../assert/internal/const";
 
 /**
@@ -20,22 +25,30 @@ const _defaultArrayFormatter: IFormatter = {
     value: (ctx: IFormatCtx, value: any) => {
         let result: IFormattedValue;
         if (isArray(value)) {
-            let resultStr = "[";
             if (value && value.length > 0) {
+                let maxProps = ctx.cfg.format.maxProps;
+                let parts: string[] = [];
                 try {
                     arrForEach(value, (item, index) => {
-                        resultStr += (index > 0 ? "," : EMPTY_STRING) + ctx.format(item);
+                        if (index >= maxProps) {
+                            parts.push("...");
+                            return -1;  // Break from arrForEach
+                        }
+                        parts.push(ctx.format(item));
                     });
                 } catch (e) {
-                    resultStr += "...";
+                    parts.push("...");
                 }
+                result = {
+                    res: eFormatResult.Ok,
+                    val: "[" + parts.join(",") + "]"
+                };
+            } else {
+                result = {
+                    res: eFormatResult.Ok,
+                    val: "[]"
+                };
             }
-
-            resultStr += "]";
-            result = {
-                res: eFormatResult.Ok,
-                val: resultStr
-            };
         }
 
         return result;
@@ -110,25 +123,30 @@ const _defaultPlainObjectFormatter: IFormatter = {
     value: (ctx: IFormatCtx, value: any) => {
         let result: IFormattedValue;
         if (isPlainObject(value)) {
-            let theValue = "{";
+            let parts: string[] = [];
             let idx = 0;
+            let maxProps = ctx.cfg.format.maxProps;
+
             arrForEach(_getObjKeys(value), (key) => {
+                if (idx >= maxProps) {
+                    parts.push("...");
+                    return -1;  // Break from arrForEach
+                }
+
                 let formattedValue = ctx.format(value[key]);
 
                 if (isSymbol(key)) {
-                    theValue += (idx > 0 ? "," : EMPTY_STRING) + "[" + asString(key) + "]:" + formattedValue;
+                    parts.push("[" + asString(key) + "]:" + formattedValue);
                 } else {
-                    theValue += (idx > 0 ? "," : EMPTY_STRING) + asString(key) + ":" + formattedValue;
+                    parts.push(asString(key) + ":" + formattedValue);
                 }
 
                 idx++;
             });
 
-            theValue += "}";
-
             result = {
                 res: eFormatResult.Ok,
-                val: theValue
+                val: "{" + parts.join(",") + "}"
             };
         }
 
@@ -202,22 +220,25 @@ const _defaultSetFormatter: IFormatter = {
     value: (ctx: IFormatCtx, value: any) => {
         let result: IFormattedValue;
         if (value && isSetLike(value)) {
-            let resultStr = "Set:{";
-            let first = true;
+            let parts: string[] = [];
+            let idx = 0;
+            let maxProps = ctx.cfg.format.maxProps;
             try {
                 iterForOf(value, (item: any) => {
-                    resultStr += (first ? EMPTY_STRING : ",") + ctx.format(item);
-                    first = false;
+                    if (idx >= maxProps) {
+                        parts.push("...");
+                        return -1;  // Break from iterForOf
+                    }
+                    parts.push(ctx.format(item));
+                    idx++;
                 });
             } catch (e) {
-                resultStr += "...";
+                parts.push("...");
             }
-
-            resultStr += "}";
 
             result = {
                 res: eFormatResult.Ok,
-                val: resultStr
+                val: "Set:{" + parts.join(",") + "}"
             };
         }
 
@@ -235,27 +256,31 @@ const _defaultMapFormatter: IFormatter = {
     value: (ctx: IFormatCtx, value: any) => {
         let result: IFormattedValue;
         if (isMapLike(value)) {
-            let theValue = "Map:{";
+            let parts: string[] = [];
             let idx = 0;
+            let maxProps = ctx.cfg.format.maxProps;
             iterForOf(value.keys(), (key: any) => {
+                if (idx >= maxProps) {
+                    parts.push("...");
+                    return -1;  // Break from iterForOf
+                }
+
                 let formattedValue = ctx.format(value.get(key));
 
                 if (isSymbol(key)) {
-                    theValue += (idx > 0 ? "," : EMPTY_STRING) + "[" + asString(key) + "]:" + formattedValue;
+                    parts.push("[" + asString(key) + "]:" + formattedValue);
                 } else if (isString(key) && strIndexOf(key, " ") >= 0) {
-                    theValue += (idx > 0 ? "," : EMPTY_STRING) + "\"" + key + "\":" + formattedValue;
+                    parts.push("\"" + key + "\":" + formattedValue);
                 } else {
-                    theValue += (idx > 0 ? "," : EMPTY_STRING) + asString(key) + ":" + formattedValue;
+                    parts.push(asString(key) + ":" + formattedValue);
                 }
 
                 idx++;
             });
 
-            theValue += "}";
-
             result = {
                 res: eFormatResult.Ok,
-                val: theValue
+                val: "Map:{" + parts.join(",") + "}"
             };
         }
 
@@ -263,6 +288,48 @@ const _defaultMapFormatter: IFormatter = {
     }
 };
 
+
+/**
+ * @internal
+ * @ignore
+ * Helper function to attempt toString formatting
+ * Returns the toString result if valid, null otherwise
+ */
+function _tryToString(value: any): string | null {
+    if (value && isFunction(value.toString)) {
+        try {
+            let str = value.toString();
+            // Avoid default Object.prototype.toString like "[object Object]"
+            if (str && str !== "[object Object]" && strIndexOf(str, "[object ") !== 0) {
+                return str;
+            }
+        } catch (e) {
+            // Ignore errors
+        }
+    }
+    return null;
+}
+
+/**
+ * @internal
+ * @ignore
+ * Default formatter for Date objects
+ */
+const _defaultDateFormatter: IFormatter = {
+    name: "Date",
+    value: (ctx: IFormatCtx, value: any) => {
+        let result: IFormattedValue;
+        if (isDate(value)) {
+            // Use toJSON() for standard ISO format
+            let dateStr = value.toJSON ? value.toJSON() : value.toISOString();
+            result = {
+                res: eFormatResult.Ok,
+                val: "[Date:\"" + dateStr + "\"]"
+            };
+        }
+        return result;
+    }
+};
 
 /**
  * @internal
@@ -276,10 +343,39 @@ const _defaultConstructorFormatter: IFormatter = {
 
         try {
             if (value && ("constructor" in value && value.constructor && value.constructor.name)) {
-                result = {
-                    res: eFormatResult.Ok,
-                    val: "[" + value.constructor.name + ":" + (JSON.stringify(value) || EMPTY_STRING).replace(/"(\w+)"\s*:\s{0,1}/g, "$1:") + "]"
-                };
+                // Build simple representation without expensive JSON.stringify
+                let parts: string[] = [];
+                let propCount = 0;
+                let maxProps = ctx.cfg.format.maxProps;
+
+                for (let key in value) {
+                    if (propCount >= maxProps) {
+                        parts.push("...");
+                        break;
+                    }
+                    parts.push(key + ":" + ctx.format(value[key]));
+                    propCount++;
+                }
+
+                // If no enumerable properties found, try toString before showing empty object
+                if (propCount === 0) {
+                    let toStringResult = _tryToString(value);
+                    if (toStringResult) {
+                        let prefix = value.constructor.name === "Object" ? EMPTY_STRING : value.constructor.name + ":";
+                        result = {
+                            res: eFormatResult.Ok,
+                            val: "[" + prefix + toStringResult + "]"
+                        };
+                    }
+                }
+
+                if (!result) {
+                    let prefix = value.constructor.name === "Object" ? EMPTY_STRING : value.constructor.name + ":";
+                    result = {
+                        res: eFormatResult.Ok,
+                        val: "[" + prefix + "{" + parts.join(",") + "}]"
+                    };
+                }
             }
         } catch (e) {
             // Ignore any errors that occur during formatting
@@ -288,9 +384,11 @@ const _defaultConstructorFormatter: IFormatter = {
         if (!result) {
             try {
                 if (value && ("name" in value && value.constructor && value.constructor.name)) {
+                    // Try toString first, then simple fallback
+                    let toStringResult = _tryToString(value);
                     result = {
                         res: eFormatResult.Ok,
-                        val: "[" + value.name + ":" + (JSON.stringify(value) || EMPTY_STRING).replace(/"(\w+)"\s*:\s{0,1}/g, "$1:") + "]"
+                        val: "[" + value.name + (toStringResult ? ":" + toStringResult : EMPTY_STRING) + "]"
                     };
                 }
             } catch (e) {
@@ -333,7 +431,13 @@ const _defaultFallbackFormatter: IFormatter = {
         let actualValue = value;
 
         if (!isPrimitive(actualValue)) {
-            actualValue = dumpObj(actualValue);
+            // Try toString first before falling back to dumpObj
+            let toStringResult = _tryToString(actualValue);
+            if (toStringResult) {
+                actualValue = toStringResult;
+            } else {
+                actualValue = dumpObj(actualValue);
+            }
         }
 
         return {
@@ -359,6 +463,7 @@ export const _defaultFormatters: IFormatter[] = [
     _defaultFunctionFormatter,
     _defaultSetFormatter,
     _defaultMapFormatter,
+    _defaultDateFormatter,
     _defaultConstructorFormatter,
     _defaultToStringFormatter,
     _defaultFallbackFormatter
@@ -367,19 +472,31 @@ export const _defaultFormatters: IFormatter[] = [
 
 function _getObjKeys<T>(target: T): (keyof T)[] {
     let keys: any[] = [];
+    let seenKeys: any = objCreate(null);  // Hash map for O(1) lookups, no prototype to avoid collisions
+    let seenSymbols: any[] = [];  // Symbols can't be object keys, keep array
     let currentObj = target;
 
     while (!isStrictNullOrUndefined(currentObj)) {
 
         objForEachKey(currentObj, (key: any) => {
-            if (arrIndexOf(keys, key) === -1) {
+            if (!seenKeys[key]) {  // O(1) lookup - much faster than arrIndexOf
+                seenKeys[key] = true;
                 keys.push(key);
             }
         });
 
         let symbols = objGetOwnPropertySymbols(currentObj);
         arrForEach(symbols, (symbol) => {
-            if (arrIndexOf(keys, symbol) === -1) {
+            // Symbols need linear search, but typically very few symbols
+            let found = false;
+            for (let i = 0; i < seenSymbols.length; i++) {
+                if (seenSymbols[i] === symbol) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                seenSymbols.push(symbol);
                 keys.push(symbol);
             }
         });

@@ -82,7 +82,8 @@ function _getTokenValue(context: IScopeContext, details: any, token: string, opN
         // Find the closing parenthesis, there may be nested ones so we need to track them
         let openParens = 1;
         let lp = idx + 1;
-        while (openParens > 0 && lp < token.length) {
+        let tokenLen = token.length;
+        while (openParens > 0 && lp < tokenLen) {
             if (token[lp] == "(") {
                 openParens++;
             } else if (token[lp] == ")") {

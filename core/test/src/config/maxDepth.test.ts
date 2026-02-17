@@ -9,36 +9,23 @@
 import { assert, assertConfig, expect } from "../../../src/index";
 
 describe("Config max depth limits", () => {
-    let originalMaxFormatDepth: number;
-    let originalMaxCompareDepth: number;
-    let originalMaxCompareCheckDepth: number;
-
-    beforeEach(() => {
-        // Save original config values
-        originalMaxFormatDepth = assertConfig.maxFormatDepth;
-        originalMaxCompareDepth = assertConfig.maxCompareDepth;
-        originalMaxCompareCheckDepth = assertConfig.maxCompareCheckDepth;
-    });
-
     afterEach(() => {
-        // Restore original config values
-        assertConfig.maxFormatDepth = originalMaxFormatDepth;
-        assertConfig.maxCompareDepth = originalMaxCompareDepth;
-        assertConfig.maxCompareCheckDepth = originalMaxCompareCheckDepth;
+        // Reset to default config values
+        assertConfig.$ops.reset();
     });
 
     describe("maxFormatDepth", () => {
         it("should use default value of 50", () => {
-            assert.equal(assertConfig.maxFormatDepth, 50);
+            assert.equal(assertConfig.format.maxFormatDepth, 50);
         });
 
         it("should allow custom maxFormatDepth to be set", () => {
-            assertConfig.maxFormatDepth = 25;
-            assert.equal(assertConfig.maxFormatDepth, 25);
+            assertConfig.format.maxFormatDepth = 25;
+            assert.equal(assertConfig.format.maxFormatDepth, 25);
         });
 
         it("should detect deeply nested object as circular when depth exceeds maxFormatDepth", () => {
-            assertConfig.maxFormatDepth = 5;
+            assertConfig.format.maxFormatDepth = 5;
 
             // Create deeply nested object
             let obj: any = {};
@@ -106,11 +93,11 @@ describe("Config max depth limits", () => {
 
     describe("config integration", () => {
         it("should allow all depth limits to be configured together", () => {
-            assertConfig.maxFormatDepth = 30;
+            assertConfig.format.maxFormatDepth = 30;
             assertConfig.maxCompareDepth = 80;
             assertConfig.maxCompareCheckDepth = 40;
 
-            assert.equal(assertConfig.maxFormatDepth, 30);
+            assert.equal(assertConfig.format.maxFormatDepth, 30);
             assert.equal(assertConfig.maxCompareDepth, 80);
             assert.equal(assertConfig.maxCompareCheckDepth, 40);
         });
@@ -122,7 +109,9 @@ describe("Config max depth limits", () => {
             // Use custom config for this specific assertion
             expect(obj1, "should match", {
                 maxCompareDepth: 200,
-                maxFormatDepth: 100
+                format: {
+                    maxFormatDepth: 100
+                }
             }).to.deep.equal(obj2);
         });
     });

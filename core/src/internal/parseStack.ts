@@ -43,10 +43,11 @@ export function parseStack(stack: string | undefined): IParsedStack {
     function _parseStackDetail() {
         if (!isParsed) {
             let lines = isString(stack) ? stack.split("\n") : [];
+            let linesLen = lines.length;
             let idx = 0;
             let startLine = -1;
             let lastLine = -1;
-            while (idx < lines.length) {
+            while (idx < linesLen) {
                 let line = lines[idx];
                 if (rIsStackDetailLine.test(line)) {
                     if (!theMessage) {
