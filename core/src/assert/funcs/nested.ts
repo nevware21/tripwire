@@ -17,8 +17,9 @@ export function _parseNestedPath(value: string): string[] {
     let tokens: string[] = [];
     let inEscape = false;
     let lp = 0;
+    let valueLen = value ? value.length : 0;
 
-    while (value && lp < value.length) {
+    while (value && lp < valueLen) {
         let ch = value.charAt(lp++);
 
         if (!inEscape) {
@@ -28,6 +29,7 @@ export function _parseNestedPath(value: string): string[] {
                 // Dot indicates a new token
                 tokens.push(value.substring(0, lp-1));
                 value = value.substring(lp);
+                valueLen = value.length;
                 lp = 0;
             } else if (ch === "[") {
                 // Array indexer
@@ -39,13 +41,14 @@ export function _parseNestedPath(value: string): string[] {
                     }
 
                     tokens.push(indexer);
-                    if (value.length > endIdx + 1 && value[endIdx + 1] === ".") {
+                    if (valueLen > endIdx + 1 && value[endIdx + 1] === ".") {
                         value = value.substring(endIdx + 2);
                     } else {
                         value = value.substring(endIdx + 1);
                     }
 
-                    if (value.length === 0) {
+                    valueLen = value.length;
+                    if (valueLen === 0) {
                         value = null;
                     }
 
@@ -54,8 +57,17 @@ export function _parseNestedPath(value: string): string[] {
             }
         } else {
             inEscape = false;
-            // remove the escape character
-            value = value.substring(0, lp-2) + ch + value.substring(lp);
+            // remove the escape character - build new string efficiently
+            let parts: string[] = [];
+            if (lp > 2) {
+                parts.push(value.substring(0, lp-2));
+            }
+            parts.push(ch);
+            if (lp < valueLen) {
+                parts.push(value.substring(lp));
+            }
+            value = parts.join("");
+            valueLen = value.length;
         }
     }
 
@@ -78,10 +90,11 @@ function _getNestedProperty(target: any, path: string): { value: any; exists: bo
 
     if (!isStrictNullOrUndefined(target)) {
         let tokens = _parseNestedPath(asString(path));
+        let tokensLen = tokens.length;
         let lp = 0;
 
         result = true;
-        while (result && lp < tokens.length) {
+        while (result && lp < tokensLen) {
             let token = tokens[lp++];
 
             if (isStrictNullOrUndefined(current) || (!isObject(current) && !isArray(current)) || !(token in current)) {

@@ -19,16 +19,9 @@ import { expect } from "../../../../src/assert/expect";
 import { isArray } from "@nevware21/ts-utils";
 
 describe("createExprAdapter", () => {
-    let originalIsVerbose: boolean | undefined;
-
-    before(() => {
-        // Save original isVerbose setting
-        originalIsVerbose = assertConfig.isVerbose;
-    });
-
     after(() => {
-        // Restore original isVerbose setting
-        assertConfig.isVerbose = originalIsVerbose;
+        // Reset to default config values
+        assertConfig.$ops.reset();
     });
     describe("scope function call count", () => {
         beforeEach(() => {

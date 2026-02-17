@@ -17,16 +17,9 @@ import { IAssertScope } from "../../../../src/assert/interface/IAssertScope";
 import { assertConfig } from "../../../../src/config/assertConfig";
 
 describe("createNotAdapter", () => {
-    let originalIsVerbose: boolean | undefined;
-
-    before(() => {
-        // Save original isVerbose setting
-        originalIsVerbose = assertConfig.isVerbose;
-    });
-
     after(() => {
-        // Restore original isVerbose setting
-        assertConfig.isVerbose = originalIsVerbose;
+        // Reset to default config values
+        assertConfig.$ops.reset();
     });
 
     describe("basic functionality", () => {

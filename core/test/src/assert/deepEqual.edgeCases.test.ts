@@ -10,17 +10,9 @@ import { assert, assertConfig } from "../../../src/index";
 import { checkError } from "../support/checkError";
 
 describe("deepEqual edge cases and depth limits", () => {
-    let originalMaxCompareDepth: number;
-    let originalMaxCompareCheckDepth: number;
-
-    beforeEach(() => {
-        originalMaxCompareDepth = assertConfig.maxCompareDepth;
-        originalMaxCompareCheckDepth = assertConfig.maxCompareCheckDepth;
-    });
-
     afterEach(() => {
-        assertConfig.maxCompareDepth = originalMaxCompareDepth;
-        assertConfig.maxCompareCheckDepth = originalMaxCompareCheckDepth;
+        // Reset to default config values
+        assertConfig.$ops.reset();
     });
 
     describe("NaN handling", () => {
