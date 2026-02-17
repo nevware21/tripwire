@@ -144,7 +144,7 @@ export function deepIncludeOp<R>(scope: IAssertScope): IIncludeOp<R> {
         } else if (isArray(context.value)) {
             // Check if any item in the array deeply equals match
             arrForEach(value, (item) => {
-                if (_deepEqual(item, match)) {
+                if (_deepEqual(item, match, false, context)) {
                     found = true;
                     return -1; // break
                 }
@@ -152,7 +152,7 @@ export function deepIncludeOp<R>(scope: IAssertScope): IIncludeOp<R> {
         } else if (isMap(value)) {
             // For Maps, check if any value in the map deeply equals match
             iterForOf(value.keys(), (v: any) => {
-                if (_deepEqual(value.get(v), match)) {
+                if (_deepEqual(value.get(v), match, false, context)) {
                     found = true;
                     return -1;
                 }
@@ -160,7 +160,7 @@ export function deepIncludeOp<R>(scope: IAssertScope): IIncludeOp<R> {
         } else if (isSet(value)) {
             // For Sets, iterate and check deep equality for each item
             iterForOf(value, (v: any) => {
-                if (_deepEqual(v, match)) {
+                if (_deepEqual(v, match, false, context)) {
                     found = true;
                     return -1;
                 }
@@ -181,7 +181,7 @@ export function deepIncludeOp<R>(scope: IAssertScope): IIncludeOp<R> {
                     found = false;
                     return -1; // break
                 }
-                if (!_deepEqual(value[key], match[key])) {
+                if (!_deepEqual(value[key], match[key], false, context)) {
                     found = false;
                     return -1; // break
                 }
@@ -312,7 +312,7 @@ export function deepOwnIncludeOp<R>(scope: IAssertScope): IIncludeOp<R> {
         } else if (isArray(context.value)) {
             // Check if any item in the array deeply equals match
             arrForEach(value, (item) => {
-                if (_deepEqual(item, match)) {
+                if (_deepEqual(item, match, false, context)) {
                     found = true;
                     return -1; // break
                 }
@@ -320,7 +320,7 @@ export function deepOwnIncludeOp<R>(scope: IAssertScope): IIncludeOp<R> {
         } else if (isMap(value)) {
             // For Maps, check if any value in the map deeply equals match
             iterForOf(value.keys(), (v: any) => {
-                if (_deepEqual(value.get(v), match)) {
+                if (_deepEqual(value.get(v), match, false, context)) {
                     found = true;
                     return -1;
                 }
@@ -328,7 +328,7 @@ export function deepOwnIncludeOp<R>(scope: IAssertScope): IIncludeOp<R> {
         } else if (isSet(value) || (value && isFunction(value.has))) {
             // For Sets, deeply compare each entry against match
             iterForOf(value, (entry: any) => {
-                if (_deepEqual(entry, match)) {
+                if (_deepEqual(entry, match, false, context)) {
                     found = true;
                     return -1; // break
                 }
@@ -339,7 +339,7 @@ export function deepOwnIncludeOp<R>(scope: IAssertScope): IIncludeOp<R> {
             found = true;
 
             arrForEach(matchKeys, (key) => {
-                if (!objHasOwnProperty(value, key) || !_deepEqual(value[key], match[key])) {
+                if (!objHasOwnProperty(value, key) || !_deepEqual(value[key], match[key], false, context)) {
                     found = false;
                     return -1; // break
                 }

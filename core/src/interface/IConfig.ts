@@ -120,4 +120,28 @@ export interface IConfig {
      * @since 0.1.5
      */
     showDiff?: boolean;
+
+    /**
+     * Maximum depth for formatting nested values before treating as circular reference.
+     * This prevents pathological cases with deeply nested structures.
+     * @default 50
+     * @since 0.1.8
+     */
+    maxFormatDepth?: number;
+
+    /**
+     * Maximum depth for deep equality comparisons before throwing a fatal error.
+     * This prevents stack overflow with extremely deep object structures.
+     * @default 100
+     * @since 0.1.8
+     */
+    maxCompareDepth?: number;
+
+    /**
+     * Maximum number of recently visited items to check for circular references during deep comparisons.
+     * Limiting this prevents O(n²) performance degradation in deeply nested structures.
+     * @default 50
+     * @since 0.1.8
+     */
+    maxCompareCheckDepth?: number;
 }

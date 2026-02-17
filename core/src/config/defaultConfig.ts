@@ -31,5 +31,8 @@ export const DEFAULT_CONFIG: Readonly<IConfig> = (/* $__PURE__ */objFreeze({
         finalizeFn: undefined
     },
     circularMsg: () => cyan("[<Circular>]"),
-    showDiff: true
+    showDiff: true,
+    maxFormatDepth: 50,
+    maxCompareDepth: 100,
+    maxCompareCheckDepth: 50
 }));

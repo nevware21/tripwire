@@ -230,7 +230,7 @@ export function anyDeepKeysFunc<R>(_scope: IAssertScope): KeysFn<R> {
         let found = false;
         arrForEach(expectedKeys, (expKey) => {
             arrForEach(valueKeys, (valKey) => {
-                if (_deepEqual(valKey, expKey)) {
+                if (_deepEqual(valKey, expKey, false, context)) {
                     // Found at least one key using deep equality
                     found = true;
                     return -1;
@@ -304,7 +304,7 @@ export function allDeepKeysFunc<R>(_scope: IAssertScope): KeysFn<R> {
         arrForEach(theKeys, (expKey) => {
             let found = false;
             arrForEach(valueKeys, (valKey) => {
-                if (_deepEqual(valKey, expKey)) {
+                if (_deepEqual(valKey, expKey, false, context)) {
                     found = true;
                     return -1;
                 }

@@ -280,23 +280,31 @@ function _isVisiting<T>(value: any, options: IEqualOptions, cb: () => T): T {
     let tracking = false;
     try {
         if (!isPrimitive(value)) {
+            // Search backwards for better cache locality and faster recent object detection
+            let visiting = options.visiting;
             let visitCount = 0;
-            arrForEach(options.visiting, (visitValue) => {
-                if (_strictEquals(visitValue, value) === true) {
-                    visitCount++;
-                }
-            });
+            let depth = visiting.length;
+            let cfg = options.context.opts;
 
-            if (visitCount > 10) {
-                let errorMsg = "Unresolvable Circular reference detected for " + _formatValue(options.context.opts, options.visiting[0]) + " @ depth " + options.visiting.length + " reference count: " + visitCount;
-                if (options.context) {
-                    options.context.fatal(errorMsg);
-                } else {
-                    throw new Error(errorMsg);
+            // Hard depth limit to prevent stack overflow
+            if (depth > cfg.maxCompareDepth) {
+                options.context.fatal("Maximum comparison depth exceeded (" + cfg.maxCompareDepth + " levels)");
+            }
+
+            // Limit check to last N items for performance (prevents O(n²) in deep structures)
+            let startIdx = Math.max(0, depth - cfg.maxCompareCheckDepth);
+            for (let idx = depth - 1; idx >= startIdx; idx--) {
+                if (_strictEquals(visiting[idx], value) === true) {
+                    visitCount++;
+                    if (visitCount > 10) {
+                        // Early exit on excessive visits
+                        let errorMsg = "Unresolvable Circular reference detected for " + _formatValue(options.context.opts, visiting[0]) + " @ depth " + depth + " reference count: " + visitCount;
+                        options.context.fatal(errorMsg);
+                    }
                 }
             }
 
-            options.visiting.push(value);
+            visiting.push(value);
             tracking = true;
         }
 
@@ -543,12 +551,13 @@ function _mapKeys(values: Array<string | number | symbol>): Array<string|number>
  * @param value - The first value to compare.
  * @param expected - The second value to compare.
  * @param strict - Whether to use strict equality (default: false for loose equality).
+ * @param context - The context to use for the comparison (required for configuration access).
  * @returns True if the values are deeply equal, false otherwise.
  * @since 0.1.5
  */
-export function _deepEqual<T>(value: T, expected: T, strict: boolean = false): boolean {
+export function _deepEqual<T>(value: T, expected: T, strict: boolean, context: IScopeContext): boolean {
     let options: IEqualOptions = {
-        context: null,
+        context: context,
         strict: strict,
         matchMap: [],
         visiting: []
