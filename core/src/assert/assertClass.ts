@@ -557,8 +557,8 @@ function _createProxyFunc(theAssert: IAssertClass, assertName: string, def: IAss
         let actualValue: any;
         if (theArgs.length > 0 && numArgs > 0) {
             // Get the actual "value" from the first argument
-            actualValue = theArgs.shift();
-            scopeArgs = theArgs;
+            actualValue = theArgs[0];
+            scopeArgs = arrSlice(theArgs, 1);
         }
 
         // Create the initial scope `expect(value, initMsg)` and run any defined steps

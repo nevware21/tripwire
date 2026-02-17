@@ -6,7 +6,7 @@
  * Licensed under the MIT license.
  */
 
-import { arrForEach, arrMap, asString, isDate, isFunction, isObject, isPlainObject, isPrimitive, isSymbol, iterForOf, objGetOwnPropertyDescriptor, objGetOwnPropertySymbols, objIs, objToString, strLower } from "@nevware21/ts-utils";
+import { arrForEach, arrMap, asString, isDate, isFunction, isObject, isPlainObject, isPrimitive, isSymbol, iterForOf, objCreate, objGetOwnPropertyDescriptor, objGetOwnPropertySymbols, objIs, objToString, strLower } from "@nevware21/ts-utils";
 import { MsgSource } from "../type/MsgSource";
 import { IAssertScope } from "../interface/IAssertScope";
 import { _formatValue } from "../../internal/_formatValue";
@@ -381,13 +381,30 @@ function _matchKeys<T>(theKeys: T[]): (value: any, expected: any, options: IEqua
 
 function _getObjKeys(value: any): Array<string | number | symbol> {
     let keys: Array<string | number | symbol> = [];
+    let seenKeys: any = objCreate(null);  // Hash map for O(1) lookups
+    let seenSymbols: any[] = [];  // Array for symbols (typically very few)
+
     for (let key in value) {
-        keys.push(key);
+        if (!seenKeys[key]) {
+            seenKeys[key] = true;
+            keys.push(key);
+        }
     }
 
     arrForEach(objGetOwnPropertySymbols(value), (sym) => {
         if (objGetOwnPropertyDescriptor(value, sym).enumerable) {
-            keys.push(sym);
+            // Linear search for symbols (typically very few, so acceptable)
+            let found = false;
+            for (let i = 0; i < seenSymbols.length; i++) {
+                if (seenSymbols[i] === sym) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                seenSymbols.push(sym);
+                keys.push(sym);
+            }
         }
     });
 

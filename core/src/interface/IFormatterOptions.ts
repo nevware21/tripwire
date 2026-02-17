@@ -118,4 +118,48 @@ export interface IFormatterOptions {
      * ```
      */
     finalizeFn?: (value: string) => string;
+
+    /**
+     * Maximum number of items/properties to display when formatting collections and objects.
+     * Applies to arrays, objects, Maps, Sets, and objects with constructors.
+     * Limits the output to prevent excessive formatting time for large collections.
+     * When exceeded, additional items are indicated with ",...".
+     *
+     * @default 8
+     * @since 0.1.8
+     * @example
+     * ```typescript
+     * // Show up to 10 items/properties
+     * assertConfig.format = {
+     *     maxProps: 10
+     * };
+     *
+     * // Show only 3 items/properties (more compact output)
+     * assertConfig.format = {
+     *     maxProps: 3
+     * };
+     * ```
+     */
+    maxProps?: number;
+
+    /**
+     * Maximum depth for formatting nested values before treating as circular reference.
+     * This prevents pathological cases with deeply nested structures.
+     *
+     * @default 50
+     * @since 0.1.8
+     * @example
+     * ```typescript
+     * // Allow deeper nesting before treating as circular
+     * assertConfig.format = {
+     *     maxFormatDepth: 100
+     * };
+     *
+     * // More restrictive depth limit
+     * assertConfig.format = {
+     *     maxFormatDepth: 25
+     * };
+     * ```
+     */
+    maxFormatDepth?: number;
 }

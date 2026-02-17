@@ -110,7 +110,8 @@ function _createFormatCtx(cfg: IConfigInst): IFormatCtx {
     let formatCtx: IFormatCtx = {
         cfg: cfg,
         format: (value: any): string => {
-            let isVisited = _isVisited(value, visited, cfg.maxFormatDepth);
+            let maxDepth = (cfg.format && cfg.format.maxFormatDepth) || 50;
+            let isVisited = _isVisited(value, visited, maxDepth);
             if (isVisited) {
                 // Circular reference detected or max depth exceeded
                 return cfg.circularMsg() || EMPTY_STRING;

@@ -225,9 +225,9 @@ function _formatProps(ctx: IScopeContext | null, props: any): string {
                 thePath = _formatValue(ctx.opts, props.opPath);
             }
 
-            formatted += "running \"" + thePath + "\"";
+            let parts: string[] = [formatted, "running \"", thePath, "\""];
             if (props.actual) {
-                formatted += " with (" + _formatValue(ctx.opts, props.actual) + ")";
+                parts.push(" with (", _formatValue(ctx.opts, props.actual), ")");
             }
             let leftOver: any = {};
             objForEachKey(props, (key, value) => {
@@ -237,11 +237,12 @@ function _formatProps(ctx: IScopeContext | null, props: any): string {
             });
             if (objKeys(leftOver).length > 0) {
                 try {
-                    formatted += " and props: " + JSON.stringify(leftOver);
+                    parts.push(" and props: ", JSON.stringify(leftOver));
                 } catch (e) {
                     // Ignore any errors that occur when trying to stringify the properties
                 }
             }
+            formatted = parts.join("");
         } else {
             try {
                 formatted += JSON.stringify(props);
@@ -304,7 +305,7 @@ function _setStack(theError: Error, stack: string) {
 
                     theStack = stack;
                     if (innerEx.stack) {
-                        theStack += "\n\nInner Exception:\n" + _formatLines(innerEx.stack, "    ");
+                        theStack = [stack, "\n\nInner Exception:\n", _formatLines(innerEx.stack, "    ")].join("");
                     }
                 }
 
@@ -325,7 +326,7 @@ function _setMessage(theError: Error, message: string) {
                 if ((theError as any).props) {
                     let props = (theError as any).props;
                     // Get format context from global scope context if available
-                    theMessage += _formatProps(_getGlobalScopeContext(), props);
+                    theMessage = [theMessage, _formatProps(_getGlobalScopeContext(), props)].join("");
                 }
 
                 // If we have an inner exception, then we need to add the inner exception stack
@@ -334,7 +335,7 @@ function _setMessage(theError: Error, message: string) {
                     let innerEx:Error = (theError as any).innerException as Error;
 
                     if (innerEx.message) {
-                        theMessage += "\n\nCaused by: " + innerEx.message;
+                        theMessage = [theMessage, "\n\nCaused by: ", innerEx.message].join("");
                     }
                 }
 
@@ -358,9 +359,11 @@ function _captureStackTrace(theError: Error, orgStackDetail: IParsedStack, stack
     // Try to capture full stack (ie. not limited to 10 frames)
     let newStack = captureStack(theError.constructor);
     let stackDetail = _pruneStack(orgStackDetail, newStack, theError.constructor.name);
+    let stackCandidatesLen = stackCandidates ? stackCandidates.length : 0;
+    let stackIdx = 0;
 
-    while (stackCandidates && stackCandidates.length > 0) {
-        let stackFn = stackCandidates.shift();
+    while (stackIdx < stackCandidatesLen) {
+        let stackFn = stackCandidates[stackIdx++];
         try {
             let funcName = asString(stackFn.name) || (stackFn as any)["displayName"] || "anonymous";
 

@@ -402,7 +402,7 @@ describe("assert", function () {
 
         err(function () {
             assert.deepEqual(obj1, obj2);
-        }, "expected [Object:{}] to deeply equal [Object:{}]");
+        }, "expected [{tea:\"chai\"}] to deeply equal [{tea:\"black\"}]");
     });
 
     it("deepEqual (ordering)", function() {
@@ -2976,7 +2976,7 @@ describe("assert", function () {
 
             err(function(){
                 (assert as any)[isNotEmpty]((new FakeArgs()) as any);
-            }, "not expected [FakeArgs:{}] to be empty");
+            }, "not expected [FakeArgs:{length:0}] to be empty");
 
             err(function(){
                 (assert as any)[isNotEmpty]({});
