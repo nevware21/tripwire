@@ -298,7 +298,7 @@ function _isVisiting<T>(value: any, options: IEqualOptions, cb: () => T): T {
                     visitCount++;
                     if (visitCount > 10) {
                         // Early exit on excessive visits
-                        let errorMsg = "Unresolvable Circular reference detected for " + _formatValue(options.context.opts, visiting[0]) + " @ depth " + depth + " reference count: " + visitCount;
+                        let errorMsg = "Unresolvable Circular reference detected for " + _formatValue(options.context, visiting[0]) + " @ depth " + depth + " reference count: " + visitCount;
                         options.context.fatal(errorMsg);
                     }
                 }

@@ -30,7 +30,8 @@ export const DEFAULT_CONFIG: Readonly<IConfig> = (/* $__PURE__ */objFreeze({
         finalize: false,
         finalizeFn: undefined,
         maxProps: 8,
-        maxFormatDepth: 50
+        maxFormatDepth: 50,
+        maxProtoDepth: 4
     },
     circularMsg: () => cyan("[<Circular>]"),
     showDiff: true,

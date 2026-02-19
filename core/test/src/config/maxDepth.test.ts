@@ -6,7 +6,9 @@
  * Licensed under the MIT license.
  */
 
-import { assert, assertConfig, expect } from "../../../src/index";
+import { assert } from "../../../src/assert/assertClass";
+import { expect } from "../../../src/assert/expect";
+import { assertConfig } from "../../../src/config/assertConfig";
 
 describe("Config max depth limits", () => {
     afterEach(() => {

@@ -6,7 +6,10 @@
  * Licensed under the MIT license.
  */
 
-import { arrForEach, arrSlice, dumpObj, fnApply, isArray, isFunction, isNumber, isString, objDefine, objKeys, strEndsWith, strIndexOf, strLeft, strStartsWith } from "@nevware21/ts-utils";
+import {
+    arrForEach, arrSlice, dumpObj, fnApply, isArray, isFunction, isNumber, isString,
+    objDefine, objKeys, strEndsWith, strIndexOf, strLeft, strStartsWith
+} from "@nevware21/ts-utils";
 import { IAssertScope } from "../interface/IAssertScope";
 import { IScopeContext } from "../interface/IScopeContext";
 import { IScopeFn } from "../interface/IScopeFuncs";
@@ -136,7 +139,7 @@ function _runExpr(theAssert: any, scope: IAssertScope, steps: IStepDef[], scopeF
 
         if (!(step.name in scope.that)) {
             throw new AssertionError(
-                "" + idx + " Invalid step: " + step.name + " for [" + steps.map((s: any) => s.name).join("->") + "] available steps: [" + objKeys(scope.that).join(";") + "] - " + _formatValue(scope.context.opts, scope.that),
+                "" + idx + " Invalid step: " + step.name + " for [" + steps.map((s: any) => s.name).join("->") + "] available steps: [" + objKeys(scope.that).join(";") + "] - " + _formatValue(scope.context, scope.that),
                 {
                     expected: step.name,
                     actual: objKeys(scope.that).join(";")
@@ -191,7 +194,7 @@ function _processFn(scope: IAssertScope, scopeFn: IScopeFn, theArgs: any[], theR
         // The last step is a function, so we call it
         theResult = scope.exec(theResult, theArgs);
         if (scope.context.opts.isVerbose) {
-            scope.context.setOp("=>[[r:" + _formatValue(scope.context.opts, theResult) + "]]");
+            scope.context.setOp("=>[[r:" + _formatValue(scope.context, theResult) + "]]");
         }
     }
 

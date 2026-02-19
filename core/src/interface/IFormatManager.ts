@@ -51,4 +51,15 @@ export interface IFormatManager {
      * Reset the format manager to its initial state, removing all registered formatters
      */
     reset(): void;
+
+    /**
+     * Format a value using the configured formatters and format options.
+     * This is a convenience method that uses the internal formatting logic,
+     * applying all registered formatters, circular reference detection,
+     * and finalization options.
+     * @param value - The value to format
+     * @returns The formatted string representation of the value
+     * @since 0.1.8
+     */
+    format(value: any): string;
 }

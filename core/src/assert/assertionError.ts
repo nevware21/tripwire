@@ -219,15 +219,15 @@ function _formatProps(ctx: IScopeContext | null, props: any): string {
                         thePath = props.opPath.join("->") + "->" + lastOp;
                     }
                 } else {
-                    thePath = _formatValue(ctx.opts, props.opPath) + "->" + lastOp;
+                    thePath = _formatValue(ctx, props.opPath) + "->" + lastOp;
                 }
             } else {
-                thePath = _formatValue(ctx.opts, props.opPath);
+                thePath = _formatValue(ctx, props.opPath);
             }
 
             let parts: string[] = [formatted, "running \"", thePath, "\""];
             if (props.actual) {
-                parts.push(" with (", _formatValue(ctx.opts, props.actual), ")");
+                parts.push(" with (", _formatValue(ctx, props.actual), ")");
             }
             let leftOver: any = {};
             objForEachKey(props, (key, value) => {

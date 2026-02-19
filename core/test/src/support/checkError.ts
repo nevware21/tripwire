@@ -2,7 +2,7 @@
  * @nevware21/tripwire
  * https://github.com/nevware21/tripwire
  *
- * Copyright (c) 2024-2025 NevWare21 Solutions LLC
+ * Copyright (c) 2024-2026 NevWare21 Solutions LLC
  * Licensed under the MIT license.
  */
 
@@ -242,7 +242,7 @@ export function checkError(fn: () => void, match: string | RegExp | Object, chec
             expect(theStack).is.string();
             if (CHECK_INTERNAL_STACK_FRAME_REGEX.test(theStack)) {
                 let scope = preContext || getScopeContext(assert);
-                throw new AssertionError("expected error stack to not contain internal frames - " + _formatValue(scope.opts, theStack), e, null, stackStart);
+                throw new AssertionError("expected error stack to not contain internal frames - " + _formatValue(scope, theStack), e, null, stackStart);
             }
         }
 

@@ -6,7 +6,10 @@
  * Licensed under the MIT license.
  */
 
-import { arrSlice, getDeferred, ICachedValue, isArray, isNullOrUndefined, isObject, isPlainObject, objDefine, objForEachKey, objIs } from "@nevware21/ts-utils";
+import {
+    arrSlice, getDeferred, ICachedValue, isArray, isNullOrUndefined, isObject, isPlainObject,
+    objDefine, objForEachKey, objIs
+} from "@nevware21/ts-utils";
 import { IConfig } from "../interface/IConfig";
 import { IConfigInst } from "../interface/IConfigInst";
 import { IFormatter } from "../interface/IFormatter";
@@ -106,16 +109,17 @@ export function _createConfig(getDefaults: () => Readonly<IConfig>, parentFormat
     let defaultValues = getDefaults();
     let theValues = _mergeConfig({}, defaultValues, true);
     let formatMgr: IFormatManager;
+    let theConfig: IConfigInst;
 
     function _getFormatMgr(): IFormatManager {
         if (!formatMgr) {
-            formatMgr = createFormatMgr(parentFormatMgr ? parentFormatMgr.v : null);
+            formatMgr = createFormatMgr(theConfig, parentFormatMgr ? parentFormatMgr.v : null);
         }
 
         return formatMgr;
     }
 
-    let theConfig = _setupProps({}, theValues, defaultValues, true);
+    let baseConfig = _setupProps({}, theValues, defaultValues, true);
     let theConfigApi: IConfigApi<IConfigInst> = {
         formatMgr: null,
         reset: () => {
@@ -151,7 +155,18 @@ export function _createConfig(getDefaults: () => Readonly<IConfig>, parentFormat
         }
     });
 
-    return objDefine(theConfig, "$ops", {
-        g: () => theConfigApi
-    }) as IConfigInst;
+    // Make sure we don't accidentally expose the internal format manager instance and cause issues
+    // with cloning and dumping the config.
+    objDefine(theConfigApi as any, "toJSON", {
+        v: () => {
+            return theConfig.$ops.formatMgr.format(theConfigApi);
+        }
+    });
+
+    theConfig = objDefine(baseConfig as IConfigInst, "$ops", {
+        v: theConfigApi
+        // e: false
+    });
+
+    return theConfig;
 }

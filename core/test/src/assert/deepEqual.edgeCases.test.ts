@@ -6,7 +6,8 @@
  * Licensed under the MIT license.
  */
 
-import { assert, assertConfig } from "../../../src/index";
+import { assert } from "../../../src/assert/assertClass";
+import { assertConfig } from "../../../src/config/assertConfig";
 import { checkError } from "../support/checkError";
 
 describe("deepEqual edge cases and depth limits", () => {

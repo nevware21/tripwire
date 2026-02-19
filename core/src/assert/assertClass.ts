@@ -15,7 +15,9 @@ import { IPromise } from "@nevware21/ts-async";
 import { IAssertClass } from "./interface/IAssertClass";
 import { IAssertInst } from "./interface/IAssertInst";
 import { MsgSource } from "./type/MsgSource";
-import { isBooleanFunc, isFunctionFunc, isNumberFunc, isNullFunc, isObjectFunc, isPlainObjectFunc, isStrictFalseFunc, isStrictTrueFunc, isUndefinedFunc } from "./funcs/is";
+import {
+    isBooleanFunc, isFunctionFunc, isNumberFunc, isNullFunc, isObjectFunc, isPlainObjectFunc, isStrictFalseFunc, isStrictTrueFunc, isUndefinedFunc
+} from "./funcs/is";
 import { isEmptyFunc } from "./funcs/isEmpty";
 import { IAssertClassDef } from "./interface/IAssertClassDef";
 import { matchFunc } from "./funcs/match";
@@ -487,29 +489,6 @@ function _createLazyInstHandler(target: any, propName: string, argDef: IAssertCl
     });
 }
 
-function _extractInitMsg(theArgs: any[], numArgs?: number, mIdx?: number): string {
-    // Extract the message if its present to be passed to the scope context
-    let msg: string;
-    if (!isUndefined(mIdx)) {
-        if (mIdx >= 0) {
-            // Positive index
-            if (theArgs.length > mIdx) {
-                msg = theArgs[mIdx];
-                theArgs.splice(mIdx, 1);
-            }
-        } else {
-            // Negative index
-            let idx = theArgs.length + mIdx;
-            if (idx >= 0 && idx < theArgs.length && numArgs >= 0 && numArgs < theArgs.length) {
-                msg = theArgs[idx];
-                theArgs.splice(idx, 1);
-            }
-        }
-    }
-
-    return msg;
-}
-
 function _createAliasFunc(alias: string) {
     return function _aliasProxyFunc(): IAssertInst | IPromise<IAssertInst> {
         let _this = this;
@@ -522,6 +501,106 @@ function _createAliasFunc(alias: string) {
             // Restore previous alias stack start
             _aliasStackStart = currentAliasStackStart;
         }
+    };
+}
+
+/**
+ * @internal
+ * @ignore
+ * Extracts the actual value, message and scope arguments from the provided arguments based on the definition of the assertion function.
+ * @param theArgs - The arguments passed to the assertion function, this is expected to be an array of arguments.
+ * @param mIdx - The index of the message argument in the arguments array, this can be a positive index (0-based)
+ * or a negative index (from the end of the array), or undefined if no message extraction is needed.
+ * @param numArgs - The number of arguments expected by the assertion function.
+ * @returns An object containing the extracted message, actual value, and remaining arguments.
+ */
+export function _extractArgs(theArgs: any[], mIdx: number | undefined, numArgs: number): { msg?: string, act?: any, args: any[], orgArgs: any[], m?: number } {
+    const orgArgsLen = theArgs.length;
+    let initMsg: string;
+    let actualValue: any;
+    let scopeArgs: any[];
+    let startArgsIdx: number = 0;
+    let mode: number;
+
+    // -------------------------------------------------------------------------
+    // Extract the init message if its present to be passed to the scope context
+    // -------------------------------------------------------------------------
+    let initMsgIdx: number = -1;
+    if (mIdx >= 0) {
+        // Positive index
+        if (orgArgsLen > mIdx) {
+            initMsg = theArgs[mIdx];
+            initMsgIdx = mIdx;
+            if (initMsgIdx === 0) {
+                // If the message index is the first argument, then we can start extracting the actual value and scope args from the second argument
+                startArgsIdx = 1;
+            }
+        }
+    } else if (!isUndefined(mIdx)) {
+        // Negative index - replicates: if (idx >= 0 && idx < theArgs.length && numArgs >= 0 && numArgs < theArgs.length)
+        let idx = orgArgsLen + mIdx;
+        if (idx >= 0 && idx < orgArgsLen && numArgs >= 0 && numArgs < orgArgsLen) {
+            initMsg = theArgs[idx];
+            initMsgIdx = idx;
+            if (initMsgIdx === 0) {
+                // If the message index is the first argument, then we can start extracting the actual value and scope args from the second argument
+                startArgsIdx = 1;
+            }
+        }
+    }
+
+    if (numArgs > 0 && startArgsIdx < orgArgsLen && initMsgIdx !== startArgsIdx) {
+        actualValue = theArgs[startArgsIdx];
+        startArgsIdx++;
+    }
+
+    // -------------------------------------------------------------------------
+    // Extract the scope arguments, we need to simulate the array as if the message argument
+    // was removed (if it was present) to correctly extract the scope arguments
+    // -------------------------------------------------------------------------
+    if (initMsgIdx < startArgsIdx) {
+        // If we don't have a message argument, then we can just take the remaining arguments as scope arguments
+        if (startArgsIdx === 0) {
+            // Just return the original arguments as scope arguments if we don't have a message argument and we are not skipping any arguments
+            mode = 0;
+            scopeArgs = theArgs;
+        } else if (startArgsIdx < orgArgsLen) {
+            mode = 1;
+            scopeArgs = arrSlice(theArgs, startArgsIdx);
+        } else {
+            // Just return an empty array as scope arguments if we don't have any arguments after the actual value argument
+            mode = 2;
+            scopeArgs = [];
+        }
+    } else {
+        // If we have a message argument, then we need to skip it when extracting the scope arguments
+        if (initMsgIdx === orgArgsLen - 1) {
+            // If the message argument is the last argument, then we can just take the remaining arguments as scope arguments without the need to skip any arguments
+            if (startArgsIdx < orgArgsLen - 1) {
+                mode = 11;
+                scopeArgs = arrSlice(theArgs, startArgsIdx, orgArgsLen - 1);
+            } else {
+                // Just return an empty array as scope arguments if we don't have any arguments after the message argument
+                mode = 12;
+                scopeArgs = [];
+            }
+        } else {
+            mode = 10;
+            scopeArgs = [];
+            for (let i = startArgsIdx; i < orgArgsLen; i++) {
+                if (i !== initMsgIdx) {
+                    scopeArgs.push(theArgs[i]);
+                }
+            }
+        }
+    }
+
+    return {
+        msg: initMsg,
+        act: actualValue,
+        args: scopeArgs,
+        orgArgs: theArgs,
+        m: mode
     };
 }
 
@@ -546,24 +625,11 @@ function _createProxyFunc(theAssert: IAssertClass, assertName: string, def: IAss
     }
 
     return function _assertFunc(): void | IAssertInst | IPromise<IAssertInst> {
-        let theArgs = arrSlice(arguments, 0);
-        let orgArgs = arrSlice(theArgs);
-
-        // Extract the initial message from the passed arguments (if present)
-        let initMsg = _extractInitMsg(theArgs, numArgs, mIdx);
-        let scopeArgs: any[];
-
-        // Extract the actual value from the arguments
-        let actualValue: any;
-        if (theArgs.length > 0 && numArgs > 0) {
-            // Get the actual "value" from the first argument
-            actualValue = theArgs[0];
-            scopeArgs = arrSlice(theArgs, 1);
-        }
+        let theArgs = _extractArgs(arrSlice(arguments), mIdx, numArgs);
 
         // Create the initial scope `expect(value, initMsg)` and run any defined steps
         // Using either the current alias entry point or the current function
-        let newScope = createAssertScope(createContext(actualValue, initMsg, _aliasStackStart || _assertFunc, orgArgs));
+        let newScope = createAssertScope(createContext(theArgs.act, theArgs.msg, _aliasStackStart || _assertFunc, theArgs.orgArgs));
         newScope.context._$stackFn.push(_aliasStackStart || _assertFunc);
 
         newScope.context.setOp(assertName + "()");
@@ -572,7 +638,7 @@ function _createProxyFunc(theAssert: IAssertClass, assertName: string, def: IAss
             v: newScope.context
         });
 
-        let theResult = newScope.exec(scopeFn, scopeArgs || theArgs, scopeFn.name || (scopeFn as any)["displayName"] || "anonymous") as void | IAssertInst | IPromise<IAssertInst>;
+        let theResult = newScope.exec(scopeFn, theArgs.args, scopeFn.name || (scopeFn as any)["displayName"] || "anonymous") as void | IAssertInst | IPromise<IAssertInst>;
 
         return responseHandler ? responseHandler(theResult) : theResult;
     };

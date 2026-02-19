@@ -7,8 +7,8 @@
  */
 
 import {
-    arrForEach, arrIndexOf, arrSlice, fnApply, getDeferred, getLazy, getLength, isArray, isFunction, isObject, isPlainObject,
-    newSymbol,  objAssign, objDefine, objDefineProps, objForEachKey, objHasOwnProperty,
+    arrForEach, arrIndexOf, arrSlice, fnApply, getDeferred, getLazy, getLength, isArray, isFunction,
+    isObject, isPlainObject, newSymbol,  objAssign,  objDefineProps, objForEachKey, objHasOwnProperty,
     objKeys, strEndsWith, strIndexOf, strLeft, strSubstring
 } from "@nevware21/ts-utils";
 import { IScopeContext, IScopeContextOverrides } from "./interface/IScopeContext";
@@ -211,7 +211,7 @@ export function createContext<T>(value?: T, initMsg?: MsgSource, stackStart?: Fu
 
                 let result = _getTokenValue(context, details, strSubstring(message, open + 1, close));
                 if (result.has) {
-                    let prefix = strLeft(message, open) + _formatValue(context.opts, result.value);
+                    let prefix = strLeft(message, open) + _formatValue(context, result.value);
                     message = prefix + strSubstring(message, close + 1);
                     start = prefix.length;
                 } else {
@@ -355,37 +355,33 @@ export function createContext<T>(value?: T, initMsg?: MsgSource, stackStart?: Fu
         orgArgs: null
     };
 
-    objDefine(context, "_$stackFn", {
-        v: theStack,
-        e: false
-    });
-
-    // Define a non-enumerable symbol based property to get the details
-    // This is useful when debugging to be able to see the details without
-    // calling the function
-    objDefine(context, DetailsSymbol.v as any, {
-        g: () => context.getDetails(),
-        e: false
-    });
-
-    objDefine(context as any, cScopeContextTag, {
-        v: true,
-        e: false
-    });
-
     if (stackStart) {
-        context._$stackFn.push(stackStart);
+        theStack.push(stackStart);
     }
 
     return objDefineProps<IScopeContext>(context, {
+        _$stackFn: {
+            v: theStack,
+            e: false
+        },
         opts: {
             g: () => cfgInst.v
         },
         value: {
-            g: () => value
+            v: value,
+            w: false
         },
         orgArgs: {
-            g: () => orgArgs
+            v: orgArgs,
+            w: false
+        },
+        [DetailsSymbol.v]: {                    // Define a non-enumerable symbol based property to get the details
+            g: () => context.getDetails(),      // This is useful when debugging to be able to see the details without calling the function
+            e: false
+        },
+        [cScopeContextTag]: {
+            v: true,
+            e: false
         }
     });
 }
@@ -492,19 +488,6 @@ function _childContext<V>(parent: IScopeContext, value: V, overrides?: IScopeCon
         orgArgs: null
     };
 
-    // Define a non-enumerable symbol based property to get the details
-    // This is useful when debugging to be able to see the details without
-    // calling the function
-    objDefine(newContext, DetailsSymbol.v as any, {
-        g: () => newContext.getDetails(),
-        e: false
-    });
-
-    objDefine(newContext as any, cScopeContextTag, {
-        v: true,
-        e: false
-    });
-
     return objDefineProps(newContext, {
         _$stackFn: {
             v: childStack,
@@ -514,10 +497,20 @@ function _childContext<V>(parent: IScopeContext, value: V, overrides?: IScopeCon
             g: () => parent.opts
         },
         value: {
-            g: () => value
+            v: value,
+            w: false
         },
         orgArgs: {
-            g: () => parent.orgArgs
+            v: parent.orgArgs,
+            w: false
+        },
+        [DetailsSymbol.v]: {                    // Define a non-enumerable symbol based property to get the details
+            g: () => newContext.getDetails(),   // This is useful when debugging to be able to see the details without calling the function
+            e: false
+        },
+        [cScopeContextTag]: {
+            v: true,
+            e: false
         }
     });
 }
