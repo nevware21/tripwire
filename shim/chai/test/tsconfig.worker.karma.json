@@ -10,6 +10,7 @@
         "importHelpers": false,
         "noEmitHelpers": false,
         "alwaysStrict": true,
+        "declaration": false,
         "allowSyntheticDefaultImports": true,
         "removeComments": true,
         "esModuleInterop": true

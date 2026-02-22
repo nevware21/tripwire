@@ -8,10 +8,11 @@ module.exports = function (config) {
         frameworks: [ "mocha", "karma-typescript" ],
         files: [
             { pattern: "src/**/*.ts" },
-            { pattern: "test/src/**/*.ts" }
+            { pattern: "test/src/!(node|worker)/**/*.ts" } // Exclude node and worker tests
         ],
         preprocessors: {
-            "**/*.ts": [ "karma-typescript" ]
+            "src/**/*.ts": [ "karma-typescript" ],
+            "test/src/**/*.ts": [ "karma-typescript" ]
         },
         karmaTypescriptConfig: {
             tsconfig: "./test/tsconfig.browser.karma.json",
@@ -26,7 +27,9 @@ module.exports = function (config) {
                 sourceMap: true,
                 exclude: [
                     /\.(d|spec|test)\.ts$/i,
-                    /index.ts$/i
+                    /index.ts$/i,
+                    /globalErr\.ts$/i, 
+                    /\/node\_modules\//i
                 ]
             },
             reports: {

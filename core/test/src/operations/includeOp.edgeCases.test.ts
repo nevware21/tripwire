@@ -6,7 +6,7 @@
  * Licensed under the MIT license.
  */
 
-import { assert, expect } from "../../../src/index";
+import { expect } from "../../../src/index";
 import { createAssertScope } from "../../../src/assert/assertScope";
 import { includeOp, deepIncludeOp, ownIncludeOp, deepOwnIncludeOp } from "../../../src/assert/ops/includeOp";
 import { createContext } from "../../../src/assert/scopeContext";
