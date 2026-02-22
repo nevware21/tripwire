@@ -1,3 +1,53 @@
+# v0.1.8 February 21st, 2026
+
+## Performance Optimizations
+
+This release focuses heavily on performance improvements across critical code paths, with optimizations to array operations, circular reference detection, property access patterns, and test execution.
+
+- [#281](https://github.com/nevware21/tripwire/pull/281) perf: Implement critical performance optimizations for hot paths
+  - Remove objDefine getters from hot path properties (opts, value, orgArgs)
+  - Change property accessors from getter functions to direct assignments for faster access
+  - Extract and export `_extractArgs()` for cleaner argument handling
+  - Reorder formatters by probability (String, Object, Array first) to minimize checks
+  - Add configurable prototype chain depth limiting (maxProtoDepth: 4) to prevent excessive traversal
+  - Centralize formatting logic in format manager with convenience method
+- [#279](https://github.com/nevware21/tripwire/pull/279) perf: Optimize array operations, string formatting, and property access patterns
+  - Replace O(n²) splice operations with O(n) boolean array tracking in member comparison functions
+  - Eliminate shift() usage by using index-based array access and arrSlice for argument handling
+  - Replace string concatenation with array.join() pattern for error message building
+  - Add deduplication logic using hash map for O(1) lookups in object key retrieval
+  - Cache array.length and string.length values to avoid repeated property access
+  - Move maxFormatDepth from IConfig to IFormatterOptions for better organization
+  - Add maxProps option to IFormatterOptions to control formatting output size (default: 8 items/properties)
+- [#277](https://github.com/nevware21/tripwire/pull/277) perf: Add max depth limits and optimize circular reference detection
+  - Add configurable depth limits to prevent stack overflow and O(n²) degradation:
+    - maxFormatDepth (default: 50): Limits formatting recursion depth
+    - maxCompareDepth (default: 100): Limits deep equality comparison depth
+    - maxCompareCheckDepth (default: 50): Limits circular reference check iterations
+  - Refactor _deepEqual to require context parameter ensuring configuration flows through properly
+  - Optimize circular reference detection by searching backwards through visited list for better cache locality
+  - Respect maxCompareCheckDepth to prevent O(n²) behavior in deeply nested structures
+  - Update _formatValue to respect maxFormatDepth limit and treat excessive nesting as circular references
+- [#287](https://github.com/nevware21/tripwire/pull/287) perf: Fix worker test execution excessive delay
+  - Switch worker tests to mocha + karma-typescript with adapter/runner flow and suite-aware reporting
+  - Normalize browser/worker test globs and coverage exclusions to reduce noise
+  - Add environment sanity tests for browser/node/worker environments
+  - Update test scripts to remove rollup preprocessor usage and align dev deps
+
+## Test Coverage Improvements
+
+- [#278](https://github.com/nevware21/tripwire/pull/278) test: Add edge case tests for deepEqual and include operations
+  - Comprehensive test coverage for special values (NaN, symbols, BigInt, 0/-0)
+  - Complex structures (Map, Set, WeakMap, WeakSet, typed arrays)
+  - Circular references and depth limits
+  - Own vs inherited property handling
+- [#279](https://github.com/nevware21/tripwire/pull/279) test: Add comprehensive formatter and deepEqual test suites
+  - Add defaultFormatters.test.ts (370+ lines) covering Symbol, Date, Set, Map, Error, Function, RegExp formatters
+  - Add extensive deepEqual.test.ts (560+ lines) covering deep comparison edge cases
+  - Coverage increased from ~10% to 90.85% for formatters, ~45% to 89.03% for equal.ts
+
+For full details see [v0.1.7...v0.1.8](https://github.com/nevware21/tripwire/compare/v0.1.7...v0.1.8)
+
 # v0.1.7 February 13th, 2026
 
 ## Bug Fixes
