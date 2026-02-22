@@ -1,63 +1,61 @@
-process.env.CHROME_BIN = require('puppeteer').executablePath()
+process.env.CHROME_BIN = require('puppeteer').executablePath();
 
 module.exports = function (config) {
-    const typescript = require("@rollup/plugin-typescript");
-    const plugin = require("@rollup/plugin-node-resolve");
-    const commonjs = require("@rollup/plugin-commonjs");
-    const istanbul = require("rollup-plugin-istanbul");
     config.set({
         browsers: [ "Chromium_without_security" ],
         listenAddress: 'localhost',
         hostname: 'localhost',
-        frameworks: [ "mocha-webworker" ],
+        
+        // Use mocha + karma-typescript (same fast setup that works for browser)
+        frameworks: [ "mocha", "karma-typescript" ],
+        
         files: [
-            { pattern: "src/**/*.ts", included: false },
-            { pattern: "test/src/**/*.ts", included: false }
+            { pattern: "src/**/*.ts" },
+            { pattern: "../common/test/worker-adapter.js" },        // Adapter intercepts mocha.run()
+            { pattern: "test/src/!(browser|node)/**/*.ts" },           // All test files
+            { pattern: "../common/test/worker-test-runner.js", included: false, served: true, watched: false }
         ],
+        
         preprocessors: {
-            "test/src/**/*.ts": [ "rollup" ]
+            "src/**/*.ts": [ "karma-typescript" ],
+            "test/src/**/*.ts": [ "karma-typescript" ]
         },
-        rollupPreprocessor: {
-            plugins: [
-                typescript({
-                    tsconfig: "./test/tsconfig.worker.karma.json"
-                }),
-                plugin.nodeResolve({
-                    browser: true
-                }),
-                //commonjs(),
-                istanbul({
-                    exclude: [ 
-                        "**/index.ts",
-                        "**/test/**",
-                        "**/checkError.ts",
-                        "**/node_modules/**"
-                    ]
-                })
-            ],
-            output: {
-                format: "iife",
-                dir: "./test-dist",
-                sourcemap: true
-            }
-        },
-        client: {
-            mochaWebWorker: {
-                pattern: [
-                    "test/src/**/*.js"
+        
+        karmaTypescriptConfig: {
+            tsconfig: "./test/tsconfig.worker.karma.json",
+            compilerOptions: {
+                sourceMap: false,
+                inlineSourceMap: false,
+                inlineSources: false,
+                module: "commonjs"
+            },
+            bundlerOptions: {
+                sourceMap: false
+            },
+            coverageOptions: {
+                instrumentation: true,
+                exclude: [
+                    /\.(d|spec|test)\.ts$/i,
+                    /index\.ts$/i,
+                    /checkError\.ts$/i,
+                    /\/node_modules\//i
                 ]
+            },
+            reports: {
+                "html": {
+                    "directory": "./coverage/worker",
+                    "subdirectory": "./html"
+                },
+                "json": {
+                    "directory": "./coverage/worker",
+                    "subdirectory": "./",
+                    "filename": "coverage-final.json"
+                },
+                "text": ""
             }
         },
-        coverageReporter: {
-            dir: "./coverage/worker",
-            includeAllSources: true,
-            reporters: [
-                { type: "text" },
-                { type: "html", subdir: "html" },
-                { type: "json", subdir: "./", file: "coverage-final.json" }
-            ]
-        },
-        reporters: ["spec", "coverage" ],
+
+        reporters: [ "spec", "karma-typescript" ],
 
         customLaunchers: {
             Chromium_without_security: {
@@ -66,6 +64,8 @@ module.exports = function (config) {
             }
         },
 
-        logLevel: config.LOG_DEBUG
-    })
+        logLevel: config.LOG_INFO,
+        captureTimeout: 60000,
+        browserNoActivityTimeout: 60000
+    });
 };

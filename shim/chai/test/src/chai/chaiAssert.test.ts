@@ -13,9 +13,9 @@
  */
 
 import { assertConfig } from "@nevware21/tripwire";
-import { assert } from "../../src/index";
-import { globalErr as err } from "./bootstrap/globalErr";
+import { globalErr as err } from "../bootstrap/globalErr";
 import { createCustomError, CustomErrorConstructor as TsCustomErrorConstructor } from "@nevware21/ts-utils";
+import { chaiAssert as assert } from "../../../src/assert/chaiAssert";
 
 export interface CustomError extends Error {
 }

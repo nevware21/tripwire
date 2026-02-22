@@ -20,6 +20,7 @@
     "includeVersion": true,
     "groupOrder": [
         "Entrypoint",
+        "Assert",
         "Modules",
         "Namespaces",
         "Enumerations",

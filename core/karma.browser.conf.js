@@ -8,7 +8,7 @@ module.exports = function (config) {
         frameworks: [ "mocha", "karma-typescript" ],
         files: [
             { pattern: "src/**/*.ts" },
-            { pattern: "test/src/**/*.ts" }
+            { pattern: "test/src/!(node|worker)/**/*.ts" } // Exclude node and worker tests
         ],
         preprocessors: {
             "src/**/*.ts": [ "karma-typescript" ],
@@ -29,7 +29,7 @@ module.exports = function (config) {
                     /\.(d|spec|test)\.ts$/i,
                     /index.ts$/i,
                     /checkError\.ts$/i, 
-                    /\/node\_modules\//i
+                    /\/node_modules\//i
                 ]
             },
             reports: {

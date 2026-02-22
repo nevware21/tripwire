@@ -1,59 +1,68 @@
-process.env.CHROME_BIN = require('puppeteer').executablePath()
+/*
+ * @nevware21/tripwire
+ * https://github.com/nevware21/tripwire
+ *
+ * Copyright (c) 2026 NevWare21 Solutions LLC
+ * Licensed under the MIT license.
+ * 
+ * Fast worker debug configuration using:
+ * - karma-typescript for fast compilation (5 seconds for all files)
+ * - Custom worker-test framework for worker execution
+ * - Chrome with debugger (not headless)
+ */
+
+// Default to using edge locally -- choose your own browser as required
+process.env.CHROME_BIN = "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe";
 
 module.exports = function (config) {
-    const typescript = require("@rollup/plugin-typescript");
-    const plugin = require("@rollup/plugin-node-resolve");
-    const commonjs = require("@rollup/plugin-commonjs");
-    
     config.set({
-        browsers: ["Chromium_without_security"],
+        browsers: [ "Chromium_without_security" ],
         listenAddress: 'localhost',
         hostname: 'localhost',
-        frameworks: [ "mocha-webworker" ],
+        
+        // Use mocha + karma-typescript (same fast setup that works for browser)
+        frameworks: [ "mocha", "karma-typescript" ],
+        
         files: [
-            { pattern: "src/**/*.ts", included: false },
-            { pattern: "test/src/**/*.ts", included: false }
+            { pattern: "src/**/*.ts" },
+            { pattern: "../common/test/worker-adapter.js" },        // Adapter intercepts mocha.run()
+            { pattern: "test/src/!(browser|node)/**/*.ts" },           // All test files
+            { pattern: "../common/test/worker-test-runner.js", included: false, served: true, watched: false }
         ],
+        
         preprocessors: {
-            "test/src/**/*.ts": [ "rollup" ]
+            "src/**/*.ts": [ "karma-typescript" ],
+            "test/src/**/*.ts": [ "karma-typescript" ]
         },
-        rollupPreprocessor: {
-            plugins: [
-                typescript({
-                    tsconfig: "./test/tsconfig.worker.karma.json"
-                }),
-                plugin.nodeResolve({
-                    browser: true
-                })
-                // commonjs()
-            ],
-            output: {
-                format: "iife",
-                dir: "./test-dist",
-                sourcemap: true
+        
+        karmaTypescriptConfig: {
+            tsconfig: "./test/tsconfig.worker.karma.json",
+            compilerOptions: {
+                sourceMap: false,
+                inlineSourceMap: true,
+                inlineSources: true,
+                module: "commonjs"
+            },
+            bundlerOptions: {
+                sourceMap: false
+            },
+            coverageOptions: {
+                instrumentation: false,
+                sourceMap: true
             }
         },
-        client: {
-            mochaWebWorker: {
-                pattern: [
-                    "test/**/*.js"
-                ]
-            }
-        },
-        coverageIstanbulReporter: {
-            reports: ["html", "json"],
-            dir: "../.nyc_output"
-        },
 
-        reporters: [ "spec", "coverage-istanbul" ],
-
-        logLevel: config.LOG_INFO,
+        reporters: [ "spec" ],
 
         customLaunchers: {
             Chromium_without_security: {
                 base: 'Chrome',
-                flags: ['--disable-web-security', '--disable-site-isolation-trials']
+                flags: ['--disable-web-security', '--disable-site-isolation-trials', '--no-sandbox']
             }
-        }
-    })
+        },
+
+        logLevel: config.LOG_INFO,
+        captureTimeout: 60000,
+        browserNoActivityTimeout: 60000
+    });
 };
