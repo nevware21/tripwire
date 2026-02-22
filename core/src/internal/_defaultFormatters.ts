@@ -10,8 +10,7 @@ import { eFormatResult, IFormatCtx, IFormattedValue, IFormatter } from "../inter
 import {
     arrForEach, asString, dumpObj, isArray, isDate, isError, isFunction, isMapLike, isPlainObject,
     isPrimitive, isRegExp, isSetLike, isStrictNullOrUndefined, isString, isSymbol, iterForOf,
-    objCreate,
-    objForEachKey, objGetOwnPropertySymbols, objGetPrototypeOf, strIndexOf
+    objCreate, objForEachKey, objGetOwnPropertySymbols, objGetPrototypeOf, strIndexOf
 } from "@nevware21/ts-utils";
 import { EMPTY_STRING } from "../assert/internal/const";
 
@@ -127,7 +126,7 @@ const _defaultPlainObjectFormatter: IFormatter = {
             let idx = 0;
             let maxProps = ctx.cfg.format.maxProps;
 
-            arrForEach(_getObjKeys(value), (key) => {
+            arrForEach(_getObjKeys(value, ctx.cfg.format.maxProtoDepth), (key) => {
                 if (idx >= maxProps) {
                     parts.push("...");
                     return -1;  // Break from arrForEach
@@ -451,32 +450,37 @@ const _defaultFallbackFormatter: IFormatter = {
  * @internal
  * @ignore
  * Default formatters in order of precedence
+ * Ordered by probability - most common types first for better performance
+ * Note: More specific formatters (like ErrorType) must come before more general ones (like Function)
  */
 export const _defaultFormatters: IFormatter[] = [
-    _defaultArrayFormatter,
-    _defaultStringFormatter,
-    _defaultRegExpFormatter,
-    _defaultSymbolFormatter,
-    _defaultPlainObjectFormatter,
-    _defaultErrorFormatter,
-    _defaultErrorTypeFormatter,
-    _defaultFunctionFormatter,
-    _defaultSetFormatter,
-    _defaultMapFormatter,
-    _defaultDateFormatter,
-    _defaultConstructorFormatter,
-    _defaultToStringFormatter,
-    _defaultFallbackFormatter
+    _defaultStringFormatter,       // Most common in assertions
+    _defaultPlainObjectFormatter,  // Very common
+    _defaultArrayFormatter,        // Common
+    _defaultErrorFormatter,        // Common in test failures
+    _defaultErrorTypeFormatter,    // Must come before FunctionFormatter (more specific)
+    _defaultFunctionFormatter,     // Common
+    _defaultDateFormatter,         // Moderately common
+    _defaultSetFormatter,          // Less common
+    _defaultMapFormatter,          // Less common
+    _defaultRegExpFormatter,       // Rare
+    _defaultSymbolFormatter,       // Rare
+    _defaultConstructorFormatter,  // Fallback
+    _defaultToStringFormatter,     // Fallback
+    _defaultFallbackFormatter      // Last resort
 ];
 
 
-function _getObjKeys<T>(target: T): (keyof T)[] {
+function _getObjKeys<T>(target: T, maxDepth: number): (keyof T)[] {
     let keys: any[] = [];
     let seenKeys: any = objCreate(null);  // Hash map for O(1) lookups, no prototype to avoid collisions
     let seenSymbols: any[] = [];  // Symbols can't be object keys, keep array
     let currentObj = target;
+    let depth = 0;
 
-    while (!isStrictNullOrUndefined(currentObj)) {
+    // Limit depth - most relevant properties are within 2 levels
+    while (!isStrictNullOrUndefined(currentObj) &&
+           (!maxDepth || depth < maxDepth)) {
 
         objForEachKey(currentObj, (key: any) => {
             if (!seenKeys[key]) {  // O(1) lookup - much faster than arrIndexOf
@@ -506,6 +510,7 @@ function _getObjKeys<T>(target: T): (keyof T)[] {
             break;
         }
         currentObj = newObj;
+        depth++;
     }
 
     return keys;

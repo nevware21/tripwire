@@ -6,7 +6,8 @@
  * Licensed under the MIT license.
  */
 
-import { assert, expect } from "../../../src/index";
+import { assert } from "../../../src/assert/assertClass";
+import { expect } from "../../../src/assert/expect";
 
 describe("Member Comparison Tests", () => {
     describe("sameMembers", () => {

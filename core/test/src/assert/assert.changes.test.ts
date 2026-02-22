@@ -7,7 +7,7 @@
  */
 
 import { assert } from "../../../src/assert/assertClass";
-import { expect } from "../../../src/index";
+import { expect } from "../../../src/assert/expect";
 import { checkError } from "../support/checkError";
 
 describe("assert.changes", () => {

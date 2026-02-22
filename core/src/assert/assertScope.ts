@@ -2,11 +2,11 @@
  * @nevware21/tripwire
  * https://github.com/nevware21/tripwire
  *
- * Copyright (c) 2024-2025 NevWare21 Solutions LLC
+ * Copyright (c) 2024-2026 NevWare21 Solutions LLC
  * Licensed under the MIT license.
  */
 
-import { arrSlice, objDefineProps } from "@nevware21/ts-utils";
+import { arrSlice, objDefine } from "@nevware21/ts-utils";
 import { IScopeContext, IScopeContextOverrides } from "./interface/IScopeContext";
 import { AssertScopeFuncDefs } from "./interface/IAssertInst";
 import { MsgSource } from "./type/MsgSource";
@@ -47,16 +47,11 @@ export function createAssertScope(context: IScopeContext, handlerCreator?: Asser
         createOperation: createOperation
     };
 
-    let _that: any = null;        // Initialize with the `that` the same as the IAssertInst
-
-    objDefineProps(theScope, {
-        context: {
-            g: () => _context
-        },
-        "that": {
-            g: () => _that as any,
-            s: (v: any) => _that = v
-        }
+    // Define context as a value property (not getter) - fast reads, controlled writes
+    // w: false makes it readonly to external callers
+    objDefine(theScope, "context", {
+        v: _context,
+        w: false
     });
 
     function newScope<V>(value?: V): IAssertScope {
@@ -105,6 +100,12 @@ export function createAssertScope(context: IScopeContext, handlerCreator?: Asser
     function updateCtx<T>(value: T, overrides?: IScopeContextOverrides): IAssertScope {
         if (value !== _context.value || overrides) {
             _context = _context.new(value, overrides);
+            // Update the context property value directly to avoid the overhead of redefining
+            // the property and to preserve the readonly nature of the property for external callers.
+            objDefine(theScope, "context", {
+                v: _context,
+                w: false
+            });
         }
 
         return theScope;

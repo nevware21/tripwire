@@ -6,7 +6,9 @@
  * Licensed under the MIT license.
  */
 
-import { assert, AssertionFailure, expect } from "../../../src/index";
+import { assert } from "../../../src/assert/assertClass";
+import { AssertionFailure } from "../../../src/assert/assertionError";
+import { expect } from "../../../src/assert/expect";
 
 describe("assert.isInstanceOf", () => {
 

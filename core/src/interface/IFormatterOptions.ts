@@ -162,4 +162,26 @@ export interface IFormatterOptions {
      * ```
      */
     maxFormatDepth?: number;
+
+    /**
+     * Maximum depth to walk up the prototype chain when collecting object keys for display.
+     * Limits how many levels of inherited properties are included when formatting objects.
+     * Most relevant properties are typically within the first 2-3 prototype levels.
+     *
+     * @default 4
+     * @since 0.1.8
+     * @example
+     * ```typescript
+     * // Walk further up the prototype chain
+     * assertConfig.format = {
+     *     maxProtoDepth: 5
+     * };
+     *
+     * // Only show own properties (no inherited)
+     * assertConfig.format = {
+     *     maxProtoDepth: 1
+     * };
+     * ```
+     */
+    maxProtoDepth?: number;
 }
