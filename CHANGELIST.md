@@ -46,6 +46,10 @@ This release focuses heavily on performance improvements across critical code pa
   - Add extensive deepEqual.test.ts (560+ lines) covering deep comparison edge cases
   - Coverage increased from ~10% to 90.85% for formatters, ~45% to 89.03% for equal.ts
 
+## Documentation & Maintenance
+
+- [#309](https://github.com/nevware21/tripwire/pull/309) ci: Drop Node.js 16 from CI matrix — Node.js 16 is End-of-Life and no longer supported by dependencies such as puppeteer
+
 For full details see [v0.1.7...v0.1.8](https://github.com/nevware21/tripwire/compare/v0.1.7...v0.1.8)
 
 # v0.1.7 February 13th, 2026
