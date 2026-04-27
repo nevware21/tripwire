@@ -1796,9 +1796,9 @@
       }
     },
     "node_modules/baseline-browser-mapping": {
-      "version": "2.10.21",
-      "resolved": "https://registry.npmjs.org/baseline-browser-mapping/-/baseline-browser-mapping-2.10.21.tgz",
-      "integrity": "sha512-Q+rUQ7Uz8AHM7DEaNdwvfFCTq7a43lNTzuS94eiWqwyxfV/wJv+oUivef51T91mmRY4d4A1u9rcSvkeufCVXlA==",
+      "version": "2.10.23",
+      "resolved": "https://registry.npmjs.org/baseline-browser-mapping/-/baseline-browser-mapping-2.10.23.tgz",
+      "integrity": "sha512-xwVXGqevyKPsiuQdLj+dZMVjidjJV508TBqexND5HrF89cGdCYCJFB3qhcxRHSeMctdCfbR1jrxBajhDy7o29g==",
       "bin": {
         "baseline-browser-mapping": "dist/cli.cjs"
       },
@@ -1831,9 +1831,9 @@
       "integrity": "sha512-EAcmnPkxpntVL+DS7bO1zhcZNvCkxqtkd0ZY53h06GNQ3DEkkGZ/gKgmDv6DdZQGj9BgfSPKtJJ7Dp1GPP8f7w=="
     },
     "node_modules/body-parser": {
-      "version": "1.20.4",
-      "resolved": "https://registry.npmjs.org/body-parser/-/body-parser-1.20.4.tgz",
-      "integrity": "sha512-ZTgYYLMOXY9qKU/57FAo8F+HA2dGX7bqGc71txDRC1rS4frdFI5R7NhluHxH6M0YItAP0sHB4uqAOcYKxO6uGA==",
+      "version": "1.20.5",
+      "resolved": "https://registry.npmjs.org/body-parser/-/body-parser-1.20.5.tgz",
+      "integrity": "sha512-3grm+/2tUOvu2cjJkvsIxrv/wVpfXQW4PsQHYm7yk4vfpu7Ekl6nEsYBoJUL6qDwZUx8wUhQ8tR2qz+ad9c9OA==",
       "dependencies": {
         "bytes": "~3.1.2",
         "content-type": "~1.0.5",
@@ -1843,7 +1843,7 @@
         "http-errors": "~2.0.1",
         "iconv-lite": "~0.4.24",
         "on-finished": "~2.4.1",
-        "qs": "~6.14.0",
+        "qs": "~6.15.1",
         "raw-body": "~2.5.3",
         "type-is": "~1.6.18",
         "unpipe": "~1.0.0"
@@ -2167,9 +2167,9 @@
       }
     },
     "node_modules/caniuse-lite": {
-      "version": "1.0.30001790",
-      "resolved": "https://registry.npmjs.org/caniuse-lite/-/caniuse-lite-1.0.30001790.tgz",
-      "integrity": "sha512-bOoxfJPyYo+ds6W0YfptaCWbFnJYjh2Y1Eow5lRv+vI2u8ganPZqNm1JwNh0t2ELQCqIWg4B3dWEusgAmsoyOw==",
+      "version": "1.0.30001791",
+      "resolved": "https://registry.npmjs.org/caniuse-lite/-/caniuse-lite-1.0.30001791.tgz",
+      "integrity": "sha512-yk0l/YSrOnFZk3UROpDLQD9+kC1l4meK/wed583AXrzoarMGJcbRi2Q4RaUYbKxYAsZ8sWmaSa/DsLmdBeI1vQ==",
       "funding": [
         {
           "type": "opencollective",
@@ -6250,9 +6250,9 @@
       }
     },
     "node_modules/qs": {
-      "version": "6.14.2",
-      "resolved": "https://registry.npmjs.org/qs/-/qs-6.14.2.tgz",
-      "integrity": "sha512-V/yCWTTF7VJ9hIh18Ugr2zhJMP01MY7c5kh4J870L7imm6/DIzBsNLTXzMwUA3yZ5b/KBqLx8Kp3uRvd7xSe3Q==",
+      "version": "6.15.1",
+      "resolved": "https://registry.npmjs.org/qs/-/qs-6.15.1.tgz",
+      "integrity": "sha512-6YHEFRL9mfgcAvql/XhwTvf5jKcOiiupt2FiJxHkiX1z4j7WL8J/jRHYLluORvc1XxB5rV20KoeK00gVJamspg==",
       "dependencies": {
         "side-channel": "^1.1.0"
       },
