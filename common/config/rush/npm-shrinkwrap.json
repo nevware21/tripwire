@@ -1663,9 +1663,9 @@
       }
     },
     "node_modules/b4a": {
-      "version": "1.8.0",
-      "resolved": "https://registry.npmjs.org/b4a/-/b4a-1.8.0.tgz",
-      "integrity": "sha512-qRuSmNSkGQaHwNbM7J78Wwy+ghLEYF1zNrSeMxj4Kgw6y33O3mXcQ6Ie9fRvfU/YnxWkOchPXbaLb73TkIsfdg==",
+      "version": "1.8.1",
+      "resolved": "https://registry.npmjs.org/b4a/-/b4a-1.8.1.tgz",
+      "integrity": "sha512-aiqre1Nr0B/6DgE2N5vwTc+2/oQZ4Wh1t4NznYY4E00y8LCt6NqdRv81so00oo27D8MVKTpUa/MwUUtBLXCoDw==",
       "peerDependencies": {
         "react-native-b4a": "*"
       },
@@ -1736,9 +1736,9 @@
       }
     },
     "node_modules/bare-stream": {
-      "version": "2.13.0",
-      "resolved": "https://registry.npmjs.org/bare-stream/-/bare-stream-2.13.0.tgz",
-      "integrity": "sha512-3zAJRZMDFGjdn+RVnNpF9kuELw+0Fl3lpndM4NcEOhb9zwtSo/deETfuIwMSE5BXanA0FrN1qVjffGwAg2Y7EA==",
+      "version": "2.13.1",
+      "resolved": "https://registry.npmjs.org/bare-stream/-/bare-stream-2.13.1.tgz",
+      "integrity": "sha512-Vp0cnjYyrEC4whYTymQ+YZi6pBpfiICZO3cfRG8sy67ZNWe951urv1x4eW1BKNngw3U+3fPYb5JQvHbCtxH7Ow==",
       "dependencies": {
         "streamx": "^2.25.0",
         "teex": "^1.0.1"
@@ -1796,9 +1796,9 @@
       }
     },
     "node_modules/baseline-browser-mapping": {
-      "version": "2.10.23",
-      "resolved": "https://registry.npmjs.org/baseline-browser-mapping/-/baseline-browser-mapping-2.10.23.tgz",
-      "integrity": "sha512-xwVXGqevyKPsiuQdLj+dZMVjidjJV508TBqexND5HrF89cGdCYCJFB3qhcxRHSeMctdCfbR1jrxBajhDy7o29g==",
+      "version": "2.10.24",
+      "resolved": "https://registry.npmjs.org/baseline-browser-mapping/-/baseline-browser-mapping-2.10.24.tgz",
+      "integrity": "sha512-I2NkZOOrj2XuguvWCK6OVh9GavsNjZjK908Rq3mIBK25+GD8vPX5w2WdxVqnQ7xx3SrZJiCiZFu+/Oz50oSYSA==",
       "bin": {
         "baseline-browser-mapping": "dist/cli.cjs"
       },
@@ -1807,9 +1807,9 @@
       }
     },
     "node_modules/basic-ftp": {
-      "version": "5.3.0",
-      "resolved": "https://registry.npmjs.org/basic-ftp/-/basic-ftp-5.3.0.tgz",
-      "integrity": "sha512-5K9eNNn7ywHPsYnFwjKgYH8Hf8B5emh7JKcPaVjjrMJFQQwGpwowEnZNEtHs7DfR7hCZsmaK3VA4HUK0YarT+w==",
+      "version": "5.3.1",
+      "resolved": "https://registry.npmjs.org/basic-ftp/-/basic-ftp-5.3.1.tgz",
+      "integrity": "sha512-bopVNp6ugyA150DDuZfPFdt1KZ5a94ZDiwX4hMgZDzF+GttD80lEy8kj98kbyhLXnPvhtIo93mdnLIjpCAeeOw==",
       "engines": {
         "node": ">=10.0.0"
       }
@@ -2840,9 +2840,9 @@
       "integrity": "sha512-WMwm9LhRUo+WUaRN+vRuETqG89IgZphVSNkdFgeb6sS/E4OrDIN7t48CAewSHXc6C8lefD8KKfr5vY61brQlow=="
     },
     "node_modules/electron-to-chromium": {
-      "version": "1.5.344",
-      "resolved": "https://registry.npmjs.org/electron-to-chromium/-/electron-to-chromium-1.5.344.tgz",
-      "integrity": "sha512-4MxfbmNDm+KPh066EZy+eUnkcDPcZ35wNmOWzFuh/ijvHsve6kbLTLURy88uCNK5FbpN+yk2nQY6BYh1GEt+wg=="
+      "version": "1.5.345",
+      "resolved": "https://registry.npmjs.org/electron-to-chromium/-/electron-to-chromium-1.5.345.tgz",
+      "integrity": "sha512-F9JXQGiMrz6yVNPI2qOVPvB9HzjH5cGzhs8oJ6A28V5L/YnzN/0KsuiibqF+F1Fd9qxFzD1BUnYSd8JfULxTwg=="
     },
     "node_modules/elliptic": {
       "version": "6.6.1",
@@ -2885,9 +2885,9 @@
       }
     },
     "node_modules/engine.io": {
-      "version": "6.6.6",
-      "resolved": "https://registry.npmjs.org/engine.io/-/engine.io-6.6.6.tgz",
-      "integrity": "sha512-U2SN0w3OpjFRVlrc17E6TMDmH58Xl9rai1MblNjAdwWp07Kk+llmzX0hjDpQdrDGzwmvOtgM5yI+meYX6iZ2xA==",
+      "version": "6.6.7",
+      "resolved": "https://registry.npmjs.org/engine.io/-/engine.io-6.6.7.tgz",
+      "integrity": "sha512-DgOngfDKM2EviOH3Mr9m7ks1q8roetLy/IMmYthAYzbpInMbYc/GS+fWFA3rl1gvwKVsQrVV61fo5emD1y3OJQ==",
       "dependencies": {
         "@types/cors": "^2.8.12",
         "@types/node": ">=10.0.0",
@@ -4248,9 +4248,9 @@
       "integrity": "sha512-CLM8SNMDu7C5psFCn6Wg/tgpj/bKAg7hc2gWqcuR9OD5Ft9PhBpIu8PLicPeis+xDd6YX2ncI8MCA64I9tftIA=="
     },
     "node_modules/ip-address": {
-      "version": "10.1.0",
-      "resolved": "https://registry.npmjs.org/ip-address/-/ip-address-10.1.0.tgz",
-      "integrity": "sha512-XXADHxXmvT9+CRxhXg56LJovE+bmWnEWB78LB83VZTprKTmaC5QfruXocxzTZ2Kl0DNwKuBdlIhjL8LeY8Sf8Q==",
+      "version": "10.1.1",
+      "resolved": "https://registry.npmjs.org/ip-address/-/ip-address-10.1.1.tgz",
+      "integrity": "sha512-1FMu8/N15Ck1BL551Jf42NYIoin2unWjLQ2Fze/DXryJRl5twqtwNHlO39qERGbIOcKYWHdgRryhOC+NG4eaLw==",
       "engines": {
         "node": ">= 12"
       }
@@ -7038,11 +7038,11 @@
       "integrity": "sha512-6FlzubTLZG3J2a/NVCAleEhjzq5oxgHyaCU9yYXvcLsvoVaHJq/s5xXI6/XXP6tz7R9xAOtHnSO/tXtF3WRTlA=="
     },
     "node_modules/socks": {
-      "version": "2.8.7",
-      "resolved": "https://registry.npmjs.org/socks/-/socks-2.8.7.tgz",
-      "integrity": "sha512-HLpt+uLy/pxB+bum/9DzAgiKS8CX1EvbWxI4zlmgGCExImLdiad2iCwXT5Z4c9c3Eq8rP2318mPW2c+QbtjK8A==",
+      "version": "2.8.8",
+      "resolved": "https://registry.npmjs.org/socks/-/socks-2.8.8.tgz",
+      "integrity": "sha512-NlGELfPrgX2f1TAAcz0WawlLn+0r3FyhhCRpFFK2CemXenPYvzMWWZINv3eDNo9ucdwme7oCHRY0Jnbs4aIkog==",
       "dependencies": {
-        "ip-address": "^10.0.1",
+        "ip-address": "^10.1.1",
         "smart-buffer": "^4.2.0"
       },
       "engines": {
@@ -7354,9 +7354,9 @@
       }
     },
     "node_modules/tar-stream": {
-      "version": "3.1.8",
-      "resolved": "https://registry.npmjs.org/tar-stream/-/tar-stream-3.1.8.tgz",
-      "integrity": "sha512-U6QpVRyCGHva435KoNWy9PRoi2IFYCgtEhq9nmrPPpbRacPs9IH4aJ3gbrFC8dPcXvdSZ4XXfXT5Fshbp2MtlQ==",
+      "version": "3.2.0",
+      "resolved": "https://registry.npmjs.org/tar-stream/-/tar-stream-3.2.0.tgz",
+      "integrity": "sha512-ojzvCvVaNp6aOTFmG7jaRD0meowIAuPc3cMMhSgKiVWws1GyHbGd/xvnyuRKcKlMpt3qvxx6r0hreCNITP9hIg==",
       "dependencies": {
         "b4a": "^1.6.4",
         "bare-fs": "^4.5.5",
@@ -7921,6 +7921,7 @@
       "version": "8.3.2",
       "resolved": "https://registry.npmjs.org/uuid/-/uuid-8.3.2.tgz",
       "integrity": "sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==",
+      "deprecated": "uuid@10 and below is no longer supported.  For ESM codebases, update to uuid@latest.  For CommonJS codebases, use uuid@11 (but be aware this version will likely be deprecated in 2028).",
       "bin": {
         "uuid": "dist/bin/uuid"
       }
