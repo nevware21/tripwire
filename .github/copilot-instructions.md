@@ -193,6 +193,18 @@ Update `version` field in all repo package.json files:
 - `shim/chai/package.json` - Chai shim package
 - Root `package.json` - Monorepo version (should match core)
 
+### Update README.md
+
+Update the recommended version range in `README.md` to reflect the new version:
+
+```markdown
+> ```json
+> "@nevware21/tripwire": ">= 0.1.7 < 2.x"
+> ```
+```
+
+Update both the core and chai shim recommended version ranges if present.
+
 ### Update Changelog
 
 Edit `CHANGELIST.md` at the repository root:
@@ -202,19 +214,21 @@ Edit `CHANGELIST.md` at the repository root:
    # v0.1.7 Month Day, Year
    ```
 
-2. **Organize significant changes by category** (only include meaningful changes):
+2. **Preserve any existing unreleased entries** - If the CHANGELIST.md contains entries that are listed under an "Unreleased" section or similar heading, include them **as-is** in the new version section. Do NOT remove, reduce, or consolidate them into a shortened summary.
+
+3. **Organize significant changes by category** (only include meaningful changes):
    - `## Breaking Changes` - Breaking API changes (if any)
    - `## New Features` - New functionality added
    - `## Bug Fixes` - Bug fixes and corrections
    - `## Refactoring` - Code improvements without behavior changes
    - `## Documentation & Maintenance` - Docs, dependencies, CI/CD changes
 
-3. **Link to PRs** for each significant change:
+4. **Link to PRs** for each significant change:
    ```markdown
    - [#123](https://github.com/nevware21/tripwire/pull/123) feat: Description
    ```
 
-4. **Add comparison link** at the end (this provides full details of every PR):
+5. **Add comparison link** at the end (this provides full details of every PR):
    ```markdown
    For full details see [v0.1.6...v0.1.7](https://github.com/nevware21/tripwire/compare/v0.1.6...v0.1.7)
    ```
@@ -229,21 +243,27 @@ Edit `CHANGELIST.md` at the repository root:
    ```
    This updates the `common/config/rush/npm-shrinkwrap.json` file to reflect current dependencies
 
-2. **Review all changes** - Verify version numbers, changelog, and shrinkwrap updates before committing
+2. **Review all changes** - Verify version numbers, changelog, README.md version ranges, and shrinkwrap updates before committing
 
-3. **Clean build**:
+3. **Commit with the required message format**:
+   ```bash
+   git commit -m "[Release] Increase version to 0.1.8"
+   ```
+   All release commits **must** use the subject format `[Release] Increase version to <version>`.
+
+4. **Clean build**:
    ```bash
    npm run cleanBuild
    ```
    This runs: `git clean -xdf && npm install && grunt lint-fix && rush rebuild`
 
-4. **Run all tests**:
+5. **Run all tests**:
    ```bash
    npm run test
    ```
    Runs tests in all three environments (node, browser, worker)
 
-5. **Verify build artifacts**:
+6. **Verify build artifacts**:
    - Check that referenced files, entry points and types in each of the package.json files are present (for published packages; the root package.json is not published, even though it defines entry points and types)
 
 ## CI/CD
