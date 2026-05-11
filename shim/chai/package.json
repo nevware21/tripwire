@@ -8,7 +8,16 @@
         "name": "Nevware21 Solutions LLC",
         "email": "github+tripwire@nevware21.com"
     },
-    "funding": "https://github.com/sponsors/nevware21",
+    "funding": [
+        {
+            "type": "github",
+            "url": "https://github.com/sponsors/nevware21"
+        },
+        {
+            "type": "buymeacoffee",
+            "url": "https://www.buymeacoffee.com/nevware21"
+        }
+    ],
     "keywords": [
         "test",
         "testing",
