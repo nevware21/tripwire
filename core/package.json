@@ -92,7 +92,7 @@
         "karma-mocha": "^2.0.1",
         "karma-spec-reporter": "^0.0.36",
         "karma-typescript": "^5.5.3",
-        "puppeteer": "^24.4.0",
+        "puppeteer": "^25.0.4",
         "rollup": "^4.54.0",
         "rollup-plugin-minify-es": "^1.1.1",
         "rollup-plugin-istanbul": "^5.0.0",
