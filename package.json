@@ -87,7 +87,7 @@
         "grunt": "^1.6.2",
         "grunt-cli": "^1.4.3",
         "nyc": "^18.0.0",
-        "puppeteer": "^24.4.0",
+        "puppeteer": "^25.0.4",
         "typedoc": "^0.28.2",
         "typedoc-github-theme": "^0.4.0",
         "typescript": "~5.2.2",
