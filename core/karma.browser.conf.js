@@ -1,12 +1,11 @@
 const childProcess = require('child_process');
-const fs = require('fs');
 
 function _resolvePuppeteerExecutablePathSync() {
     return childProcess.execFileSync(process.execPath, [
-        '-e',
-        "const executablePath=require('puppeteer').executablePath();if(executablePath&&typeof executablePath.then==='function'){executablePath.then((path)=>process.stdout.write(path||''));}else{process.stdout.write(executablePath||'');}"
+        "-e",
+        "require('puppeteer').executablePath().then((path) => process.stdout.write(path || ''))"
     ], {
-        encoding: 'utf8'
+        encoding: "utf8"
     }).trim();
 }
 
@@ -15,15 +14,12 @@ module.exports = function (config) {
     // to keep this Karma config synchronous.
     try {
         const chromePath = _resolvePuppeteerExecutablePathSync();
-        if (chromePath && fs.existsSync(chromePath)) {
+        if (chromePath) {
             process.env.CHROME_BIN = chromePath;
             process.env.CHROMIUM_BIN = chromePath;
-        } else {
-            console.warn('Puppeteer executable path could not be resolved. Chrome/Chromium tests may be skipped.');
-            process.exit(0);
         }
     } catch (error) {
-        console.warn('Puppeteer executable path could not be resolved. Chrome/Chromium tests may be skipped.');
+        console.warn("Puppeteer executable path could not be resolved. Chrome/Chromium tests may be skipped.");
         process.exit(0);
     }
 
