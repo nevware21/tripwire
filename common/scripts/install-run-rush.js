@@ -986,7 +986,7 @@ function _run() {
             env: process.env,
             rushJsonFolder,
             rushVersion: rushVersion.version,
-            bootstrapVersion: "5.179.0",
+            bootstrapVersion: "5.180.0",
             commandName: bin,
             quiet
         });
