@@ -6,7 +6,7 @@
     "statements": 95,
     "all": true,
     "check-coverage": false,
-    "reporter": [ "text", "html" ],
+    "reporter": [ ],
     "include": [ "src/**/*.ts" ],
     "exclude": [ 
         "**/src/index.ts", 

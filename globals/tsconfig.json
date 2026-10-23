@@ -1,0 +1,22 @@
+{
+    "compilerOptions": {
+        "noEmit": true,
+        "noImplicitAny": true,
+        "skipLibCheck": true,
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "target": "es5",
+        "forceConsistentCasingInFileNames": true,
+        "alwaysStrict": true,
+        "esModuleInterop": true,
+        "allowSyntheticDefaultImports": true,
+        "types": []
+    },
+    "include": [
+        "./index.d.ts",
+        "./test/**/*.ts"
+    ],
+    "exclude": [
+        "node_modules/"
+    ]
+}

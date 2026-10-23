@@ -11,3 +11,15 @@
 !dist/**
 !bundle/**
 !types/**
+
+# The CLI entry point and the browser/worker runtime assets it serves. npm force-includes the
+# `bin` *target* (bin/tripwire.js) regardless of this file, but not its sibling assets --
+# bin/assets/runner-client.js and bin/assets/runner-worker.js are served over HTTP by the dev
+# server for the `--target browser`/`--target worker` runs, so without these the published CLI
+# ships unable to run either target.
+!bin/**
+
+# The opt-in "@nevware21/tripwire/globals" entry (ambient global declarations + the runtime
+# installer). Resolved as <package>/globals, so both files must sit at the package root.
+!/globals.d.ts
+!/globals.js

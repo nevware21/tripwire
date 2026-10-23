@@ -1,0 +1,28 @@
+{
+    "compilerOptions": {
+        "types": [ "node" ],
+        "sourceMap": true,
+        "inlineSources": true,
+        "noImplicitAny": true,
+        "module": "esnext",
+        "moduleResolution": "node",
+        "target": "es2018",
+        "rootDir": "./src",
+        "forceConsistentCasingInFileNames": true,
+        "importHelpers": false,
+        "noEmitHelpers": false,
+        "alwaysStrict": true,
+        "declaration": true,
+        "declarationDir": "build/types",
+        "allowSyntheticDefaultImports": true,
+        "removeComments": false,
+        "esModuleInterop": true,
+        "outDir": "./build/esnext"
+    },
+    "include": [
+           "./src/**/*.ts"
+    ],
+    "exclude": [
+        "node_modules/"
+    ]
+}

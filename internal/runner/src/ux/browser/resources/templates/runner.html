@@ -1,0 +1,76 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>__RUNNER_TITLE__</title>
+  <style>
+__RUNNER_CSS__
+  </style>
+</head>
+<body class="__RUNNER_STYLE_CLASS__" data-runner-target="__RUNNER_TARGET__">
+  <div class="app-shell">
+    <header class="app-header">
+      <h1>__RUNNER_TITLE__</h1>
+      <p>__RUNNER_DESCRIPTION__</p>
+    </header>
+
+    <section class="controls">
+      <div class="controls-row">
+        <div class="filter-inline">
+          <label class="filter-label" for="scopeSelect">Scope</label>
+          <div class="filter-input-wrap">
+            <input id="scopeSelect" class="filter-input" type="text" autocomplete="off" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="scopeSelectList" placeholder="All tests (type to search suites and tests)" title="What to run -- type to search every suite and test, or leave blank to run them all" />
+            <div id="scopeSelectList" class="autocomplete-list" role="listbox"></div>
+          </div>
+          <button id="clearScopeBtn" class="ghost scope-clear" type="button" disabled title="Clear the scope, so the next run covers every test again">All tests</button>
+        </div>
+        <div class="control-inline">
+          <label class="filter-label" for="targetSelect">Target</label>
+          <select id="targetSelect" class="control-select" title="Where the tests run -- switching reloads this page for the other target and keeps the current scope">
+            <option value="browser">Browser</option>
+            <option value="worker">Worker</option>
+          </select>
+        </div>
+        <label class="control-check" title="Show only failed tests (running tests stay visible until they pass)">
+          <input id="failedOnlyToggle" type="checkbox" />
+          <span>Failed only</span>
+        </label>
+        <label class="control-check" title="Automatically reload and re-run when a watched test file changes on disk">
+          <input id="autoReloadToggle" type="checkbox" checked />
+          <span>Auto-reload</span>
+        </label>
+        <button id="runBtn">Run</button>
+        <div class="menu-wrap">
+          <button id="actionsBtn" class="ghost icon-btn" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="actionsMenu" aria-label="More actions" title="More actions">
+            <span aria-hidden="true">&#8942;</span>
+          </button>
+          <div id="actionsMenu" class="menu-list" role="menu" aria-labelledby="actionsBtn" hidden>
+            <button id="reloadBtn" class="menu-item" type="button" role="menuitem" tabindex="-1" title="Discard and reload the test frame, then re-run">Reload Tests</button>
+            <button id="clearResultsBtn" class="menu-item" type="button" role="menuitem" tabindex="-1">Clear Results</button>
+            <button id="clearLogsBtn" class="menu-item" type="button" role="menuitem" tabindex="-1">Clear Logs</button>
+            <div class="menu-separator" role="separator"></div>
+            <button id="finishBtn" class="menu-item" type="button" role="menuitem" tabindex="-1" aria-disabled="true" title="Send the final result back to the CLI and shut down this server">Finish &amp; Stop Server</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="status-row">
+      <span id="status">Initializing...</span>
+      <span id="assertCount">0 assertions</span>
+    </div>
+
+    <main class="results-main">
+      <div id="results" class="results-tree"></div>
+    </main>
+
+    <details id="logPanel" class="log-panel">
+      <summary>Runner Log</summary>
+      <div id="logs"></div>
+    </details>
+  </div>
+  <div id="testFrameContainer" style="display:none" aria-hidden="true"></div>
+  <script src="__RUNNER_SCRIPT_URL__" defer></script>
+</body>
+</html>

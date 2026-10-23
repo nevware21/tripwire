@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1007" height="388" viewBox="0 0 1007 388" role="img" aria-label="tripwire --reporter list">
+  <title>tripwire --reporter list</title>
+  <rect width="1007" height="388" rx="8" fill="#0d1117"/>
+  <text font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="14" xml:space="preserve">
+    <tspan x="16.0" y="28" fill="#c9d1d9">  </tspan><tspan x="32.8" y="28" fill="#d29922">-</tspan><tspan x="41.2" y="28" fill="#c9d1d9"> math division by zero </tspan><tspan x="234.4" y="28" fill="#d29922">(skipped)</tspan>
+    <tspan x="16.0" y="48" fill="#c9d1d9">  </tspan><tspan x="32.8" y="48" fill="#3fb950">✓</tspan><tspan x="41.2" y="48" fill="#c9d1d9"> math addition adds two numbers </tspan><tspan x="310.0" y="48" fill="#8b949e">2ms</tspan>
+    <tspan x="16.0" y="68" fill="#c9d1d9">  </tspan><tspan x="32.8" y="68" fill="#f85149">✗</tspan><tspan x="41.2" y="68" fill="#c9d1d9"> math addition handles negatives </tspan><tspan x="318.4" y="68" fill="#f85149">4ms</tspan>
+    <tspan x="16.0" y="88" fill="#c9d1d9">  </tspan><tspan x="32.8" y="88" fill="#3fb950">✓</tspan><tspan x="41.2" y="88" fill="#c9d1d9"> strings concatenates </tspan><tspan x="226.0" y="88" fill="#8b949e">1ms</tspan>
+    <tspan x="16" y="108"> </tspan>
+    <tspan x="16.0" y="128" fill="#c9d1d9">  </tspan><tspan x="32.8" y="128" fill="#3fb950">2 passing</tspan><tspan x="108.4" y="128" fill="#c9d1d9">  </tspan><tspan x="125.2" y="128" fill="#f85149">1 failing</tspan><tspan x="200.8" y="128" fill="#c9d1d9">  </tspan><tspan x="217.6" y="128" fill="#d29922">1 skipped</tspan><tspan x="293.2" y="128" fill="#c9d1d9">  </tspan><tspan x="310.0" y="128" fill="#8b949e">(11ms)</tspan>
+    <tspan x="16" y="148"> </tspan>
+    <tspan x="16.0" y="168" fill="#f85149" font-weight="bold">  Failures:</tspan>
+    <tspan x="16" y="188"> </tspan>
+    <tspan x="16" y="208"> </tspan>
+    <tspan x="16" y="228"> </tspan>
+    <tspan x="16.0" y="248" fill="#c9d1d9">  </tspan><tspan x="32.8" y="248" fill="#f85149">1) math addition handles negatives</tspan>
+    <tspan x="16.0" y="268" fill="#c9d1d9">     </tspan><tspan x="58.0" y="268" fill="#8b949e">expected -2 to equal -3</tspan>
+    <tspan x="16.0" y="288" fill="#c9d1d9">     </tspan><tspan x="58.0" y="288" fill="#8b949e">    at Object.&lt;anonymous&gt; (D:\gith1\tripwire\core\.reporter-shots-3Is03G\demo.test.ts:7:81)</tspan>
+    <tspan x="16.0" y="308" fill="#c9d1d9">     </tspan><tspan x="58.0" y="308" fill="#8b949e">    at fnCall (D:\gith1\tripwire\common\temp\node_modules\@nevware21\ts-utils\dist\es5\main\ts-utils.js:678:19)</tspan>
+    <tspan x="16.0" y="328" fill="#c9d1d9">     </tspan><tspan x="58.0" y="328" fill="#8b949e">    at _executeFunctionWithResult (D:\gith1\tripwire\core\src\suite\runner.ts:724:101)</tspan>
+    <tspan x="16.0" y="348" fill="#c9d1d9">     </tspan><tspan x="58.0" y="348" fill="#8b949e">    at _handleBeforeEachComplete (D:\gith1\tripwire\core\src\suite\runner.ts:1013:29)</tspan>
+    <tspan x="16.0" y="368" fill="#c9d1d9">     </tspan><tspan x="58.0" y="368" fill="#8b949e">    at D:\gith1\tripwire\core\src\suite\runner.ts:1044:9</tspan>
+  </text>
+</svg>

@@ -10,13 +10,22 @@
       "shouldPublish": true
     },
     {
+      "packageName": "@nevware21/tripwire-globals",
+      "projectFolder": "globals",
+      "shouldPublish": true
+    },
+    {
+      "packageName": "@nevware21/tripwire-runner",
+      "projectFolder": "internal/runner",
+      "shouldPublish": false
+    },
+    {
       "packageName": "@nevware21/tripwire-chai",
       "projectFolder": "shim/chai",
       "shouldPublish": true
     }
   ]
 }
-
 
 
 

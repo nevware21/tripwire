@@ -17,7 +17,7 @@ import { addAssertInstFunc, addAssertInstFuncDefs, addAssertInstProperty } from 
 import { _clearAssertInstFuncs } from "../../../../src/assert/internal/_AssertInstCore";
 import { expect } from "../../../../src/assert/expect";
 import { isArray } from "@nevware21/ts-utils";
-import { _gblConfigHost } from "../../../../src/internal/_configHost";
+import { getCurrentHost } from "../../../../src/config/configHost";
 
 describe("createExprAdapter", () => {
     after(() => {
@@ -892,7 +892,7 @@ describe("createExprAdapter", () => {
             assertConfig.isVerbose = true;
 
             assert.equals(assertConfig.isVerbose, true, "Verbose mode should be enabled");
-            assert.isTrue(_gblConfigHost().opts.v.isVerbose, "Global config should reflect verbose mode");
+            assert.isTrue(getCurrentHost().opts.v.isVerbose, "The active host config should reflect verbose mode");
 
             let context = createContext(10);
             let scope = createAssertScope(context);

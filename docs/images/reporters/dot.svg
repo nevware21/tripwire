@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1007" height="328" viewBox="0 0 1007 328" role="img" aria-label="tripwire --reporter dot">
+  <title>tripwire --reporter dot</title>
+  <rect width="1007" height="328" rx="8" fill="#0d1117"/>
+  <text font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="14" xml:space="preserve">
+    <tspan x="16.0" y="28" fill="#d29922">,</tspan><tspan x="24.4" y="28" fill="#3fb950">.</tspan><tspan x="32.8" y="28" fill="#f85149" font-weight="bold">!</tspan><tspan x="41.2" y="28" fill="#3fb950">.</tspan>
+    <tspan x="16" y="48"> </tspan>
+    <tspan x="16.0" y="68" fill="#c9d1d9">  </tspan><tspan x="32.8" y="68" fill="#3fb950">2 passing</tspan><tspan x="108.4" y="68" fill="#c9d1d9">  </tspan><tspan x="125.2" y="68" fill="#f85149">1 failing</tspan><tspan x="200.8" y="68" fill="#c9d1d9">  </tspan><tspan x="217.6" y="68" fill="#d29922">1 skipped</tspan><tspan x="293.2" y="68" fill="#c9d1d9">  </tspan><tspan x="310.0" y="68" fill="#8b949e">(10ms)</tspan>
+    <tspan x="16" y="88"> </tspan>
+    <tspan x="16.0" y="108" fill="#f85149" font-weight="bold">  Failures:</tspan>
+    <tspan x="16" y="128"> </tspan>
+    <tspan x="16" y="148"> </tspan>
+    <tspan x="16" y="168"> </tspan>
+    <tspan x="16.0" y="188" fill="#c9d1d9">  </tspan><tspan x="32.8" y="188" fill="#f85149">1) math addition handles negatives</tspan>
+    <tspan x="16.0" y="208" fill="#c9d1d9">     </tspan><tspan x="58.0" y="208" fill="#8b949e">expected -2 to equal -3</tspan>
+    <tspan x="16.0" y="228" fill="#c9d1d9">     </tspan><tspan x="58.0" y="228" fill="#8b949e">    at Object.&lt;anonymous&gt; (D:\gith1\tripwire\core\.reporter-shots-3Is03G\demo.test.ts:7:81)</tspan>
+    <tspan x="16.0" y="248" fill="#c9d1d9">     </tspan><tspan x="58.0" y="248" fill="#8b949e">    at fnCall (D:\gith1\tripwire\common\temp\node_modules\@nevware21\ts-utils\dist\es5\main\ts-utils.js:678:19)</tspan>
+    <tspan x="16.0" y="268" fill="#c9d1d9">     </tspan><tspan x="58.0" y="268" fill="#8b949e">    at _executeFunctionWithResult (D:\gith1\tripwire\core\src\suite\runner.ts:724:101)</tspan>
+    <tspan x="16.0" y="288" fill="#c9d1d9">     </tspan><tspan x="58.0" y="288" fill="#8b949e">    at _handleBeforeEachComplete (D:\gith1\tripwire\core\src\suite\runner.ts:1013:29)</tspan>
+    <tspan x="16.0" y="308" fill="#c9d1d9">     </tspan><tspan x="58.0" y="308" fill="#8b949e">    at D:\gith1\tripwire\core\src\suite\runner.ts:1044:9</tspan>
+  </text>
+</svg>
