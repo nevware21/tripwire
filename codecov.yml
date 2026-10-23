@@ -18,6 +18,7 @@ coverage:
         paths:
           - core/src
           - shim/chai/src
+          - internal/runner/src
     project:
       core:
         paths:
@@ -31,6 +32,22 @@ coverage:
         target: 70%
         flags:
           - chai_shim
+      # runner/ was outside coverage measurement entirely until the runner flag was
+      # added. The target is a floor set just under the first measured value (32.4%
+      # lines) rather than an aspiration -- raise it as execute/, ux/, codecov/,
+      # compile/ and client/ gain tests, and do not lower it.
+      #
+      # The figure is low partly because it is honest: ux/browser and assets are
+      # browser-side code that the node test process cannot execute, and they are
+      # deliberately left in the denominator rather than excluded, so the number
+      # reflects what is actually untested rather than what is conveniently
+      # measurable.
+      runner:
+        paths:
+          - internal/runner/src
+        target: 30%
+        flags:
+          - runner
 
 flags:
   core:
@@ -40,3 +57,7 @@ flags:
   chai_shim:
     paths:
       - shim/chai/src
+
+  runner:
+    paths:
+      - internal/runner/src

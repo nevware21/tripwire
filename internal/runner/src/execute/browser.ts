@@ -99,6 +99,15 @@ export async function _runInteractiveBrowserTarget(target: string, graphBuilders
     }
 }
 
+function _isFile(filePath: string): boolean {
+    try {
+        // eslint-disable-next-line security/detect-non-literal-fs-filename
+        return fs.statSync(filePath).isFile();
+    } catch (e) {
+        return false;
+    }
+}
+
 export function _resolveBrowserDependency(spec: string, moduleId: string, cwd: string): string {
     try {
         return require.resolve(spec, {
@@ -120,8 +129,9 @@ export function _resolveBrowserDependency(spec: string, moduleId: string, cwd: s
             ];
 
             for (let lp = 0; lp < candidates.length; lp++) {
-                // eslint-disable-next-line security/detect-non-literal-fs-filename
-                if (fs.existsSync(candidates[lp])) {
+                // A file, not just a path that exists: the bare path of a folder import is the
+                // folder itself, which has to fall through to its index file.
+                if (_isFile(candidates[lp])) {
                     return candidates[lp];
                 }
             }

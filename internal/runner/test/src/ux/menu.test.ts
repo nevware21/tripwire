@@ -7,17 +7,175 @@
  */
 
 import { assert } from "@nevware21/tripwire";
-import { nextMenuIndex } from "../../../src/ux/browser/ui/menu";
+import { createMenu, nextMenuIndex } from "../../../src/ux/browser/ui/menu";
+import { stubElement, stubEvent, useStubDocument } from "../support/uxDom";
 
 /**
- * The arrow-key movement behind the interactive page's "..." actions menu.
- *
- * `createMenu` itself needs a live document and is exercised end to end against the real page;
- * this is the part of it that is pure, and the part that breaks silently -- an off-by-one in the
- * wrapping leaves a keyboard user stuck at one end of the menu with no visible sign anything is
- * wrong.
+ * The interactive page's "..." actions menu: the arrow-key movement, which breaks silently -- an
+ * off-by-one in the wrapping leaves a keyboard user stuck at one end of the menu with no visible
+ * sign anything is wrong -- and the open, close and focus handling around it, run against the
+ * stand-in elements and `document` of ../support/uxDom.ts. It is also exercised end to end against
+ * the real page.
  */
 describe("ux menu", () => {
+
+    describe("createMenu", () => {
+        let doc: any;
+        let restoreDocument: () => void;
+        let button: any;
+        let menu: any;
+        let items: any[];
+
+        function key(target: any, name: string): any {
+            const evt = stubEvent("keydown", { key: name });
+            target.dispatchEvent(evt);
+
+            return evt;
+        }
+
+        function isOpen(): boolean {
+            return !menu.hasAttribute("hidden");
+        }
+
+        beforeEach(() => {
+            const installed = useStubDocument();
+            doc = installed.document;
+            restoreDocument = installed.restore;
+
+            button = stubElement("actionsBtn", "button");
+            menu = stubElement("actionsMenu", "div");
+            menu.setAttribute("hidden", "");
+            items = [ "Run", "Finish", "Reload" ].map((label) => {
+                const item = stubElement("", "button");
+                item.setAttribute("role", "menuitem");
+                item.textContent = label;
+                menu.appendChild(item);
+
+                return item;
+            });
+            items[1].setAttribute("aria-disabled", "true");
+            createMenu(button, menu);
+        });
+
+        afterEach(() => {
+            restoreDocument();
+        });
+
+        it("opens on a click, focusing the first item, and closes on the next", () => {
+            const evt = stubEvent("click");
+            button.dispatchEvent(evt);
+
+            assert.isTrue(isOpen());
+            assert.isTrue(evt.defaultPrevented);
+            assert.equal(button.getAttribute("aria-expanded"), "true");
+            assert.equal(doc.activeElement, items[0]);
+            assert.deepEqual(items.map((item) => item.getAttribute("tabindex")), [ "0", "-1", "-1" ]);
+
+            button.click();
+            assert.isFalse(isOpen());
+            assert.equal(button.getAttribute("aria-expanded"), "false");
+        });
+
+        it("opens from the button's keys at the first or the last item, and closes on Escape", () => {
+            [ "ArrowDown", "Enter", " " ].forEach((name) => {
+                menu.setAttribute("hidden", "");
+                assert.isTrue(key(button, name).defaultPrevented, name);
+                assert.isTrue(isOpen(), name);
+                assert.equal(doc.activeElement, items[0], name);
+            });
+
+            menu.setAttribute("hidden", "");
+            key(button, "ArrowUp");
+            assert.equal(doc.activeElement, items[2]);
+
+            key(button, "Escape");
+            assert.isFalse(isOpen());
+
+            key(button, "Tab");
+            assert.isFalse(isOpen(), "other keys do nothing");
+        });
+
+        it("moves through the items with the arrow, Home and End keys", () => {
+            button.click();
+
+            key(menu, "ArrowDown");
+            assert.equal(doc.activeElement, items[1]);
+            key(menu, "End");
+            assert.equal(doc.activeElement, items[2]);
+            key(menu, "ArrowDown");
+            assert.equal(doc.activeElement, items[0], "wraps round");
+            key(menu, "ArrowUp");
+            assert.equal(doc.activeElement, items[2]);
+            key(menu, "Home");
+            assert.equal(doc.activeElement, items[0]);
+
+            assert.isFalse(key(menu, "a").defaultPrevented, "other keys are left alone");
+            assert.isTrue(isOpen());
+        });
+
+        it("closes on Escape, giving focus back to the button, and on Tab without", () => {
+            button.click();
+            const evt = key(menu, "Escape");
+
+            assert.isFalse(isOpen());
+            assert.isTrue(evt.defaultPrevented);
+            assert.equal(doc.activeElement, button);
+
+            button.click();
+            doc.activeElement = items[0];
+            key(menu, "Tab");
+            assert.isFalse(isOpen());
+            assert.equal(doc.activeElement, items[0]);
+
+            key(menu, "Escape");
+            assert.isFalse(isOpen(), "closing a closed menu changes nothing");
+        });
+
+        it("closes when an item is chosen, but not for a disabled one", () => {
+            button.click();
+            const disabled = stubEvent("click");
+            items[1].dispatchEvent(disabled);
+
+            assert.isTrue(isOpen());
+            assert.isTrue(disabled.defaultPrevented);
+            assert.isTrue(disabled.propagationStopped);
+
+            items[2].click();
+            assert.isFalse(isOpen());
+            assert.equal(doc.activeElement, button);
+        });
+
+        it("stays open for a click inside it that is not on an item", () => {
+            const gap = stubElement("", "div");
+            menu.appendChild(gap);
+            button.click();
+
+            gap.click();
+
+            assert.isTrue(isOpen());
+        });
+
+        it("closes for a click anywhere else on the page", () => {
+            button.click();
+
+            stubElement("", "div").click();
+
+            assert.isFalse(isOpen());
+        });
+
+        it("closes once focus has left both the menu and the button", async () => {
+            button.click();
+            doc.activeElement = items[0];
+            menu.dispatchEvent(stubEvent("focusout"));
+            await new Promise((resolve) => setTimeout(resolve, 5));
+            assert.isTrue(isOpen(), "focus is still inside");
+
+            doc.activeElement = stubElement("", "input");
+            menu.dispatchEvent(stubEvent("focusout"));
+            await new Promise((resolve) => setTimeout(resolve, 5));
+            assert.isFalse(isOpen());
+        });
+    });
 
     describe("nextMenuIndex", () => {
         it("should step down through the items", () => {
