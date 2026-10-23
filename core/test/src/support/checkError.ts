@@ -11,7 +11,7 @@ import { isObject, isRegExp, isString, objForEachKey, strSubstr, strLeft, strRep
 import { expect } from "../../../src/assert/expect";
 import { AssertionError } from "../../../src/assert/assertionError";
 import { assert } from "../../../src/assert/assertClass";
-import { EMPTY_STRING } from "../../../src/assert/internal/const";
+import { EMPTY_STRING } from "../../../src/internal/const";
 import { IScopeContext } from "../../../src/assert/interface/IScopeContext";
 import { _formatValue } from "../../../src/internal/_formatValue";
 import { assertConfig } from "../../../src/config/assertConfig";
@@ -242,7 +242,7 @@ export function checkError(fn: () => void, match: string | RegExp | Object, chec
             expect(theStack).is.string();
             if (CHECK_INTERNAL_STACK_FRAME_REGEX.test(theStack)) {
                 let scope = preContext || getScopeContext(assert);
-                throw new AssertionError("expected error stack to not contain internal frames - " + _formatValue(scope, theStack), e, null, stackStart);
+                throw new AssertionError("expected error stack to not contain internal frames - " + _formatValue(scope.opts, theStack), e, null, stackStart);
             }
         }
 

@@ -12,7 +12,11 @@ import { IConfigInst } from "./interfaces/IConfigInst";
 import { IFormatterOptions } from "./interfaces/IFormatterOptions";
 import { MsgSource } from "./types/MsgSource";
 import { assert, addAssertFunc, addAssertFuncs, createAssert, AssertClassDef } from "./assert/assertClass";
-import { AssertionError, AssertionErrorConstructor, AssertionFailure, AssertionFailureConstructor, AssertionFatal, AssertionFatalConstructor, IAssertionErrorOrgValues } from "./assert/assertionError";
+import { AssertionError } from "./assert/assertionError";
+import { AssertionErrorConstructor } from "./assert/assertionError";
+import { IAssertionErrorOrgValues } from "./assert/interface/IAssertionErrorOrgValues";
+import { AssertionFailure, AssertionFailureConstructor } from "./assert/assertionFailure";
+import { AssertionFatal, AssertionFatalConstructor } from "./assert/assertionFatal";
 import { useScope } from "./assert/useScope";
 import { addAssertInstFuncDefs, addAssertInstFunc, addAssertInstFuncDef } from "./assert/assertInst";
 import { expect } from "./assert/expect";
@@ -75,10 +79,13 @@ import { ChangeFn } from "./assert/interface/funcs/ChangeFn";
 import { ChangeByFn } from "./assert/interface/funcs/ChangeByFn";
 import { IChangeResultOp } from "./assert/interface/ops/IChangeResultOp";
 import { IChangeResultValue } from "./assert/interface/ops/IChangeResultValue";
+import { TripwireError, TripwireErrorConstructor } from "./errors/tripwireError";
 import { ConfigHostFunc } from "./types/ConfigHostFunc";
 import { createServerMgr } from "./server/ServerManager";
 import { createFormatMgr } from "./config/formatManager";
 import { getCurrentHost, useHost, withHost } from "./config/configHost";
+import { IParsedStack, parseStack } from "./internal/parseStack";
+import { cStackDetail } from "./internal/_errorSupport";
 import { DEFAULT_CONFIG } from "./config/defaultConfig";
 
 /**
@@ -126,7 +133,8 @@ export { IHookFailure } from "./interfaces/runner/IHookFailure";
  */
 export {
     AssertionError, AssertionErrorConstructor, AssertionFailure, AssertionFailureConstructor,
-    AssertionFatal, AssertionFatalConstructor, IAssertionErrorOrgValues
+    AssertionFatal, AssertionFatalConstructor, IAssertionErrorOrgValues,
+    TripwireError, TripwireErrorConstructor
 };
 
 /**
@@ -139,7 +147,7 @@ export {
     IFormatCtx, IFormattedValue, IFormatter, IFormatterOptions, IFormatManager, IHasOp, IHasOwnOp, IIncludeOp,
     IIsOp, IIsTypeOp, IKeysOp, INestedOp, INotOp, INumericOp, IOwnOp, IPropertyResultOp, IRemovable,
     IScopeContext, IScopeContextOverrides, IScopePropFn, IStrictlyOp, IThrowOp, IToOp,
-    PropertyDescriptorFn, PropertyFn
+    PropertyDescriptorFn, PropertyFn, IParsedStack
 };
 
 /**
@@ -166,12 +174,12 @@ export {
     addAssertFunc, addAssertFuncs, addAssertInstFunc, addAssertInstFuncDef, addAssertInstFuncDefs,
     assert, assertConfig, addAssertionListener, removeAssertionListener, createAssert, createAssertScope, createContext, createEvalAdapter,
     createExprAdapter, createNotAdapter, expect, getScopeContext, useScope,
-    createServerMgr, createFormatMgr, getCurrentHost, useHost, withHost
+    createServerMgr, createFormatMgr, parseStack, getCurrentHost, useHost, withHost
 };
 
 /**
  * Export the constants
  */
 export {
-    CHECK_INTERNAL_STACK_FRAME_REGEX, DEFAULT_CONFIG
+    CHECK_INTERNAL_STACK_FRAME_REGEX, DEFAULT_CONFIG, cStackDetail
 };

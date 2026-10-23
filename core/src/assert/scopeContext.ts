@@ -7,20 +7,24 @@
  */
 
 import {
-    arrForEach, arrIndexOf, arrSlice, fnApply, getDeferred, getLazy, getLength, isArray, isFunction,
-    isObject, isPlainObject, newSymbol,  objAssign,  objDefineProps, objForEachKey, objHasOwnProperty,
-    objKeys, strEndsWith, strIndexOf, strLeft, strSubstring
+    arrForEach, arrIndexOf, arrSlice, fnApply, fnCall, getDeferred, getLength, isArray, isFunction, isObject,
+    isPlainObject, newSymbol,  objAssign,  objDefineProps, objForEachKey, objHasOwnProperty, objKeys,
+    strEndsWith, strIndexOf, strLeft, strSubstring
 } from "@nevware21/ts-utils";
-import { IScopeContext, IScopeContextOverrides } from "./interface/IScopeContext";
-import { AssertionFailure, AssertionFatal } from "./assertionError";
-import { MsgSource } from "../types/MsgSource";
-import { EMPTY_STRING } from "./internal/const";
-import { assertConfig } from "../config/assertConfig";
 import { _getAssertScope, _isAssertInst } from "./internal/_instCreator";
-import { _formatValue } from "../internal/_formatValue";
 import { useScope } from "./useScope";
-import { IConfigInst } from "../interfaces/IConfigInst";
+import { getCurrentHost } from "../config/configHost";
+import { INotifyResult } from "../interfaces/INotifyResult";
+import { eListenerAction } from "../types/ListenerAction";
+import { MsgSource } from "../types/MsgSource";
 import { IConfig } from "../interfaces/IConfig";
+import { _formatValue } from "../internal/_formatValue";
+import { IAssertionContext } from "./interface/IAssertionContext";
+import { IConfigInst } from "../interfaces/IConfigInst";
+import { AssertionFailure } from "./assertionFailure";
+import { AssertionFatal } from "./assertionFatal";
+import { IScopeContext, IScopeContextOverrides } from "./interface/IScopeContext";
+import { EMPTY_STRING } from "../internal/const";
 
 const cScopeContextTag = newSymbol("@nevware21/tripwire#IScopeContext");
 const DetailsSymbol = (/* #__PURE__*/getDeferred(() => newSymbol("_$details")));
@@ -32,7 +36,7 @@ function _createStackTracker(parentstack?: Function[]): Function[] {
 
     if (parentstack) {
         arrForEach(parentstack, (fn) => {
-            orgPush.call(theStack, fn);
+            fnCall(orgPush, theStack, fn);
         });
     }
 
@@ -44,7 +48,7 @@ function _createStackTracker(parentstack?: Function[]): Function[] {
                 arrForEach(theArgs, (fn) => {
                     let pos = arrIndexOf(theStack, fn);
                     if (pos === -1) {
-                        orgPush.call(theStack, fn);
+                        fnCall(orgPush, theStack, fn);
                     }
                 });
 
@@ -57,11 +61,11 @@ function _createStackTracker(parentstack?: Function[]): Function[] {
                 arrForEach(theArgs, (fn) => {
                     let pos = arrIndexOf(theStack, fn);
                     if (pos === -1) {
-                        orgUnshift.call(theStack, fn);
+                        fnCall(orgUnshift, theStack, fn);
                     } else {
                         // Move the function to the front of the stack
                         theStack.splice(pos, 1);
-                        orgUnshift.call(theStack, fn);
+                        fnCall(orgUnshift, theStack, fn);
                     }
                 });
 
@@ -183,10 +187,6 @@ export function getScopeContext(value: any): IScopeContext {
  * @since 0.1.0
  */
 export function createContext<T>(value?: T, initMsg?: MsgSource, stackStart?: Function, orgArgs?: any[], cfgOverrides?: IConfig): IScopeContext {
-    let values: any = {};
-    let cfgInst = getLazy<IConfigInst>(() => cfgOverrides ? assertConfig.$ops.clone(cfgOverrides) : assertConfig);
-    let theStack: Function[] = _createStackTracker();
-
     function _resolveMessage(context: IScopeContext, theMsg: MsgSource) {
         let message: string = (isFunction(theMsg) ? theMsg() : theMsg) || EMPTY_STRING;
 
@@ -211,7 +211,7 @@ export function createContext<T>(value?: T, initMsg?: MsgSource, stackStart?: Fu
 
                 let result = _getTokenValue(context, details, strSubstring(message, open + 1, close));
                 if (result.has) {
-                    let prefix = strLeft(message, open) + _formatValue(context, result.value);
+                    let prefix = strLeft(message, open) + _formatValue(context.opts, result.value);
                     message = prefix + strSubstring(message, close + 1);
                     start = prefix.length;
                 } else {
@@ -224,7 +224,51 @@ export function createContext<T>(value?: T, initMsg?: MsgSource, stackStart?: Fu
         return message;
     }
 
+    /**
+     * Reports an evaluation to the listeners of the active host. `ctx` is the context the evaluation was
+     * invoked on -- the leaf of the scope chain, not this root context -- as only it holds the values the
+     * message tokens (eg. `{expected}`) resolve against and the operation path that led here.
+     */
+    function _notifyAssert(ctx: IScopeContext, passed: boolean, e?: any, evalMsg?: MsgSource, causedBy?: Error): INotifyResult | undefined {
+        const activeHost = getCurrentHost();
+        const notifyMgr = (activeHost && activeHost.notifyMgr) || cfgHost.notifyMgr;
+        let notifyResult: INotifyResult;
+        // Only build the (deferred) assertion context when something is actually listening
+        if (notifyMgr && (!notifyMgr.hasListeners || notifyMgr.hasListeners())) {
+            /*
+             * Notify listeners of evaluation
+             * Wrap context in a lazy value so it's only evaluated if listeners exist
+             */
+            const assertContext = getDeferred<IAssertionContext>(() => {
+                return {
+                    value: ctx.value,
+                    message: evalMsg ? ctx.getEvalMessage(evalMsg, true) : undefined,
+                    opPath: ctx.get("opPath"),
+                    negated: ctx.get("negate") === true,
+                    passed,
+                    error: e
+                };
+            });
+
+            notifyResult = notifyMgr.notifyAssertion(assertContext);
+        }
+
+        return notifyResult;
+    }
+
+    let values: any = {};
+    let cfgHost = getCurrentHost();
+    let cfgInst = getDeferred<IConfigInst>(() => {
+        if (cfgOverrides) {
+            return cfgHost.opts.v.$ops.clone(cfgOverrides);
+        }
+
+        return cfgHost.opts.v;
+    });
+
+    let theStack: Function[] = _createStackTracker();
     let context: IScopeContext  = {
+        opts: null,
         _$stackFn: null,
         value: null,
         getMessage: function (evalMsg?: MsgSource, skipOverrides?: boolean) {
@@ -260,9 +304,40 @@ export function createContext<T>(value?: T, initMsg?: MsgSource, stackStart?: Fu
         },
         eval: function (expr: boolean, evalMsg?: MsgSource, causedBy?: Error) {
             let _this = this;
+            let notifyResult: INotifyResult | null = null;
 
-            if (!expr) {
-                _this.fail(evalMsg, _this.getDetails(), this._$stackFn, causedBy);
+            try {
+                if (!expr) {
+                    _this.fail(evalMsg, _this.getDetails(), this._$stackFn, causedBy);
+                }
+
+                notifyResult = _notifyAssert(_this, true, null, evalMsg, causedBy);
+            } catch (e) {
+                notifyResult = _notifyAssert(_this, false, e, evalMsg, causedBy);
+                // If we have a notification result and it's not to continue then rethrow
+                if (!notifyResult || notifyResult.action !== eListenerAction.Continue) {
+                    // Rethrow the error if we are not deferring
+                    throw e;
+                }
+
+                // Record deferred assertion failures against the currently executing test result.
+                const currentHost = getCurrentHost();
+                const activeTestResult = ((currentHost as any) && (currentHost as any)._activeTestResult) || (cfgHost as any)._activeTestResult;
+                if (activeTestResult) {
+                    if (!activeTestResult.deferredErrors) {
+                        activeTestResult.deferredErrors = [];
+                    }
+
+                    activeTestResult.deferredErrors.push(e as Error);
+                }
+            } finally {
+                if (notifyResult && notifyResult.action === eListenerAction.Abort) {
+                    // Notification manager is forcing the evaluation to fail
+                    let abortDetails = _this.getDetails();
+                    abortDetails.aborted = true;
+                    abortDetails.abortReason = notifyResult.reason;
+                    _this.fail(notifyResult.reason || evalMsg, abortDetails, this._$stackFn);
+                }
             }
 
             return _this;
@@ -351,7 +426,6 @@ export function createContext<T>(value?: T, initMsg?: MsgSource, stackStart?: Fu
         new: function (value: any, overrides?: IScopeContextOverrides) {
             return _childContext(context, value, overrides, stackStart);
         },
-        opts: null,
         orgArgs: null
     };
 
@@ -436,6 +510,7 @@ function _childContext<V>(parent: IScopeContext, value: V, overrides?: IScopeCon
     }
 
     let newContext: IScopeContext = {
+        opts: null,
         _$stackFn: null,
         value: null,
         getMessage: _proxyFn(parent, "getMessage", overrides),
@@ -484,7 +559,6 @@ function _childContext<V>(parent: IScopeContext, value: V, overrides?: IScopeCon
         new: function (value: any, overrides?: IScopeContextOverrides) {
             return _childContext(newContext, value, overrides, stackStart);
         },
-        opts: null,
         orgArgs: null
     };
 
@@ -493,7 +567,7 @@ function _childContext<V>(parent: IScopeContext, value: V, overrides?: IScopeCon
             v: childStack,
             e: false
         },
-        "opts": {
+        opts: {
             g: () => parent.opts
         },
         value: {

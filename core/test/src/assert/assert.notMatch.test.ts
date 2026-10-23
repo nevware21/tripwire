@@ -7,7 +7,7 @@
  */
 
 import { assert } from "../../../src/assert/assertClass";
-import { AssertionFailure } from "../../../src/assert/assertionError";
+import { AssertionFailure } from "../../../src/assert/assertionFailure";
 
 describe("assert.notMatch", () => {
     describe("positive cases - should pass", () => {

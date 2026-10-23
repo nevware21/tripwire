@@ -10,15 +10,15 @@ import {
     arrForEach, arrSlice, dumpObj, fnApply, isArray, isFunction, isNumber, isString,
     objDefine, objKeys, strEndsWith, strIndexOf, strLeft, strStartsWith
 } from "@nevware21/ts-utils";
-import { IAssertScope } from "../interface/IAssertScope";
-import { IScopeContext } from "../interface/IScopeContext";
 import { IScopeFn } from "../interface/IScopeFuncs";
-import { AssertionError } from "../assertionError";
 import { doAwait, IPromise } from "@nevware21/ts-async";
-import { IAssertInstCore } from "../interface/IAssertInstCore";
 import { _isAssertInst } from "../internal/_instCreator";
+import { AssertionError } from "../assertionError";
+import { IAssertScope } from "../interface/IAssertScope";
 import { IAssertClass } from "../interface/IAssertClass";
 import { _formatValue } from "../../internal/_formatValue";
+import { IAssertInstCore } from "../interface/IAssertInstCore";
+import { IScopeContext } from "../interface/IScopeContext";
 
 interface IStepArgs {
     named?: string;
@@ -48,8 +48,11 @@ function _parseStepArg(arg: string, internalErrorSackStart: Function) {
         _throwInvalidExpr(strIndexOf(value, "{") == -1, arg, internalErrorSackStart);
         _throwInvalidExpr(strIndexOf(value, "}") == -1, arg, internalErrorSackStart);
 
+        // `{0}`, `{1}`... are positional arguments; anything else in braces is a literal string.
+        // `parseInt("expected")` is NaN, which ts-utils `isNumber` accepts, so NaN has to be
+        // excluded explicitly or a literal would be stored as an index that resolves to nothing.
         let idx =  parseInt(value);
-        if (isNumber(idx)) {
+        if (isNumber(idx) && !isNaN(idx)) {
             return {
                 idx
             };
@@ -129,7 +132,8 @@ function _runExpr(theAssert: any, scope: IAssertScope, steps: IStepDef[], scopeF
             arrForEach(step.args, (arg) => {
                 if (arg.named) {
                     args.push(scope.context.get(arg.named));
-                } else if (arg.idx) {
+                } else if (arg.idx !== undefined) {
+                    // `!== undefined` rather than a truthiness test: `{0}` is index zero.
                     args.push(theArgs[arg.idx]);
                 } else {
                     args.push(arg.value);
@@ -139,7 +143,7 @@ function _runExpr(theAssert: any, scope: IAssertScope, steps: IStepDef[], scopeF
 
         if (!(step.name in scope.that)) {
             throw new AssertionError(
-                "" + idx + " Invalid step: " + step.name + " for [" + steps.map((s: any) => s.name).join("->") + "] available steps: [" + objKeys(scope.that).join(";") + "] - " + _formatValue(scope.context, scope.that),
+                "" + idx + " Invalid step: " + step.name + " for [" + steps.map((s: any) => s.name).join("->") + "] available steps: [" + objKeys(scope.that).join(";") + "] - " + _formatValue(scope.context.opts, scope.that),
                 {
                     expected: step.name,
                     actual: objKeys(scope.that).join(";")
@@ -170,7 +174,12 @@ function _runExpr(theAssert: any, scope: IAssertScope, steps: IStepDef[], scopeF
                 return _runOp(scope, idx + 1);
             }
 
-            return _processFn(scope, scopeFn, theArgs, stepResult, true);
+            // A step written with arguments (`fn({0})`) has already been called above. Only a bare
+            // trailing step (`createExprAdapter("equal")`, then `adapter.call(scope, expected)`)
+            // leaves a function to be invoked with the adapter's own arguments -- calling the result
+            // of an explicit call again ran a custom function twice, the second time with the wrong
+            // arguments, whenever it returned `this.that`.
+            return _processFn(scope, scopeFn, theArgs, stepResult, args === null);
         });
     }
 
@@ -179,9 +188,11 @@ function _runExpr(theAssert: any, scope: IAssertScope, steps: IStepDef[], scopeF
 
 function _processFn(scope: IAssertScope, scopeFn: IScopeFn, theArgs: any[], theResult: any, handleResultFunc: boolean): any {
 
+    let isVerbose = scope.context.opts.isVerbose;
+
     if (scopeFn) {
         // Track the operation path and set the stack start position
-        if (scope.context.opts.isVerbose) {
+        if (isVerbose) {
             let theScopeName = scopeFn.name || (scopeFn as any)["displayName"] || "anonymous";
             scope.context.setOp("[[p:" + theScopeName + "]]");
         }
@@ -193,8 +204,8 @@ function _processFn(scope: IAssertScope, scopeFn: IScopeFn, theArgs: any[], theR
     if (handleResultFunc && isFunction(theResult)) {
         // The last step is a function, so we call it
         theResult = scope.exec(theResult, theArgs);
-        if (scope.context.opts.isVerbose) {
-            scope.context.setOp("=>[[r:" + _formatValue(scope.context, theResult) + "]]");
+        if (isVerbose) {
+            scope.context.setOp("=>[[r:" + _formatValue(scope.context.opts, theResult) + "]]");
         }
     }
 

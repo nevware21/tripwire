@@ -7,12 +7,13 @@
  */
 
 import { isStrictUndefined } from "@nevware21/ts-utils";
-import { AssertionFailure, AssertionFatal } from "../assertionError";
 import { IAssertInstCore } from "../interface/IAssertInstCore";
-import { IScopeContext } from "../interface/IScopeContext";
+import { getScopeContext } from "../scopeContext";
 import { IAssertScope } from "../interface/IAssertScope";
 import { MsgSource } from "../../types/MsgSource";
-import { getScopeContext } from "../scopeContext";
+import { AssertionFailure } from "../assertionFailure";
+import { AssertionFatal } from "../assertionFatal";
+import { IScopeContext } from "../interface/IScopeContext";
 
 function _setContext(context: IScopeContext, name: string, pos: number, theArgs: any[]): void {
     if (pos < theArgs.length && !isStrictUndefined(theArgs[pos])) {
@@ -31,8 +32,10 @@ function _setContext(context: IScopeContext, name: string, pos: number, theArgs:
  * @param operator - The optional operator used in the comparison
  * @throws {@link AssertionFailure} always
  */
-//function _fail(failMsg: MsgSource, details?: any): never;
-//function _fail(_actual: any, _expected: any, _failMsg?: MsgSource, _operator?: string): never;
+/*
+ * function _fail(failMsg: MsgSource, details?: any): never;
+ * function _fail(_actual: any, _expected: any, _failMsg?: MsgSource, _operator?: string): never;
+ */
 export function _failFn(ctx: IAssertInstCore | IAssertScope, theArgs: any[]): never {
     let len = theArgs.length;
     let details: any;

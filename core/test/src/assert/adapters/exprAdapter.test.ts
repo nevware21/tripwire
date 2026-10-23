@@ -17,6 +17,7 @@ import { addAssertInstFunc, addAssertInstFuncDefs, addAssertInstProperty } from 
 import { _clearAssertInstFuncs } from "../../../../src/assert/internal/_AssertInstCore";
 import { expect } from "../../../../src/assert/expect";
 import { isArray } from "@nevware21/ts-utils";
+import { _gblConfigHost } from "../../../../src/internal/_configHost";
 
 describe("createExprAdapter", () => {
     after(() => {
@@ -890,9 +891,16 @@ describe("createExprAdapter", () => {
         it("should track expression in opPath when verbose", () => {
             assertConfig.isVerbose = true;
 
+            assert.equals(assertConfig.isVerbose, true, "Verbose mode should be enabled");
+            assert.isTrue(_gblConfigHost().opts.v.isVerbose, "Global config should reflect verbose mode");
+
             let context = createContext(10);
             let scope = createAssertScope(context);
             let adapter = createExprAdapter("to.be.not");
+
+            assert.strictEquals(scope.context, context, "Scope context should match created context");
+            assert.equals(scope.context.opts.isVerbose, true, "Context should be in verbose mode");
+            assert.equals(context.opts.isVerbose, true, "Context should be in verbose mode");
 
             adapter.call(scope);
 
@@ -1102,9 +1110,86 @@ describe("createExprAdapter", () => {
             assert.equal(receivedContext.value, 42, "Custom function should see the context value");
         });
 
-        // Note: Expression argument passing (`{0}`, `{1}`, context names) has specific
-        // behavior that requires careful handling. For simple custom functions,
-        // accessing values directly from `this.context.value` is recommended.
+        /*
+         * Expression arguments: `{N}` is the N-th argument given to the adapter, `{text}` is the
+         * literal string, and a bare token is looked up in the scope context. `{0}` used to
+         * resolve to undefined (the index was tested for truthiness) and `{text}` was stored as a
+         * NaN index, so none of the documented forms worked.
+         *
+         * The capture functions deliberately return nothing (as the addAssertInstFunc example does)
+         * rather than `this.that`: inside an instance function `this.that` is the callable wrapper
+         * of that same function, and handing it back makes the adapter invoke it a second time
+         * with the adapter's own arguments, overwriting what was captured.
+         */
+        it("should pass positional arguments, including index zero", () => {
+            let received: any[] | null = null;
+            addAssertInstFunc("captureArgs", function(this: IAssertScope, first: any, second: any) {
+                received = [first, second];
+            });
+
+            let adapter = createExprAdapter("captureArgs({0},{1})");
+            adapter.call(createAssertScope(createContext(42)), 7, 8);
+
+            assert.deepEqual(received, [7, 8], "{0} must be the first argument, {1} the second");
+        });
+
+        it("should pass braced text as a literal string", () => {
+            let received: any[] | null = null;
+            addAssertInstFunc("captureArgs", function(this: IAssertScope, first: any, second: any) {
+                received = [first, second];
+            });
+
+            let adapter = createExprAdapter("captureArgs({string},{0})");
+            adapter.call(createAssertScope(createContext(42)), 7);
+
+            assert.deepEqual(received, ["string", 7]);
+        });
+
+        it("should call a function given explicit arguments exactly once, even when it returns this.that", () => {
+            // Returning `this.that` is what every built-in scope function does and what the docs show.
+            // Inside an instance function it is the callable wrapper of that same function, so the
+            // adapter used to treat the result as a trailing function and invoke it again with the
+            // adapter's own arguments.
+            let calls: any[][] = [];
+            addAssertInstFunc("countCalls", function(this: IAssertScope, first: any) {
+                calls.push([first]);
+                return this.that;
+            });
+
+            let adapter = createExprAdapter("countCalls({0})");
+            adapter.call(createAssertScope(createContext(42)), 7);
+
+            assert.deepEqual(calls, [[7]], "an explicitly-called step must run once, with the parsed arguments");
+        });
+
+        it("should still invoke a bare trailing function with the adapter's arguments", () => {
+            // The behaviour the previous test must not break: a step written without parentheses
+            // leaves the function for the adapter's own arguments.
+            let calls: any[][] = [];
+            addAssertInstFunc("countCalls", function(this: IAssertScope, first: any, second: any) {
+                calls.push([first, second]);
+                return this.that;
+            });
+
+            let adapter = createExprAdapter("countCalls");
+            adapter.call(createAssertScope(createContext(42)), 7, 8);
+
+            assert.deepEqual(calls, [[7, 8]]);
+        });
+
+        it("should look a bare token up in the scope context", () => {
+            let received: any = null;
+            addAssertInstFunc("captureArg", function(this: IAssertScope, first: any) {
+                received = first;
+            });
+
+            let context = createContext(42);
+            context.set("expected", 99);
+            let adapter = createExprAdapter("captureArg(expected)");
+            adapter.call(createAssertScope(context));
+
+            assert.equal(received, 99);
+        });
 
         it("should chain multiple custom instance functions in expression", () => {
             let isPositiveCalled = false;
