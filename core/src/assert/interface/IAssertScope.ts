@@ -6,10 +6,10 @@
  * Licensed under the MIT license.
  */
 
+import { MsgSource } from "../../types/MsgSource";
+import { AssertScopeFuncDefs } from "./IAssertScopeFuncDef";
 import { IScopeContext, IScopeContextOverrides } from "./IScopeContext";
 import { IScopeFn } from "./IScopeFuncs";
-import { AssertScopeFuncDefs } from "./IAssertInst";
-import { MsgSource } from "../../types/MsgSource";
 
 /**
  * The {@link IAssertScope} interface provides the main entry point for the assertion chain

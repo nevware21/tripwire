@@ -115,6 +115,15 @@ export function _getAssertProto(): any {
 }
 
 /**
+ * Returns the prototype used for the "empty" assertion instances that operations (`to`, `is`, `deep`, ...)
+ * are built on, so that a shared per-operation prototype can be derived from it.
+ * @internal
+ */
+export function _getEmptyAssertProto(): any {
+    return _EmptyAssertInst.prototype;
+}
+
+/**
  * @internal
  * @ignore
  * Clears all of the user defined instance functions from the Assert inst

@@ -6,19 +6,20 @@
  * Licensed under the MIT license.
  */
 
-import { arrSlice, objDefine } from "@nevware21/ts-utils";
-import { IScopeContext, IScopeContextOverrides } from "./interface/IScopeContext";
-import { AssertScopeFuncDefs } from "./interface/IAssertInst";
-import { MsgSource } from "../types/MsgSource";
-import { EXEC } from "./internal/const";
+import { arrSlice, newSymbol, objCreate, objDefine, objIsExtensible } from "@nevware21/ts-utils";
 import { IAssertScope } from "./interface/IAssertScope";
 import { _addAssertInstFuncs } from "./internal/_addAssertInstFuncs";
 import { IScopeFn } from "./interface/IScopeFuncs";
 import { AssertInstHandlers } from "./interface/IAssertInstHandlers";
-import { _createLazyInstHandler, _setAssertScope } from "./internal/_instCreator";
+import { _createLazyInstHandler, _createOpInst, _setAssertScope, _tagAssertInst } from "./internal/_instCreator";
+import { _getEmptyAssertProto } from "./internal/_AssertInstCore";
 import { _tripwireAssertHandlers } from "./internal/_tripwireInst";
 import { _failFn, _fatalFn } from "./internal/_failFn";
 import { useScope } from "./useScope";
+import { MsgSource } from "../types/MsgSource";
+import { AssertScopeFuncDefs } from "./interface/IAssertScopeFuncDef";
+import { IScopeContext, IScopeContextOverrides } from "./interface/IScopeContext";
+import { EXEC } from "../internal/const";
 
 
 /**
@@ -30,9 +31,44 @@ import { useScope } from "./useScope";
  * @group Scope
  * @since 0.1.0
  */
+const _opProtoTag = /* #__PURE__ */ newSymbol("@nevware21/tripwire#opProto");
+
+/**
+ * Returns the prototype shared by every operation instance created for the given `funcs` definition
+ * table, creating (and caching it on the table itself) the first time the table is seen. The operation
+ * getters resolve their scope from the instance they are invoked on, so they only need to be defined
+ * once per table rather than on every instance -- which previously cost 30 to 50 property definitions
+ * for each `.to`, `.be`, `.is`, `.deep` (etc.) step of an assertion chain.
+ *
+ * The table is bound the first time it is used: a definition changed or added afterwards is not seen by
+ * later operations, so a table passed to `createOperation` is treated as immutable from then on. A frozen,
+ * sealed or otherwise non-extensible table cannot carry the cache, so it gets a fresh prototype per call --
+ * the cost it had before the cache existed -- rather than a TypeError from defining the cache property.
+ * @internal
+ */
+function _getOpProto<T>(funcs: AssertScopeFuncDefs<T>, internalErrorStackStart: Function): any {
+    let proto = (funcs as any)[_opProtoTag];
+    if (!proto) {
+        proto = objCreate(_getEmptyAssertProto());
+        _tagAssertInst(proto);
+        _addAssertInstFuncs(proto, funcs, false, internalErrorStackStart);
+        if (objIsExtensible(funcs)) {
+            objDefine(funcs as any, _opProtoTag, {
+                v: proto,
+                e: false
+            });
+        }
+    }
+
+    return proto;
+}
+
 export function createAssertScope(context: IScopeContext, handlerCreator?: AssertInstHandlers): IAssertScope {
     let _context: IScopeContext = context;
     let creators = _createLazyInstHandler(handlerCreator || _tripwireAssertHandlers);
+    // The shared prototype fast path derives from the default empty instance, so it is only used when
+    // the default instance handlers are in effect.
+    let _useSharedProto = !handlerCreator || handlerCreator === _tripwireAssertHandlers;
 
     let theScope: IAssertScope = {
         context: _context,
@@ -143,6 +179,12 @@ export function createAssertScope(context: IScopeContext, handlerCreator?: Asser
 
     function createOperation<T>(funcs: AssertScopeFuncDefs<T>, obj?: any): T {
         if (!obj) {
+            if (_useSharedProto) {
+                // Fast path: the operation functions live on a prototype shared by every instance
+                // created for this `funcs` table, so only the scope binding is per-instance.
+                return _createOpInst(_getOpProto(funcs, createOperation), theScope);
+            }
+
             obj = newEmptyInst();
         } else {
             // Make sure that the obj is tagged with the current scope so that

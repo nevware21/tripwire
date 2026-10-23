@@ -6,11 +6,11 @@
  * Licensed under the MIT license.
  */
 
-import { IAssertScopeFuncDef, AssertScopeFuncDefs } from "./interface/IAssertInst";
+import { MsgSource } from "../types/MsgSource";
+import { AssertScopeFuncDefs, IAssertScopeFuncDef } from "./interface/IAssertScopeFuncDef";
 import { IScopeFn, IScopePropFn } from "./interface/IScopeFuncs";
 import { _addAssertInstFuncs } from "./internal/_addAssertInstFuncs";
 import { _getAssertProto } from "./internal/_AssertInstCore";
-import { MsgSource } from "../types/MsgSource";
 
 /**
  * Adds a set of scope functions to the assert (instance) prototype which

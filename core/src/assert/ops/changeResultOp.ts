@@ -7,13 +7,14 @@
  */
 
 import { isNumber } from "@nevware21/ts-utils";
-import { IAssertInst, IAssertScopeFuncDef, AssertScopeFuncDefs } from "../interface/IAssertInst";
-import { IAssertScope } from "../interface/IAssertScope";
-import { IScopeContext } from "../interface/IScopeContext";
 import { _addAssertInstFuncs } from "../internal/_addAssertInstFuncs";
-import { MsgSource } from "../../types/MsgSource";
 import { IChangeResultOp } from "../interface/ops/IChangeResultOp";
 import { IChangeResultValue } from "../interface/ops/IChangeResultValue";
+import { IAssertInst } from "../interface/IAssertInst";
+import { AssertScopeFuncDefs, IAssertScopeFuncDef } from "../interface/IAssertScopeFuncDef";
+import { IAssertScope } from "../interface/IAssertScope";
+import { MsgSource } from "../../types/MsgSource";
+import { IScopeContext } from "../interface/IScopeContext";
 
 type OmitAssertFuncs = Omit<IChangeResultOp, keyof IAssertInst>;
 

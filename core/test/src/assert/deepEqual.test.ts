@@ -183,8 +183,6 @@ describe("deepEqual advanced coverage", function () {
                 }
             };
 
-            const obj2 = { value: 1 };
-
             // Test objects are comparable
             assert.ok(typeof obj1.equals === "function");
         });

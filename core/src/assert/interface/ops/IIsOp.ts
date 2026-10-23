@@ -54,6 +54,23 @@ export interface IIsOp<R> extends INotOp<IIsOp<R>>, IEqualOp<R>, IIsTypeOp<R>, I
     an: this;
 
     /**
+     * A decorative / alias operation which returns the current instance, so that Chai-style
+     * `to.be.at.least(n)` and `to.be.at.most(n)` read naturally. It performs no check of its own.
+     * @returns - The current instance.
+     * @since 0.2.0
+     * @example
+     * ```typescript
+     * expect(5).to.be.at.least(5);
+     * expect(5).to.be.at.most(10);
+     *
+     * // This is equivalent to not using this decorator operation
+     * expect(5).to.be.least(5);
+     * expect(5).to.be.most(10);
+     * ```
+     */
+    at: this;
+
+    /**
      * Asserts that the target is a number close to the given number within a specified delta.
      * This is useful for floating-point comparisons where exact equality is not guaranteed.
      * @param expected - The expected value to compare against.

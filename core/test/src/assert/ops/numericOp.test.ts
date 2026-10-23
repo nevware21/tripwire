@@ -7,7 +7,11 @@
  */
 
 import { assert } from "../../../../src/assert/assertClass";
+import { createAssertScope } from "../../../../src/assert/assertScope";
 import { expect } from "../../../../src/assert/expect";
+import { numericOp } from "../../../../src/assert/ops/numericOp";
+import { createContext } from "../../../../src/assert/scopeContext";
+import { checkError } from "../../support/checkError";
 
 describe("numericOp tests", () => {
     describe("above / greaterThan / gt", () => {
@@ -170,6 +174,29 @@ describe("numericOp tests", () => {
             } catch (err: any) {
                 expect(err.message).to.include("custom within message");
             }
+        });
+    });
+
+    describe("numericOp factory", () => {
+        it("creates the operation table over a scope, with every alias bound to its function", () => {
+            const op = numericOp<any>(createAssertScope(createContext(5)));
+
+            op.above(4);
+            op.gt(4);
+            op.greaterThan(4);
+            op.least(5);
+            op.gte(5);
+            op.greaterThanOrEqual(5);
+            op.below(6);
+            op.lt(6);
+            op.lessThan(6);
+            op.most(5);
+            op.lte(5);
+            op.lessThanOrEqual(5);
+            op.within(1, 10);
+
+            checkError(() => numericOp<any>(createAssertScope(createContext(5))).above(5), /expected 5 to be above 5/);
+            checkError(() => numericOp<any>(createAssertScope(createContext(5))).within(6, 10), /expected 5 to be within 6\.\.10/);
         });
     });
 });

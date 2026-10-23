@@ -6,11 +6,11 @@
  * Licensed under the MIT license.
  */
 
-import { dumpObj, getLazy, ILazyValue, newSymbol, objDefine } from "@nevware21/ts-utils";
-import { IAssertScope } from "../interface/IAssertScope";
+import { dumpObj, getLazy, ILazyValue, newSymbol, objCreate, objDefine } from "@nevware21/ts-utils";
 import { IAssertInstHandlers } from "../interface/IAssertInstHandlers";
-import { AssertionError } from "../assertionError";
 import { IAssertInstCore } from "../interface/IAssertInstCore";
+import { IAssertScope } from "../interface/IAssertScope";
+import { AssertionError } from "../assertionError";
 
 /**
  * @internal
@@ -76,6 +76,34 @@ export function _setAssertScope<T>(inst: T, scope: IAssertScope, internalErrorSt
  * @param creator - The creator function to use to create the new instances.
  * @returns - A new lazy value that will create the new instances.
  */
+/**
+ * Tags the target (normally a shared operation prototype) as an assertion instance so that any object
+ * created with it as its prototype is recognised by {@link _isAssertInst}.
+ * @internal
+ */
+export function _tagAssertInst(target: any): void {
+    objDefine(target, cAssertTag, {
+        v: true,
+        e: false
+    });
+}
+
+/**
+ * Creates a new operation instance from a shared (already tagged and populated) prototype, binding it to
+ * the provided scope. This is the fast path used by `createOperation` so that the operation functions are
+ * defined once on the prototype rather than on every instance.
+ * @internal
+ */
+export function _createOpInst(proto: any, scope: IAssertScope): any {
+    let inst = objCreate(proto);
+    objDefine(inst, cScopeTag, {
+        v: scope,
+        e: false
+    });
+
+    return inst;
+}
+
 export function _createLazyInstHandler(creator: () => IAssertInstHandlers): ILazyValue<IAssertInstHandlers> {
     return getLazy<IAssertInstHandlers>(() => {
         let theCreator = creator();

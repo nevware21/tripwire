@@ -9,6 +9,40 @@
 import { expect } from "../../../src/assert/expect";
 import { checkError } from "../support/checkError";
 
+describe("expect.to.deep.strictly", () => {
+    it("compares deeply with strict equality under equal, equals and eq", () => {
+        expect({ a: [1, { b: 2 }] }).to.deep.strictly.equal({ a: [1, { b: 2 }] });
+        expect({ a: [1, { b: 2 }] }).to.deep.strictly.equals({ a: [1, { b: 2 }] });
+        expect({ a: [1, { b: 2 }] }).to.deep.strictly.eq({ a: [1, { b: 2 }] });
+
+        // Deeply equal only loosely: the strict comparison tells 1 from "1".
+        expect({ a: 1 }).to.deep.equal({ a: "1" } as any);
+        checkError(() => {
+            expect({ a: 1 }).to.deep.strictly.equal({ a: "1" } as any);
+        }, /expected .* to deeply and strictly equal/);
+    });
+
+    it("negates through not", () => {
+        expect({ a: 1 }).to.deep.strictly.not.equal({ a: "1" } as any);
+
+        checkError(() => {
+            expect({ a: 1 }).to.deep.strictly.not.equal({ a: 1 });
+        }, /not .*deeply and strictly equal/);
+    });
+
+    it("checks strict true and false", () => {
+        expect(true).to.deep.strictly.true();
+        expect(false).to.deep.strictly.false();
+
+        checkError(() => {
+            expect(1).to.deep.strictly.true();
+        }, /expected 1 to be strictly true/);
+        checkError(() => {
+            expect(0).to.deep.strictly.false();
+        }, /expected 0 to be strictly false/);
+    });
+});
+
 describe("expect.to.have", () => {
 
     it("should call all.keys with correct arguments", () => {
@@ -63,5 +97,19 @@ describe("expect.to.have", () => {
         }, "expected {a:1,b:2} to be an array");
 
         expect([ "hello", "darkness", "my", "old", "friend" ]).to.be.a.array();
+    });
+
+    it("should accept Chai's at as a decorative chain word", () => {
+        expect(5).to.be.at.least(5);
+        expect(5).to.be.at.most(5);
+        expect(5).to.be.at.least(1);
+
+        checkError(() => {
+            expect(4).to.be.at.least(5);
+        }, "expected 4 to be at least 5");
+
+        checkError(() => {
+            expect(11).to.be.at.most(10);
+        }, "expected 11 to be at most 10");
     });
 });

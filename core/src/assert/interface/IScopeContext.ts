@@ -6,8 +6,8 @@
  * Licensed under the MIT license.
  */
 
-import { MsgSource } from "../../types/MsgSource";
 import { IConfigInst } from "../../interfaces/IConfigInst";
+import { MsgSource } from "../../types/MsgSource";
 
 /**
  * The scope context is used to track the evaluation of the assertion and
@@ -18,14 +18,14 @@ import { IConfigInst } from "../../interfaces/IConfigInst";
  */
 export interface IScopeContext {
     /**
-     * Returns the initial value being evaluated
-     */
-    readonly value: any;
-
-    /**
      * Returns the options (the current configuration) for the current context.
      */
     readonly opts: IConfigInst;
+
+    /**
+     * Returns the initial value being evaluated
+     */
+    readonly value: any;
 
     /**
      * Returns the original arguments used during the initiation of the proxied request

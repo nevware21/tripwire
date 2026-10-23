@@ -17,14 +17,18 @@ import { IStrictlyOp } from "./IStrictlyOp";
 import { AssertFn } from "../funcs/AssertFn";
 import { ChangeFn } from "../funcs/ChangeFn";
 import { ChangeByFn } from "../funcs/ChangeByFn";
+import { IEqualOp } from "./IEqualOp";
 
 /**
  * Represents an interface for operations that can be performed on an assertion scope.
  * This represents a logical grouping of assertion operations, which is used to provide
  * a descriptive API for assertion operations.
+ *
+ * Since 0.2.0 this also extends {@link IEqualOp}, so the equality assertions it defines are
+ * available directly on `to` as well as through `is`.
  * @template R - The type of the result of the operation.
  */
-export interface IToOp<R> extends INotOp<IToOp<R>> {
+export interface IToOp<R> extends INotOp<IToOp<R>>, IEqualOp<R> {
 
     /**
      * Asserts that the target exists (is not null and not undefined).

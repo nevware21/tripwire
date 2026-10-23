@@ -7,11 +7,11 @@
  */
 
 import { arrForEach, arrIndexOf, dumpObj, isFunction, newSymbol, objDefine, objForEachKey, objHasOwnProperty } from "@nevware21/ts-utils";
-import { AssertionError } from "../assertionError";
 import { IScopePropFn, IScopeFn } from "../interface/IScopeFuncs";
-import { IAssertScopeFuncDef, AssertScopeFuncDefs } from "../interface/IAssertInst";
 import { _isBannedProperty, _isBannedPrototype } from "./_banned";
 import { _createAssertInstFunc } from "./_createAssertInstFunc";
+import { AssertScopeFuncDefs, IAssertScopeFuncDef } from "../interface/IAssertScopeFuncDef";
+import { AssertionError } from "../assertionError";
 
 /**
  * @internal

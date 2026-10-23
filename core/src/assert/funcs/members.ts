@@ -7,11 +7,11 @@
  */
 
 import { arrForEach, arrFrom } from "@nevware21/ts-utils";
-import { IAssertScope } from "../interface/IAssertScope";
-import { MsgSource } from "../../types/MsgSource";
-import { ArrayLikeOrSizedIterable } from "../../types/ArrayLikeOrSizedIterable";
 import { _deepEqual } from "./equal";
 import { _getArrayLikeOrIterableSize, _isArrayLikeOrIterable, _iterateForEachItem } from "../internal/_isArrayLikeOrIterable";
+import { MsgSource } from "../../types/MsgSource";
+import { ArrayLikeOrSizedIterable } from "../../types/ArrayLikeOrSizedIterable";
+import { IAssertScope } from "../interface/IAssertScope";
 import { IScopeContext } from "../interface/IScopeContext";
 
 function _checkActualAndExpected(context: IScopeContext, value: any, expected: any, evalMsg?: MsgSource): void {

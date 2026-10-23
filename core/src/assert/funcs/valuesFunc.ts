@@ -11,8 +11,8 @@ import {
     isStrictNullOrUndefined, isString, iterForOf, objForEachKey, strIndexOf
 } from "@nevware21/ts-utils";
 import { IAssertScope } from "../interface/IAssertScope";
-import { EMPTY_STRING } from "../internal/const";
 import { ValuesFn } from "../interface/funcs/ValuesFn";
+import { EMPTY_STRING } from "../../internal/const";
 
 function _getCtxValues(scope: IAssertScope, value: any): any[] {
     let theValues: any[] = [];
