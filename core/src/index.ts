@@ -55,7 +55,8 @@ import { EqualFn } from "./assert/interface/funcs/EqualFn";
 import { AssertFn } from "./assert/interface/funcs/AssertFn";
 import { ErrorLikeFn } from "./assert/interface/funcs/ErrorLikeFn";
 import { InstanceOfFn } from "./assert/interface/funcs/InstanceOfFn";
-import { assertConfig } from "./config/assertConfig";
+import { assertConfig, addAssertionListener, removeAssertionListener } from "./config/assertConfig";
+import { IConfigHost } from "./interfaces/IConfigHost";
 import { IFormatCtx, IFormatter, IFormattedValue } from "./interfaces/IFormatter";
 import { eFormatResult, FormatResult } from "./types/FormatResult";
 import { IFormatManager } from "./interfaces/IFormatManager";
@@ -74,6 +75,51 @@ import { ChangeFn } from "./assert/interface/funcs/ChangeFn";
 import { ChangeByFn } from "./assert/interface/funcs/ChangeByFn";
 import { IChangeResultOp } from "./assert/interface/ops/IChangeResultOp";
 import { IChangeResultValue } from "./assert/interface/ops/IChangeResultValue";
+import { ConfigHostFunc } from "./types/ConfigHostFunc";
+import { createServerMgr } from "./server/ServerManager";
+import { createFormatMgr } from "./config/formatManager";
+import { getCurrentHost, useHost, withHost } from "./config/configHost";
+import { DEFAULT_CONFIG } from "./config/defaultConfig";
+
+/**
+ * Export server-related types and functions
+ */
+export { IServerManager } from "./interfaces/IServerManager";
+export { ITestServerProvider } from "./suite/interfaces/ITestServerProvider";
+
+/**
+ * Re-export the shared types and functions
+ */
+export { ITestServer } from "./server/ITestServer";
+export { IDoneFn } from "./interfaces/suite/IDoneFn";
+export { IGetSetChainableFn } from "./interfaces/suite/IGetSetChainableFn";
+export { ITestCase } from "./interfaces/suite/ITestCase";
+export { ITestContext } from "./interfaces/suite/ITestContext";
+export { HookFn } from "./types/HookFn";
+export { TestFn } from "./types/TestFn";
+export { eListenerEvent, ListenerEvent, ListenerEventEnum } from "./types/ListenerEvent";
+
+/**
+ * Export suite types
+ */
+export { IHookDefinition } from "./suite/interfaces/IHookDefinition";
+export { ITestSuite } from "./suite/interfaces/ITestSuite";
+export { IListener } from "./interfaces/IListener";
+export { eListenerAction, ListenerAction } from "./types/ListenerAction";
+export { IListenerResult } from "./interfaces/IListenerResult";
+export { IListenerContext } from "./interfaces/IListenerContext";
+export { IListenerStartContext } from "./interfaces/IListenerStartContext";
+export { IListenerEndContext } from "./interfaces/IListenerEndContext";
+export { IAssertionContext } from "./assert/interface/IAssertionContext";
+export { INotifyResult } from "./interfaces/INotifyResult";
+export { INotificationManager } from "./interfaces/INotificationManager";
+export { IAssertionListener } from "./suite/assertionListener";
+export { createNotifyMgr } from "./notify/NotificationManager";
+
+/**
+ * Export runner types and functions
+ */
+export { IHookFailure } from "./interfaces/runner/IHookFailure";
 
 /**
  * Export the Error classes
@@ -87,7 +133,7 @@ export {
  * Export the interfaces
  */
 export {
-    IAllOp, IAnyOp, IAssertClass, IAssertClassDef, IConfig, IConfigInst, IConfigApi,
+    IAllOp, IAnyOp, IAssertClass, IAssertClassDef, IConfig, IConfigInst, IConfigApi, IConfigHost,
     IAssertInst, IAssertInstCore, IAssertInstHandlers, IAssertScope, IAssertScopeFuncDef,
     IChangeResultOp, IChangeResultValue, IDeepOp, IEqualOp, IExtendedAssert, IExtendedAssertInst,
     IFormatCtx, IFormattedValue, IFormatter, IFormatterOptions, IFormatManager, IHasOp, IHasOwnOp, IIncludeOp,
@@ -101,7 +147,7 @@ export {
  */
 export {
     ArrayLikeOrSizedIterable, AssertClassDef, AssertFn, AssertInstHandlers, AssertScopeFuncDefs,
-    ChangeByFn, ChangeFn, CloseToFn, EqualFn, ErrorLikeFn, EvalFn, IncludeFn, InstanceOfFn,
+    ChangeByFn, ChangeFn, CloseToFn, ConfigHostFunc, EqualFn, ErrorLikeFn, EvalFn, IncludeFn, InstanceOfFn,
     IScopeFn, KeysFn, MsgSource, NumberFn, OneOfFn, OperatorFn, SymbolFn, ThrowFn, ValuesFn,
     WithinFn
 };
@@ -118,13 +164,14 @@ export {
  */
 export {
     addAssertFunc, addAssertFuncs, addAssertInstFunc, addAssertInstFuncDef, addAssertInstFuncDefs,
-    assert, assertConfig, createAssert, createAssertScope, createContext, createEvalAdapter,
-    createExprAdapter, createNotAdapter, expect, getScopeContext, useScope
+    assert, assertConfig, addAssertionListener, removeAssertionListener, createAssert, createAssertScope, createContext, createEvalAdapter,
+    createExprAdapter, createNotAdapter, expect, getScopeContext, useScope,
+    createServerMgr, createFormatMgr, getCurrentHost, useHost, withHost
 };
 
 /**
  * Export the constants
  */
 export {
-    CHECK_INTERNAL_STACK_FRAME_REGEX
+    CHECK_INTERNAL_STACK_FRAME_REGEX, DEFAULT_CONFIG
 };

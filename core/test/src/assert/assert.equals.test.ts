@@ -2,7 +2,7 @@
  * @nevware21/tripwire
  * https://github.com/nevware21/tripwire
  *
- * Copyright (c) 2024-2025 NevWare21 Solutions LLC
+ * Copyright (c) 2024-2026 NevWare21 Solutions LLC
  * Licensed under the MIT license.
  */
 
@@ -953,6 +953,39 @@ describe("assert.deepEquals", function () {
         assert.deepEquals(0, "0", "Number and string mismatch");
         assert.deepEquals(1, true, "Number and boolean mismatch");
         assert.deepEquals(0, false, "Number and boolean mismatch");
+    });
+});
+
+describe("assert.notDeepStrictEqual", function () {
+
+    it("passes when values differ in value or only in type", function () {
+        assert.notDeepStrictEqual(1, 2);
+        assert.notDeepStrictEqual(1, "1");
+        assert.notDeepStrictEqual({ a: 1 }, { a: "1" });
+        assert.notDeepStrictEqual([1, 2], [2, 1]);
+        assert.notDeepStrictEqual({ a: { b: 1 } }, { a: { b: "1" } });
+    });
+
+    it("fails when values are deeply and strictly equal", function () {
+        checkError(function () {
+            assert.notDeepStrictEqual(1, 1);
+        }, /not.*deeply and strictly equal/);
+
+        checkError(function () {
+            assert.notDeepStrictEqual({ a: { b: 1 } }, { a: { b: 1 } });
+        }, /not.*deeply and strictly equal/);
+
+        checkError(function () {
+            assert.notDeepStrictEqual([1, 2], [1, 2], "Hello");
+        }, "Hello: ");
+    });
+
+    it("notDeepStrictEquals is an alias", function () {
+        assert.notDeepStrictEquals({ a: 1 }, { a: "1" });
+
+        checkError(function () {
+            assert.notDeepStrictEquals({ a: 1 }, { a: 1 });
+        }, /not.*deeply and strictly equal/);
     });
 });
 

@@ -8,6 +8,9 @@
 
 import { assert } from "../../../src/assert/assertClass";
 import { assertConfig } from "../../../src/config/assertConfig";
+import { createFormatMgr } from "../../../src/config/formatManager";
+import { IFormatCtx, IFormatter } from "../../../src/interfaces/IFormatter";
+import { eFormatResult } from "../../../src/types/FormatResult";
 
 describe("formatManager", function () {
     describe("formatMgr.format() convenience method", function () {
@@ -85,6 +88,67 @@ describe("formatManager", function () {
             // Format obj1 again - should not be affected by previous calls
             let result3 = formatMgr.format(obj1);
             assert.equal(result3, "{type:\"first\"}");
+        });
+    });
+
+    describe("createFormatMgr()", function () {
+        function numberFormatter(tag: string): IFormatter {
+            return {
+                name: tag,
+                value: (_ctx: IFormatCtx, value: any) => {
+                    if (typeof value === "number") {
+                        return { res: eFormatResult.Ok, val: tag + ":" + value };
+                    }
+
+                    return { res: eFormatResult.Skip };
+                }
+            };
+        }
+
+        it("should apply the formatters registered on the created manager itself", function () {
+            const mgr = createFormatMgr(assertConfig);
+            mgr.addFormatter(numberFormatter("own"));
+
+            assert.equal(mgr.format(42), "own:42");
+            assert.equal(mgr.format({ a: 1 }), "{a:own:1}", "nested values formatted through the context use the same manager");
+            assert.equal(assertConfig.$ops.formatMgr.format(42), "42", "the configuration's own manager is not affected");
+        });
+
+        it("should fall back to the formatters inherited from the supplied parent", function () {
+            const parent = createFormatMgr(assertConfig);
+            parent.addFormatter(numberFormatter("parent"));
+            const child = createFormatMgr(assertConfig, parent);
+
+            assert.equal(child.format(7), "parent:7");
+
+            child.addFormatter(numberFormatter("child"));
+            assert.equal(child.format(7), "child:7", "own formatters take precedence over inherited ones");
+            assert.equal(parent.format(7), "parent:7", "the parent does not see the child's formatters");
+        });
+
+        it("should report a failure while walking the formatters instead of throwing", function () {
+            const broken: any = {
+                forEach: () => {
+                    throw new Error("formatter walk failed");
+                }
+            };
+            const mgr = createFormatMgr(assertConfig, broken);
+
+            const result = mgr.format(1);
+            assert.includes(result, "formatter walk failed");
+        });
+
+        it("should format with the configuration it was created with", function () {
+            const cfg = assertConfig.$ops.clone({
+                format: {
+                    finalize: true,
+                    finalizeFn: (value: string) => "<" + value + ">"
+                }
+            });
+            const mgr = createFormatMgr(cfg);
+
+            assert.equal(mgr.format(1), "<1>");
+            assert.equal(assertConfig.$ops.formatMgr.format(1), "1");
         });
     });
 });

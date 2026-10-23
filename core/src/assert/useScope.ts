@@ -22,11 +22,11 @@ let _globalScopeContext: IScopeContext | null = null;
  * @group Scope
  * @since 0.1.3
  */
-export function useScope<T>(scope: IScopeContext, callback: () => T): T {
+export function useScope<T>(scope: IScopeContext, callback: (scope?: IScopeContext) => T): T {
     let previousScope = _globalScopeContext;
     _globalScopeContext = scope;
     try {
-        return callback();
+        return callback(scope);
     } finally {
         _globalScopeContext = previousScope;
     }

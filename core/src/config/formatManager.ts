@@ -7,17 +7,19 @@
  */
 
 import { arrAppend, arrForEach, arrIndexOf, asString, dumpObj, getDeferred, ICachedValue, isArray, isFunction, isPrimitive, objDefine } from "@nevware21/ts-utils";
-import { _noOpFn } from "./_noOp";
+import { _noOpFn } from "../internal/_noOp";
 import { escapeAnsi, yellow } from "@nevware21/chromacon";
-import { _defaultFormatters } from "./_defaultFormatters";
+import { _defaultFormatters } from "../internal/_defaultFormatters";
 import { IFormatCtx, IFormattedValue, IFormatter } from "../interfaces/IFormatter";
 import { eFormatResult } from "../types/FormatResult";
 import { IConfigInst } from "../interfaces/IConfigInst";
 import { IFormatManager } from "../interfaces/IFormatManager";
 import { IRemovable } from "../interfaces/IRemovable";
-import { EMPTY_STRING } from "./const";
+import { EMPTY_STRING } from "../internal/const";
 
 let _circularTrack: any[];
+let _describingFailure = false;
+
 function _withCircularTrack(fn: () => string): string {
     let currentTrack = _circularTrack;
 
@@ -60,10 +62,13 @@ function _isVisited(value: any, visited: any[], maxDepth?: number): boolean {
 /**
  * Perform the default formatting of a value using the provided format context.
  * @param formatCtx The format context to use for formatting the value.
+ * @param forEach Walks the custom formatters of the manager doing the formatting, own formatters first then
+ * any inherited from its parent, so a manager always applies its own registrations rather than those of
+ * whichever manager the configuration happens to expose.
  * @param value The value to format.
  * @returns A string representation of the value.
  */
-function _doFormat(formatCtx: IFormatCtx, value: any): string {
+function _doFormat(formatCtx: IFormatCtx, forEach: IFormatManager["forEach"], value: any): string {
     let formattedValue: IFormattedValue;
     let result: string;
 
@@ -91,7 +96,7 @@ function _doFormat(formatCtx: IFormatCtx, value: any): string {
 
     try {
         // Process the custom formatters first
-        formatCtx.cfg.$ops.formatMgr.forEach(_format);
+        forEach(_format);
         if (!formattedValue || formattedValue.res !== eFormatResult.Ok) {
             // Iterate through the default formatters to find one that can format the value
             arrForEach(_defaultFormatters, _format);
@@ -109,7 +114,22 @@ function _doFormat(formatCtx: IFormatCtx, value: any): string {
             result = asString(value);
         }
     } catch (e) {
-        result = yellow("(" + _doFormat(formatCtx, e) + ")");
+        // Describe the failure with the formatters as well, but only one level deep: when describing it
+        // fails too (eg. the walk over the custom formatters is what throws) fall back to a plain dump
+        // rather than recursing until the stack runs out.
+        let description: string;
+        if (_describingFailure) {
+            description = dumpObj(e);
+        } else {
+            _describingFailure = true;
+            try {
+                description = _doFormat(formatCtx, forEach, e);
+            } finally {
+                _describingFailure = false;
+            }
+        }
+
+        result = yellow("(" + description + ")");
     }
 
     return result;
@@ -118,12 +138,13 @@ function _doFormat(formatCtx: IFormatCtx, value: any): string {
 /**
  * @internal
  * @ignore
- * Creates a format context bound to the supplied scope context.
+ * Creates a format context bound to the supplied configuration and the formatters of one manager.
  * The returned context handles circular references while formatting values.
- * @param ctx - The scope context used to resolve formatting options.
+ * @param cfg - The configuration used to resolve formatting options.
+ * @param forEach - Walks the custom formatters of the manager this context belongs to.
  * @returns A format context that can be passed to `_doFormat` or used via its `format` method.
  */
-function _createFormatCtx(cfg: IConfigInst): IFormatCtx {
+function _createFormatCtx(cfg: IConfigInst, forEach: IFormatManager["forEach"]): IFormatCtx {
     let formatCtx: IFormatCtx = {
         cfg: cfg,
         format: (value: any): string => {
@@ -142,7 +163,7 @@ function _createFormatCtx(cfg: IConfigInst): IFormatCtx {
 
             let formattedValue: string;
             try {
-                formattedValue = _doFormat(formatCtx, value);
+                formattedValue = _doFormat(formatCtx, forEach, value);
             } finally {
                 _circularTrack.pop();
             }
@@ -158,15 +179,16 @@ function _createFormatCtx(cfg: IConfigInst): IFormatCtx {
  * @internal
  * @ignore
  * Internal helper to format a value for display in an error messages.
- * @param ctx - Scope context containing the configuration and formatters to use.
+ * @param formatCtx - Format context carrying the configuration to use.
+ * @param forEach - Walks the custom formatters of the manager doing the formatting.
  * @param value - The value to format.
  * @returns - A string representation of the value.
  */
-function _formatCtxValue(formatCtx: IFormatCtx, value: any): string {
+function _formatCtxValue(formatCtx: IFormatCtx, forEach: IFormatManager["forEach"], value: any): string {
     let formatOpts = formatCtx.cfg.format;
 
     return _withCircularTrack(() => {
-        let result = _doFormat(formatCtx, value);
+        let result = _doFormat(formatCtx, forEach, value);
 
         // Apply finalization if configured
         if (formatOpts && formatOpts.finalize) {
@@ -195,7 +217,7 @@ function _formatCtxValue(formatCtx: IFormatCtx, value: any): string {
 export function createFormatMgr(cfg: IConfigInst, parent?: IFormatManager): IFormatManager {
     const _formatters: IFormatter[] = [];
     let formatCtx: ICachedValue<IFormatCtx> = getDeferred(() => {
-        return _createFormatCtx(cfg);
+        return _createFormatCtx(cfg, _forEach);
     });
 
     function _addFormatter(formatter: IFormatter | Array<IFormatter>): IRemovable {
@@ -254,7 +276,7 @@ export function createFormatMgr(cfg: IConfigInst, parent?: IFormatManager): IFor
     }
 
     function _format(value: any): string {
-        return _formatCtxValue(formatCtx.v, value);
+        return _formatCtxValue(formatCtx.v, _forEach, value);
     }
 
     return {

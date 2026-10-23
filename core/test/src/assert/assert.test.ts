@@ -44,6 +44,16 @@ describe("assert", function () {
             }, "Assertion failed");
         });
 
+        it("should resolve message tokens for the bare assertion", function () {
+            checkError(function () {
+                assert(false, "failed at {path}");
+            }, "failed at \"assert()\"");
+
+            checkError(function () {
+                assert(false, "value was {value}");
+            }, "value was false");
+        });
+
         it("assert", function () {
             var hello = "darkness";
             assert(hello == "darkness", "expected hello to equal `darkness`");

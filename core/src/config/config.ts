@@ -10,7 +10,7 @@ import {
     arrSlice, getDeferred, ICachedValue, isArray, isNullOrUndefined, isObject, isPlainObject,
     objDefine, objForEachKey, objIs
 } from "@nevware21/ts-utils";
-import { createFormatMgr } from "../internal/formatManager";
+import { createFormatMgr } from "./formatManager";
 import { IConfig } from "../interfaces/IConfig";
 import { IFormatManager } from "../interfaces/IFormatManager";
 import { IConfigInst } from "../interfaces/IConfigInst";
