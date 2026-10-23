@@ -12,7 +12,7 @@ import { IAllOp } from "./IAllOp";
 import { IAnyOp } from "./IAnyOp";
 import { IOwnOp } from "./IOwnOp";
 import { INestedOp } from "./INestedOp";
-import { MsgSource } from "../../type/MsgSource";
+import { MsgSource } from "../../../types/MsgSource";
 
 /**
  * Provides the 'has' operation for the assert scope.
@@ -98,7 +98,7 @@ export interface IHasOp<R> {
      * expect(new Set([1, 2])).has.lengthOf(2);     // Passes - Set size is 2
      * ```
      */
-    lengthOf(n: number, evalMsg?: MsgSource): R;
+    lengthOf(length: number, evalMsg?: MsgSource): R;
 
     /**
      * Asserts that the target has a size or length property equal to the given number.
@@ -114,5 +114,5 @@ export interface IHasOp<R> {
      * expect(new Set([1, 2])).has.sizeOf(2);     // Passes - Set size is 2
      * ```
      */
-    sizeOf(n: number, evalMsg?: MsgSource): R;
+    sizeOf(size: number, evalMsg?: MsgSource): R;
 }

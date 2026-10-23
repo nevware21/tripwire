@@ -13,14 +13,14 @@ import {
 } from "@nevware21/ts-utils";
 import { IScopeContext, IScopeContextOverrides } from "./interface/IScopeContext";
 import { AssertionFailure, AssertionFatal } from "./assertionError";
-import { MsgSource } from "./type/MsgSource";
+import { MsgSource } from "../types/MsgSource";
 import { EMPTY_STRING } from "./internal/const";
 import { assertConfig } from "../config/assertConfig";
 import { _getAssertScope, _isAssertInst } from "./internal/_instCreator";
 import { _formatValue } from "../internal/_formatValue";
 import { useScope } from "./useScope";
-import { IConfigInst } from "../interface/IConfigInst";
-import { IConfig } from "../interface/IConfig";
+import { IConfigInst } from "../interfaces/IConfigInst";
+import { IConfig } from "../interfaces/IConfig";
 
 const cScopeContextTag = newSymbol("@nevware21/tripwire#IScopeContext");
 const DetailsSymbol = (/* #__PURE__*/getDeferred(() => newSymbol("_$details")));
@@ -178,7 +178,7 @@ export function getScopeContext(value: any): IScopeContext {
 /**
  * Creates a new context object.
  * @param value The value of the context.
- * @param msg The message of the context.
+ * @param initMsg The initial message of the context.
  * @group Scope
  * @since 0.1.0
  */

@@ -8,8 +8,8 @@
 
 import { arrForEach, arrFrom } from "@nevware21/ts-utils";
 import { IAssertScope } from "../interface/IAssertScope";
-import { MsgSource } from "../type/MsgSource";
-import { ArrayLikeOrSizedIterable } from "../type/ArrayLikeOrIterable";
+import { MsgSource } from "../../types/MsgSource";
+import { ArrayLikeOrSizedIterable } from "../../types/ArrayLikeOrSizedIterable";
 import { _deepEqual } from "./equal";
 import { _getArrayLikeOrIterableSize, _isArrayLikeOrIterable, _iterateForEachItem } from "../internal/_isArrayLikeOrIterable";
 import { IScopeContext } from "../interface/IScopeContext";

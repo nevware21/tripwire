@@ -7,11 +7,11 @@
  */
 
 import { isArray, isObject, isString, isStrictNullOrUndefined, asString } from "@nevware21/ts-utils";
-import { MsgSource } from "../type/MsgSource";
-import { IAssertScope } from "../interface/IAssertScope";
 import { IPropertyResultOp } from "../interface/ops/IPropertyResultOp";
 import { propertyResultOp } from "../ops/propertyResultOp";
 import { _deepEqual } from "./equal";
+import { IAssertScope } from "../interface/IAssertScope";
+import { MsgSource } from "../../types/MsgSource";
 
 export function _parseNestedPath(value: string): string[] {
     let tokens: string[] = [];

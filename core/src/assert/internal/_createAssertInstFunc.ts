@@ -7,14 +7,14 @@
  */
 
 import { fnApply } from "@nevware21/ts-utils";
-import { EMPTY_STRING } from "./const";
 import { IAssertScope } from "../interface/IAssertScope";
 import { IAssertInst } from "../interface/IAssertInst";
 import { _blockLength } from "./_blockLength";
 import { _handleResult } from "./_handleResult";
 import { IScopeFn, IScopePropFn } from "../interface/IScopeFuncs";
-import { MsgSource } from "../type/MsgSource";
 import { _getAssertScope } from "./_instCreator";
+import { MsgSource } from "../../types/MsgSource";
+import { EMPTY_STRING } from "../../internal/const";
 
 /**
  * @internal

@@ -6,8 +6,8 @@
  * Licensed under the MIT license.
  */
 
+import { MsgSource } from "../../types/MsgSource";
 import { IAssertScope } from "../interface/IAssertScope";
-import { MsgSource } from "../type/MsgSource";
 
 /**
  * Asserts that a boolean comparison operation between value and expected using the given operator is true.

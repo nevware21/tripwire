@@ -8,7 +8,7 @@
 
 import { objIsFrozen } from "@nevware21/ts-utils";
 import { IAssertScope } from "../interface/IAssertScope";
-import { MsgSource } from "../type/MsgSource";
+import { MsgSource } from "../../types/MsgSource";
 
 export function isFrozenFunc<R>(this: IAssertScope, evalMsg?: MsgSource): R{
     let scope = this;

@@ -8,8 +8,8 @@
 
 import { IScopeContext } from "./IScopeContext";
 import { IAssertInst } from "./IAssertInst";
-import { MsgSource } from "../type/MsgSource";
-import { ArrayLikeOrSizedIterable } from "../type/ArrayLikeOrIterable";
+import { MsgSource } from "../../types/MsgSource";
+import { ArrayLikeOrSizedIterable } from "../../types/ArrayLikeOrSizedIterable";
 
 /**
  * The `IAssert` interface defines the methods for performing assertions.
@@ -192,7 +192,7 @@ export interface IAssertClass<AssertInst extends IAssertInst = IAssertInst> {
      * Performs a loose equality check (`==`) between the `actual` and `expected` values,
      * throwing an {@link AssertionFailure} with the given message when the `actual` value is not
      * equal to the `expected` value. To perform a strict equality check (`===`), use the
-     * {@link assert.strictEqual} method.
+     * {@link IAssertClass.strictEqual} method.
      * @param actual - The actual value.
      * @param expected - The expected value.
      * @param initMsg - The message to display if `actual` is not equal to `expected`.
@@ -222,7 +222,7 @@ export interface IAssertClass<AssertInst extends IAssertInst = IAssertInst> {
      * Performs a loose equality check (`==`) between the `actual` and `expected` values,
      * throwing an {@link AssertionFailure} with the given message when the `actual` value is not
      * equal to the `expected` value. To perform a strict equality check (`===`), use the
-     * {@link assert.strictEqual} method.
+     * {@link IAssertClass.strictEqual} method.
      * @template T - The type of the value.
      * @param actual - The actual value.
      * @param expected - The expected value.
@@ -253,7 +253,7 @@ export interface IAssertClass<AssertInst extends IAssertInst = IAssertInst> {
      * Performs a strict equality check (`===`) between the `actual` and `expected` values,
      * throwing an {@link AssertionFailure} with the given message when the `actual` value is not
      * exactly equal to the `expected` value. To perform a loose equality check (`==`), use
-     * the {@link assert.equal} method.
+     * the {@link IAssertClass.equal} method.
      * @param actual - The actual value.
      * @param expected - The expected value.
      * @param initMsg - The message to display if `actual` is not equal to `expected`.
@@ -284,7 +284,7 @@ export interface IAssertClass<AssertInst extends IAssertInst = IAssertInst> {
      * Performs a strict equality check (`===`) between the `actual` and `expected` values,
      * throwing an {@link AssertionFailure} with the given message when the `actual` value is not
      * exactly equal to the `expected` value. To perform a loose equality check (`==`), use
-     * the {@link assert.equal} method.
+     * the {@link IAssertClass.equal} method.
      * @param actual - The actual value.
      * @param expected - The expected value.
      * @param initMsg - The message to display if `actual` is not equal to `expected`.
@@ -298,7 +298,7 @@ export interface IAssertClass<AssertInst extends IAssertInst = IAssertInst> {
      * Performs a strict in-equality check (`!==`) between the `actual` and `expected` values,
      * throwing an {@link AssertionFailure} with the given message when the `actual` value is not
      * exactly equal to the `expected` value. To perform a loose equality check (`==`), use
-     * the {@link assert.equal} method.
+     * the {@link IAssertClass.equal} method.
      * @param actual - The actual value.
      * @param expected - The expected value.
      * @param initMsg - The message to display if `actual` is not equal to `expected`.

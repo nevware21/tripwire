@@ -7,7 +7,7 @@
  */
 
 import { isError, isFunction, isObject, isRegExp, isStrictNullOrUndefined, isString, strIndexOf } from "@nevware21/ts-utils";
-import { MsgSource } from "../type/MsgSource";
+import { MsgSource } from "../../types/MsgSource";
 import { IAssertScope } from "../interface/IAssertScope";
 
 const enum MatchError {

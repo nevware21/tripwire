@@ -6,9 +6,9 @@
  * Licensed under the MIT license.
  */
 
+import { ArrayLikeOrSizedIterable } from "../../types/ArrayLikeOrSizedIterable";
+import { MsgSource } from "../../types/MsgSource";
 import { IAssertScope } from "../interface/IAssertScope";
-import { ArrayLikeOrSizedIterable } from "../type/ArrayLikeOrIterable";
-import { MsgSource } from "../type/MsgSource";
 import { _isArrayLikeOrIterable, _iterateForEachItem } from "../internal/_isArrayLikeOrIterable";
 
 /**

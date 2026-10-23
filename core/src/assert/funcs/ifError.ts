@@ -8,7 +8,7 @@
 
 import { isError } from "@nevware21/ts-utils";
 import { IAssertScope } from "../interface/IAssertScope";
-import { MsgSource } from "../type/MsgSource";
+import { MsgSource } from "../../types/MsgSource";
 
 /**
  * Asserts that the target is falsy or throws the error if it is an Error instance.

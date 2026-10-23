@@ -7,11 +7,11 @@
  */
 
 import { arrSlice, isFunction, isNumber, isString, isSymbol, mathAbs } from "@nevware21/ts-utils";
-import { IAssertScope } from "../interface/IAssertScope";
-import { MsgSource } from "../type/MsgSource";
 import { _isMsgSource } from "../internal/_isMsgSource";
 import { _getTargetValue } from "./changes";
 import { IScopeContext } from "../..";
+import { MsgSource } from "../../types/MsgSource";
+import { IAssertScope } from "../interface/IAssertScope";
 
 interface IChangeDeltaResult {
     property?: string | symbol | number;

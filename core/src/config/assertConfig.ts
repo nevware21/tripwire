@@ -6,7 +6,7 @@
  * Licensed under the MIT license.
  */
 
-import { IConfigInst } from "../interface/IConfigInst";
+import { IConfigInst } from "../interfaces/IConfigInst";
 import { _createConfig } from "./config";
 import { DEFAULT_CONFIG } from "./defaultConfig";
 

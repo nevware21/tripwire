@@ -26,10 +26,10 @@ jobs:
       runs-on: ubuntu-latest
       steps:
       - uses: actions/checkout@v6
-      - name: Use Node.js ${{ matrix.node }}
+      - name: Use Node.js 22
         uses: actions/setup-node@v6
         with:
-          node-version: ${{ matrix.node }}
+          node-version: 22
 
       - name: Update rush shrinkwrap dependencies
         run: node common/scripts/install-run-rush.js update --full
@@ -43,6 +43,9 @@ jobs:
 
       - name: Generate the current Docs
         run:  npm run docs
+      - name: Check README links
+        run: npm run link-check
+        timeout-minutes: 10
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Build with Jekyll

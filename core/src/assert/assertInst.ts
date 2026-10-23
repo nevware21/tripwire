@@ -10,7 +10,7 @@ import { IAssertScopeFuncDef, AssertScopeFuncDefs } from "./interface/IAssertIns
 import { IScopeFn, IScopePropFn } from "./interface/IScopeFuncs";
 import { _addAssertInstFuncs } from "./internal/_addAssertInstFuncs";
 import { _getAssertProto } from "./internal/_AssertInstCore";
-import { MsgSource } from "./type/MsgSource";
+import { MsgSource } from "../types/MsgSource";
 
 /**
  * Adds a set of scope functions to the assert (instance) prototype which
