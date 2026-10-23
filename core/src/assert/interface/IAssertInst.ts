@@ -10,7 +10,6 @@ import { IAssertInstCore } from "./IAssertInstCore";
 import { IDeepOp } from "./ops/IDeepOp";
 import { IIsOp } from "./ops/IIsOp";
 import { IOwnOp } from "./ops/IOwnOp";
-import { IScopePropFn, IScopeFn } from "./IScopeFuncs";
 import { IStrictlyOp } from "./ops/IStrictlyOp";
 import { MsgSource } from "../../types/MsgSource";
 import { IEqualOp } from "./ops/IEqualOp";
@@ -304,6 +303,49 @@ export interface IAssertInst extends INotOp<IAssertInst>, IAssertInstCore, IEqua
      */
     has: IHasOp<this>;
 
+    /**
+     * A decorative chain word for continuing an assertion chain after a called assertion, so that
+     * `expect(5).is.number().and.is.above(1)` reads as two assertions on one value. It performs no
+     * check and keeps the chain's context: a `not` before it still applies to what follows, exactly
+     * as in Chai, so prefer separate statements when a negation should not carry over.
+     *
+     * @since 0.2.0
+     * @example
+     * ```typescript
+     * import { expect } from "@nevware21/tripwire";
+     *
+     * expect(5).is.number().and.is.above(1).and.is.below(10);  // Passes
+     * expect("abc").to.be.a.string().and.to.have.lengthOf(3);   // Passes
+     * expect(5).is.not.string().and.is.above(10);              // Passes: `not` still applies to `above`
+     * ```
+     */
+    and: this;
+
+    /**
+     * Asserts that at least one of the given clauses passes against the current value.
+     *
+     * Each clause is a function given its own fresh instance for the same value, with none of the
+     * outer chain's modifiers; clauses run in order and stop at the first that passes. When all fail,
+     * the failure lists what each clause reported. A `not` before the `or` negates it as a whole,
+     * so it then passes only when every clause fails. A clause's own failures are never reported to
+     * assertion listeners or deferred onto the running test; only the combined verdict is. Clauses
+     * must be synchronous -- one that returns a promise is an `AssertionFatal` -- and an
+     * `AssertionFatal` or any non-assertion error thrown by a clause is propagated unchanged.
+     *
+     * @param clauses - One or more functions, each performing an assertion on the instance it is given.
+     * @returns The current instance, for further chaining.
+     * @since 0.2.0
+     * @example
+     * ```typescript
+     * import { expect } from "@nevware21/tripwire";
+     *
+     * expect(5).or(e => e.is.string(), e => e.is.number());      // Passes
+     * expect(5).or(e => e.is.above(10), e => e.is.below(0));     // Fails: both clauses fail
+     * expect(5).not.or(e => e.is.string(), e => e.is.above(10)); // Passes: neither clause passes
+     * ```
+     */
+    or(...clauses: Array<(inst: IAssertInst) => any>): this;
+
     ok(evalMsg?: MsgSource): IAssertInst;
 
     toThrow: ThrowFn;
@@ -534,37 +576,3 @@ export interface IAssertInst extends INotOp<IAssertInst>, IAssertInstCore, IEqua
 }
 
 export type IExtendedAssertInst<T = any> = IAssertInst & T;
-
-/**
- * Defines the named functions that can be called on the default {@link IAssertInst}
- * created via the {@link createAssertScope} function.
- */
-export type AssertScopeFuncDefs<T> = { [name in keyof T]: IAssertScopeFuncDef };
-
-/**
- * Identifies the interface used to add {@link IAssertScope} functions or properties
- * to the {@link IAssertInst} object via the {@link addAssertInstFuncDef} function.
- */
-export interface IAssertScopeFuncDef {
-    /**
-     * The function to call when the property function is invoked.
-     * @param this - The current scope object.
-     * @param scope - The current scope object.
-     * @param evalMsg - An optional default message to use for the evaluation.
-     * @returns - The result of the function.
-     */
-    propFn?: IScopePropFn;
-
-    /**
-     * The function to call when the scoped function is invoked.
-     * @param this - The current scope object.
-     * @param args - The arguments passed to the function.
-     * @returns - The result of the function.
-     */
-    scopeFn?: IScopeFn;
-
-    /**
-     * The default message to use when evaluating the operation.
-     */
-    evalMsg?: MsgSource;
-}

@@ -49,19 +49,19 @@ createExprAdapter(["not", "deep", "own", "include"])
 
 Expressions can include function calls with arguments using parentheses. Arguments can be:
 
-1. **Named context arguments** - Reference values from the scope context
-2. **Indexed arguments** - Reference arguments passed to the adapter
-3. **Literal values** - Direct string values
+1. **Indexed arguments** (`{0}`, `{1}`, ...) - Reference arguments passed to the adapter by position
+2. **Literal values** (`{text}`) - Any braced token that is not an integer is passed as the literal string
+3. **Named context arguments** (bare `name`) - Reference values from the scope context
 
 ```ts
 // Call a function with arguments from the adapter call
 createExprAdapter("include({0})")
 
 // Call with multiple arguments
-createExprAdapter("within({0},{1})")
+createExprAdapter("is.within({0},{1})")
 
-// Call with named context values
-createExprAdapter("equal({value})")
+// Call with a named context value (scope.context.get("expected"))
+createExprAdapter("equal(expected)")
 ```
 
 ## Argument Reference Syntax
@@ -70,7 +70,8 @@ Arguments in function calls use specific syntax patterns:
 
 ### Indexed Arguments: `{0}`, `{1}`, `{2}`, ...
 
-Reference arguments passed to the adapter by their zero-based index:
+A braced non-negative integer references an argument passed to the adapter by its zero-based
+index; `{0}` is the first argument:
 
 ```ts
 const adapter = createExprAdapter("is.above({0})");
@@ -78,21 +79,23 @@ const adapter = createExprAdapter("is.above({0})");
 // The {0} is replaced with the first argument (10)
 ```
 
-### Named Context Arguments: `{name}`
+### Named Context Arguments: `name`
 
-Reference values stored in the scope context:
+A bare, un-braced token is looked up in the scope context at evaluation time:
 
 ```ts
-const adapter = createExprAdapter("equal({expected})");
+const adapter = createExprAdapter("equal(expected)");
 // Retrieves scope.context.get("expected") as the argument
 ```
 
-### Literal String Values
+A named argument may not contain spaces.
 
-Any argument that doesn't parse as an index becomes a literal string value:
+### Literal String Values: `{text}`
+
+Any braced argument that is not an integer is passed as the literal string between the braces:
 
 ```ts
-const adapter = createExprAdapter("typeOf({string})");
+const adapter = createExprAdapter("is.typeOf({string})");
 // Passes the literal string "string" as the argument
 ```
 
@@ -174,6 +177,12 @@ const notPositiveAdapter = createExprAdapter("not.isPositive");
 // This adapter will: access .not, then call .isPositive()
 ```
 
+**What to return.** `return this.that` is the convention every built-in scope function follows, and
+is what the examples here do. Returning nothing is equivalent to returning a fresh instance for the
+same value, and `return this.newInst(newValue)` hands a different value on to whatever follows.
+Whichever you choose, a function that is *called* -- directly or from an expression such as
+`isDivisibleBy({0})` -- runs exactly once with the arguments it was given.
+
 ### Expression-Based Assertion
 
 ```ts
@@ -182,7 +191,8 @@ import { createExprAdapter, addAssertFunc, assert } from '@nevware21/tripwire';
 // Create assertions using expressions
 addAssertFunc(assert, 'isNumericString', createExprAdapter("is.string"));
 addAssertFunc(assert, 'isFiniteNumber', createExprAdapter("is.finite"));
-addAssertFunc(assert, 'existsAndIsArray', createExprAdapter("to.exist.and.is.array"));
+addAssertFunc(assert, 'exists', createExprAdapter("to.exist"));
+addAssertFunc(assert, 'isArray', createExprAdapter("is.array"));
 ```
 
 ### Assertion with Scope Function
@@ -210,34 +220,37 @@ addAssertFunc(assert, 'isNotInRange', { scopeFn: notInRangeAdapter, nArgs: 3 });
 
 ### Chainable Operations
 
-These operations can be chained and don't require arguments:
+Each step in an expression must exist on the object returned by the previous step, so the
+available steps depend on where you are in the chain. The steps available directly on an
+assertion instance (`IAssertInst`) are:
 
 | Expression | Description |
 |------------|-------------|
 | `not` | Negates the following assertion |
-| `to` | Language chain (no-op) |
-| `be` | Language chain (no-op) |
-| `been` | Language chain (no-op) |
-| `is` | Language chain (no-op) |
-| `that` | Language chain (no-op) |
-| `which` | Language chain (no-op) |
-| `and` | Language chain (no-op) |
-| `has` | Access property operations |
-| `have` | Access property operations |
-| `with` | Language chain (no-op) |
-| `at` | Language chain (no-op) |
-| `of` | Language chain (no-op) |
-| `same` | Language chain (no-op) |
-| `but` | Language chain (no-op) |
-| `does` | Language chain (no-op) |
-| `still` | Language chain (no-op) |
-| `also` | Language chain (no-op) |
-| `deep` | Enable deep equality comparison |
-| `own` | Check only own properties |
-| `nested` | Enable nested property access |
-| `any` | Match any key/value |
-| `all` | Match all keys/values |
-| `strictly` | Enable strict equality |
+| `and` | Language chain; continues after a called assertion (`is.number().and.is.above(1)`), keeping the chain's modifiers |
+| `or(...)` | Passes when any of the given clause functions passes; see [`IAssertInst.or`](https://nevware21.github.io/tripwire/typedoc/core/interfaces/IAssertInst.html) |
+| `to` | Language chain; exposes `be`, `have`, `exist`, `ifError`, `throw`, `deep`, `strictly`, `include`, `equal` and the change operations |
+| `is` | Type and numeric checks (`is.string`, `is.above(...)`), plus the `a`, `an` and `at` language chains |
+| `has` | Property and key operations (`property`, `own`, `nested`, `all`, `any`, `lengthOf`, `sizeOf`) |
+| `deep` | Enable deep equality comparison (`equal`, `include`, `property`, `own`, `nested`, `keys`, `strictly`) |
+| `own` | Check only own properties (`include`, `property`, `propertyDescriptor`, `iterator`) |
+| `any` | Match any key (`any.keys`, `any.deep.keys`); callable directly to match any value |
+| `all` | Match all keys (`all.keys`, `all.deep.keys`); callable directly to match all values |
+| `strictly` | Enable strict equality (`equal`, `true`, `false`) |
+| `include` / `includes` / `contain` / `contains` | Inclusion checks |
+
+Some steps only exist further down a chain:
+
+| Expression | Available after | Description |
+|------------|-----------------|-------------|
+| `be` | `to` | Language chain; same steps as `is` (`to.be.true`, `to.be.above(...)`) |
+| `have` | `to` | Language chain; same steps as `has` (`to.have.property(...)`) |
+| `a` / `an` / `at` | `is` (or `to.be`) | Language chains (`is.at.least(...)`) |
+| `nested` | `has` or `deep` | Nested (dotted path) property access |
+| `that` / `value` | `property(...)` | Switch to asserting on the property's value (`and` keeps asserting on the object) |
+
+Words such as `been`, `which`, `with`, `of`, `same`, `but`, `does`, `still` and `also` are
+**not** steps; using one throws an "Invalid step" error at evaluation time.
 
 ### Type Checking Operations
 
@@ -260,14 +273,18 @@ These operations can be chained and don't require arguments:
 |------------|-----------|-------------|
 | `equal({0})` | expected value | Check equality |
 | `include({0})` | expected value | Check inclusion |
-| `above({0})` | number | Check if greater than |
-| `below({0})` | number | Check if less than |
-| `least({0})` | number | Check if at least |
-| `most({0})` | number | Check if at most |
-| `within({0},{1})` | min, max | Check if within range |
-| `instanceof({0})` | constructor | Check instance type |
-| `typeOf({0})` | type string | Check typeof |
-| `keys({0})` | expected keys | Check object keys |
+| `is.above({0})` | number | Check if greater than (also `is.gt`, `is.greaterThan`) |
+| `is.below({0})` | number | Check if less than (also `is.lt`, `is.lessThan`) |
+| `is.least({0})` | number | Check if at least (also `is.gte`, `is.greaterThanOrEqual`) |
+| `is.most({0})` | number | Check if at most (also `is.lte`, `is.lessThanOrEqual`) |
+| `is.within({0},{1})` | min, max | Check if within range |
+| `is.instanceof({0})` | constructor | Check instance type (also `is.instanceOf`) |
+| `is.typeOf({0})` | type string | Check typeof |
+| `has.all.keys({0})` | expected keys | Check the object has all of the keys |
+| `has.any.keys({0})` | expected keys | Check the object has any of the keys |
+
+The numeric and type checks are also reachable through `to.be` (for example `to.be.above({0})`),
+and the key checks through `to.have` (`to.have.all.keys({0})`).
 
 ## Combining Expressions
 
@@ -582,19 +599,25 @@ This is because modifiers like `deep` and `own` return specialized interfaces (`
 
 #### Workaround: Handle Modifiers Inside Custom Functions
 
-If you need modifier behavior in custom functions, handle it within the function:
+If you need modifier behavior in custom functions, perform it within the function itself. Note
+that there is no flag you can set on the context to turn on deep comparison -- the `deep` step
+works by exposing deep-aware versions of the built-in operations, so a custom function has to do
+its own deep comparison (or delegate to a built-in one):
 
 ```ts
 addAssertInstFunc("myDeepEqual", function(this: IAssertScope, expected: any) {
-    // Manually set the deep flag and perform deep comparison
-    this.context.set("$deep", true);
-    // ... perform deep comparison logic
+    // Delegate to the built-in deep.equal (or perform your own deep comparison here)
+    this.that.deep.equal(expected);
+    // ... any additional checks
     return this.that;
 });
 
 // Now use directly without deep modifier
 createExprAdapter("myDeepEqual");
 ```
+
+When the deep behavior you need is already a built-in operation, use the `deep` step in the
+expression instead of a custom function: `createExprAdapter("deep.equal")`.
 
 #### Accessing Context Value in Custom Functions
 
@@ -665,11 +688,14 @@ createExprAdapter("func()()")     // Throws AssertionError
 
 ### Step Resolution Errors
 
-If a step doesn't exist on the assertion instance, an error is thrown at runtime:
+If a step doesn't exist on the object the previous step returned, an `AssertionError` is thrown
+when the adapter is evaluated. The message gives the index of the failing step, the full step
+path, the steps that were available at that point, and the current value:
 
 ```ts
 const adapter = createExprAdapter("nonexistent.step");
-// Runtime error: "Invalid step: nonexistent for [nonexistent->step]"
+// Runtime error:
+// "0 Invalid step: nonexistent for [nonexistent->step] available steps: [not;deep;own;...] - <value>"
 ```
 
 ## TypeScript Support

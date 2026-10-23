@@ -14,9 +14,8 @@ import { IAssertScope } from "../interface/IAssertScope";
 import { MsgSource } from "../../types/MsgSource";
 
 /**
- * Returns a new {@link ScopeFn} that will assert that the current {@link IScopeContext} value
+ * Returns a new {@link SymbolFn} that will assert that the current {@link IScopeContext} value
  * has the specified symbol property.
- * @param this - The current {@link IAssertScope} assertion scope.
  * @param theSymbol - The symbol property to check.
  * @returns The new "instance" (object) to be used as the `this` for the chained operations.
  * @throws An {@link AssertionFailure} if the current value does not have the specified symbol property.
@@ -34,12 +33,9 @@ export function hasSymbolFunc(theSymbol: symbol): SymbolFn {
 }
 
 /**
- * Returns a new {@link ScopeFn} that will assert that the current {@link IScopeContext} value
+ * Returns a new {@link SymbolFn} that will assert that the current {@link IScopeContext} value
  * has the specified own symbol property.
- * @param this - The current {@link IAssertScope} assertion scope.
  * @param theSymbol - The symbol property to check.
- * @param value - The expected value of the property.
- * @param evalMsg - The message to display if the assertion fails.
  * @returns The new "instance" (object) to be used as the `this` for the chained operations.
  * @throws An {@link AssertionFailure} if the current value does not have the specified own property.
  * @throws An {@link AssertionFailure} if the property value does not match the expected value.

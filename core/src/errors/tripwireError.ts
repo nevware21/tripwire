@@ -87,8 +87,8 @@ export interface TripwireErrorConstructor<P = { [key: string]: any }> extends Cu
  *     - {@link AssertionError} - Used as a base class for all assertion related errors
  *       - {@link AssertionFailure} - Used for normal assertion failures
  *         - {@link AssertionFatal} - Used for fatal assertion issues
- *     - `SkipError` - Used for skipped test related errors
- *     - `TimeoutError` - Used for timeout related errors
+ *     - {@link SkipError} - Used for skipped test related errors
+ *     - {@link TimeoutError} - Used for timeout related errors
  *
  * @param message - The message for the error.
  * @param stackStart - The function to use as the starting point for the stack trace.

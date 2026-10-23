@@ -48,7 +48,7 @@ function _checkSupportedValueType(scope: IAssertScope, value: any): void {
 /**
  * Creates the include assertion operation using the given scope.
  * This includes the primary include function and any additional properties
- * as identified by the {@link IncludeOpProps} interface.
+ * as identified by the {@link IIncludeOp} interface.
  * @param scope - The current scope of the assert
  * @returns - The {@link IIncludeOp} operation instance.
  */
@@ -121,12 +121,10 @@ export function includeOp<R>(scope: IAssertScope): IIncludeOp<R> {
 }
 
 /**
- * Function to deeply include an operation.
- *
- * @param {any} obj - The object to perform the operation on.
- * @param {string} key - The key to include in the operation.
- * @param {any} value - The value to include in the operation.
- * @returns {boolean} - Returns true if the operation was successful, otherwise false.
+ * Creates the deep include assertion operation using the given scope, which is the
+ * {@link includeOp} operation comparing values with deep rather than strict equality.
+ * @param scope - The current scope of the assert
+ * @returns - The {@link IIncludeOp} operation instance.
  */
 export function deepIncludeOp<R>(scope: IAssertScope): IIncludeOp<R> {
 

@@ -80,6 +80,9 @@ import { ChangeByFn } from "./assert/interface/funcs/ChangeByFn";
 import { IChangeResultOp } from "./assert/interface/ops/IChangeResultOp";
 import { IChangeResultValue } from "./assert/interface/ops/IChangeResultValue";
 import { TripwireError, TripwireErrorConstructor } from "./errors/tripwireError";
+import { AbortError, AbortErrorConstructor, IAbortProps } from "./errors/abortError";
+import { SkipError, SkipErrorConstructor, ISkipProps } from "./errors/skipError";
+import { TimeoutError, TimeoutErrorConstructor, ITimeoutProps } from "./errors/timeoutError";
 import { ConfigHostFunc } from "./types/ConfigHostFunc";
 import { createServerMgr } from "./server/ServerManager";
 import { createFormatMgr } from "./config/formatManager";
@@ -87,6 +90,45 @@ import { getCurrentHost, useHost, withHost } from "./config/configHost";
 import { IParsedStack, parseStack } from "./internal/parseStack";
 import { cStackDetail } from "./internal/_errorSupport";
 import { DEFAULT_CONFIG } from "./config/defaultConfig";
+import { coreFunctions } from "./assert/internal/_baseFunctions";
+import { sameMembersFunc, sameDeepMembersFunc, sameOrderedMembersFunc, sameDeepOrderedMembersFunc, includeMembersFunc, includeOrderedMembersFunc, includeDeepMembersFunc, includeDeepOrderedMembersFunc, startsWithMembersFunc, startsWithDeepMembersFunc, endsWithMembersFunc, endsWithDeepMembersFunc, subsequenceFunc, deepSubsequenceFunc } from "./assert/funcs/members";
+import { isArrayFunc, isObjectFunc, isPlainObjectFunc, isFunctionFunc, isStringFunc, isNumberFunc, isBooleanFunc, isUndefinedFunc, isNullFunc, isTruthyFunc, isTrueFunc, isFalseFunc, isStrictTrueFunc, isStrictFalseFunc, isNaNFunc, isFiniteFunc } from "./assert/funcs/is";
+import { equalsFunc, strictEqualsFunc, deepEqualsFunc, deepStrictEqualsFunc } from "./assert/funcs/equal";
+import { orFunc } from "./assert/funcs/or";
+import { hasPropertyFunc, hasOwnPropertyFunc, hasDeepPropertyFunc, hasDeepOwnPropertyFunc, hasPropertyDescriptorFunc, hasOwnPropertyDescriptorFunc } from "./assert/funcs/hasProperty";
+import { hasSymbolFunc, hasOwnSymbolFunc } from "./assert/funcs/hasSymbol";
+import { changesFunc, increasesFunc, decreasesFunc } from "./assert/funcs/changes";
+import { changesByFunc, changesButNotByFunc, increasesByFunc, increasesButNotByFunc, decreasesByFunc, decreasesButNotByFunc } from "./assert/funcs/changesBy";
+import { closeToFunc } from "./assert/funcs/closeTo";
+import { existsFunc } from "./assert/funcs/exists";
+import { ifErrorFunc } from "./assert/funcs/ifError";
+import { instanceOfFunc } from "./assert/funcs/instanceOf";
+import { isEmptyFunc } from "./assert/funcs/isEmpty";
+import { isExtensibleFunc } from "./assert/funcs/isExtensible";
+import { isFrozenFunc } from "./assert/funcs/isFrozen";
+import { isIterableFunc } from "./assert/funcs/isIterable";
+import { isSealedFunc } from "./assert/funcs/isSealed";
+import { lengthFunc } from "./assert/funcs/length";
+import { matchFunc } from "./assert/funcs/match";
+import { hasNestedPropertyFunc, hasDeepNestedPropertyFunc, nestedIncludeFunc, deepNestedIncludeFunc } from "./assert/funcs/nested";
+import { operatorFunc } from "./assert/funcs/operator";
+import { throwsFunc, isErrorFunc } from "./assert/funcs/throws";
+import { truthyFunc, strictlyTruthyFunc } from "./assert/funcs/truthy";
+import { typeOfFunc } from "./assert/funcs/typeOf";
+import { anyValuesFunc, allValuesFunc } from "./assert/funcs/valuesFunc";
+import { changeResultOp } from "./assert/ops/changeResultOp";
+import { notOp } from "./assert/ops/notOp";
+import { aboveFunc, leastFunc, belowFunc, mostFunc, withinFunc, numericOp } from "./assert/ops/numericOp";
+import { propertyResultOp } from "./assert/ops/propertyResultOp";
+import { anyOp, allOp, anyOwnOp, allOwnOp } from "./assert/ops/allOp";
+import { deepOp } from "./assert/ops/deepOp";
+import { hasOp, hasOwnOp } from "./assert/ops/hasOp";
+import { includeOp, deepIncludeOp, ownIncludeOp, deepOwnIncludeOp } from "./assert/ops/includeOp";
+import { strictlyOp, deepStrictlyOp } from "./assert/ops/strictlyOp";
+import { anyKeyFilterOp, allKeyFilterOp, anyDeepKeyFilterOp, allDeepKeyFilterOp, deepKeysOp } from "./assert/ops/keysOp";
+import { ownOp, ownDeepOp } from "./assert/ops/ownOp";
+import { ITestRunContext } from "./interfaces/runner/ITestRunContext";
+import { ISuiteStateContext } from "./suite/interfaces/ISuiteStateContext";
 
 /**
  * Export server-related types and functions
@@ -100,9 +142,14 @@ export { ITestServerProvider } from "./suite/interfaces/ITestServerProvider";
 export { ITestServer } from "./server/ITestServer";
 export { IDoneFn } from "./interfaces/suite/IDoneFn";
 export { IGetSetChainableFn } from "./interfaces/suite/IGetSetChainableFn";
+export { IHookDefinitionFn } from "./interfaces/suite/IHookDefinitionFn";
+export { ISuiteContext } from "./interfaces/suite/ISuiteContext";
+export { ISuiteDefinitionFn } from "./interfaces/suite/ISuiteDefinitionFn";
 export { ITestCase } from "./interfaces/suite/ITestCase";
 export { ITestContext } from "./interfaces/suite/ITestContext";
+export { ITestDefinitionFn } from "./interfaces/suite/ITestDefinitionFn";
 export { HookFn } from "./types/HookFn";
+export { SuiteFn } from "./types/SuiteFn";
 export { TestFn } from "./types/TestFn";
 export { eListenerEvent, ListenerEvent, ListenerEventEnum } from "./types/ListenerEvent";
 
@@ -110,7 +157,11 @@ export { eListenerEvent, ListenerEvent, ListenerEventEnum } from "./types/Listen
  * Export suite types
  */
 export { IHookDefinition } from "./suite/interfaces/IHookDefinition";
+export { TestStatus } from "./suite/interfaces/ITestStatus";
 export { ITestSuite } from "./suite/interfaces/ITestSuite";
+export { ITestResult } from "./interfaces/runner/ITestResult";
+export { ISuiteResult } from "./interfaces/runner/ISuiteResult";
+export { ITestFilter } from "./suite/interfaces/ITestFilter";
 export { IListener } from "./interfaces/IListener";
 export { eListenerAction, ListenerAction } from "./types/ListenerAction";
 export { IListenerResult } from "./interfaces/IListenerResult";
@@ -126,7 +177,73 @@ export { createNotifyMgr } from "./notify/NotificationManager";
 /**
  * Export runner types and functions
  */
+export { ITestRunner } from "./interfaces/runner/ITestRunner";
+export { ITestRunnerOptions } from "./interfaces/runner/ITestRunnerOptions";
+export { ITestSummary } from "./interfaces/runner/ITestSummary";
 export { IHookFailure } from "./interfaces/runner/IHookFailure";
+export {
+    IRunnerMetrics,
+    IRunnerMetricTrace,
+    IRunnerMetricCounts,
+    IRunnerMetricExecutionSample,
+    IRunnerPerTestWaitMetric,
+    IRunnerRetryDetail,
+    IRunnerTimeoutHotspot,
+    IRunnerTracePattern,
+    IRunnerSlowestExecutions,
+    IRunnerRetryDiagnostics,
+    IRunnerTimeoutDiagnostics,
+    IRunnerTraceCompression,
+    RunnerExecutionMode,
+    RunnerMetricEvent,
+    RunnerMetricType
+} from "./interfaces/runner/IRunnerMetrics";
+
+/**
+ * Export suite functions
+ */
+export {
+    describe, suite, xdescribe, fdescribe,
+    resetSuite, getRootSuite, createSuite, useSuite
+} from "./suite/suite";
+
+export { it, spec, test, xit, fit } from "./suite/it";
+export { after, afterAll } from "./suite/after";
+export { afterEach } from "./suite/afterEach";
+export { before, beforeAll } from "./suite/before";
+export { beforeEach } from "./suite/beforeEach";
+
+/**
+ * Export test filters
+ */
+export {
+    createOnlyFilter
+} from "./suite/filters/onlyFilter";
+
+export {
+    createSuiteIDFilter,
+    createTestIDFilter
+} from "./suite/filters/idFilter";
+
+export {
+    createSuiteNameFilter,
+    createTestNameFilter
+} from "./suite/filters/nameFilter";
+
+export {
+    createSuiteInstanceFilter,
+    createTestInstanceFilter
+} from "./suite/filters/instanceFilter";
+
+/**
+ * Export filter helpers
+ */
+export {
+    findMatchingTestsAndSuites,
+    findMatchingSuites,
+    findMatchingTests,
+    IFilterMatchResult
+} from "./suite/filterHelpers";
 
 /**
  * Export the Error classes
@@ -134,7 +251,10 @@ export { IHookFailure } from "./interfaces/runner/IHookFailure";
 export {
     AssertionError, AssertionErrorConstructor, AssertionFailure, AssertionFailureConstructor,
     AssertionFatal, AssertionFatalConstructor, IAssertionErrorOrgValues,
-    TripwireError, TripwireErrorConstructor
+    TripwireError, TripwireErrorConstructor,
+    AbortError, AbortErrorConstructor, IAbortProps,
+    SkipError, SkipErrorConstructor, ISkipProps,
+    TimeoutError, TimeoutErrorConstructor, ITimeoutProps
 };
 
 /**
@@ -147,7 +267,8 @@ export {
     IFormatCtx, IFormattedValue, IFormatter, IFormatterOptions, IFormatManager, IHasOp, IHasOwnOp, IIncludeOp,
     IIsOp, IIsTypeOp, IKeysOp, INestedOp, INotOp, INumericOp, IOwnOp, IPropertyResultOp, IRemovable,
     IScopeContext, IScopeContextOverrides, IScopePropFn, IStrictlyOp, IThrowOp, IToOp,
-    PropertyDescriptorFn, PropertyFn, IParsedStack
+    PropertyDescriptorFn, PropertyFn, IParsedStack,
+    ITestRunContext, ISuiteStateContext
 };
 
 /**
@@ -168,6 +289,59 @@ export {
 };
 
 /**
+ * Export assertion functions
+ */
+export {
+    sameMembersFunc, sameDeepMembersFunc, sameOrderedMembersFunc, sameDeepOrderedMembersFunc,
+    includeMembersFunc, includeOrderedMembersFunc, includeDeepMembersFunc, includeDeepOrderedMembersFunc,
+    startsWithMembersFunc, startsWithDeepMembersFunc, endsWithMembersFunc, endsWithDeepMembersFunc,
+    subsequenceFunc, deepSubsequenceFunc,
+    isArrayFunc, isObjectFunc, isPlainObjectFunc, isFunctionFunc, isStringFunc, isNumberFunc,
+    isBooleanFunc, isUndefinedFunc, isNullFunc, isTruthyFunc, isTrueFunc, isFalseFunc,
+    isStrictTrueFunc, isStrictFalseFunc, isNaNFunc, isFiniteFunc,
+    equalsFunc, strictEqualsFunc, deepEqualsFunc, deepStrictEqualsFunc, orFunc,
+    hasPropertyFunc, hasOwnPropertyFunc, hasDeepPropertyFunc, hasDeepOwnPropertyFunc,
+    hasPropertyDescriptorFunc, hasOwnPropertyDescriptorFunc,
+    hasSymbolFunc, hasOwnSymbolFunc,
+    changesFunc, increasesFunc, decreasesFunc,
+    changesByFunc, changesButNotByFunc, increasesByFunc, increasesButNotByFunc, decreasesByFunc, decreasesButNotByFunc,
+    closeToFunc,
+    existsFunc,
+    ifErrorFunc,
+    instanceOfFunc,
+    isEmptyFunc,
+    isExtensibleFunc,
+    isFrozenFunc,
+    isIterableFunc,
+    isSealedFunc,
+    lengthFunc,
+    matchFunc,
+    hasNestedPropertyFunc, hasDeepNestedPropertyFunc, nestedIncludeFunc, deepNestedIncludeFunc,
+    operatorFunc,
+    throwsFunc, isErrorFunc,
+    truthyFunc, strictlyTruthyFunc,
+    typeOfFunc,
+    anyValuesFunc, allValuesFunc
+};
+
+/**
+ * Export operator functions
+ */
+export {
+    changeResultOp,
+    notOp,
+    aboveFunc, leastFunc, belowFunc, mostFunc, withinFunc, numericOp,
+    propertyResultOp,
+    anyOp, allOp, anyOwnOp, allOwnOp,
+    deepOp,
+    hasOp, hasOwnOp,
+    includeOp, deepIncludeOp, ownIncludeOp, deepOwnIncludeOp,
+    strictlyOp, deepStrictlyOp,
+    anyKeyFilterOp, allKeyFilterOp, anyDeepKeyFilterOp, allDeepKeyFilterOp, deepKeysOp,
+    ownOp, ownDeepOp
+};
+
+/**
  * Export the core functions (and global `assert`)
  */
 export {
@@ -181,5 +355,10 @@ export {
  * Export the constants
  */
 export {
-    CHECK_INTERNAL_STACK_FRAME_REGEX, DEFAULT_CONFIG, cStackDetail
+    CHECK_INTERNAL_STACK_FRAME_REGEX, DEFAULT_CONFIG, cStackDetail, coreFunctions
 };
+
+/**
+ * Export the test runner factory
+ */
+export { createTestRunner } from "./suite/runner";

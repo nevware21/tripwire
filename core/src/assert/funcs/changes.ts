@@ -144,8 +144,7 @@ export function changesFunc(this: IAssertScope): IChangeResultOp {
 /**
  * Asserts that executing the target function increases the monitored value.
  * @param this - The current {@link IAssertScope} object
- * @param getter - A function that returns a value to monitor, or an object containing the property to monitor
- * @param prop - The property name to monitor (only used when first argument is an object)
+ * @param func - A function that returns a value to monitor
  * @param evalMsg - Optional message to display if the assertion fails
  * @returns The current {@link IAssertScope.that} object with optional .by() chaining
  */

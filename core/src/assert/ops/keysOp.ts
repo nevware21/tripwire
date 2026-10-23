@@ -63,7 +63,7 @@ export function allKeyFilterOp<R>(scope: IAssertScope): IKeysOp<R> {
  * - Arrays of keys
  * - Sets, Maps, or other iterables containing keys
  *
- * Deep equality is performed using {@link anyDeepKeysFunc} which recursively compares
+ * Deep equality is performed using `anyDeepKeysFunc` which recursively compares
  * object properties and handles special types.
  *
  * @example
@@ -96,7 +96,7 @@ export function anyDeepKeyFilterOp<R>(scope: IAssertScope): IKeysOp<R> {
  * - Arrays of keys
  * - Sets, Maps, or other iterables containing keys
  *
- * Deep equality is performed using {@link allDeepKeysFunc} which recursively compares
+ * Deep equality is performed using `allDeepKeysFunc` which recursively compares
  * object properties and handles special types. All provided keys must exist for assertion to pass.
  *
  * @example
