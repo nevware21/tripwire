@@ -8,7 +8,7 @@
 
 import { isNullOrUndefined, isObject, isString } from "@nevware21/ts-utils";
 import { IAssertScope } from "../interface/IAssertScope";
-import { MsgSource } from "../type/MsgSource";
+import { MsgSource } from "../../types/MsgSource";
 
 /**
  * Asserts that the target has a length or size property equal to the given number.

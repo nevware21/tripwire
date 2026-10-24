@@ -6,9 +6,9 @@
  * Licensed under the MIT license.
  */
 
-import { MsgSource } from "../type/MsgSource";
-import { IAssertScope } from "../interface/IAssertScope";
 import { isFunction } from "@nevware21/ts-utils";
+import { IAssertScope } from "../interface/IAssertScope";
+import { MsgSource } from "../../types/MsgSource";
 
 /**
  * Checks if the current value is an instance of the specified constructor.

@@ -7,7 +7,7 @@
  */
 
 import { isFunction, isString } from "@nevware21/ts-utils";
-import { MsgSource } from "../type/MsgSource";
+import { MsgSource } from "../../types/MsgSource";
 
 /**
  * @internal

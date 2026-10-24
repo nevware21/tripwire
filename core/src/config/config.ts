@@ -10,12 +10,12 @@ import {
     arrSlice, getDeferred, ICachedValue, isArray, isNullOrUndefined, isObject, isPlainObject,
     objDefine, objForEachKey, objIs
 } from "@nevware21/ts-utils";
-import { IConfig } from "../interface/IConfig";
-import { IConfigInst } from "../interface/IConfigInst";
-import { IFormatter } from "../interface/IFormatter";
-import { IFormatManager } from "../interface/IFormatManager";
+import { IConfig } from "../interfaces/IConfig";
+import { IConfigInst } from "../interfaces/IConfigInst";
+import { IFormatter } from "../interfaces/IFormatter";
+import { IFormatManager } from "../interfaces/IFormatManager";
 import { createFormatMgr } from "../internal/formatManager";
-import { IConfigApi } from "../interface/IConfigApi";
+import { IConfigApi } from "../interfaces/IConfigApi";
 
 function _mergeConfig(target: any, source: any, isRoot: boolean) {
     if (!isNullOrUndefined(source)) {

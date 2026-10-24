@@ -17,8 +17,8 @@ import {
 } from "./assert/interface/IAssertInst";
 import { IScopeContext, IScopeContextOverrides } from "./assert/interface/IScopeContext";
 import { IAssertClassDef } from "./assert/interface/IAssertClassDef";
-import { MsgSource } from "./assert/type/MsgSource";
-import { ArrayLikeOrSizedIterable } from "./assert/type/ArrayLikeOrIterable";
+import { MsgSource } from "./types/MsgSource";
+import { ArrayLikeOrSizedIterable } from "./types/ArrayLikeOrSizedIterable";
 import { IAssertInstCore } from "./assert/interface/IAssertInstCore";
 import { IDeepOp } from "./assert/interface/ops/IDeepOp";
 import { IKeysOp } from "./assert/interface/ops/IKeysOp";
@@ -52,12 +52,13 @@ import { AssertFn } from "./assert/interface/funcs/AssertFn";
 import { ErrorLikeFn } from "./assert/interface/funcs/ErrorLikeFn";
 import { InstanceOfFn } from "./assert/interface/funcs/InstanceOfFn";
 import { assertConfig } from "./config/assertConfig";
-import { IConfig } from "./interface/IConfig";
-import { IConfigInst } from "./interface/IConfigInst";
-import { IConfigApi } from "./interface/IConfigApi";
-import { IFormatCtx, IFormatter, IFormattedValue, eFormatResult } from "./interface/IFormatter";
-import { IFormatManager } from "./interface/IFormatManager";
-import { IFormatterOptions } from "./interface/IFormatterOptions";
+import { IConfig } from "./interfaces/IConfig";
+import { IConfigInst } from "./interfaces/IConfigInst";
+import { IConfigApi } from "./interfaces/IConfigApi";
+import { IFormatCtx, IFormatter, IFormattedValue } from "./interfaces/IFormatter";
+import { eFormatResult, FormatResult } from "./types/FormatResult";
+import { IFormatManager } from "./interfaces/IFormatManager";
+import { IFormatterOptions } from "./interfaces/IFormatterOptions";
 import { createEvalAdapter, EvalFn } from "./assert/adapters/evalAdapter";
 import { IPropertyResultOp } from "./assert/interface/ops/IPropertyResultOp";
 import { createExprAdapter } from "./assert/adapters/exprAdapter";
@@ -67,7 +68,7 @@ import { AssertInstHandlers, IAssertInstHandlers } from "./assert/interface/IAss
 import { CHECK_INTERNAL_STACK_FRAME_REGEX } from "./assert/const";
 import { getScopeContext, createContext } from "./assert/scopeContext";
 import { SymbolFn } from "./assert/interface/funcs/SymbolFn";
-import { IRemovable } from "./interface/IRemovable";
+import { IRemovable } from "./interfaces/IRemovable";
 import { OneOfFn } from "./assert/interface/funcs/OneOfFn";
 import { ChangeFn } from "./assert/interface/funcs/ChangeFn";
 import { ChangeByFn } from "./assert/interface/funcs/ChangeByFn";
@@ -109,7 +110,7 @@ export {
  * Export the enums
  */
 export {
-    eFormatResult
+    eFormatResult, FormatResult
 };
 
 /**

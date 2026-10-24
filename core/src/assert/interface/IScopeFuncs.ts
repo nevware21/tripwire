@@ -8,7 +8,7 @@
 
 import { IAssertScope } from "./IAssertScope";
 import { IAssertInst } from "./IAssertInst";
-import { MsgSource } from "../type/MsgSource";
+import { MsgSource } from "../../types/MsgSource";
 
 /**
  * Identifies the signature of a function that expects the current scope as the `this` value and

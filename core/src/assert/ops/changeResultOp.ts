@@ -11,7 +11,7 @@ import { IAssertInst, IAssertScopeFuncDef, AssertScopeFuncDefs } from "../interf
 import { IAssertScope } from "../interface/IAssertScope";
 import { IScopeContext } from "../interface/IScopeContext";
 import { _addAssertInstFuncs } from "../internal/_addAssertInstFuncs";
-import { MsgSource } from "../type/MsgSource";
+import { MsgSource } from "../../types/MsgSource";
 import { IChangeResultOp } from "../interface/ops/IChangeResultOp";
 import { IChangeResultValue } from "../interface/ops/IChangeResultValue";
 

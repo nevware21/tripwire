@@ -6,7 +6,8 @@
  * Licensed under the MIT license.
  */
 
-import { eFormatResult, IFormatCtx, IFormattedValue, IFormatter } from "../interface/IFormatter";
+import { IFormatCtx, IFormattedValue, IFormatter } from "../interfaces/IFormatter";
+import { eFormatResult } from "../types/FormatResult";
 import {
     arrForEach, asString, dumpObj, isArray, isDate, isError, isFunction, isMapLike, isPlainObject,
     isPrimitive, isRegExp, isSetLike, isStrictNullOrUndefined, isString, isSymbol, iterForOf,

@@ -7,7 +7,7 @@
  */
 
 import { ThrowFn } from "../funcs/ThrowFn";
-import { MsgSource } from "../../type/MsgSource";
+import { MsgSource } from "../../../types/MsgSource";
 import { IDeepOp } from "./IDeepOp";
 import { IHasOp } from "./IHasOp";
 import { IIncludeOp } from "./IIncludeOp";
@@ -313,7 +313,7 @@ export interface IToOp<R> extends INotOp<IToOp<R>> {
     /**
      * Asserts that the value DOES change but NOT by the specified delta after executing the target function.
      * The value MUST change (cannot remain the same), but the change amount must not equal the specified delta.
-     * This differs from {@link notChangesBy} which allows the value to remain unchanged.
+     * This differs from {@link IAssertClass.notChangesBy} which allows the value to remain unchanged.
      * @since 0.1.5
      * @example
      * ```typescript

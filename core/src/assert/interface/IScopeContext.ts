@@ -6,8 +6,8 @@
  * Licensed under the MIT license.
  */
 
-import { MsgSource } from "../type/MsgSource";
-import { IConfigInst } from "../../interface/IConfigInst";
+import { MsgSource } from "../../types/MsgSource";
+import { IConfigInst } from "../../interfaces/IConfigInst";
 
 /**
  * The scope context is used to track the evaluation of the assertion and

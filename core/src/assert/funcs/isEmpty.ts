@@ -7,8 +7,8 @@
  */
 
 import { getLength, isArray, isFunction, isObject, isPrimitive, isString, isWeakMap, isWeakSet, objKeys, safeGet } from "@nevware21/ts-utils";
-import { MsgSource } from "../type/MsgSource";
 import { IAssertScope } from "../interface/IAssertScope";
+import { MsgSource } from "../../types/MsgSource";
 
 /**
  * Assert that the current value is empty, which means it is either null, undefined,

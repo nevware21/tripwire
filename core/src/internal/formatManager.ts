@@ -7,11 +7,12 @@
  */
 
 import { arrAppend, arrForEach, arrIndexOf, asString, dumpObj, getDeferred, ICachedValue, isArray, isFunction, isPrimitive, objDefine } from "@nevware21/ts-utils";
-import { IFormatManager } from "../interface/IFormatManager";
-import { eFormatResult, IFormatCtx, IFormattedValue, IFormatter } from "../interface/IFormatter";
-import { IRemovable } from "../interface/IRemovable";
+import { IFormatManager } from "../interfaces/IFormatManager";
+import { IFormatCtx, IFormattedValue, IFormatter } from "../interfaces/IFormatter";
+import { eFormatResult } from "../types/FormatResult";
+import { IRemovable } from "../interfaces/IRemovable";
 import { _noOpFn } from "./_noOp";
-import { IConfigInst } from "../interface/IConfigInst";
+import { IConfigInst } from "../interfaces/IConfigInst";
 import { EMPTY_STRING } from "../assert/internal/const";
 import { escapeAnsi, yellow } from "@nevware21/chromacon";
 import { _defaultFormatters } from "./_defaultFormatters";

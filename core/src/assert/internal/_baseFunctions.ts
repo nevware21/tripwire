@@ -16,7 +16,7 @@ import { changesFunc, increasesFunc, decreasesFunc } from "../funcs/changes";
 import { changesByFunc, increasesByFunc, decreasesByFunc, changesButNotByFunc, increasesButNotByFunc, decreasesButNotByFunc } from "../funcs/changesBy";
 import { IAssertInst, IAssertScopeFuncDef } from "../interface/IAssertInst";
 import { IScopePropFn, IScopeFn } from "../interface/IScopeFuncs";
-import { MsgSource } from "../type/MsgSource";
+import { MsgSource } from "../../types/MsgSource";
 import { allOp, anyOp } from "../ops/allOp";
 import { deepOp } from "../ops/deepOp";
 import { hasOp } from "../ops/hasOp";

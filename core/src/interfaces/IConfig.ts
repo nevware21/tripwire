@@ -6,7 +6,7 @@
  * Licensed under the MIT license.
  */
 
-import { MsgSource } from "../assert/type/MsgSource";
+import { MsgSource } from "../types/MsgSource";
 import { IFormatterOptions } from "./IFormatterOptions";
 
 /**
@@ -50,7 +50,7 @@ export interface IConfig {
     /**
      * Options for configuring value formatting.
      * @remarks These options allow you to customize how values are formatted in assertion error messages.
-     * Custom formatters can be added via the format manager (see {@link IConfigInst.formatMgr}).
+     * Custom formatters can be added via the format manager (see {@link IConfigApi.formatMgr}).
      * Custom formatters are checked in order: current context formatters first, then parent context formatters,
      * and finally default formatters. This allows you to provide specialized formatting for certain value types
      * that takes precedence over inherited and default formatting.
@@ -61,8 +61,7 @@ export interface IConfig {
      * @since 0.1.3
      * @example
      * ```typescript
-     * import { assertConfig } from '@nevware21/tripwire';
-     * import { eFormatResult } from '@nevware21/tripwire';
+     * import { assertConfig, eFormatResult } from '@nevware21/tripwire';
      * import { escapeAnsi, gray, replaceAnsi } from '@nevware21/chromacon';
      *
      * // Example 1: Custom formatters with default ANSI escaping
@@ -136,4 +135,25 @@ export interface IConfig {
      * @since 0.1.8
      */
     maxCompareCheckDepth?: number;
+
+    /**
+     * Default timeout in milliseconds for test cases and hooks that do not have a specific timeout defined.
+     * @default 2000
+     * @since 0.2.0
+     */
+    timeout?: number;
+
+    /**
+     * Default threshold in milliseconds for considering a test execution as slow.
+     * @default 75
+     * @since 0.2.0
+     */
+    slow?: number;
+
+    /**
+     * Default retry count for failed tests when no per-suite or per-test override is defined.
+     * @default 0
+     * @since 0.2.0
+     */
+    retries?: number;
 }

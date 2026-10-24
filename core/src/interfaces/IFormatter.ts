@@ -6,36 +6,8 @@
  * Licensed under the MIT license.
  */
 
+import { FormatResult } from "../types/FormatResult";
 import { IConfigInst } from "./IConfigInst";
-
-/**
- * Indicates the result of a formatting operation.
- *
- * @since 0.1.3
- * @group Formatter
- */
-export const enum eFormatResult {
-    /**
-     * The value was successfully formatted and should be used.
-     */
-    Ok = 0,
-
-    /**
-     * The value was formatted, but continue trying other formatters to find a better result.
-     */
-    Continue = 1,
-
-    /**
-     * The formatter could not format this value. Try the next formatter.
-     */
-    Skip = 2,
-
-    /**
-     * An error occurred while formatting the value, this indicates a failure in the formatting process
-     * either explicitly set by the formatter or due to an exception being thrown.
-     */
-    Failed = 3
-}
 
 /**
  * Result of formatting a value.
@@ -47,19 +19,19 @@ export interface IFormattedValue {
     /**
      * Indicates the result of the formatting operation.
      */
-    res: eFormatResult;
+    res: FormatResult;
 
     /**
      * The formatted string representation of the value.
-     * Only meaningful when {@link res} is {@link eFormatResult.Ok} or {@link eFormatResult.Continue}.
+     * Only meaningful when {@link IFormattedValue.res} is {@link eFormatResult.Ok} or {@link eFormatResult.Continue}.
      */
     val?: string;
 
     /**
-     * The Error that occurred during formatting, set when {@link res} is {@link eFormatResult.Failed}
+     * The Error that occurred during formatting, set when {@link IFormattedValue.res} is {@link eFormatResult.Failed}
      * This can be either an error explicitly thrown by the formatter or an error that occurred
      * internally during the formatting process.
-     * Only meaningful when {@link res} is {@link eFormatResult.Failed}.
+     * Only meaningful when {@link IFormattedValue.res} is {@link eFormatResult.Failed}.
      */
     err?: any;
 }

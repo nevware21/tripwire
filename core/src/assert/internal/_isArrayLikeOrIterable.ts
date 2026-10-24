@@ -7,7 +7,7 @@
  */
 
 import { arrForEach, isArray, isIterable, isNumber, isObject, iterForOf } from "@nevware21/ts-utils";
-import { ArrayLikeOrSizedIterable } from "../type/ArrayLikeOrIterable";
+import { ArrayLikeOrSizedIterable } from "../../types/ArrayLikeOrSizedIterable";
 
 /**
  * Helper function to check if a value is ArrayLike or Iterable with size.
