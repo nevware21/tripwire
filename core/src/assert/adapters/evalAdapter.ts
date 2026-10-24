@@ -2,15 +2,15 @@
  * @nevware21/tripwire
  * https://github.com/nevware21/tripwire
  *
- * Copyright (c) 2024-2025 NevWare21 Solutions LLC
+ * Copyright (c) 2024-2026 NevWare21 Solutions LLC
  * Licensed under the MIT license.
  */
 
 import { arrSlice } from "@nevware21/ts-utils";
-import { IAssertScope } from "../interface/IAssertScope";
+import { _blockLength } from "../internal/_blockLength";
 import { MsgSource } from "../../types/MsgSource";
 import { IScopeFn } from "../interface/IScopeFuncs";
-import { _blockLength } from "../internal/_blockLength";
+import { IAssertScope } from "../interface/IAssertScope";
 
 /**
  * Identifies the signature of a function that expects the actual value and any additional arguments

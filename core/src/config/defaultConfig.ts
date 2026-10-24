@@ -7,8 +7,8 @@
  */
 
 import { objFreeze } from "@nevware21/ts-utils";
-import { IConfig } from "../interfaces/IConfig";
 import { cyan } from "@nevware21/chromacon";
+import { IConfig } from "../interfaces/IConfig";
 
 /**
  * @internal
@@ -36,5 +36,9 @@ export const DEFAULT_CONFIG: Readonly<IConfig> = (/* $__PURE__ */objFreeze({
     circularMsg: () => cyan("[<Circular>]"),
     showDiff: true,
     maxCompareDepth: 100,
-    maxCompareCheckDepth: 50
+    maxCompareCheckDepth: 50,
+    timeout: 2000,
+    slow: 75,
+    retries: 0
 }));
+

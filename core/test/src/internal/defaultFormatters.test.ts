@@ -338,6 +338,44 @@ describe("Default Formatters coverage", function () {
             }, /.*/);
         });
 
+        it("should describe an own getter as [Getter] without invoking it", function () {
+            // Collecting the keys of a plain object must not read the values: a getter with side effects
+            // (or one that throws) would otherwise run purely because the value was being formatted.
+            let calls = 0;
+            const obj: any = { plain: 1 };
+            Object.defineProperty(obj, "lazy", {
+                get: function () {
+                    calls++;
+                    throw new Error("the getter must not run while formatting");
+                },
+                enumerable: true
+            });
+
+            checkError(function () {
+                assert.equal(obj, { different: true });
+            }, /plain:1,lazy:\[Getter\]/);
+            assert.equal(calls, 0, "the own getter was invoked while formatting");
+        });
+
+        it("should describe an inherited getter as [Getter] without invoking it", function () {
+            let calls = 0;
+            const proto: any = {};
+            Object.defineProperty(proto, "inherited", {
+                get: function () {
+                    calls++;
+                    throw new Error("the inherited getter must not run while formatting");
+                },
+                enumerable: true
+            });
+            const obj = Object.create(proto);
+            obj.own = true;
+
+            checkError(function () {
+                assert.equal(obj, { different: true });
+            }, /own:true,inherited:\[Getter\]/);
+            assert.equal(calls, 0, "the inherited getter was invoked while formatting");
+        });
+
         it("should handle objects with many properties (truncation)", function () {
             const obj1: any = {};
             const obj2: any = {};

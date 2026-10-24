@@ -6,18 +6,21 @@
  * Licensed under the MIT license.
  */
 
-import { AssertClassDef, assert, addAssertFunc, addAssertFuncs, createAssert } from "./assert/assertClass";
+import { IConfig } from "./interfaces/IConfig";
+import { IConfigApi } from "./interfaces/IConfigApi";
+import { IConfigInst } from "./interfaces/IConfigInst";
+import { IFormatterOptions } from "./interfaces/IFormatterOptions";
+import { MsgSource } from "./types/MsgSource";
+import { assert, addAssertFunc, addAssertFuncs, createAssert, AssertClassDef } from "./assert/assertClass";
 import { AssertionError, AssertionErrorConstructor, AssertionFailure, AssertionFailureConstructor, AssertionFatal, AssertionFatalConstructor, IAssertionErrorOrgValues } from "./assert/assertionError";
 import { useScope } from "./assert/useScope";
 import { addAssertInstFuncDefs, addAssertInstFunc, addAssertInstFuncDef } from "./assert/assertInst";
 import { expect } from "./assert/expect";
 import { IAssertClass, IExtendedAssert } from "./assert/interface/IAssertClass";
-import {
-    IAssertInst, IExtendedAssertInst, IAssertScopeFuncDef, AssertScopeFuncDefs
-} from "./assert/interface/IAssertInst";
+import { IAssertInst, IExtendedAssertInst } from "./assert/interface/IAssertInst";
+import { IAssertScopeFuncDef, AssertScopeFuncDefs } from "./assert/interface/IAssertScopeFuncDef";
 import { IScopeContext, IScopeContextOverrides } from "./assert/interface/IScopeContext";
 import { IAssertClassDef } from "./assert/interface/IAssertClassDef";
-import { MsgSource } from "./types/MsgSource";
 import { ArrayLikeOrSizedIterable } from "./types/ArrayLikeOrSizedIterable";
 import { IAssertInstCore } from "./assert/interface/IAssertInstCore";
 import { IDeepOp } from "./assert/interface/ops/IDeepOp";
@@ -37,6 +40,7 @@ import { ThrowFn } from "./assert/interface/funcs/ThrowFn";
 import { INestedOp } from "./assert/interface/ops/INestedOp";
 import { INotOp } from "./assert/interface/ops/INotOp";
 import { IHasOp } from "./assert/interface/ops/IHasOp";
+import { IHasOwnOp } from "./assert/interface/ops/IHasOwnOp";
 import { IIsTypeOp } from "./assert/interface/ops/ITypeOp";
 import { INumericOp } from "./assert/interface/ops/INumericOp";
 import { NumberFn } from "./assert/interface/funcs/NumericFn";
@@ -52,13 +56,9 @@ import { AssertFn } from "./assert/interface/funcs/AssertFn";
 import { ErrorLikeFn } from "./assert/interface/funcs/ErrorLikeFn";
 import { InstanceOfFn } from "./assert/interface/funcs/InstanceOfFn";
 import { assertConfig } from "./config/assertConfig";
-import { IConfig } from "./interfaces/IConfig";
-import { IConfigInst } from "./interfaces/IConfigInst";
-import { IConfigApi } from "./interfaces/IConfigApi";
 import { IFormatCtx, IFormatter, IFormattedValue } from "./interfaces/IFormatter";
 import { eFormatResult, FormatResult } from "./types/FormatResult";
 import { IFormatManager } from "./interfaces/IFormatManager";
-import { IFormatterOptions } from "./interfaces/IFormatterOptions";
 import { createEvalAdapter, EvalFn } from "./assert/adapters/evalAdapter";
 import { IPropertyResultOp } from "./assert/interface/ops/IPropertyResultOp";
 import { createExprAdapter } from "./assert/adapters/exprAdapter";
@@ -90,7 +90,7 @@ export {
     IAllOp, IAnyOp, IAssertClass, IAssertClassDef, IConfig, IConfigInst, IConfigApi,
     IAssertInst, IAssertInstCore, IAssertInstHandlers, IAssertScope, IAssertScopeFuncDef,
     IChangeResultOp, IChangeResultValue, IDeepOp, IEqualOp, IExtendedAssert, IExtendedAssertInst,
-    IFormatCtx, IFormattedValue, IFormatter, IFormatterOptions, IFormatManager, IHasOp, IIncludeOp,
+    IFormatCtx, IFormattedValue, IFormatter, IFormatterOptions, IFormatManager, IHasOp, IHasOwnOp, IIncludeOp,
     IIsOp, IIsTypeOp, IKeysOp, INestedOp, INotOp, INumericOp, IOwnOp, IPropertyResultOp, IRemovable,
     IScopeContext, IScopeContextOverrides, IScopePropFn, IStrictlyOp, IThrowOp, IToOp,
     PropertyDescriptorFn, PropertyFn
@@ -114,7 +114,7 @@ export {
 };
 
 /**
- * Export the functions (and global `assert`)
+ * Export the core functions (and global `assert`)
  */
 export {
     addAssertFunc, addAssertFuncs, addAssertInstFunc, addAssertInstFuncDef, addAssertInstFuncDefs,

@@ -2,12 +2,13 @@
  * @nevware21/tripwire
  * https://github.com/nevware21/tripwire
  *
- * Copyright (c) 2024-2025 NevWare21 Solutions LLC
+ * Copyright (c) 2024-2026 NevWare21 Solutions LLC
  * Licensed under the MIT license.
  */
 
-import { IAssertInst, IAssertScopeFuncDef, AssertScopeFuncDefs } from "../interface/IAssertInst";
+import { IAssertInst } from "../interface/IAssertInst";
 import { IAssertScope } from "../interface/IAssertScope";
+import { AssertScopeFuncDefs, IAssertScopeFuncDef } from "../interface/IAssertScopeFuncDef";
 import { IPropertyResultOp } from "../interface/ops/IPropertyResultOp";
 import { _addAssertInstFuncs } from "../internal/_addAssertInstFuncs";
 import { noopOp } from "./noopOp";

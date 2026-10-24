@@ -7,8 +7,50 @@
  */
 
 import { assert } from "../../../src/assert/assertClass";
+import { createAssertScope } from "../../../src/assert/assertScope";
 import { expect } from "../../../src/assert/expect";
+import { changeResultOp } from "../../../src/assert/ops/changeResultOp";
+import { createContext } from "../../../src/assert/scopeContext";
 import { checkError } from "../support/checkError";
+
+describe("change result operation", () => {
+    it("exposes the changed value as the next assertion target through .value", () => {
+        let value = 0;
+        const getValue = () => value;
+        const addTwo = () => {
+            value += 2;
+        };
+
+        expect(addTwo).to.change(getValue).value.to.equal(2);
+
+        checkError(() => {
+            value = 0;
+            expect(addTwo).to.change(getValue).value.to.equal(5);
+        }, /expected 2 to equal 5/);
+    });
+
+    it("refuses a delta that is not a number", () => {
+        let value = 0;
+        const getValue = () => value;
+        const addTwo = () => {
+            value += 2;
+        };
+
+        checkError(() => {
+            expect(addTwo).to.change(getValue).by("2" as any);
+        }, /expected delta \("2"\) to be a number/);
+    });
+
+    it("refuses a recorded delta that is not a number", () => {
+        // Only reachable with a hand-made result, since the change functions always record a numeric delta.
+        const scope = createAssertScope(createContext(null));
+        const result = changeResultOp(scope, { initial: "a", value: "b", delta: "not a number" } as any);
+
+        checkError(() => {
+            result.by(1);
+        }, /expected actual delta \("not a number"\) to be a number/);
+    });
+});
 
 describe("assert.changes", () => {
     describe("with getter function", () => {

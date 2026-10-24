@@ -2,7 +2,7 @@
  * @nevware21/tripwire
  * https://github.com/nevware21/tripwire
  *
- * Copyright (c) 2024-2025 NevWare21 Solutions LLC
+ * Copyright (c) 2024-2026 NevWare21 Solutions LLC
  * Licensed under the MIT license.
  */
 
@@ -10,7 +10,7 @@ import { isError, isFunction, isObject, isRegExp, isStrictNullOrUndefined, isStr
 import { MsgSource } from "../../types/MsgSource";
 import { IAssertScope } from "../interface/IAssertScope";
 
-const enum MatchError {
+const enum eMatchError {
     Nothing = 0x00,
     ErrorInstance = 0x01,
     ErrorType = 0x02,
@@ -22,28 +22,28 @@ const enum MatchError {
  interface IErrorMatch {
     result: boolean;
     errorLike?: ErrorConstructor | Error;
-    matchError: MatchError;
+    matchError: eMatchError;
 }
 
 const cErrorFnErrors: { [key: number]: MsgSource } = {
-    [MatchError.Nothing]: "expected {value} to be an Error instance",
-    [MatchError.ErrorInstance]: "expected {error} to be an instance of {errorLike}",
-    [MatchError.ErrorType]: "expected {error} to be of {errorLike} type"
+    [eMatchError.Nothing]: "expected {value} to be an Error instance",
+    [eMatchError.ErrorInstance]: "expected {error} to be an instance of {errorLike}",
+    [eMatchError.ErrorType]: "expected {error} to be of {errorLike} type"
 };
 
-const cThrowsErrors: { [key: number]: MsgSource } = {
-    [MatchError.Nothing]: null,
-    [MatchError.ErrorInstance]: "expected {function} to throw a {errorLike} instance but {error} was thrown",
-    [MatchError.ErrorType]: "expected {function} to throw an error of type {errorLike} but threw {error}",
-    [MatchError.MessageContains]: "expected {function} to throw an error with a message containing {msgMatch} but it was {message}",
-    [MatchError.MessageMatches]: "expected {function} to throw an error with a message matching {msgMatch} but it was {message}",
-    [MatchError.MessageEquals]: "expected {function} to throw an error with a message equal to {msgMatch} but it was {message}",
-    [MatchError.ErrorInstance | MatchError.MessageContains]: "expected {function} to throw a {errorLike} instance with a message containing {msgMatch} but {error} was thrown",
-    [MatchError.ErrorInstance | MatchError.MessageMatches]: "expected {function} to throw a {errorLike} instance with a message matching {msgMatch} but {error} was thrown",
-    [MatchError.ErrorInstance | MatchError.MessageEquals]: "expected {function} to throw a {errorLike} instance with a message equal to {msgMatch} but {error} was thrown",
-    [MatchError.ErrorType | MatchError.MessageContains]: "expected {function} to throw an error of type {errorLike} with a message containing {msgMatch} but {error} was thrown",
-    [MatchError.ErrorType | MatchError.MessageMatches]: "expected {function} to throw an error of type {errorLike} with a message matching {msgMatch} but {error} was thrown",
-    [MatchError.ErrorType | MatchError.MessageEquals]: "expected {function} to throw an error of type {errorLike} with a message equal to {msgMatch} but {error} was thrown"
+const cThrowsErrors: { [key: number]: MsgSource | null } = {
+    [eMatchError.Nothing]: null,
+    [eMatchError.ErrorInstance]: "expected {function} to throw a {errorLike} instance but {error} was thrown",
+    [eMatchError.ErrorType]: "expected {function} to throw an error of type {errorLike} but threw {error}",
+    [eMatchError.MessageContains]: "expected {function} to throw an error with a message containing {msgMatch} but it was {message}",
+    [eMatchError.MessageMatches]: "expected {function} to throw an error with a message matching {msgMatch} but it was {message}",
+    [eMatchError.MessageEquals]: "expected {function} to throw an error with a message equal to {msgMatch} but it was {message}",
+    [eMatchError.ErrorInstance | eMatchError.MessageContains]: "expected {function} to throw a {errorLike} instance with a message containing {msgMatch} but {error} was thrown",
+    [eMatchError.ErrorInstance | eMatchError.MessageMatches]: "expected {function} to throw a {errorLike} instance with a message matching {msgMatch} but {error} was thrown",
+    [eMatchError.ErrorInstance | eMatchError.MessageEquals]: "expected {function} to throw a {errorLike} instance with a message equal to {msgMatch} but {error} was thrown",
+    [eMatchError.ErrorType | eMatchError.MessageContains]: "expected {function} to throw an error of type {errorLike} with a message containing {msgMatch} but {error} was thrown",
+    [eMatchError.ErrorType | eMatchError.MessageMatches]: "expected {function} to throw an error of type {errorLike} with a message matching {msgMatch} but {error} was thrown",
+    [eMatchError.ErrorType | eMatchError.MessageEquals]: "expected {function} to throw an error of type {errorLike} with a message equal to {msgMatch} but {error} was thrown"
 };
 
 function _isError(value: any): value is Error {
@@ -142,9 +142,9 @@ export function isErrorFunc<R>(this: IAssertScope, errorLike?: ErrorConstructor 
     if (errorLike) {
         let errorLikeResult = _isErrorLikeCompatible(errorValue, errorLike);
 
-        context.eval(errorLikeResult.result, evalMsg || cErrorFnErrors[errorLikeResult.matchError] || cErrorFnErrors[MatchError.Nothing]);
+        context.eval(errorLikeResult.result, evalMsg || cErrorFnErrors[errorLikeResult.matchError] || cErrorFnErrors[eMatchError.Nothing]);
     } else {
-        context.eval(_isError(errorValue), evalMsg || cErrorFnErrors[MatchError.Nothing]);
+        context.eval(_isError(errorValue), evalMsg || cErrorFnErrors[eMatchError.Nothing]);
     }
 
     return this.that;
@@ -168,7 +168,7 @@ function _isErrorLikeCompatible(errorValue: any, errorLike: ErrorConstructor | E
             return {
                 result: errorValue && (errorValue.constructor instanceof errError.constructor || errorValue instanceof errError.constructor),
                 errorLike: errorLike,
-                matchError: MatchError.ErrorInstance
+                matchError: eMatchError.ErrorInstance
             };
         }
 
@@ -177,7 +177,7 @@ function _isErrorLikeCompatible(errorValue: any, errorLike: ErrorConstructor | E
             return {
                 result: errorValue && (errorValue.constructor === errType || errorValue instanceof errType),
                 errorLike: errorLike,
-                matchError: MatchError.ErrorType
+                matchError: eMatchError.ErrorType
             };
             //, evalMsg || "expected {value} to be of {errorLike} type.");
         }
@@ -185,14 +185,14 @@ function _isErrorLikeCompatible(errorValue: any, errorLike: ErrorConstructor | E
         return {
             result: errorValue instanceof errType,
             errorLike: errorLike,
-            matchError: MatchError.ErrorType
+            matchError: eMatchError.ErrorType
         };
     }
 
     // We where not given a specific error to compare to, so just check if the value is an error
     return {
         result: true,
-        matchError: MatchError.Nothing
+        matchError: eMatchError.Nothing
     };
     //, evalMsg || "expected {value} to be an Error instance");
 }
@@ -202,26 +202,26 @@ function _isErrorMessageCompatible(errorValue: Error, msgMatch: string | RegExp)
     if (isString(msgMatch)) {
         return {
             result: message == msgMatch || strIndexOf(message, msgMatch) >= 0,
-            matchError: MatchError.MessageContains
+            matchError: eMatchError.MessageContains
         };
     }
 
     if (isRegExp(msgMatch)) {
         return {
             result: msgMatch.test(message),
-            matchError: MatchError.MessageMatches
+            matchError: eMatchError.MessageMatches
         };
     }
 
     if (msgMatch) {
         return {
             result: msgMatch == message,
-            matchError: MatchError.MessageEquals
+            matchError: eMatchError.MessageEquals
         };
     }
 
     return {
         result: true,
-        matchError: MatchError.Nothing
+        matchError: eMatchError.Nothing
     };
 }

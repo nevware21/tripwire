@@ -7,7 +7,7 @@
  */
 
 import { arrSlice, isString, objDefineProps, strIndexOf, strSubstring, strTrim } from "@nevware21/ts-utils";
-import { EMPTY_STRING } from "../assert/internal/const";
+import { EMPTY_STRING } from "./const";
 
 // eslint-disable-next-line security/detect-unsafe-regex
 const rStackLine = /^\s{0,20}at\s{1,10}(\w+\.)?(\w+)\s/;
@@ -191,7 +191,7 @@ export function parseStack(stack: string | undefined): IParsedStack {
 
 function _formatStack(name: string, message: string, lines: string[], trailMessage: string, maxLines?: number): string {
     let formattedStack = name ? name + ": " + message : message;
-    let numLines = maxLines || Error.stackTraceLimit || 10;
+    let numLines = maxLines || ((Error as any).stackTraceLimit || 10);
     let theLines = arrSlice(lines, 0, numLines);
     if (formattedStack && theLines.length > 0) {
         formattedStack += "\n";

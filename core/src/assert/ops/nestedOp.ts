@@ -6,10 +6,27 @@
  * Licensed under the MIT license.
  */
 
+import { getLazy } from "@nevware21/ts-utils";
 import { INestedOp } from "../interface/ops/INestedOp";
 import { IAssertScope } from "../interface/IAssertScope";
-import { AssertScopeFuncDefs } from "../interface/IAssertInst";
+import { AssertScopeFuncDefs } from "../interface/IAssertScopeFuncDef";
 import { hasNestedPropertyFunc, nestedIncludeFunc, hasDeepNestedPropertyFunc, deepNestedIncludeFunc } from "../funcs/nested";
+
+const _nestedOpProps = /* #__PURE__ */ getLazy<AssertScopeFuncDefs<INestedOp<any>>>(() => ({
+    property: { scopeFn: hasNestedPropertyFunc },
+    include: { scopeFn: nestedIncludeFunc },
+    includes: { scopeFn: nestedIncludeFunc },
+    contain: { scopeFn: nestedIncludeFunc },
+    contains: { scopeFn: nestedIncludeFunc }
+}));
+
+const _deepNestedOpProps = /* #__PURE__ */ getLazy<AssertScopeFuncDefs<INestedOp<any>>>(() => ({
+    property: { scopeFn: hasDeepNestedPropertyFunc },
+    include: { scopeFn: deepNestedIncludeFunc },
+    includes: { scopeFn: deepNestedIncludeFunc },
+    contain: { scopeFn: deepNestedIncludeFunc },
+    contains: { scopeFn: deepNestedIncludeFunc }
+}));
 
 /**
  * Creates the nested assertion operation using the given scope.
@@ -19,15 +36,7 @@ import { hasNestedPropertyFunc, nestedIncludeFunc, hasDeepNestedPropertyFunc, de
  * @since 0.1.5
  */
 export function nestedOp<R>(scope: IAssertScope): INestedOp<R> {
-    let props: AssertScopeFuncDefs<INestedOp<R>> = {
-        property: { scopeFn: hasNestedPropertyFunc },
-        include: { scopeFn: nestedIncludeFunc },
-        includes: { scopeFn: nestedIncludeFunc },
-        contain: { scopeFn: nestedIncludeFunc },
-        contains: { scopeFn: nestedIncludeFunc }
-    };
-
-    return scope.createOperation(props);
+    return scope.createOperation(_nestedOpProps.v);
 }
 
 /**
@@ -38,14 +47,6 @@ export function nestedOp<R>(scope: IAssertScope): INestedOp<R> {
  * @since 0.1.5
  */
 export function deepNestedOp<R>(scope: IAssertScope): INestedOp<R> {
-    let props: AssertScopeFuncDefs<INestedOp<R>> = {
-        property: { scopeFn: hasDeepNestedPropertyFunc },
-        include: { scopeFn: deepNestedIncludeFunc },
-        includes: { scopeFn: deepNestedIncludeFunc },
-        contain: { scopeFn: deepNestedIncludeFunc },
-        contains: { scopeFn: deepNestedIncludeFunc }
-    };
-
-    return scope.createOperation(props);
+    return scope.createOperation(_deepNestedOpProps.v);
 }
 

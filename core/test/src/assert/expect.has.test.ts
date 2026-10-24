@@ -11,6 +11,46 @@ import { checkError } from "../support/checkError";
 
 describe("expect.has", () => {
 
+    describe("own", () => {
+        const proto = { inherited: 1 };
+
+        function target(): any {
+            const obj = Object.create(proto);
+            obj.own = 2;
+            return obj;
+        }
+
+        it("restricts property and include to own properties", () => {
+            expect(target()).has.own.property("own");
+            expect(target()).has.own.property("own", 2);
+            expect(target()).has.own.include({ own: 2 });
+            expect(target()).has.own.contain({ own: 2 });
+            expect(target()).has.property("inherited");
+
+            checkError(() => {
+                expect(target()).has.own.property("inherited");
+            }, /to have its own .*inherited.* property/);
+            checkError(() => {
+                expect(target()).has.own.include({ inherited: 1 });
+            }, /to have own properties matching/);
+        });
+
+        it("offers the has operations under own", () => {
+            expect(target()).has.own.all.keys("own");
+            expect(target()).has.own.any.keys("own", "missing");
+            expect([1, 2, 3]).has.own.lengthOf(3);
+            expect(new Map([["a", 1]])).has.own.sizeOf(1);
+            expect({ a: { b: 1 } }).has.own.nested.property("a.b");
+
+            checkError(() => {
+                expect(target()).has.own.all.keys("own", "missing");
+            }, /expected all keys/);
+            checkError(() => {
+                expect([1, 2, 3]).has.own.lengthOf(2);
+            }, /length/);
+        });
+    });
+
     it("should call all.keys with correct arguments", () => {
         expect({ a: 1, b: 2 }).has.all.keys("a", "b");
 

@@ -6,14 +6,14 @@
  * Licensed under the MIT license.
  */
 
-import { ALL, ANY } from "../internal/const";
 import { IAnyOp } from "../interface/ops/IAnyOp";
 import { IAllOp } from "../interface/ops/IAllOp";
 import { allKeysFunc, anyKeysFunc } from "../funcs/keysFunc";
 import { IAssertScope } from "../interface/IAssertScope";
-import { AssertScopeFuncDefs } from "../interface/IAssertInst";
 import { allValuesFunc, anyValuesFunc } from "../funcs/valuesFunc";
 import { allDeepKeyFilterOp, anyDeepKeyFilterOp } from "./keysOp";
+import { AssertScopeFuncDefs } from "../interface/IAssertScopeFuncDef";
+import { ALL, ANY } from "../../internal/const";
 
 export function anyOp<R>(scope: IAssertScope): IAnyOp<R> {
     scope.context.set(ANY, true);

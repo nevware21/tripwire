@@ -7,12 +7,12 @@
  */
 
 import { arrForEach, isArray, isNumber, isObject, isPrimitive, isStrictNullOrUndefined, isString, isSymbol, objGetOwnPropertyDescriptor, objGetPrototypeOf, objHasOwnProperty } from "@nevware21/ts-utils";
-import { MsgSource } from "../../types/MsgSource";
-import { IScopeContext } from "../interface/IScopeContext";
 import { deepEqualsFunc, equalsFunc } from "./equal";
-import { IAssertScope } from "../interface/IAssertScope";
 import { IPropertyResultOp } from "../interface/ops/IPropertyResultOp";
 import { propertyResultOp } from "../ops/propertyResultOp";
+import { MsgSource } from "../../types/MsgSource";
+import { IAssertScope } from "../interface/IAssertScope";
+import { IScopeContext } from "../interface/IScopeContext";
 
 function _getPropertyDescriptor<T>(target: T, name: string | symbol | number): PropertyDescriptor | undefined {
     let currentObj = target;

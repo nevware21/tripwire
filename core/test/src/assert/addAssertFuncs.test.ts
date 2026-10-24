@@ -94,14 +94,6 @@ describe("addAssertFuncs", function () {
     });
 
     describe("invalid definitions", () => {
-        interface InvalidExtensions {
-            invalidFunc: (value: any) => void;
-            invalidArray: (value: any) => void;
-            invalidEmpty: (value: any) => void;
-            invalidNoScopeFn: (value: any) => void;
-            invalidNonFunction: (value: any) => void;
-        }
-
         it("should throw AssertionError for non-string/non-function/non-array definitions", () => {
             checkError(() => {
                 addAssertFuncs(assert, {

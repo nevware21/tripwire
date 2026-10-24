@@ -10,7 +10,7 @@ import { PropertyDescriptorFn, PropertyFn } from "../funcs/PropertyFn";
 import { SymbolFn } from "../funcs/SymbolFn";
 import { IAllOp } from "./IAllOp";
 import { IAnyOp } from "./IAnyOp";
-import { IOwnOp } from "./IOwnOp";
+import { IHasOwnOp } from "./IHasOwnOp";
 import { INestedOp } from "./INestedOp";
 import { MsgSource } from "../../../types/MsgSource";
 
@@ -56,13 +56,16 @@ export interface IHasOp<R> {
     propertyDescriptor: PropertyDescriptorFn;
 
     /**
-     * Asserts that the object has the specified own property.
+     * Restricts the following `has` assertions to the object's own properties, never its prototype
+     * chain: every {@link IOwnOp} assertion plus the own forms of `all`, `any`, `nested`, `lengthOf`
+     * and `sizeOf` ({@link IHasOwnOp}).
      * @example
      * ```typescript
      * expect({ a: 1, b: 2 }).has.own.property('a');
+     * expect({ a: 1, b: 2 }).has.own.include({ a: 1 });
      * ```
      */
-    own: IOwnOp<R>;
+    own: IHasOwnOp<R>;
 
     /**
      * Provides nested property operations using dot notation.

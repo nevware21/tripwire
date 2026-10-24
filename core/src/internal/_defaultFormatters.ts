@@ -6,14 +6,14 @@
  * Licensed under the MIT license.
  */
 
-import { IFormatCtx, IFormattedValue, IFormatter } from "../interfaces/IFormatter";
-import { eFormatResult } from "../types/FormatResult";
 import {
     arrForEach, asString, dumpObj, isArray, isDate, isError, isFunction, isMapLike, isPlainObject,
     isPrimitive, isRegExp, isSetLike, isStrictNullOrUndefined, isString, isSymbol, iterForOf,
-    objCreate, objForEachKey, objGetOwnPropertySymbols, objGetPrototypeOf, strIndexOf
+    objCreate, objGetOwnPropertyDescriptor, objGetOwnPropertySymbols, objGetPrototypeOf, objKeys, strIndexOf
 } from "@nevware21/ts-utils";
-import { EMPTY_STRING } from "../assert/internal/const";
+import { IFormatCtx, IFormattedValue, IFormatter } from "../interfaces/IFormatter";
+import { eFormatResult } from "../types/FormatResult";
+import { EMPTY_STRING } from "./const";
 
 /**
  * @internal
@@ -133,7 +133,15 @@ const _defaultPlainObjectFormatter: IFormatter = {
                     return -1;  // Break from arrForEach
                 }
 
-                let formattedValue = ctx.format(value[key]);
+                /*
+                 * Reading value[key] would invoke any getter defined for it -- fine for plain
+                 * data objects, but fluent/chainable APIs (this library's own assertion
+                 * instances included) commonly expose getters that have side effects (eg.
+                 * mutating shared state) purely as a consequence of being accessed. Formatting
+                 * a value for display must never trigger those, so accessor properties are
+                 * described without being invoked.
+                 */
+                let formattedValue = _isAccessorProp(value, key) ? "[Getter]" : ctx.format(value[key]);
 
                 if (isSymbol(key)) {
                     parts.push("[" + asString(key) + "]:" + formattedValue);
@@ -353,7 +361,8 @@ const _defaultConstructorFormatter: IFormatter = {
                         parts.push("...");
                         break;
                     }
-                    parts.push(key + ":" + ctx.format(value[key]));
+                    // See the comment on _isAccessorProp - never invoke a getter purely to format its value.
+                    parts.push(key + ":" + (_isAccessorProp(value, key) ? "[Getter]" : ctx.format(value[key])));
                     propCount++;
                 }
 
@@ -472,6 +481,35 @@ export const _defaultFormatters: IFormatter[] = [
 ];
 
 
+/**
+ * @internal
+ * @ignore
+ * Checks whether `key` is defined as an accessor (getter) property anywhere along `target`'s
+ * own properties or prototype chain, without invoking it.
+ * @param target - The object to check.
+ * @param key - The property name/symbol to check.
+ * @returns - `true` if reading `target[key]` would invoke a getter function.
+ */
+function _isAccessorProp(target: any, key: string | symbol): boolean {
+    let currentObj = target;
+    while (!isStrictNullOrUndefined(currentObj)) {
+        let descriptor = objGetOwnPropertyDescriptor(currentObj, key as string);
+        if (descriptor) {
+            return isFunction(descriptor.get);
+        }
+
+        // Some older runtimes answer getPrototypeOf with the object itself once the top of the chain is
+        // reached, rather than null: without this check the walk would never end there.
+        let newObj = objGetPrototypeOf(currentObj);
+        if (newObj === currentObj) {
+            break;
+        }
+        currentObj = newObj;
+    }
+
+    return false;
+}
+
 function _getObjKeys<T>(target: T, maxDepth: number): (keyof T)[] {
     let keys: any[] = [];
     let seenKeys: any = objCreate(null);  // Hash map for O(1) lookups, no prototype to avoid collisions
@@ -483,7 +521,9 @@ function _getObjKeys<T>(target: T, maxDepth: number): (keyof T)[] {
     while (!isStrictNullOrUndefined(currentObj) &&
            (!maxDepth || depth < maxDepth)) {
 
-        objForEachKey(currentObj, (key: any) => {
+        // Key-only enumeration: objForEachKey reads each property's value to hand it to the callback,
+        // which would invoke any getter before the accessor guard in the formatters gets to decide not to.
+        arrForEach(objKeys(currentObj), (key: any) => {
             if (!seenKeys[key]) {  // O(1) lookup - much faster than arrIndexOf
                 seenKeys[key] = true;
                 keys.push(key);

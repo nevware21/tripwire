@@ -6,12 +6,32 @@
  * Licensed under the MIT license.
  */
 
-import { isDate, isNumber } from "@nevware21/ts-utils";
+import { getLazy, isDate, isNumber } from "@nevware21/ts-utils";
+import { INumericOp } from "../interface/ops/INumericOp";
 import { MsgSource } from "../../types/MsgSource";
 import { IAssertScope } from "../interface/IAssertScope";
-import { INumericOp } from "../interface/ops/INumericOp";
-import { AssertScopeFuncDefs } from "../interface/IAssertInst";
+import { AssertScopeFuncDefs } from "../interface/IAssertScopeFuncDef";
 import { IScopeContext } from "../interface/IScopeContext";
+
+const _numericOpProps = /* #__PURE__ */ getLazy<AssertScopeFuncDefs<INumericOp<any>>>(() => ({
+    above: { scopeFn: aboveFunc },
+    gt: { scopeFn: aboveFunc },
+    greaterThan: { scopeFn: aboveFunc },
+
+    least: { scopeFn: leastFunc },
+    gte: { scopeFn: leastFunc },
+    greaterThanOrEqual: { scopeFn: leastFunc },
+
+    below: { scopeFn: belowFunc },
+    lt: { scopeFn: belowFunc },
+    lessThan: { scopeFn: belowFunc },
+
+    most: { scopeFn: mostFunc },
+    lte: { scopeFn: mostFunc },
+    lessThanOrEqual: { scopeFn: mostFunc },
+
+    within: { scopeFn: withinFunc }
+}));
 
 /**
  * @internal
@@ -179,25 +199,5 @@ export function withinFunc<R>(this: IAssertScope, start: number | Date, finish: 
  * @returns - The {@link INumericOp} operation instance.
  */
 export function numericOp<R>(scope: IAssertScope): INumericOp<R> {
-    const props: AssertScopeFuncDefs<INumericOp<R>> = {
-        above: { scopeFn: aboveFunc },
-        gt: { scopeFn: aboveFunc },
-        greaterThan: { scopeFn: aboveFunc },
-
-        least: { scopeFn: leastFunc },
-        gte: { scopeFn: leastFunc },
-        greaterThanOrEqual: { scopeFn: leastFunc },
-
-        below: { scopeFn: belowFunc },
-        lt: { scopeFn: belowFunc },
-        lessThan: { scopeFn: belowFunc },
-
-        most: { scopeFn: mostFunc },
-        lte: { scopeFn: mostFunc },
-        lessThanOrEqual: { scopeFn: mostFunc },
-
-        within: { scopeFn: withinFunc }
-    };
-
-    return scope.createOperation(props);
+    return scope.createOperation(_numericOpProps.v);
 }

@@ -7,15 +7,15 @@
  */
 
 import { arrAppend, arrForEach, arrIndexOf, asString, dumpObj, getDeferred, ICachedValue, isArray, isFunction, isPrimitive, objDefine } from "@nevware21/ts-utils";
-import { IFormatManager } from "../interfaces/IFormatManager";
-import { IFormatCtx, IFormattedValue, IFormatter } from "../interfaces/IFormatter";
-import { eFormatResult } from "../types/FormatResult";
-import { IRemovable } from "../interfaces/IRemovable";
 import { _noOpFn } from "./_noOp";
-import { IConfigInst } from "../interfaces/IConfigInst";
-import { EMPTY_STRING } from "../assert/internal/const";
 import { escapeAnsi, yellow } from "@nevware21/chromacon";
 import { _defaultFormatters } from "./_defaultFormatters";
+import { IFormatCtx, IFormattedValue, IFormatter } from "../interfaces/IFormatter";
+import { eFormatResult } from "../types/FormatResult";
+import { IConfigInst } from "../interfaces/IConfigInst";
+import { IFormatManager } from "../interfaces/IFormatManager";
+import { IRemovable } from "../interfaces/IRemovable";
+import { EMPTY_STRING } from "./const";
 
 let _circularTrack: any[];
 function _withCircularTrack(fn: () => string): string {

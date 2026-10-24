@@ -8,7 +8,7 @@
 
 import { arrSlice, dumpObj, isFunction, objDefine, objGetOwnPropertyDescriptor } from "@nevware21/ts-utils";
 import { AssertionError } from "../assertionError";
-import { EMPTY_STRING } from "./const";
+import { EMPTY_STRING } from "../../internal/const";
 
 /**
  * @internal

@@ -10,9 +10,8 @@ import {
     arrIndexOf, isArray, isFunction, isString, objKeys, objHasOwnProperty, isObject, arrForEach, isMap, isSet, isPrimitive,
     iterForOf, isWeakSet, isWeakMap
 } from "@nevware21/ts-utils";
-import { MsgSource } from "../../types/MsgSource";
 import { allOp, anyOp } from "./allOp";
-import { IAssertInst, AssertScopeFuncDefs as AssertScopeDefs } from "../interface/IAssertInst";
+import { IAssertInst } from "../interface/IAssertInst";
 import { IIncludeOp } from "../interface/ops/IIncludeOp";
 import { IAssertScope } from "../interface/IAssertScope";
 import {
@@ -21,6 +20,8 @@ import {
     endsWithMembersFunc, endsWithDeepMembersFunc, subsequenceFunc, deepSubsequenceFunc
 } from "../funcs/members";
 import { _deepEqual } from "../funcs/equal";
+import { MsgSource } from "../../types/MsgSource";
+import { AssertScopeFuncDefs } from "../interface/IAssertScopeFuncDef";
 
 /**
  * Helper function to compare values for Map include checks.
@@ -104,7 +105,7 @@ export function includeOp<R>(scope: IAssertScope): IIncludeOp<R> {
         return scope.newInst();
     }
 
-    const props: AssertScopeDefs<IIncludeOp<R>> = {
+    const props: AssertScopeFuncDefs<IIncludeOp<R>> = {
         any: { propFn: anyOp },
         all: { propFn: allOp },
         members: { scopeFn: includeMembersFunc },
@@ -198,7 +199,7 @@ export function deepIncludeOp<R>(scope: IAssertScope): IIncludeOp<R> {
         return scope.that;
     }
 
-    const props: AssertScopeDefs<IIncludeOp<R>> = {
+    const props: AssertScopeFuncDefs<IIncludeOp<R>> = {
         any: { propFn: anyOp },
         all: { propFn: allOp },
         members: { scopeFn: includeDeepMembersFunc },
@@ -273,7 +274,7 @@ export function ownIncludeOp<R>(scope: IAssertScope): IIncludeOp<R> {
         return scope.newInst();
     }
 
-    const props: AssertScopeDefs<IIncludeOp<R>> = {
+    const props: AssertScopeFuncDefs<IIncludeOp<R>> = {
         any: { propFn: anyOp },
         all: { propFn: allOp },
         members: { scopeFn: includeMembersFunc },
@@ -358,7 +359,7 @@ export function deepOwnIncludeOp<R>(scope: IAssertScope): IIncludeOp<R> {
         return scope.that;
     }
 
-    const props: AssertScopeDefs<IIncludeOp<R>> = {
+    const props: AssertScopeFuncDefs<IIncludeOp<R>> = {
         any: { propFn: anyOp },
         all: { propFn: allOp },
         members: { scopeFn: includeDeepMembersFunc },
