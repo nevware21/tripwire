@@ -14,7 +14,7 @@ import {
 import { IPromise } from "@nevware21/ts-async";
 import { IAssertClass } from "./interface/IAssertClass";
 import { IAssertInst } from "./interface/IAssertInst";
-import { MsgSource } from "./type/MsgSource";
+import { MsgSource } from "../types/MsgSource";
 import {
     isBooleanFunc, isFunctionFunc, isNumberFunc, isNullFunc, isObjectFunc, isPlainObjectFunc, isStrictFalseFunc, isStrictTrueFunc, isUndefinedFunc
 } from "./funcs/is";

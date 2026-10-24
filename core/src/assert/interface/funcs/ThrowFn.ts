@@ -7,7 +7,7 @@
  */
 
 import { IAssertInst } from "../IAssertInst";
-import { MsgSource } from "../../type/MsgSource";
+import { MsgSource } from "../../../types/MsgSource";
 
 /**
  * The throw function signatures

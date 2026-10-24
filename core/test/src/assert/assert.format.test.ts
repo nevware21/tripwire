@@ -9,9 +9,10 @@
 import { assert } from "../../../src/assert/assertClass";
 import { assertConfig } from "../../../src/config/assertConfig";
 import { checkError } from "../support/checkError";
-import { IFormatter, eFormatResult } from "../../../src/interface/IFormatter";
+import { IFormatter } from "../../../src/interfaces/IFormatter";
 import { escapeAnsi, gray, red, replaceAnsi } from "@nevware21/chromacon";
 import { isString } from "@nevware21/ts-utils";
+import { eFormatResult } from "../../../src/types/FormatResult";
 
 describe("assert format options", function () {
     describe("finalize", function () {

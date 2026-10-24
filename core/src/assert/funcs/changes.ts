@@ -7,13 +7,13 @@
  */
 
 import { arrSlice, isFunction, isNumber, isObject, isString, isSymbol } from "@nevware21/ts-utils";
-import { IAssertScope } from "../interface/IAssertScope";
-import { MsgSource } from "../type/MsgSource";
 import { _isMsgSource } from "../internal/_isMsgSource";
-import { IScopeContext } from "../interface/IScopeContext";
 import { changeResultOp } from "../ops/changeResultOp";
 import { IChangeResultOp } from "../interface/ops/IChangeResultOp";
 import { IChangeResultValue } from "../interface/ops/IChangeResultValue";
+import { IAssertScope } from "../interface/IAssertScope";
+import { MsgSource } from "../../types/MsgSource";
+import { IScopeContext } from "../interface/IScopeContext";
 
 /**
  * @internal

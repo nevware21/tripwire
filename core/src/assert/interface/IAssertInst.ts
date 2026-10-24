@@ -12,7 +12,7 @@ import { IIsOp } from "./ops/IIsOp";
 import { IOwnOp } from "./ops/IOwnOp";
 import { IScopePropFn, IScopeFn } from "./IScopeFuncs";
 import { IStrictlyOp } from "./ops/IStrictlyOp";
-import { MsgSource } from "../type/MsgSource";
+import { MsgSource } from "../../types/MsgSource";
 import { IEqualOp } from "./ops/IEqualOp";
 import { IIncludeOp } from "./ops/IIncludeOp";
 import { IAllOp } from "./ops/IAllOp";
@@ -374,7 +374,7 @@ export interface IAssertInst extends INotOp<IAssertInst>, IAssertInstCore, IEqua
     /**
      * Asserts that the value DOES change but NOT by the specified delta after executing the target function.
      * The value MUST change (cannot remain the same), but the change amount must not equal the specified delta.
-     * This differs from {@link notChangesBy} which allows the value to remain unchanged.
+     * This differs from {@link IAssertClass.notChangesBy} which allows the value to remain unchanged.
      * @since 0.1.5
      * @example
      * ```typescript

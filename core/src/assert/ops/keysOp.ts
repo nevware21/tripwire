@@ -11,7 +11,7 @@ import { allDeepKeysFunc, allKeysFunc, anyDeepKeysFunc, anyKeysFunc } from "../f
 import { IKeysOp } from "../interface/ops/IKeysOp";
 import { IAssertScope } from "../interface/IAssertScope";
 import { IAssertInst } from "../interface/IAssertInst";
-import { ANY } from "../internal/const";
+import { ANY } from "../../internal/const";
 
 type KeyFilterOpProps = {
     readonly [key in keyof IKeysOp<IAssertInst> extends string | number | symbol ? keyof IKeysOp<IAssertInst> : never]: ObjDefinePropDescriptor

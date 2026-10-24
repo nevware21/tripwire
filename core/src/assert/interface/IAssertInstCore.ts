@@ -6,7 +6,7 @@
  * Licensed under the MIT license.
  */
 
-import { MsgSource } from "../type/MsgSource";
+import { MsgSource } from "../../types/MsgSource";
 
 /**
  * The Core Assert isntance interface that all default assert instanceimplement.

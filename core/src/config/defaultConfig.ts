@@ -7,7 +7,7 @@
  */
 
 import { objFreeze } from "@nevware21/ts-utils";
-import { IConfig } from "../interface/IConfig";
+import { IConfig } from "../interfaces/IConfig";
 import { cyan } from "@nevware21/chromacon";
 
 /**

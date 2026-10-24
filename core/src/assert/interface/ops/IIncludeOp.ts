@@ -9,8 +9,8 @@
 import { IAllOp } from "./IAllOp";
 import { IAnyOp } from "./IAnyOp";
 import { IncludeFn } from "../funcs/IncludeFn";
-import { MsgSource } from "../../type/MsgSource";
-import { ArrayLikeOrSizedIterable } from "../../type/ArrayLikeOrIterable";
+import { MsgSource } from "../../../types/MsgSource";
+import { ArrayLikeOrSizedIterable } from "../../../types/ArrayLikeOrSizedIterable";
 
 /**
  * Represents the include operations for the assertion scope.

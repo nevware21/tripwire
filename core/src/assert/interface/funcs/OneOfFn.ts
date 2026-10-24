@@ -6,8 +6,8 @@
  * Licensed under the MIT license.
  */
 
-import { MsgSource } from "../../type/MsgSource";
-import { ArrayLikeOrSizedIterable } from "../../type/ArrayLikeOrIterable";
+import { ArrayLikeOrSizedIterable } from "../../../types/ArrayLikeOrSizedIterable";
+import { MsgSource } from "../../../types/MsgSource";
 
 /**
  * Represents a function that checks if a value is a member of a given list.

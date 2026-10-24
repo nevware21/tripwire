@@ -8,7 +8,7 @@
 
 import { isNumber, isNullOrUndefined, mathAbs } from "@nevware21/ts-utils";
 import { IAssertScope } from "../interface/IAssertScope";
-import { MsgSource } from "../type/MsgSource";
+import { MsgSource } from "../../types/MsgSource";
 
 /**
  * Asserts that the target is a number close to the given number within a specified delta.

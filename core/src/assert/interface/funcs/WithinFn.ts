@@ -6,7 +6,7 @@
  * Licensed under the MIT license.
  */
 
-import { MsgSource } from "../../type/MsgSource";
+import { MsgSource } from "../../../types/MsgSource";
 
 /**
  * This interface provides methods checking in the current `actual` value is

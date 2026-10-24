@@ -7,10 +7,10 @@
  */
 
 import { arrSlice } from "@nevware21/ts-utils";
-import { IAssertScope } from "../interface/IAssertScope";
 import { IScopeFn } from "../interface/IScopeFuncs";
 import { notOp } from "../ops/notOp";
 import { _blockLength } from "../internal/_blockLength";
+import { IAssertScope } from "../interface/IAssertScope";
 
 /**
  * Creates an adapter function that wraps the provided scope function with a "not" operation.

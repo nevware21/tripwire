@@ -10,7 +10,7 @@ import {
     arrIndexOf, isArray, isFunction, isString, objKeys, objHasOwnProperty, isObject, arrForEach, isMap, isSet, isPrimitive,
     iterForOf, isWeakSet, isWeakMap
 } from "@nevware21/ts-utils";
-import { MsgSource } from "../type/MsgSource";
+import { MsgSource } from "../../types/MsgSource";
 import { allOp, anyOp } from "./allOp";
 import { IAssertInst, AssertScopeFuncDefs as AssertScopeDefs } from "../interface/IAssertInst";
 import { IIncludeOp } from "../interface/ops/IIncludeOp";

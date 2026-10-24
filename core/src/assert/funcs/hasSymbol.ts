@@ -6,12 +6,12 @@
  * Licensed under the MIT license.
  */
 
-import { MsgSource } from "../type/MsgSource";
-import { IAssertScope } from "../interface/IAssertScope";
 import { IPropertyResultOp } from "../interface/ops/IPropertyResultOp";
 import { propertyResultOp } from "../ops/propertyResultOp";
 import { SymbolFn } from "../interface/funcs/SymbolFn";
 import { isStrictNullOrUndefined, objHasOwnProperty } from "@nevware21/ts-utils";
+import { IAssertScope } from "../interface/IAssertScope";
+import { MsgSource } from "../../types/MsgSource";
 
 /**
  * Returns a new {@link ScopeFn} that will assert that the current {@link IScopeContext} value

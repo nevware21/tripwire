@@ -6,7 +6,7 @@
  * Licensed under the MIT license.
  */
 
-import { MsgSource } from "../../type/MsgSource";
+import { MsgSource } from "../../../types/MsgSource";
 
 /**
  * Identifies the signature of the equals function that performs equality checks between

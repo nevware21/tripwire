@@ -6,13 +6,13 @@
  * Licensed under the MIT license.
  */
 
-import { MsgSource } from "../assert/type/MsgSource";
-import { IAssertInst } from "./interface/IAssertInst";
-import { createAssertScope } from "./assertScope";
 import { createContext } from "./scopeContext";
 import { _tripwireAssertHandlers } from "./internal/_tripwireInst";
 import { arrSlice } from "@nevware21/ts-utils";
-import { IConfig } from "../interface/IConfig";
+import { MsgSource } from "../types/MsgSource";
+import { IConfig } from "../interfaces/IConfig";
+import { IAssertInst } from "./interface/IAssertInst";
+import { createAssertScope } from "./assertScope";
 
 /**
  * Creates a new {@link IAssertScope} and linked {@link IAssertInst} object with the

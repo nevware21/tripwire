@@ -6,9 +6,10 @@
  * Licensed under the MIT license.
  */
 
-import { MsgSource } from "../type/MsgSource";
-import { IScopeContext } from "../interface/IScopeContext";
 import { IAssertScope } from "../interface/IAssertScope";
+import { MsgSource } from "../../types/MsgSource";
+import { IScopeContext } from "../interface/IScopeContext";
+
 
 export function notOp<R>(scope: IAssertScope): R {
     let context = scope.context;

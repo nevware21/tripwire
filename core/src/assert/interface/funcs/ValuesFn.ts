@@ -6,7 +6,7 @@
  * Licensed under the MIT license.
  */
 
-import { MsgSource } from "../../type/MsgSource";
+import { MsgSource } from "../../../types/MsgSource";
 
 /**
  * Represents a function that asserts that the values exist in the current context value.

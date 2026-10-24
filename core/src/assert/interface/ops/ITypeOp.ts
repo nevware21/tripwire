@@ -9,7 +9,7 @@
 import { IStrictlyOp } from "./IStrictlyOp";
 import { AssertFn } from "../funcs/AssertFn";
 import { ErrorLikeFn } from "../funcs/ErrorLikeFn";
-import { MsgSource } from "../../type/MsgSource";
+import { MsgSource } from "../../../types/MsgSource";
 import { InstanceOfFn } from "../funcs/InstanceOfFn";
 
 /**

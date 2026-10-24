@@ -7,8 +7,8 @@
  */
 
 import { IFormatter } from "./IFormatter";
-import { IFormatManager } from "./IFormatManager";
 import { IConfig } from "./IConfig";
+import { IFormatManager } from "./IFormatManager";
 import { IRemovable } from "./IRemovable";
 
 /**
