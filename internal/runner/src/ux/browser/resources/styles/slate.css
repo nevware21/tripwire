@@ -1,0 +1,30 @@
+body.style-slate {
+  --bg: linear-gradient(140deg, #edf2f7 0%, #dbe4ee 100%);
+  --ink: #111827;
+  --muted: #4b5563;
+  --panel: #f9fbff;
+  --panel-soft: #f3f6fb;
+  --border: #c7d2df;
+  --border-subtle: #d9e1eb;
+  --accent: #0f766e;
+  --running: #0f766e;
+  --ok: #047857;
+  --bad: #b91c1c;
+  --suite-tone-1: #0f766e;
+  --suite-tone-2: #1d4ed8;
+  --suite-tone-3: #7c3aed;
+  --test-tone-1: #0284c7;
+  --test-tone-2: #059669;
+  --test-tone-3: #9333ea;
+  --state-running-bg: #f0f9ff;
+  --state-passed-bg: #ecfdf5;
+  --state-failed-bg: #fef2f2;
+  --suite-state-passed-bg: #ecfdf5;
+  --suite-state-failed-bg: #fef2f2;
+  --test-state-passed-bg: #ffffff;
+  --test-state-failed-bg: #fee2e2;
+  --log-bg: #111827;
+  --log-ink: #d1d5db;
+  --log-error: #fecaca;
+  --log-warn: #fde68a;
+}

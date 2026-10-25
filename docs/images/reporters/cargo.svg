@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="839" height="448" viewBox="0 0 839 448" role="img" aria-label="tripwire --reporter cargo">
+  <title>tripwire --reporter cargo</title>
+  <rect width="839" height="448" rx="8" fill="#0d1117"/>
+  <text font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="14" xml:space="preserve">
+    <tspan x="16.0" y="28" fill="#3fb950" font-weight="bold">     Running</tspan><tspan x="116.8" y="28" fill="#c9d1d9"> 4 tests</tspan>
+    <tspan x="16" y="48"> </tspan>
+    <tspan x="16.0" y="68" fill="#c9d1d9">test math::division by zero ... </tspan><tspan x="284.8" y="68" fill="#d29922">ignored</tspan>
+    <tspan x="16.0" y="88" fill="#c9d1d9">test math::addition::adds two numbers ... </tspan><tspan x="368.8" y="88" fill="#3fb950">ok</tspan>
+    <tspan x="16.0" y="108" fill="#c9d1d9">test math::addition::handles negatives ... </tspan><tspan x="377.2" y="108" fill="#f85149" font-weight="bold">FAILED</tspan>
+    <tspan x="16.0" y="128" fill="#c9d1d9">test strings::concatenates ... </tspan><tspan x="276.4" y="128" fill="#3fb950">ok</tspan>
+    <tspan x="16" y="148"> </tspan>
+    <tspan x="16.0" y="168" fill="#c9d1d9">test result: </tspan><tspan x="125.2" y="168" fill="#f85149" font-weight="bold">FAILED</tspan><tspan x="175.6" y="168" fill="#c9d1d9">. 2 passed; 1 failed; 1 ignored; 0 measured; 0 filtered out; finished in 11ms</tspan>
+    <tspan x="16" y="188"> </tspan>
+    <tspan x="16" y="208"> </tspan>
+    <tspan x="16" y="228"> </tspan>
+    <tspan x="16.0" y="248" fill="#f85149" font-weight="bold">failures:</tspan>
+    <tspan x="16" y="268"> </tspan>
+    <tspan x="16.0" y="288" fill="#c9d1d9">---- math::addition::handles negatives ----</tspan>
+    <tspan x="16.0" y="308" fill="#f85149" font-weight="bold">error</tspan><tspan x="58.0" y="308" fill="#c9d1d9">: expected -2 to equal -3</tspan>
+    <tspan x="16.0" y="328" fill="#79c0ff" font-weight="bold">   --&gt; </tspan><tspan x="74.8" y="328" fill="#c9d1d9">core/.reporter-shots-3Is03G/demo.test.ts:7:81</tspan>
+    <tspan x="16.0" y="348" fill="#79c0ff" font-weight="bold">    |</tspan>
+    <tspan x="16.0" y="368" fill="#79c0ff" font-weight="bold">    = </tspan><tspan x="66.4" y="368" fill="#8b949e">note: </tspan><tspan x="116.8" y="368" fill="#c9d1d9">assertion failed</tspan>
+    <tspan x="16" y="388"> </tspan>
+    <tspan x="16.0" y="408" fill="#f85149" font-weight="bold">failures:</tspan>
+    <tspan x="16.0" y="428" fill="#c9d1d9">    math::addition::handles negatives</tspan>
+  </text>
+</svg>

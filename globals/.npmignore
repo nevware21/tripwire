@@ -1,0 +1,11 @@
+# NPM Ignore
+
+# ignore everything
+*
+
+# ... but these files
+!package.json
+!/README.md
+!/LICENSE
+!/index.js
+!/index.d.ts

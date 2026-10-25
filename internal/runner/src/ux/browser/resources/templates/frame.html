@@ -1,0 +1,29 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Tripwire Test Frame</title>
+  <script>
+    // Module registry bootstrap: each module <script> below only *registers* a factory
+    // (via __tripwireDefine__) rather than executing test code immediately, so a load
+    // failure (404/network error) would otherwise be a silent page-load event. This
+    // capturing listener records failed module script URLs for frame-mode.ts to check
+    // before building the suite.
+    window.__tripwireModules__ = window.__tripwireModules__ || {};
+    window.__tripwireDefine__ = window.__tripwireDefine__ || function(id, factory) {
+      window.__tripwireModules__[id] = factory;
+    };
+    window.__tripwireModuleLoadErrors__ = [];
+    window.addEventListener("error", function(evt) {
+      var target = evt && evt.target;
+      if (target && target.tagName === "SCRIPT" && target.src) {
+        window.__tripwireModuleLoadErrors__.push(target.src);
+      }
+    }, true);
+  </script>
+__FRAME_MODULE_SCRIPTS__
+  <script src="__FRAME_SCRIPT_URL__" defer></script>
+</head>
+<body data-runner-mode="frame" data-runner-target="__FRAME_TARGET__">
+</body>
+</html>

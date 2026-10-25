@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="797" height="188" viewBox="0 0 797 188" role="img" aria-label="tripwire --reporter cargo (all passing)">
+  <title>tripwire --reporter cargo (all passing)</title>
+  <rect width="797" height="188" rx="8" fill="#0d1117"/>
+  <text font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="14" xml:space="preserve">
+    <tspan x="16.0" y="28" fill="#3fb950" font-weight="bold">     Running</tspan><tspan x="116.8" y="28" fill="#c9d1d9"> 2 tests</tspan>
+    <tspan x="16" y="48"> </tspan>
+    <tspan x="16.0" y="68" fill="#c9d1d9">test math::addition::adds two numbers ... </tspan><tspan x="368.8" y="68" fill="#3fb950">ok</tspan>
+    <tspan x="16.0" y="88" fill="#c9d1d9">test math::addition::handles negatives ... </tspan><tspan x="377.2" y="88" fill="#3fb950">ok</tspan>
+    <tspan x="16" y="108"> </tspan>
+    <tspan x="16.0" y="128" fill="#c9d1d9">test result: </tspan><tspan x="125.2" y="128" fill="#3fb950" font-weight="bold">ok</tspan><tspan x="142.0" y="128" fill="#c9d1d9">. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 5ms</tspan>
+    <tspan x="16" y="148"> </tspan>
+    <tspan x="16.0" y="168" fill="#3fb950" font-weight="bold">    Finished</tspan><tspan x="116.8" y="168" fill="#c9d1d9"> test target(s) in 5ms</tspan>
+  </text>
+</svg>

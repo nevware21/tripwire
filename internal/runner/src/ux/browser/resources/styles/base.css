@@ -1,0 +1,520 @@
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; min-width: 320px; }
+body {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  line-height: 1.4;
+  color: var(--ink);
+  background: var(--bg);
+}
+.app-shell {
+  width: 100%;
+  min-width: 320px;
+  padding: 14px;
+}
+.app-header h1 {
+  margin: 0;
+  font-size: 1.25rem;
+}
+.app-header p {
+  margin: 6px 0 10px;
+  color: var(--muted);
+}
+.controls {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.controls-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.controls button {
+  min-height: 34px;
+}
+.filter-inline {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1 1 320px;
+  min-width: 240px;
+}
+.filter-label {
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+}
+.filter-input-wrap {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+}
+.control-check {
+  min-height: 34px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--panel);
+  color: var(--ink);
+  padding: 6px 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+  user-select: none;
+}
+.control-check input {
+  margin: 0;
+}
+.filter-input {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--panel);
+  color: var(--ink);
+  padding: 6px 10px;
+  min-height: 34px;
+  width: 100%;
+}
+.filter-input::placeholder {
+  color: var(--muted);
+}
+.filter-input:disabled {
+  opacity: 0.65;
+}
+.control-inline {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 0 0 auto;
+}
+/*
+ * Resets the Scope box back to "every test". Sits outside the input rather than as an "x" inside it
+ * so that it says what it does -- the case it exists for is a scope arrived at by clicking a
+ * result's "run again" button, where the question being asked is "how do I get back?".
+ */
+.scope-clear {
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+.control-select {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--panel);
+  color: var(--ink);
+  padding: 6px 10px;
+  min-height: 34px;
+}
+.control-select:disabled {
+  opacity: 0.65;
+}
+/*
+ * The "..." actions menu. Everything that is not "what do I run" and "run it" lives in here, so
+ * the controls stay one row at any width rather than reflowing into two.
+ */
+.menu-wrap {
+  position: relative;
+  flex: 0 0 auto;
+}
+button.icon-btn {
+  min-width: 34px;
+  padding: 6px 9px;
+  font-size: 1.05rem;
+  line-height: 1;
+}
+.menu-list {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 4px;
+  min-width: 208px;
+  padding: 4px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.22);
+  z-index: 30;
+}
+/*
+ * The menu is shown and hidden with the `hidden` attribute so it leaves the accessibility tree
+ * entirely while closed -- which only works as long as no rule here sets `display` on the open
+ * state for it to lose to.
+ */
+.menu-list[hidden] {
+  display: none;
+}
+button.menu-item {
+  display: block;
+  width: 100%;
+  text-align: left;
+  white-space: nowrap;
+  background: transparent;
+  color: var(--ink);
+  border: 1px solid transparent;
+  border-radius: 6px;
+  padding: 7px 10px;
+  min-height: 32px;
+  font-size: 0.85rem;
+}
+button.menu-item:hover,
+button.menu-item:focus {
+  background: var(--state-running-bg);
+}
+button.menu-item:focus-visible,
+button.icon-btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+/*
+ * Disabled menu items keep their place in the arrow-key order and stay announced -- a natively
+ * `disabled` button is skipped by both, so a keyboard user would never learn the action exists.
+ * See setButtonsState, which drives this for "Finish & Stop Server".
+ */
+button.menu-item[aria-disabled="true"] {
+  opacity: 0.5;
+  cursor: default;
+}
+button.menu-item[aria-disabled="true"]:hover {
+  background: transparent;
+}
+.menu-separator {
+  height: 1px;
+  margin: 4px 2px;
+  background: var(--border);
+}
+/*
+ * Custom-styled suggestion dropdown, deliberately not a native <datalist> popup -- datalist
+ * suggestion lists render with OS-native chrome that can't be styled or themed at all in any
+ * browser, so it looks like a foreign bubble stuck on top of the page rather than part of it.
+ * This lives in the page's own DOM instead, styled with the same panel/border/theme variables
+ * as everything else here.
+ */
+.autocomplete-list {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  margin-top: 4px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.22);
+  max-height: 240px;
+  overflow-y: auto;
+  z-index: 30;
+  display: none;
+}
+.autocomplete-list.open {
+  display: block;
+}
+.autocomplete-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+.autocomplete-text {
+  flex: 1 1 auto;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+/*
+ * Says whether a row is a suite or a single test. The two are searched together in one list, and
+ * a suite's title is a prefix of every test title under it, so without this the rows for
+ * "outer > inner" (the suite) and "outer > inner > name" (a test in it) are told apart only by
+ * reading to the end of a long, truncated line.
+ */
+.autocomplete-kind {
+  flex: 0 0 auto;
+  font-size: 0.68rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 1px 7px;
+}
+.autocomplete-item:hover,
+.autocomplete-item.active {
+  background: var(--state-running-bg);
+}
+.autocomplete-empty,
+.autocomplete-more {
+  padding: 6px 10px;
+  color: var(--muted);
+  font-size: 0.8rem;
+  font-style: italic;
+}
+button {
+  border: 1px solid var(--accent);
+  background: var(--accent);
+  color: #fff;
+  border-radius: 8px;
+  padding: 7px 12px;
+  cursor: pointer;
+}
+button.stop-mode {
+  border-color: var(--bad);
+  background: var(--bad);
+  color: #fff;
+}
+button:disabled {
+  opacity: 0.65;
+  cursor: default;
+}
+button.ghost {
+  background: var(--panel);
+  color: var(--ink);
+  border-color: var(--border);
+}
+button.tiny-btn {
+  min-height: 26px;
+  font-size: 0.78rem;
+  padding: 3px 8px;
+  background: var(--panel);
+  color: var(--ink);
+  border-color: var(--border);
+}
+.status-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+#status {
+  font-weight: 600;
+}
+#assertCount {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+.results-main {
+  width: 100%;
+}
+.results-tree {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--panel);
+  min-height: 52vh;
+  max-height: 74vh;
+  overflow: auto;
+  padding: 10px;
+}
+.suite-node,
+.test-node {
+  border: 1px solid var(--border-subtle);
+  border-left-width: 6px;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  background: var(--panel-soft);
+}
+.suite-tone-1 { border-left-color: var(--suite-tone-1); }
+.suite-tone-2 { border-left-color: var(--suite-tone-2); }
+.suite-tone-3 { border-left-color: var(--suite-tone-3); }
+.test-tone-1 { border-left-color: var(--test-tone-1); }
+.test-tone-2 { border-left-color: var(--test-tone-2); }
+.test-tone-3 { border-left-color: var(--test-tone-3); }
+
+.suite-running,
+.test-running {
+  background: var(--state-running-bg);
+}
+
+.suite-passed {
+  background: var(--suite-state-passed-bg, var(--state-passed-bg));
+}
+
+.test-passed {
+  background: var(--test-state-passed-bg, var(--state-passed-bg));
+}
+
+.suite-failed {
+  background: var(--suite-state-failed-bg, var(--state-failed-bg));
+}
+
+.test-failed {
+  background: var(--test-state-failed-bg, var(--state-failed-bg));
+}
+.suite-summary,
+.test-summary {
+  list-style: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 7px 10px;
+}
+.suite-summary {
+  padding: 8px 10px;
+}
+.suite-summary::-webkit-details-marker,
+.test-summary::-webkit-details-marker {
+  display: none;
+}
+.suite-heading {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+  flex: 1;
+}
+.suite-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+.suite-marker {
+  width: 14px;
+  height: 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  font-size: 0.82rem;
+  font-weight: 700;
+  flex: 0 0 14px;
+}
+.suite-marker.marker-passed {
+  color: var(--ok);
+}
+.suite-marker.marker-failed {
+  color: var(--bad);
+}
+.suite-marker.marker-pending {
+  color: var(--muted);
+}
+.suite-marker.marker-running {
+  color: var(--running);
+  border: 2px solid var(--border-subtle);
+  border-top-color: var(--running);
+  border-radius: 50%;
+  animation: suite-marker-spin 800ms linear infinite;
+}
+@keyframes suite-marker-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+.suite-path {
+  color: var(--muted);
+  font-size: 0.76rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.suite-statuses {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.suite-label,
+.test-label {
+  flex: 1;
+  word-break: break-word;
+}
+.suite-children {
+  padding: 0 8px 8px 16px;
+}
+.test-body {
+  padding: 0 8px 8px 16px;
+}
+.assert-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-family: Consolas, "Courier New", monospace;
+  font-size: 12px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+  overflow: hidden;
+  background: white;
+}
+.assert-item {
+  display: block;
+  padding: 3px 8px 3px 10px;
+  border-left: 3px solid transparent;
+  word-break: break-word;
+}
+.assert-item:nth-child(even) {
+  background: rgba(127, 127, 127, 0.14);
+}
+.assert-item:hover {
+  background: rgba(127, 127, 127, 0.24);
+}
+.assert-pass { color: var(--ok); border-left-color: var(--ok); }
+.assert-fail { color: var(--bad); border-left-color: var(--bad); }
+.status-chip {
+  font-size: 0.76rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 2px 8px;
+  white-space: nowrap;
+  color: var(--muted);
+}
+.duration-label {
+  font-size: 0.72rem;
+  color: var(--muted);
+  border: 1px solid var(--border-subtle);
+  border-radius: 999px;
+  padding: 1px 7px;
+  white-space: nowrap;
+}
+.rerun-btn {
+  padding: 3px 9px;
+  line-height: 1;
+  flex: 0 0 auto;
+}
+.status-running { color: var(--running); border-color: var(--running); }
+.status-passed { color: var(--ok); border-color: var(--ok); }
+.status-failed { color: var(--bad); border-color: var(--bad); }
+.status-pending { color: var(--muted); border-color: var(--border); }
+.log-panel {
+  margin-top: 10px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--panel);
+}
+.log-panel > summary {
+  cursor: pointer;
+  list-style: none;
+  padding: 8px 10px;
+  font-weight: 600;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.log-panel > summary::-webkit-details-marker {
+  display: none;
+}
+#logs {
+  background: var(--log-bg);
+  color: var(--log-ink);
+  max-height: 220px;
+  overflow: auto;
+  font-family: Consolas, "Courier New", monospace;
+  font-size: 12px;
+  line-height: 1.35;
+  padding: 10px;
+}
+.log-line { white-space: pre-wrap; word-break: break-word; }
+.log-error { color: var(--log-error); }
+.log-warn { color: var(--log-warn); }
+@media (max-width: 980px) {
+  .controls {
+    grid-template-columns: 1fr 1fr;
+  }
+}

@@ -146,6 +146,16 @@ module.exports = function (grunt) {
                     tsconfig: "./shim/chai/test/tsconfig.test.json",
                     fix: true
                 }
+            },
+            "runner": {
+                tsconfig: "./internal/runner/tsconfig.json",
+                ignoreFailures: true
+            },
+            "runner-fix": {
+                options: {
+                    tsconfig: "./internal/runner/tsconfig.json",
+                    fix: true
+                }
             }
         }
     });
@@ -166,6 +176,8 @@ module.exports = function (grunt) {
     grunt.registerTask("tripwire-chai-lint", [ "lint:tripwire-chai-fix", "lint:tripwire-chai-test-fix" ]);
     grunt.registerTask("dolint-chai", [ "lint:tripwire-chai", "lint:tripwire-chai-test" ]);
     grunt.registerTask("lint-chai-fix", [ "lint:tripwire-chai-fix", "lint:tripwire-chai-test-fix" ]);
+
+    grunt.registerTask("runner-lint", [ "lint:runner-fix" ]);
 
     // Whenever the "test" task is run, first clean the "tmp" dir, then run this
     // plugin's task(s), then test the result.

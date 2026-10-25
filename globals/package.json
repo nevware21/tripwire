@@ -1,0 +1,63 @@
+{
+    "name": "@nevware21/tripwire-globals",
+    "description": "Opt-in global describe/it/hook/assert/expect declarations and runtime installer for @nevware21/tripwire",
+    "version": "0.1.8",
+    "homepage": "https://github.com/nevware21/tripwire",
+    "license": "MIT",
+    "author": {
+        "name": "Nevware21 Solutions LLC",
+        "email": "github+tripwire@nevware21.com"
+    },
+    "funding": [
+        {
+            "type": "github",
+            "url": "https://github.com/sponsors/nevware21"
+        },
+        {
+            "type": "buymeacoffee",
+            "url": "https://www.buymeacoffee.com/nevware21"
+        }
+    ],
+    "keywords": [
+        "test",
+        "testing",
+        "assertions",
+        "globals",
+        "describe",
+        "it",
+        "typescript",
+        "types",
+        "tripwire"
+    ],
+    "main": "index.js",
+    "types": "index.d.ts",
+    "scripts": {
+        "build": "npm run check",
+        "rebuild": "npm run build",
+        "check": "tsc --noEmit -p ./tsconfig.json",
+        "test:runtime": "node ./test/runtime/runtimeTests.js",
+        "test": "npm run check && npm run test:runtime"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/nevware21/tripwire.git"
+    },
+    "bugs": {
+        "url": "https://github.com/nevware21/tripwire/issues"
+    },
+    "licenses": [
+        {
+            "type": "MIT",
+            "url": "https://github.com/nevware21/tripwire/blob/main/LICENSE"
+        }
+    ],
+    "engines": {
+        "node": ">= 0.8.0"
+    },
+    "dependencies": {
+        "@nevware21/tripwire": "0.1.8"
+    },
+    "devDependencies": {
+        "typescript": "~5.2.2"
+    }
+}

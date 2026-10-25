@@ -1,0 +1,29 @@
+{
+    "compilerOptions": {
+        "sourceMap": true,
+        "inlineSources": true,
+        "noImplicitAny": true,
+        "skipLibCheck": true,
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "target": "es5",
+        "forceConsistentCasingInFileNames": true,
+        "importHelpers": false,
+        "noEmitHelpers": false,
+        "alwaysStrict": true,
+        "allowSyntheticDefaultImports": true,
+        "removeComments": true,
+        "esModuleInterop": true,
+        "baseUrl": ".",
+        // @nevware21/tripwire declares no ambient globals, so the bare describe/it/assert names
+        // these tests use are opted into here. See docs/runner-troubleshooting.md.
+        "types": [ "node", "@nevware21/tripwire/globals" ]
+    },
+    "include": [
+        "../src/**/*.ts",
+        "./src/**/*.ts"
+    ],
+    "exclude": [
+        "node_modules/"
+    ]
+}
