@@ -2,7 +2,7 @@
  * @nevware21/tripwire
  * https://github.com/nevware21/tripwire
  *
- * Copyright (c) 2024-2025 NevWare21 Solutions LLC
+ * Copyright (c) 2024-2026 NevWare21 Solutions LLC
  * Licensed under the MIT license.
  */
 
@@ -23,6 +23,13 @@ function _createResultAdapter(scope: IAssertScope, target: any, key: string | nu
                 scope.context.setOp("[[" + funcName + "]]");
             }
             scope.context._$stackFn.push(_fn);
+            // Give the function a real instance to hand back. Until here `scope.that` is the
+            // callable wrapper built for this very function (see _handleResult below), so a scope
+            // function's `return this.that` -- which every built-in does -- returned its own
+            // wrapper, and nothing could be chained after a call: `expect(5).is.number().is.above(1)`
+            // threw on `.is`. The instance keeps the chain's context, so a `not` before the call
+            // still applies to what follows it, as it does in Chai.
+            scope.that = scope.newInst();
             theResult = scope.exec(target, arrSlice(arguments), funcName);
         } else {
             scope.context.setOp(asString(key));

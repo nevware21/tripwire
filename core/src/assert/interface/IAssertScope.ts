@@ -44,10 +44,18 @@ export interface IAssertScope {
      * Creates a new Scope instance, it will also create child instances of the current
      * context so that any changes applied on this new scope will not alter
      * the current scope.
+     *
+     * Pass `isolated` to get a scope whose context is not a child of this one: it carries this
+     * scope's configuration and instance handlers, but none of the chain's modifiers (`not`,
+     * `deep`, `own` and so on), overrides or recorded values, so an assertion evaluated through it
+     * is judged on its own. This is how a scope function runs a nested, independent assertion --
+     * `or()` uses it for each clause -- without importing the scope factory itself.
      * @param value - The new value of the context, this is the `actual` value of the assertion.
+     * @param isolated - Since 0.2.0. When true, start a new root context instead of a child of
+     * this one.
      * @returns The new scope instance.
      */
-    newScope<V>(value?: V): IAssertScope;
+    newScope<V>(value?: V, isolated?: boolean): IAssertScope;
 
     /**
      * Creates a new "standard" assert instance with the given value and optional override functions, if no

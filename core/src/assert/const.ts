@@ -15,4 +15,4 @@
  * releases (since the internal function names / order of execution may
  * change over time).
  */
-export const CHECK_INTERNAL_STACK_FRAME_REGEX = /at [a-zA-Z]*\.?(_fn|_processFn|_assertFunc|_exec|_exprFn|_runOp|_runExpr)/;
+export const CHECK_INTERNAL_STACK_FRAME_REGEX = /at [a-zA-Z]*\.?(_fn\b|_processFn\b|_assertFunc\b|_exec\b|_exprFn\b|_runOp\b|_runExpr\b)/;

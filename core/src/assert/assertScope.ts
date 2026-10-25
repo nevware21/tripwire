@@ -20,6 +20,8 @@ import { MsgSource } from "../types/MsgSource";
 import { AssertScopeFuncDefs } from "./interface/IAssertScopeFuncDef";
 import { IScopeContext, IScopeContextOverrides } from "./interface/IScopeContext";
 import { EXEC } from "../internal/const";
+import { IConfig } from "../interfaces/IConfig";
+import { createContext } from "./scopeContext";
 
 
 /**
@@ -90,10 +92,19 @@ export function createAssertScope(context: IScopeContext, handlerCreator?: Asser
         w: false
     });
 
-    function newScope<V>(value?: V): IAssertScope {
+    function newScope<V>(value?: V, isolated?: boolean): IAssertScope {
         if (arguments.length === 0) {
             // No value provided so use the current value
             value = _context.value;
+        }
+
+        if (isolated) {
+            // A root context of its own rather than a child: a child proxies eval, the messages and
+            // every recorded value back up this chain, so a `not`, `deep` or `own` already applied
+            // here would also apply to anything evaluated through it. Only the configuration is
+            // carried over -- the context clones what it is given, and that merge skips `$ops`, so
+            // passing the live instance is safe even though the type only admits a plain IConfig.
+            return createAssertScope(createContext(value, undefined, undefined, [ value ], _context.opts as unknown as IConfig), handlerCreator);
         }
 
         return createAssertScope(_context.new(value), handlerCreator);

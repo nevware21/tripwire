@@ -14,30 +14,20 @@ import { throwsFunc } from "../funcs/throws";
 import { truthyFunc } from "../funcs/truthy";
 import { changesFunc, increasesFunc, decreasesFunc } from "../funcs/changes";
 import { changesByFunc, increasesByFunc, decreasesByFunc, changesButNotByFunc, increasesButNotByFunc, decreasesButNotByFunc } from "../funcs/changesBy";
-import { IAssertInst, IAssertScopeFuncDef } from "../interface/IAssertInst";
 import { IScopePropFn, IScopeFn } from "../interface/IScopeFuncs";
-import { MsgSource } from "../../types/MsgSource";
 import { allOp, anyOp } from "../ops/allOp";
 import { deepOp } from "../ops/deepOp";
 import { hasOp } from "../ops/hasOp";
 import { includeOp } from "../ops/includeOp";
 import { isOp } from "../ops/isOp";
+import { noopOp } from "../ops/noopOp";
 import { notOp } from "../ops/notOp";
+import { orFunc } from "../funcs/or";
 import { ownOp } from "../ops/ownOp";
 import { strictlyOp } from "../ops/strictlyOp";
 import { toOp } from "../ops/toOp";
-
-type OmitAssertInstScopeFuncs = Omit<IAssertInst, "fail" | "fatal">;
-
-/**
- * @internal
- * @ignore
- * Internal type which ensures that we don't forget to add a defined functions to the
- * {@link IAssertInst} class.
- */
-type _AssertInstScopeFuncs = {
-   readonly [key in keyof OmitAssertInstScopeFuncs extends string | number | symbol ? keyof OmitAssertInstScopeFuncs : never]: IAssertScopeFuncDef
-};
+import { IAssertScopeFuncDef } from "../interface/IAssertScopeFuncDef";
+import { MsgSource } from "../../types/MsgSource";
 
 /**
  * @internal
@@ -79,8 +69,20 @@ function _asFunc(opFunc: IScopeFn): IAssertScopeFuncDef {
  * Identifies the core system scope operation functions that are available to all
  * assertion scope instances. These functions are added to the {@link IAssertCore}
  * prototype and are available to all assertion instances.
+ *
+ * The type is written inline, from names the package entry point already exports: `coreFunctions`
+ * is itself exported, so a type alias visible only inside this file would appear in the generated
+ * declarations as something nothing could import.
+ *
+ * It also matches what the previous declaration *resolved to* rather than what it read as. That one
+ * tied the keys to {@link IAssertInst}, so that forgetting an assertion here would be a compile
+ * error -- but `keyof X extends string | number | symbol ? keyof X : never` parses as
+ * `keyof (X extends ... ? ... : never)`, and an object type is not a primitive, so it resolved to
+ * `keyof never`: an index signature accepting any key at all. Restoring the intended check is a
+ * separate change, because the table has entries (`operator`) that {@link IAssertInst} does not
+ * declare, and so does not compile under the strict form today.
  */
-export const coreFunctions: _AssertInstScopeFuncs = {
+export const coreFunctions: Readonly<Record<string, IAssertScopeFuncDef>> = {
     not: _asPropFn(notOp),                        // Handles inverting the result `!result` for ALL evakluations
     deep: _asPropFn(deepOp),                      // Sets the `deep` property to true
     own: _asPropFn(ownOp),                        // Sets the `own` property to true
@@ -94,6 +96,8 @@ export const coreFunctions: _AssertInstScopeFuncs = {
     is: _asPropFn(isOp),
     to: _asPropFn(toOp),
     has: _asPropFn(hasOp),
+    and: _asPropFn(noopOp),                       // Decorative: continues the chain after a called assertion
+    or: _asFunc(orFunc),
 
     ok: _asFunc(truthyFunc),
     equal: _asFunc(equalsFunc),

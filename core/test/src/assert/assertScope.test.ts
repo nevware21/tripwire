@@ -180,4 +180,46 @@ describe("assertScope", () => {
         assert.equal(childScope.context.getMessage("hello {value}"), "darkness: hello \"my\"");
         assert.equal(context.getMessage("hello {value}"), "darkness: hello \"hello\"");
     });
+
+    describe("isolated scope", () => {
+        it("should not inherit the parent's values or initial message", () => {
+            let context = createContext("hello", "darkness");
+            let scope = createAssertScope(context);
+            context.set("talk", "with you again");
+
+            let isolated = scope.newScope("my", true);
+
+            assert.notStrictEqual(isolated.context, context);
+            assert.equal(isolated.context.value, "my");
+            assert.equal(isolated.context.getMessage(""), "");
+            assert.equal(isolated.context.getMessage("hello {talk}"), "hello {talk}");
+            assert.equal(isolated.context.getMessage("hello {value}"), "hello \"my\"");
+
+            // and nothing set on it reaches the parent
+            isolated.context.set("old", "companion");
+            assert.equal(context.getMessage("hello {old}"), "darkness: hello {old}");
+        });
+
+        it("should not inherit an eval override such as not", () => {
+            let scope = createAssertScope(createContext(1));
+            scope.updateCtx(1, {
+                eval: (parent, expr, evalMsg) => parent.eval(!expr, evalMsg)
+            });
+
+            let child = scope.newScope();
+            let isolated = scope.newScope(1, true);
+
+            assert.throws(() => child.context.eval(true, "negated through the parent"));
+            isolated.context.eval(true, "judged on its own");
+            assert.throws(() => isolated.context.eval(false, "judged on its own"), /judged on its own/);
+        });
+
+        it("should keep the parent's configuration", () => {
+            let scope = createAssertScope(createContext("x", undefined, undefined, undefined, { isVerbose: true }));
+            let isolated = scope.newScope("y", true);
+
+            assert.isTrue(scope.context.opts.isVerbose);
+            assert.isTrue(isolated.context.opts.isVerbose);
+        });
+    });
 });
