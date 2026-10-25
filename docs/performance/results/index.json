@@ -1,0 +1,55 @@
+{
+  "schemaVersion": 1,
+  "generated": "2026-10-20T06:17:25.030Z",
+  "records": [
+    {
+      "file": "2026-10-18T193006-256efc4.json",
+      "recordedAt": "2026-10-18T19:30:06.657Z",
+      "commit": "256efc4",
+      "coverage": false,
+      "typeCheck": true,
+      "runs": 3,
+      "suites": [
+        "core",
+        "chai"
+      ],
+      "targets": [
+        "node",
+        "browser",
+        "worker"
+      ],
+      "runners": [
+        "tripwire",
+        "mocha",
+        "karma"
+      ],
+      "arms": 12,
+      "failures": 0
+    },
+    {
+      "file": "2026-10-18T193947-256efc4-coverage.json",
+      "recordedAt": "2026-10-18T19:39:47.115Z",
+      "commit": "256efc4",
+      "coverage": true,
+      "typeCheck": true,
+      "runs": 3,
+      "suites": [
+        "core",
+        "chai"
+      ],
+      "targets": [
+        "node",
+        "browser",
+        "worker"
+      ],
+      "runners": [
+        "tripwire",
+        "mocha",
+        "karma"
+      ],
+      "arms": 12,
+      "failures": 0
+    }
+  ],
+  "invalid": []
+}

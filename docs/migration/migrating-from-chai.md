@@ -81,7 +81,7 @@ Most Chai `expect` chains translate directly to Tripwire:
 
 | Chai expect | Tripwire expect |
 |-------------|-----------------|
-| `expect(x).to.equal(y)` | `expect(x).to.equal(y)` |
+| `expect(x).to.equal(y)` | `expect(x).to.strictly.equal(y)` -- Chai's `equal` is strict `===`; tripwire's plain `equal` is loose `==` |
 | `expect(x).to.deep.equal(y)` | `expect(x).to.deep.equal(y)` |
 | `expect(x).to.be.true` | `expect(x).to.be.true()` |
 | `expect(x).to.be.false` | `expect(x).to.be.false()` |
@@ -102,6 +102,7 @@ Most Chai `expect` chains translate directly to Tripwire:
 | `expect(x).to.be.at.least(5)` | `expect(x).to.be.at.least(5)` |
 | `expect(x).to.be.at.most(10)` | `expect(x).to.be.at.most(10)` |
 | `expect(x).to.be.within(5, 10)` | `expect(x).to.be.within(5, 10)` |
+| `expect(x).to.be.above(5).and.below(10)` | `expect(x).to.be.above(5).and.is.below(10)` -- `and` continues the chain; the next word is `is`/`to`/`has`, not the bare assertion |
 | `expect(x).to.match(/pattern/)` | `expect(x).to.match(/pattern/)` |
 | `expect(x).to.have.members([1,2])` | `expect(x).to.include.sameMembers([1,2])` |
 | `expect(x).to.have.keys('a', 'b')` | `expect(x).to.have.all.keys('a', 'b')` |
@@ -244,7 +245,7 @@ Note: Most expect chains are identical, but check instanceof vs instanceOf.
 ### For Chai `should` → Tripwire `expect`
 ```
 Convert Chai should-style assertions to Tripwire expect. For example:
-- foo.should.equal('bar') → expect(foo).to.equal('bar')
+- foo.should.equal('bar') → expect(foo).to.strictly.equal('bar')
 - foo.should.be.a('string') → expect(foo).to.be.a.string()
 Remove the should() initialization call.
 ```

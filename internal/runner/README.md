@@ -21,45 +21,45 @@ The user-facing guides live on the documentation site,
 [https://nevware21.github.io/tripwire](https://nevware21.github.io/tripwire). They are the reference
 for anything about *using* the runner; this README is about the package that implements it.
 
-- **[Test Runner, CLI & Configuration Guide](https://github.com/nevware21/tripwire/blob/main/docs/test-runner.md)**
+- **[Test Runner, CLI & Configuration Guide](https://nevware21.github.io/tripwire/test-runner.html)**
   — the primary reference. Every CLI flag and every `.tripwirerc` config field, in two tables;
   running against the `node`/`browser`/`worker` targets; file discovery and glob handling;
   TypeScript project selection and type-checking; coverage; and
-  [hook failures](https://github.com/nevware21/tripwire/blob/main/docs/test-runner.md#hook-failures)
+  [hook failures](https://nevware21.github.io/tripwire/test-runner.html#hook-failures)
   (`--fail-on-hook`) — a `before`/`after` failure belongs to no test, so without that flag it never
   reaches the pass/fail counts.
 
-- **[Test Reporters](https://github.com/nevware21/tripwire/blob/main/docs/reporters.md)** — all fourteen built-in
+- **[Test Reporters](https://nevware21.github.io/tripwire/reporters.html)** — all fourteen built-in
   reporters (`spec`, `list`, `min`, `dot`, `progress`, `landing`, `nyan`, `tap`, `xunit`, `json`,
   `json-stream`, `doc`, `markdown`, `cargo`) with generated sample output for each, how to select
   and combine them (`--reporter spec,xunit`), the per-reporter options, and how to write and load a
   **custom** reporter module. Implemented in [`src/reporters/`](./src/reporters).
 
-- **[Migrating from Mocha](https://github.com/nevware21/tripwire/blob/main/docs/migration/migrating-from-mocha.md)**
+- **[Migrating from Mocha](https://nevware21.github.io/tripwire/migration/migrating-from-mocha.html)**
   — moving a Mocha or `ts-mocha` suite across: flag-by-flag and config-by-config mapping, what has
   no equivalent and why, a step-by-step checklist, and a machine-readable summary block that
   automated migrations can read. That block is not decoration — it is asserted against the actual
-  parser by [`test/src/docs/docDrift.test.ts`](https://github.com/nevware21/tripwire/blob/main/internal/runner/test/src/docs/docDrift.test.ts), so a documented
+  parser by [`test/src/docs/docDrift.test.ts`](./test/src/docs/docDrift.test.ts), so a documented
   flag list cannot quietly fall behind the code.
 
-- **[Migrating from Karma](https://github.com/nevware21/tripwire/blob/main/docs/migration/migrating-from-karma.md)**
+- **[Migrating from Karma](https://nevware21.github.io/tripwire/migration/migrating-from-karma.html)**
   — replacing the whole Karma plugin stack (launcher, framework, `karma-typescript`, bundler,
   coverage) with this runner: `karma.conf.js` field mapping, the browser and worker targets, the
   launch modes that replace browser capture, and its own machine-readable summary. A Karma **plus**
   Mocha suite needs that guide for the browser half and the Mocha one above for the test files.
 
-- **[Runner Troubleshooting](https://github.com/nevware21/tripwire/blob/main/docs/runner-troubleshooting.md)** —
+- **[Runner Troubleshooting](https://nevware21.github.io/tripwire/runner-troubleshooting.html)** —
   known issues and their fixes, most importantly
-  [opting in to the global `describe`/`it` names](https://github.com/nevware21/tripwire/blob/main/docs/runner-troubleshooting.md#cannot-find-name-describe)
+  [opting in to the global `describe`/`it` names](https://nevware21.github.io/tripwire/runner-troubleshooting.html#cannot-find-name-describe)
   and the
-  [duplicate-global TypeScript errors](https://github.com/nevware21/tripwire/blob/main/docs/runner-troubleshooting.md#typescript-duplicate-global-declarations)
+  [duplicate-global TypeScript errors](https://nevware21.github.io/tripwire/runner-troubleshooting.html#typescript-duplicate-global-declarations)
   you get from opting in while `@types/mocha`, `@types/jest` or `@types/jasmine` are still in the
   program.
 
-- **[Test Execution Flow](https://github.com/nevware21/tripwire/blob/main/docs/test-execution-flow.md)** — what
+- **[Test Execution Flow](https://nevware21.github.io/tripwire/test-execution-flow.html)** — what
   the runner is actually driving: how suites, tests and hooks execute, when promises are created,
   timeout and
-  [hook failure handling](https://github.com/nevware21/tripwire/blob/main/docs/test-execution-flow.md#hook-failure-handling),
+  [hook failure handling](https://nevware21.github.io/tripwire/test-execution-flow.html#hook-failure-handling),
   and the runner metrics.
 
 - **[Test Suite API](https://nevware21.github.io/tripwire/typedoc/core/index.html)** — the
@@ -120,6 +120,6 @@ Two guards in the suite exist because the thing they check shipped broken once a
 
 ## Related
 
-- [`internal/README.md`](https://github.com/nevware21/tripwire/blob/main/internal/README.md) — what the `internal/` folder is, and the other projects in it
-- [`internal/benchmark/`](https://github.com/nevware21/tripwire/blob/main/internal/benchmark/README.md) — measures this runner against mocha and karma
+- [`internal/README.md`](../README.md) — what the `internal/` folder is, and the other projects in it
+- [`internal/benchmark/`](../benchmark/README.md) — measures this runner against mocha and karma
 - [`CONTRIBUTING.md`](../../CONTRIBUTING.md) — repository-wide setup

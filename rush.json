@@ -23,6 +23,16 @@
       "packageName": "@nevware21/tripwire-chai",
       "projectFolder": "shim/chai",
       "shouldPublish": true
+    },
+    {
+      "packageName": "@nevware21/tripwire-benchmark",
+      "projectFolder": "internal/benchmark",
+      "shouldPublish": false
+    },
+    {
+      "packageName": "@nevware21/tripwire-examples",
+      "projectFolder": "examples",
+      "shouldPublish": false
     }
   ]
 }

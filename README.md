@@ -9,23 +9,58 @@
 
 # Description
 
-Tripwire is a set of Testing support utilities, it is designed to be used for testing and validating you JavaScript or TypeScript package, whether they are designed to work in `node`, `browser` or `worker` (browser) environments. This mono-repo itself it tested and validated in all 3 environments.
+Tripwire is a TypeScript/JavaScript **assertion library and test runner** in one package. You write
+`describe`/`it` suites once, and `npx tripwire` runs the same files on **node**, in a **real
+headless browser**, and inside a **web worker** -- compiling TypeScript on the fly, with no Karma,
+ts-node, webpack or plugins to assemble. Repeat runs skip compiling, type-checking is a flag, and
+every assertion failure says exactly what was compared.
 
-It currently provides `assertion` functions to make testing simplier and easier by providing common assertion checks that you can run against your code.
+The assertion side offers both `assert.*` functions and a Chai-style `expect(x).to...` chain
+(the `assert` functions are built on `expect`, so the two mix freely), targets ES5, and keeps its
+dependencies to a minimum so that a dependency update elsewhere cannot break your test run -- which
+is how the project started, when the frameworks we tested Worker code with stopped working.
 
-It provides both `assert` and `expect` support, where the `assert` functions are a set of fixed operations, which the `expect` is a more descriptive language API.
-
-The `assert` functions are built on-top of the underlying `expect` support, and if no assertions are thrown the result of the internal "chained" descriptive language API is returned. Which means you can mix the `expect` objects with the responses from the `assert` functions.
-
-To avoid dependency issues, this project will use the mininal set of external dependencies so that it can ensure and maintain compatibility with current (and future) runtimes.
-
-As part of the Mono-Repo it also provides some shim implementations which are designed to be a drop in replacement for your basic usages of older frameworks which might no longer be working for you due to dependency or runtime issues. Which is exactly how and why this library cam into existence as with the moving environment of dependency updates causing some our the other projects to grind to a halt due to breakages caused by other frameworks that where not fixed, specifically for testing in a Worker environment.
+**New here?** Read [Why tripwire](https://nevware21.github.io/tripwire/why-tripwire.html) for what is automatic, what is fast, how it
+compares with Mocha, Karma, Jest and Vitest, and when it is not the right tool. Coming from one of
+those? There is a [migration guide](#documentation) for each.
 
 ## Key Features
 
+### Test Runner & CLI
+
+Tripwire also ships a test runner (`tripwire`) that executes the same `describe`/`it` suites
+against **node**, **browser** and **worker** targets, with Mocha-compatible test definitions,
+14 built-in reporters, coverage, watch mode and `.tripwirerc` config files.
+
+```bash
+npx tripwire "test/**/*.test.ts"                 # node
+npx tripwire --target browser "test/**/*.test.ts" # real (headless) browser
+npx tripwire --target worker  "test/**/*.test.ts" # web worker
+```
+
+- **[Test Runner, CLI & Configuration Guide](https://nevware21.github.io/tripwire/test-runner.html)** - every CLI flag and config
+  field, file discovery, coverage, and [hook failures](https://nevware21.github.io/tripwire/test-runner.html#hook-failures)
+- **[Test Reporters](https://nevware21.github.io/tripwire/reporters.html)** - all 14 built-in reporters with sample output for each,
+  how to select and combine them, and the per-reporter options
+- **[Migrating from Mocha](https://nevware21.github.io/tripwire/migration/migrating-from-mocha.html)** - flag/config/API mapping,
+  what is not supported, and a step-by-step checklist
+- **[Migrating from Karma](https://nevware21.github.io/tripwire/migration/migrating-from-karma.html)** - `karma.conf.js` field
+  mapping, browser and worker targets without plugins, coverage, and launch modes
+- **[Migrating from Jest or Vitest](https://nevware21.github.io/tripwire/migration/migrating-from-jest.html)** - matcher and config
+  mapping, what has no equivalent (mocking, snapshots), and a machine-readable summary
+- **[Performance](https://nevware21.github.io/tripwire/performance.html)** - what the runner does to be fast, measured benchmark
+  results against Mocha and Karma, and how to reproduce them
+- **[Runner Troubleshooting](https://nevware21.github.io/tripwire/runner-troubleshooting.html)** - known issues, including
+  [opting in to the global `describe`/`it` names](https://nevware21.github.io/tripwire/runner-troubleshooting.html#cannot-find-name-describe)
+  and the [`@types/mocha` / `@types/jest` / `@types/jasmine` global type clash](https://nevware21.github.io/tripwire/runner-troubleshooting.html#typescript-duplicate-global-declarations)
+- **[Test Suite API](core/src/suite/README.md)** - `describe`/`it`/hooks, `.only`/`.skip`,
+  filters, deterministic test IDs
+- **[Test Execution Flow](https://nevware21.github.io/tripwire/test-execution-flow.html)** - execution model, timeouts, hook
+  failure handling, runner metrics
+
 ### Comprehensive Assertion Library
 - **Type checking** - object, array, string, number, boolean, null, undefined, NaN, finite, typeof, instanceof
-- **Equality assertions** - equal, strictEqual, deepEqual, closeTo (approximate equality)
+- **Equality assertions** - equal, strictEqual, deepEqual, deepStrictEqual and their `not` forms, closeTo (approximate equality)
 - **Property checking** - property, ownProperty, deepProperty, nestedProperty with value validation
 - **Collection operations** - include, keys, members with deep equality and ordered comparison support
 - **Numeric comparisons** - above, below, within, atLeast, atMost with full range validation
@@ -34,19 +69,35 @@ As part of the Mono-Repo it also provides some shim implementations which are de
 - **Error/exception testing** - comprehensive throw/catch with error type and message validation
 - **Custom error messages** - all assertions support optional custom messages
 - **Full negation support** - consistent `not` operator across all assertion types
+- **Chaining** - continue after any assertion (`expect(5).is.number().and.is.above(1)`), and `or(...)` to accept whichever of several clauses passes
 
 ## Documentation
 
 **Main Documentation Site**: [https://nevware21.github.io/tripwire](https://nevware21.github.io/tripwire)
 
 The documentation site includes:
+- [Why tripwire](https://nevware21.github.io/tripwire/why-tripwire.html) - what is automatic across
+  node, browser and worker, what is fast, a comparison with Mocha, Karma, Jest and Vitest, and when
+  not to use it
+- [Performance](https://nevware21.github.io/tripwire/performance.html) - the runner's mechanisms and
+  measured benchmark results
 - Quick start guides and usage examples
 - Feature highlights and comparison tables
 - Migration guides:
   - [From Node.js Native Assert](https://nevware21.github.io/tripwire/migration/migrating-from-node-assert.html)
   - [From Chai.js](https://nevware21.github.io/tripwire/migration/migrating-from-chai.html)
+  - [From Mocha (test runner)](https://nevware21.github.io/tripwire/migration/migrating-from-mocha.html)
+  - [From Karma (browser/worker runner)](https://nevware21.github.io/tripwire/migration/migrating-from-karma.html)
+  - [From Jest or Vitest](https://nevware21.github.io/tripwire/migration/migrating-from-jest.html)
+- [AGENTS.md](AGENTS.md) and [llms.txt](https://nevware21.github.io/tripwire/llms.txt) - entry points
+  written for AI agents
+- [Runner Troubleshooting](https://nevware21.github.io/tripwire/runner-troubleshooting.html) - Known issues and fixes, including opting in to the global `describe`/`it` names and the `@types/mocha`, `@types/jest` and `@types/jasmine` global type clash
 - Detailed guides for specific features (like change/increase/decrease assertions)
 - [Expression Adapter Guide](https://nevware21.github.io/tripwire/expression-adapter.html) - Creating custom assertions using expressions
+- [Test Runner, CLI & Configuration Guide](https://nevware21.github.io/tripwire/test-runner.html) - The `tripwire` CLI, `.tripwirerc` config files, running against node/browser/worker targets, file discovery, and [hook failures](https://nevware21.github.io/tripwire/test-runner.html#hook-failures) (`--fail-on-hook`)
+- [Test Reporters](https://nevware21.github.io/tripwire/reporters.html) - The 14 built-in test-result reporters with sample output for each, selecting and combining them, and per-reporter options
+- [Test Execution Flow](https://nevware21.github.io/tripwire/test-execution-flow.html) - How suites, tests and hooks execute, promise creation, timeouts, hook failure handling, and runner metrics
+- [Test Suite API](core/src/suite/README.md) - The `describe`/`it`/hook definition API (Mocha, Jasmine and TDD styles, `.only`/`.skip`, filters, deterministic test IDs)
 - Links to full TypeDoc API reference for each module
 
 **API Reference (TypeDoc)**:
@@ -76,6 +127,42 @@ expect(() => { dosomething(); }).to.not.throw();
 expect(() => { throw new Error("failed")}).to.throw();
 ```
 
+### The global `describe` / `it` names
+
+The `tripwire` runner installs `describe`, `it`, the lifecycle hooks, `assert` and `expect` onto
+`global` before it loads any test file, so test files can use the bare names with no imports.
+
+For TypeScript those names are **opt-in**. Importing `@nevware21/tripwire` declares no ambient
+globals, which is what allows it to be installed into a project that still has `@types/mocha`,
+`@types/jest` or `@types/jasmine` without breaking the build -- all three declare the same names
+with their own types, and TypeScript cannot have two disagreeing declarations of one global.
+
+Opt in with either the entry published by the core package:
+
+```jsonc
+// tsconfig.json
+{ "compilerOptions": { "types": ["node", "@nevware21/tripwire/globals"] } }
+```
+
+...or a dependency on `@nevware21/tripwire-globals`, which re-publishes the same declarations and
+is versioned in lockstep:
+
+```jsonc
+{ "compilerOptions": { "types": ["node", "@nevware21/tripwire-globals"] } }
+```
+
+A `/// <reference types="@nevware21/tripwire/globals" />` in any one file, or a side-effect
+`import "@nevware21/tripwire/globals"` (which also installs the names at runtime, for files not
+run through the CLI), both work as well. Or skip the globals entirely and import what you use --
+that never collides with another framework:
+
+```ts
+import { describe, it, assert } from "@nevware21/tripwire";
+```
+
+See [Cannot find name 'describe'](https://nevware21.github.io/tripwire/runner-troubleshooting.html#cannot-find-name-describe) for
+the full set of options.
+
 # Modules
 
 ## Core Module
@@ -95,6 +182,18 @@ It provides both `assert` and `expect` support, where the `assert` functions are
 The `assert` functions are built on-top of the underlying `expect` support, and if no assertions are thrown the result of the internal "chained" descriptive language API is returned. Which means you can mix the `expect` objects with the responses from the `assert` functions.
 
 To avoid dependency issues, this project will use the mininal set of external dependencies so that it can ensure and maintain compatibility with current (and future) runtimes.
+
+## Globals Module
+
+Provides the opt-in ambient declarations for the bare `describe`/`it`/hook/`assert`/`expect`
+global names, published as `@nevware21/tripwire-globals` and located in the
+[`globals`](https://github.com/nevware21/tripwire/tree/main/globals) folder.
+
+It depends on the exact matching version of `@nevware21/tripwire` and contains nothing but the
+declarations and a runtime installer, so a project can express "I want the globals" as a
+dependency rather than as tsconfig configuration. The identical entry ships inside the core
+package as `@nevware21/tripwire/globals` for projects that would rather not add a second
+dependency -- see [the global names](#the-global-describe--it-names) above.
 
 ## Chai Shim
 

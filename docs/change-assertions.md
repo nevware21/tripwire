@@ -227,8 +227,11 @@ assert.doesNotIncrease(() => {}, obj, 'count');
 - `assert.increases(fn, target, prop, msg?)` - Verify value increases
 - `assert.decreases(fn, target, prop, msg?)` - Verify value decreases
 - `assert.changesBy(fn, target, prop, delta, msg?)` - Verify specific change
+- `assert.notChangesBy(fn, target, prop, delta, msg?)` - Verify the value does not change by delta (it may stay the same or change by a different amount)
 - `assert.increasesBy(fn, target, prop, delta, msg?)` - Verify specific increase
+- `assert.notIncreasesBy(fn, target, prop, delta, msg?)` - Verify the value does not increase by delta
 - `assert.decreasesBy(fn, target, prop, delta, msg?)` - Verify specific decrease
+- `assert.notDecreasesBy(fn, target, prop, delta, msg?)` - Verify the value does not decrease by delta
 - `assert.doesNotChange(fn, target, prop, msg?)` - Verify no change
 - `assert.doesNotIncrease(fn, target, prop, msg?)` - Verify no increase
 - `assert.doesNotDecrease(fn, target, prop, msg?)` - Verify no decrease

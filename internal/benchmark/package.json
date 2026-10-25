@@ -1,0 +1,44 @@
+{
+    "name": "@nevware21/tripwire-benchmark",
+    "description": "Internal benchmark harness comparing the tripwire runner against mocha and karma for the core and chai-shim suites",
+    "version": "0.1.8",
+    "private": true,
+    "license": "MIT",
+    "author": {
+        "name": "Nevware21 Solutions LLC",
+        "email": "github+tripwire@nevware21.com"
+    },
+    "scripts": {
+        "build": "node ./scripts/validate.js",
+        "rebuild": "npm run build",
+        "test": "node ./scripts/validate.js && npm run test:unit",
+        "test:unit": "node ../../core/bin/tripwire.js --type-check -p ./test/tsconfig.json \"./test/src/**/*.test.ts\"",
+        "test:full": "npm run test && npm run bench",
+        "bench": "node ./scripts/runBenchmark.js",
+        "bench:core": "node ./scripts/runBenchmark.js --suites=core",
+        "bench:chai": "node ./scripts/runBenchmark.js --suites=chai",
+        "bench:node": "node ./scripts/runBenchmark.js --targets=node",
+        "bench:browser": "node ./scripts/runBenchmark.js --targets=browser",
+        "bench:worker": "node ./scripts/runBenchmark.js --targets=worker",
+        "list": "node ./scripts/runBenchmark.js --list"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/nevware21/tripwire.git"
+    },
+    "dependencies": {
+        "@nevware21/tripwire": "0.1.8"
+    },
+    "devDependencies": {
+        "@nevware21/tripwire-runner": "0.1.8",
+        "@types/node": "25.9.5",
+        "karma": "6.4.4",
+        "karma-chrome-launcher": "3.2.0",
+        "karma-mocha": "2.0.1",
+        "karma-spec-reporter": "0.0.36",
+        "karma-typescript": "5.5.4",
+        "puppeteer": "^25.1.0",
+        "ts-mocha": "10.1.0",
+        "typescript": "~5.2.2"
+    }
+}
