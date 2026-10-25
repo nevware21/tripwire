@@ -6,10 +6,10 @@
  * Licensed under the MIT license.
  */
 
-import { IScopeContext } from "./IScopeContext";
-import { IAssertInst } from "./IAssertInst";
-import { MsgSource } from "../../types/MsgSource";
 import { ArrayLikeOrSizedIterable } from "../../types/ArrayLikeOrSizedIterable";
+import { MsgSource } from "../../types/MsgSource";
+import { IAssertInst } from "./IAssertInst";
+import { IScopeContext } from "./IScopeContext";
 
 /**
  * The `IAssert` interface defines the methods for performing assertions.
@@ -507,6 +507,49 @@ export interface IAssertClass<AssertInst extends IAssertInst = IAssertInst> {
     notDeepEquals<T>(actual: T, expected: T, initMsg?: MsgSource): AssertInst;
 
     /**
+     * Performs a deep strict inequality check between the `actual` and `expected` values,
+     * throwing an {@link AssertionFailure} with the given message when the `actual` value is
+     * deeply and strictly equal to the `expected` value. The negation of {@link deepStrictEqual}:
+     * values that differ only in type (`1` vs `"1"`) are *not* strictly equal, so they pass.
+     *
+     * @param actual - The actual value.
+     * @param expected - The expected value.
+     * @param initMsg - The message to display if `actual` is deeply strictly equal to `expected`.
+     * @template T - The type of the values.
+     * @asserts That the `actual` and `expected` values are not deeply strictly equal and throws {@link AssertionFailure} if they are.
+     * @since 0.2.0
+     * @example
+     * ```typescript
+     * assert.notDeepStrictEqual({ a: 1 }, { a: 2 }); // Passes
+     * assert.notDeepStrictEqual({ a: 1 }, { a: "1" }); // Passes (types differ)
+     * assert.notDeepStrictEqual({ a: 1 }, { a: 1 }); // Throws AssertionFailure
+     * assert.notDeepStrictEqual([1, 2], [2, 1]); // Passes
+     * assert.notDeepStrictEqual([1, 2], [1, 2]); // Throws AssertionFailure
+     * ```
+     */
+    notDeepStrictEqual<T>(actual: T, expected: T | unknown, initMsg?: MsgSource): AssertInst;
+
+    /**
+     * Performs a deep strict inequality check between the `actual` and `expected` values,
+     * throwing an {@link AssertionFailure} with the given message when the `actual` value is
+     * deeply and strictly equal to the `expected` value.
+     *
+     * @param actual - The actual value.
+     * @param expected - The expected value.
+     * @param initMsg - The message to display if `actual` is deeply strictly equal to `expected`.
+     * @template T - The type of the values.
+     * @asserts That the `actual` and `expected` values are not deeply strictly equal and throws {@link AssertionFailure} if they are.
+     * @alias notDeepStrictEqual
+     * @since 0.2.0
+     * @example
+     * ```typescript
+     * assert.notDeepStrictEquals({ a: 1 }, { a: "1" }); // Passes (types differ)
+     * assert.notDeepStrictEquals({ a: 1 }, { a: 1 }); // Throws AssertionFailure
+     * ```
+     */
+    notDeepStrictEquals<T>(actual: T, expected: T | unknown, initMsg?: MsgSource): AssertInst;
+
+    /**
      * Asserts that the given value is `true`.
      *
      * This method checks if the provided value is strictly equal to `true`. If the value is not `true`,
@@ -649,6 +692,38 @@ export interface IAssertClass<AssertInst extends IAssertInst = IAssertInst> {
      * ```
      */
     isNotUndefined<T>(value: T, initMsg?: MsgSource): AssertInst;
+
+    /**
+     * Asserts that the given value is defined (not `undefined`).
+     * @param value - The value to check.
+     * @param initMsg - The message to display if the assertion fails.
+     * @asserts That the `value` is defined and throws {@link AssertionFailure} if it is not.
+     * @example
+     * ```typescript
+     * assert.isDefined(1); // Passes
+     * assert.isDefined("string"); // Passes
+     * assert.isDefined(null); // Passes
+     * assert.isDefined(undefined); // Throws AssertionFailure
+     * ```
+     * @since 0.2.0
+     */
+    isDefined<T>(value: T, initMsg?: MsgSource): AssertInst;
+
+    /**
+     * Asserts that the given value is not defined (`undefined`).
+     * @param value - The value to check.
+     * @param initMsg - The message to display if the assertion fails.
+     * @asserts That the `value` is not defined and throws {@link AssertionFailure} if it is.
+     * @example
+     * ```typescript
+     * assert.isNotDefined(undefined); // Passes
+     * assert.isNotDefined(1); // Throws AssertionFailure
+     * assert.isNotDefined("string"); // Throws AssertionFailure
+     * assert.isNotDefined(null); // Throws AssertionFailure
+     * ```
+     * @since 0.2.0
+     */
+    isNotDefined<T>(value: T, initMsg?: MsgSource): AssertInst;
 
     /**
      * Asserts that the provided value is empty, for strings, arrays, and objects, it checks if their

@@ -12,21 +12,15 @@ import {
     strSubstring
 } from "@nevware21/ts-utils";
 import { IPromise } from "@nevware21/ts-async";
-import { IAssertClass } from "./interface/IAssertClass";
-import { IAssertInst } from "./interface/IAssertInst";
-import { MsgSource } from "../types/MsgSource";
 import {
     isBooleanFunc, isFunctionFunc, isNumberFunc, isNullFunc, isObjectFunc, isPlainObjectFunc, isStrictFalseFunc, isStrictTrueFunc, isUndefinedFunc
 } from "./funcs/is";
 import { isEmptyFunc } from "./funcs/isEmpty";
-import { IAssertClassDef } from "./interface/IAssertClassDef";
 import { matchFunc } from "./funcs/match";
 import { isErrorFunc, throwsFunc } from "./funcs/throws";
 import { hasPropertyFunc, hasOwnPropertyFunc, hasDeepPropertyFunc, hasDeepOwnPropertyFunc } from "./funcs/hasProperty";
 import { hasNestedPropertyFunc, hasDeepNestedPropertyFunc, nestedIncludeFunc, deepNestedIncludeFunc } from "./funcs/nested";
-import { AssertionError, AssertionFailure } from "./assertionError";
 import { createContext } from "./scopeContext";
-import { createAssertScope } from "./assertScope";
 import { IScopeFn } from "./interface/IScopeFuncs";
 import { createExprAdapter } from "./adapters/exprAdapter";
 import { createNotAdapter } from "./adapters/notAdapter";
@@ -50,6 +44,12 @@ import {
 import { changesFunc, increasesFunc, decreasesFunc } from "./funcs/changes";
 import { changesByFunc, increasesByFunc, decreasesByFunc, changesButNotByFunc, increasesButNotByFunc, decreasesButNotByFunc } from "./funcs/changesBy";
 import { ifErrorFunc } from "./funcs/ifError";
+import { IAssertClass } from "./interface/IAssertClass";
+import { IAssertClassDef } from "./interface/IAssertClassDef";
+import { IAssertInst } from "./interface/IAssertInst";
+import { AssertionError } from "./assertionError";
+import { createAssertScope } from "./assertScope";
+import { MsgSource } from "../types/MsgSource";
 
 /**
  * @internal
@@ -143,9 +143,11 @@ export let assert: IAssertClass = createAssert();
  */
 export function createAssert(): IAssertClass {
     function assert(expr: boolean, initMsg?: MsgSource) {
-        if (!expr) {
-            throw new AssertionFailure((isFunction(initMsg) ? initMsg() : initMsg) || "Assertion failed");
-        }
+        const ctx = createContext(expr, undefined, assert, [expr, initMsg]);
+        // Give the bare assertion an operation path, as _createProxyFunc does for every named function,
+        // so message tokens such as {path} resolve instead of failing on the missing path.
+        ctx.setOp("assert()");
+        ctx.eval(expr, initMsg || "Assertion failed");
     }
 
     /**
@@ -176,6 +178,8 @@ export function createAssert(): IAssertClass {
         notEquals: { alias: "notEqual" },
         notDeepEqual: { scopeFn: createNotAdapter(deepEqualsFunc), nArgs: 2 },
         notDeepEquals: { alias: "notDeepEqual" },
+        notDeepStrictEqual: { scopeFn: createNotAdapter(deepStrictEqualsFunc), nArgs: 2 },
+        notDeepStrictEquals: { alias: "notDeepStrictEqual" },
 
         isTrue: isStrictTrueFunc,
         isFalse: isStrictFalseFunc,
@@ -187,6 +191,9 @@ export function createAssert(): IAssertClass {
 
         isUndefined: isUndefinedFunc,
         isNotUndefined: createNotAdapter(isUndefinedFunc),
+
+        isDefined: createNotAdapter(isUndefinedFunc),
+        isNotDefined: isUndefinedFunc,
 
         isEmpty: isEmptyFunc,
         isNotEmpty: createNotAdapter(isEmptyFunc),
@@ -604,9 +611,9 @@ export function _extractArgs(theArgs: any[], mIdx: number | undefined, numArgs: 
     };
 }
 
-function _createProxyFunc(theAssert: IAssertClass, assertName: string, def: IAssertClassDef, internalErrorStackStart: Function, responseHandler: (result: any) => any): (...args: any[]) => void | IAssertInst | IPromise<IAssertInst> {
+function _createProxyFunc(theAssert: IAssertClass, assertName: string, def: IAssertClassDef, internalErrorStackStart: Function, responseHandler: ((result: any) => any) | undefined): (...args: any[]) => void | IAssertInst | IPromise<IAssertInst> {
     // let steps: IStepDef[];
-    let scopeFn: IScopeFn = def.scopeFn;
+    let scopeFn: IScopeFn | undefined = def.scopeFn;
     let mIdx: number = def.mIdx || -1;
     let numArgs: number = isNullOrUndefined(def.nArgs) ? 1 : def.nArgs;
 
