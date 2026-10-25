@@ -8,7 +8,8 @@
 
 import { createEvalAdapter } from "../../../src/assert/adapters/evalAdapter";
 import { addAssertFunc, createAssert } from "../../../src/assert/assertClass";
-import { AssertionError, AssertionFailure } from "../../../src/assert/assertionError";
+import { AssertionError } from "../../../src/assert/assertionError";
+import { AssertionFailure } from "../../../src/assert/assertionFailure";
 import { expect } from "../../../src/assert/expect";
 import { IAssertClass, IExtendedAssert } from "../../../src/assert/interface/IAssertClass";
 import { checkError } from "../support/checkError";

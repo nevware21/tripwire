@@ -7,7 +7,7 @@
  */
 
 import { assert } from "../../../src/assert/assertClass";
-import { AssertionFailure } from "../../../src/assert/assertionError";
+import { AssertionFailure } from "../../../src/assert/assertionFailure";
 import { expect } from "../../../src/assert/expect";
 import { checkError } from "../support/checkError";
 
@@ -88,9 +88,11 @@ describe("assert.typeOf", () => {
             assert.typeOf(Function, "function");
             assert.typeOf(assert.typeOf, "function");
 
-            //assert.typeOf(async function() { }, "asyncfunction");
-            //assert.typeOf(function* () {}, "generatorfunction");
-            //assert.typeOf(async function* () { }, "asyncgeneratorfunction");
+            /*
+             * assert.typeOf(async function() { }, "asyncfunction");
+             * assert.typeOf(function* () {}, "generatorfunction");
+             * assert.typeOf(async function* () { }, "asyncgeneratorfunction");
+             */
         });
 
         it("should throw when value is a function but type is not 'function'", () => {

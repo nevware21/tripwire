@@ -6,16 +6,16 @@
  * Licensed under the MIT license.
  */
 
-import { IScopeContext } from "../assert/interface/IScopeContext";
+import { IConfigInst } from "../interfaces/IConfigInst";
 
 /**
  * @internal
  * @ignore
  * Internal helper to format a value for display in an error messages.
- * @param ctx - Scope context containing the configuration and formatters to use.
+ * @param opts - Configuration instance containing the formatters to use.
  * @param value - The value to format.
  * @returns - A string representation of the value.
  */
-export function _formatValue(ctx: IScopeContext, value: any): string {
-    return ctx.opts.$ops.formatMgr.format(value);
+export function _formatValue(opts: IConfigInst, value: any): string {
+    return opts.$ops.formatMgr.format(value);
 }

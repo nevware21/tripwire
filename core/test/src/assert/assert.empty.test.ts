@@ -2,12 +2,12 @@
  * @nevware21/tripwire
  * https://github.com/nevware21/tripwire
  *
- * Copyright (c) 2024-2025 NevWare21 Solutions LLC
+ * Copyright (c) 2024-2026 NevWare21 Solutions LLC
  * Licensed under the MIT license.
  */
 
 import { assert } from "../../../src/assert/assertClass";
-import { AssertionFailure } from "../../../src/assert/assertionError";
+import { AssertionFailure } from "../../../src/assert/assertionFailure";
 import { expect } from "../../../src/assert/expect";
 import { checkError } from "../support/checkError";
 

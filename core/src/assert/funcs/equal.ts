@@ -6,11 +6,13 @@
  * Licensed under the MIT license.
  */
 
-import { arrForEach, arrMap, asString, isDate, isFunction, isObject, isPlainObject, isPrimitive, isSymbol, iterForOf, objCreate, objGetOwnPropertyDescriptor, objGetOwnPropertySymbols, objIs, objToString, strLower } from "@nevware21/ts-utils";
-import { MsgSource } from "../../types/MsgSource";
+import { arrForEach, arrMap, asString, getKnownSymbol, isDate, isFunction, isNumber, isObject, isPlainObject, isPrimitive, isSymbol, iterForOf, objCreate, objGetOwnPropertyDescriptor, objGetOwnPropertySymbols, objIs, objToString, strLower, WellKnownSymbols } from "@nevware21/ts-utils";
 import { IAssertScope } from "../interface/IAssertScope";
+import { MsgSource } from "../../types/MsgSource";
 import { _formatValue } from "../../internal/_formatValue";
 import { IScopeContext } from "../interface/IScopeContext";
+
+const _symIterator = getKnownSymbol(WellKnownSymbols.iterator);
 
 /**
  * Performs a simple loose equality check (`==`) between the `actual` and `expected` values,
@@ -227,7 +229,7 @@ function _getTypeComparer(value: any): (value: any, expected: any, options: IEqu
     let compareFn = (objType && _typeEquals[objType]) || _typeEquals[theType];
     if (!compareFn) {
         try {
-            if (isObject(value) && isFunction(value[Symbol.iterator])) {
+            if (isObject(value) && isFunction(value[_symIterator])) {
                 return _iterEquals;
             }
         } catch (e) {
@@ -298,7 +300,7 @@ function _isVisiting<T>(value: any, options: IEqualOptions, cb: () => T): T {
                     visitCount++;
                     if (visitCount > 10) {
                         // Early exit on excessive visits
-                        let errorMsg = "Unresolvable Circular reference detected for " + _formatValue(options.context, visiting[0]) + " @ depth " + depth + " reference count: " + visitCount;
+                        let errorMsg = "Unresolvable Circular reference detected for " + _formatValue(options.context.opts, visiting[0]) + " @ depth " + depth + " reference count: " + visitCount;
                         options.context.fatal(errorMsg);
                     }
                 }
@@ -415,6 +417,15 @@ function _iterEquals(value: any, expected: any, options: IEqualOptions): boolean
     let valueLen = value.length;
     let expectedLen = expected.length;
 
+    if (!isNumber(valueLen) && !isNumber(expectedLen)) {
+        // Iterables without a length (eg. an object backed by a generator) have to be compared by the
+        // values they produce -- treating their two undefined lengths as equal called any pair of them equal.
+        value = _getIteratorValues(value);
+        expected = _getIteratorValues(expected);
+        valueLen = value.length;
+        expectedLen = expected.length;
+    }
+
     if (valueLen !== expectedLen) {
         return false;
     }
@@ -435,8 +446,8 @@ function _iterEquals(value: any, expected: any, options: IEqualOptions): boolean
 function _getIteratorValues(value: any): any[] {
     let values: any[] = [];
     try {
-        if (isObject(value) && isFunction(value[Symbol.iterator])) {
-            iterForOf(value[Symbol.iterator](), (val) => {
+        if (isObject(value) && isFunction(value[_symIterator])) {
+            iterForOf(value[_symIterator](), (val) => {
                 values.push(val);
             });
         }

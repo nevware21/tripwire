@@ -7,7 +7,9 @@
  */
 
 import { assert } from "../../../src/assert/assertClass";
-import { AssertionError, AssertionFailure, AssertionFatal } from "../../../src/assert/assertionError";
+import { AssertionError } from "../../../src/assert/assertionError";
+import { AssertionFailure } from "../../../src/assert/assertionFailure";
+import { AssertionFatal } from "../../../src/assert/assertionFatal";
 import { expect } from "../../../src/assert/expect";
 import { checkError } from "../support/checkError";
 

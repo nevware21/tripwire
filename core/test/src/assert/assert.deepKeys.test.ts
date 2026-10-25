@@ -6,7 +6,7 @@
  * Licensed under the MIT license.
  */
 
-import { AssertionFailure } from "../../../src/assert/assertionError";
+import { AssertionFailure } from "../../../src/assert/assertionFailure";
 import { assert } from "../../../src/assert/assertClass";
 import { expect } from "../../../src/assert/expect";
 import { checkError } from "../support/checkError";

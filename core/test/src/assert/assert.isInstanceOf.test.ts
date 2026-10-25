@@ -7,7 +7,7 @@
  */
 
 import { assert } from "../../../src/assert/assertClass";
-import { AssertionFailure } from "../../../src/assert/assertionError";
+import { AssertionFailure } from "../../../src/assert/assertionFailure";
 import { expect } from "../../../src/assert/expect";
 
 describe("assert.isInstanceOf", () => {
