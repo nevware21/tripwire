@@ -1,0 +1,30 @@
+body.style-classic {
+  --bg: linear-gradient(160deg, #f8fafc 0%, #e2e8f0 100%);
+  --ink: #0f172a;
+  --muted: #475569;
+  --panel: #ffffff;
+  --panel-soft: #f8fafc;
+  --border: #d0d7de;
+  --border-subtle: #e2e8f0;
+  --accent: #0b6bcb;
+  --running: #2563eb;
+  --ok: #0f7b37;
+  --bad: #b42318;
+  --suite-tone-1: #0b6bcb;
+  --suite-tone-2: #117a65;
+  --suite-tone-3: #b45309;
+  --test-tone-1: #2563eb;
+  --test-tone-2: #059669;
+  --test-tone-3: #d97706;
+  --state-running-bg: #eff6ff;
+  --state-passed-bg: #f0fdf4;
+  --state-failed-bg: #fef2f2;
+  --suite-state-passed-bg: #f0fdf4;
+  --suite-state-failed-bg: #fef2f2;
+  --test-state-passed-bg: #ffffff;
+  --test-state-failed-bg: #fee2e2;
+  --log-bg: #0b1020;
+  --log-ink: #d8e4ff;
+  --log-error: #ffd7d7;
+  --log-warn: #ffe7b3;
+}

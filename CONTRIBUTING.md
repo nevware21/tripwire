@@ -49,18 +49,16 @@ If making a large change we request that you open an [issue][GitHubIssue] first.
 
 6. Debugging failing tests in a browser
 
-This runs karma in "watch" mode to avoid the browser automatically closing, to debug process the Debug button in the corner.
-
-As this uses watch mode you can also just leave this running as you make code changes, however, if there is a compile error this can cause the browser to be closed.
+These launch a real browser through the tripwire CLI and leave it open, so you can use the browser's own devtools. As they watch for changes you can leave one running as you edit; a compile error can still close the browser.
 
 Terminating the debug session can require several CTRL-C's in the terminal window used to start the debug session.
 
 	```
-	npm run test:debug
+	npm run debug:browser
+	npm run debug:worker
 	```
 
-By default this is configured to run using chromiumn based Edge, you can change the `process.env.CHROME_BIN = "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe";` at the top of the `karma.debug.conf.js` file to use a different chromium based browser.
-
+Both are also available per package (`cd core && npm run debug:browser`, and the same in `shim/chai`).
 
 ## Build, test and generate typedoc docs
 

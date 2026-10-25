@@ -6,6 +6,7 @@
  * Licensed under the MIT license.
  */
 
+import { TripwireGlobals } from "./globals";
 import { IConfig } from "./interfaces/IConfig";
 import { IConfigApi } from "./interfaces/IConfigApi";
 import { IConfigInst } from "./interfaces/IConfigInst";
@@ -136,6 +137,7 @@ import { ISuiteStateContext } from "./suite/interfaces/ISuiteStateContext";
 export { IServerManager } from "./interfaces/IServerManager";
 export { ITestServerProvider } from "./suite/interfaces/ITestServerProvider";
 
+
 /**
  * Re-export the shared types and functions
  */
@@ -148,9 +150,12 @@ export { ISuiteDefinitionFn } from "./interfaces/suite/ISuiteDefinitionFn";
 export { ITestCase } from "./interfaces/suite/ITestCase";
 export { ITestContext } from "./interfaces/suite/ITestContext";
 export { ITestDefinitionFn } from "./interfaces/suite/ITestDefinitionFn";
+export { ICompileProvider } from "./interfaces/compile/ICompileProvider";
 export { HookFn } from "./types/HookFn";
 export { SuiteFn } from "./types/SuiteFn";
 export { TestFn } from "./types/TestFn";
+export { TestTarget } from "./types/TestTarget";
+export { BrowserLaunchMode } from "./types/BrowserLaunchMode";
 export { eListenerEvent, ListenerEvent, ListenerEventEnum } from "./types/ListenerEvent";
 
 /**
@@ -177,8 +182,13 @@ export { createNotifyMgr } from "./notify/NotificationManager";
 /**
  * Export runner types and functions
  */
+export { IModuleGraph } from "./interfaces/runner/IModuleGraph";
+export { IRunPayload } from "./interfaces/runner/IRunPayload";
+export { IRunSettings } from "./interfaces/runner/IRunSettings";
+export { ISerializedRegExp } from "./interfaces/runner/ISerializedRegExp";
 export { ITestRunner } from "./interfaces/runner/ITestRunner";
 export { ITestRunnerOptions } from "./interfaces/runner/ITestRunnerOptions";
+export { ICompileHookOptions } from "./interfaces/compile/ICompileHookOptions";
 export { ITestSummary } from "./interfaces/runner/ITestSummary";
 export { IHookFailure } from "./interfaces/runner/IHookFailure";
 export {
@@ -266,7 +276,7 @@ export {
     IChangeResultOp, IChangeResultValue, IDeepOp, IEqualOp, IExtendedAssert, IExtendedAssertInst,
     IFormatCtx, IFormattedValue, IFormatter, IFormatterOptions, IFormatManager, IHasOp, IHasOwnOp, IIncludeOp,
     IIsOp, IIsTypeOp, IKeysOp, INestedOp, INotOp, INumericOp, IOwnOp, IPropertyResultOp, IRemovable,
-    IScopeContext, IScopeContextOverrides, IScopePropFn, IStrictlyOp, IThrowOp, IToOp,
+    IScopeContext, IScopeContextOverrides, IScopePropFn, IStrictlyOp, IThrowOp, IToOp, TripwireGlobals,
     PropertyDescriptorFn, PropertyFn, IParsedStack,
     ITestRunContext, ISuiteStateContext
 };
@@ -362,3 +372,9 @@ export {
  * Export the test runner factory
  */
 export { createTestRunner } from "./suite/runner";
+
+// Note: this entry point deliberately declares *no* ambient globals -- importing
+// `@nevware21/tripwire` never adds `describe`/`it`/`expect` etc to the global type scope, so it
+// cannot collide with `@types/mocha`, `@types/jest` or `@types/jasmine`. The ambient declarations
+// live in `./ambientGlobals.ts`, published as the opt-in `@nevware21/tripwire/globals` entry (and
+// re-published by the `@nevware21/tripwire-globals` package). See docs/runner-troubleshooting.md.

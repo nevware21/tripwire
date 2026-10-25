@@ -3,6 +3,7 @@
         "sourceMap": true,
         "inlineSources": true,
         "noImplicitAny": true,
+        "skipLibCheck": true,
         "module": "commonjs",
         "moduleResolution": "node",
         "target": "es5",
@@ -12,7 +13,11 @@
         "alwaysStrict": true,
         "allowSyntheticDefaultImports": true,
         "removeComments": true,
-        "esModuleInterop": true
+        "esModuleInterop": true,
+        "baseUrl": ".",
+        "paths": {
+            "@nevware21/tripwire": [ "../src/index.ts" ]
+        }
     },
     "include": [
         "../src/**/*.ts",

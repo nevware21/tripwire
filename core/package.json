@@ -1,6 +1,6 @@
 {
     "name": "@nevware21/tripwire",
-    "description": "Test Support utilities, helpers, tools for testing in JavaScript and TypeScript.",
+    "description": "Assertion library and test runner for JavaScript and TypeScript: the same describe/it suites run on node, in a real headless browser and in a web worker from one CLI, with TypeScript compiled on the fly, a compile cache, 14 reporters, coverage and watch mode.",
     "version": "0.1.8",
     "homepage": "https://github.com/nevware21/tripwire",
     "license": "MIT",
@@ -21,26 +21,50 @@
     "keywords": [
         "test",
         "testing",
+        "test-runner",
+        "test runner",
+        "runner",
+        "cli",
         "assertions",
-        "helpers",
-        "utilities",
+        "assert",
+        "expect",
+        "chai",
+        "mocha",
+        "karma",
+        "jest",
+        "browser",
+        "web-worker",
+        "worker",
+        "puppeteer",
+        "typescript",
+        "ts",
+        "es5",
+        "coverage",
+        "watch",
+        "tdd",
+        "bdd",
         "tripwire"
     ],
     "main": "dist/es5/main/tripwire.js",
+    "bin": {
+        "tripwire": "./bin/tripwire.js"
+    },
     "esnext:main": "dist/es6/main/tripwire.js",
     "module": "dist/es5/mod/tripwire.js",
     "esnext:module": "dist/es6/mod/tripwire.js",
     "types": "dist/types/tripwire.d.ts",
     "scripts": {
-        "build": "grunt tripwire --verbose && npm run package && npm run dtsgen",
-        "rebuild": "npm run build && npm run test",
+        "build": "grunt tripwire --verbose && npm run package && npm run dtsgen && npm run globals:dtsgen",
+        "rebuild": "npm run build",
+        "tripwire": "node ./bin/tripwire.js",
         "package": "rollup -c rollup.config.js --bundleConfigAsCjs",
         "test": "grunt tripwire-test && npm run test:node && npm run test:browser && npm run test:worker && npm run coverage:report",
-        "test:node": "nyc ts-mocha --type-check -p ./test/tsconfig.test.json \"./test/src/!(browser|worker)/**/*.test.ts\" --trace-uncaught",
-        "test:browser": "karma start karma.browser.conf.js --single-run",
-        "test:worker": "karma start karma.worker.conf.js --single-run",
-        "debug:browser": "karma start karma.debug.browser.conf.js --watch",
-        "debug:worker": "karma start karma.debug.worker.conf.js --watch",
+        "test:node": "nyc --cache node ./bin/tripwire.js --type-check -p ./test/tsconfig.test.json \"./test/src/!(browser|worker)/**/*.test.ts\" -- --trace-uncaught && node ./bin/tripwire.js coverage-report",
+        "test:nodesrc": "cross-env TRIPWIRE_PREFER_SOURCE=1 nyc --cache node ./bin/tripwire.js --type-check -p ./test/tsconfig.test.json \"./test/src/!(browser|worker)/**/*.test.ts\" -- --trace-uncaught && node ./bin/tripwire.js coverage-report",
+        "test:browser": "node ./bin/tripwire.js --target browser --coverage --type-check -p ./test/tsconfig.test.json \"./test/src/!(node|worker)/**/*.test.ts\"",
+        "test:worker": "node ./bin/tripwire.js --target worker --coverage --type-check -p ./test/tsconfig.test.json \"./test/src/!(node|browser)/**/*.test.ts\"",
+        "debug:browser": "node ./bin/tripwire.js --target browser --browser-launch open --source-maps --show-files --verbose --type-check -p ./test/tsconfig.test.json \"./test/src/!(node|worker)/**/*.test.ts\"",
+        "debug:worker": "node ./bin/tripwire.js --target worker --browser-launch open --source-maps --show-files --verbose --type-check -p ./test/tsconfig.test.json \"./test/src/!(node|browser)/**/*.test.ts\"",
         "lint": "grunt tripwire-lint",
         "coverage:report": "npm run coverage:nyc && npm run coverage:merge",
         "coverage:nyc": "nyc report --reporter=json",
@@ -49,7 +73,8 @@
         "cleanBuild": "npm run clean && npm run rebuild && npm run docs",
         "docs": "npx typedoc",
         "rush-update": "rush update --recheck --purge --full",
-        "dtsgen": "api-extractor run --local --verbose"    
+        "dtsgen": "api-extractor run --local --verbose",
+        "globals:dtsgen": "node ./scripts/buildGlobalsDts.js"
     },
     "repository": {
         "type": "git",
@@ -68,9 +93,21 @@
         "node": ">= 0.8.0"
     },
     "dependencies": {
-        "@nevware21/ts-utils": ">= 0.12.6 < 2.x",
-        "@nevware21/ts-async": ">= 0.5.4 < 2.x",
-        "@nevware21/chromacon": ">= 0.1.3 < 2.x"
+        "@nevware21/chromacon": ">= 0.1.4 < 2.x",
+        "@nevware21/ts-async": ">= 0.6.1 < 2.x",
+        "@nevware21/ts-utils": ">= 0.16.0 < 2.x"
+    },
+    "peerDependencies": {
+        "puppeteer": ">= 20.0.0",
+        "puppeteer-core": ">= 20.0.0"
+    },
+    "peerDependenciesMeta": {
+        "puppeteer": {
+            "optional": true
+        },
+        "puppeteer-core": {
+            "optional": true
+        }
     },
     "devDependencies": {
         "@microsoft/api-extractor": "^7.34.4",
@@ -81,28 +118,20 @@
         "@rollup/plugin-node-resolve": "^16.0.3",
         "@rollup/plugin-strip": "^3.0.2",
         "@rollup/plugin-typescript": "^12.2.0",
-        "@types/mocha": "^10.0.1",
-        "@types/node": "24.9.1",
+        "@types/node": "^25.9.5",
         "codecov": "^3.8.3",
+        "copyfiles": "^2.4.1",
         "cross-env": "^10.1.0",
-        "grunt": "^1.6.2",
+        "grunt": "^1.6.3",
         "grunt-cli": "^1.4.3",
-        "karma": "^6.3.20",
-        "karma-chrome-launcher": "^3.1.1",
-        "karma-mocha": "^2.0.1",
-        "karma-spec-reporter": "^0.0.37",
-        "karma-typescript": "^5.5.3",
         "puppeteer": "^25.1.0",
         "rollup": "^4.54.0",
-        "rollup-plugin-minify-es": "^1.1.1",
-        "rollup-plugin-istanbul": "^5.0.0",
         "rollup-plugin-cleanup": "^3.2.1",
-        "ts-mocha": "^10.0.0",
+        "rollup-plugin-istanbul": "^5.0.0",
+        "rollup-plugin-minify-es": "^1.1.1",
         "typedoc": "^0.28.2",
         "typedoc-github-theme": "^0.4.0",
         "typescript": "~5.2.2",
-        "uglify-js": "^3.15.5",
-        "copyfiles": "^2.4.1"
+        "uglify-js": "^3.15.5"
     }
 }
-

@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="738" height="108" viewBox="0 0 738 108" role="img" aria-label="tripwire --reporter cargo (progress bar)">
+  <title>tripwire --reporter cargo (progress bar)</title>
+  <rect width="738" height="108" rx="8" fill="#0d1117"/>
+  <text font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="14" xml:space="preserve">
+    <tspan x="16.0" y="28" fill="#3fb950" font-weight="bold">     Testing</tspan><tspan x="116.8" y="28" fill="#c9d1d9"> [</tspan><tspan x="133.6" y="28" fill="#39c5cf">=======&gt;</tspan><tspan x="200.8" y="28" fill="#c9d1d9">                      ] 1/4: math::division by zero</tspan>
+    <tspan x="16.0" y="48" fill="#3fb950" font-weight="bold">     Testing</tspan><tspan x="116.8" y="48" fill="#c9d1d9"> [</tspan><tspan x="133.6" y="48" fill="#39c5cf">==============&gt;</tspan><tspan x="259.6" y="48" fill="#c9d1d9">               ] 2/4: math::addition::adds two numbers</tspan>
+    <tspan x="16.0" y="68" fill="#3fb950" font-weight="bold">     Testing</tspan><tspan x="116.8" y="68" fill="#c9d1d9"> [</tspan><tspan x="133.6" y="68" fill="#39c5cf">======================&gt;</tspan><tspan x="326.8" y="68" fill="#c9d1d9">       ] 3/4: math::addition::handles negatives</tspan>
+    <tspan x="16.0" y="88" fill="#3fb950" font-weight="bold">     Testing</tspan><tspan x="116.8" y="88" fill="#c9d1d9"> [</tspan><tspan x="133.6" y="88" fill="#39c5cf">==============================</tspan><tspan x="385.6" y="88" fill="#c9d1d9">] 4/4: strings::concatenates</tspan>
+  </text>
+</svg>

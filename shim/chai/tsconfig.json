@@ -3,6 +3,7 @@
         "sourceMap": true,
         "inlineSources": true,
         "noImplicitAny": true,
+        "skipLibCheck": true,
         "module": "es6",
         "moduleResolution": "node",
         "target": "es5",

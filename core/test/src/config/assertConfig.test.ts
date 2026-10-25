@@ -66,20 +66,24 @@ describe("assertConfig scoped values", () => {
         assert.equal(assertConfig.$ops.formatMgr, gblFormatMgr, "outside a scope the global manager is returned");
     });
 
-    it("a host whose options carry no $ops falls back to the global operations", () => {
-        const gblVerbose = assertConfig.isVerbose;
-        const gblFormatMgr = assertConfig.$ops.formatMgr;
+    it("a host whose options carry no $ops falls back to the global default host's operations", () => {
+        const activeVerbose = assertConfig.isVerbose;
+        const gblFormatMgr = _gblConfigHost().opts.v.$ops.formatMgr;
         const bare: IConfigHost = {
-            opts: getDeferred(() => ({ isVerbose: !gblVerbose } as any)),
+            opts: getDeferred(() => ({ isVerbose: !activeVerbose } as any)),
             clone: () => bare
         };
 
-        useHost(bare, () => {
-            assert.equal(assertConfig.isVerbose, !gblVerbose, "values are read from the installed host's options");
-            assert.equal(assertConfig.$ops.formatMgr, gblFormatMgr, "operations come from the global config");
-        });
+        // Read inside the scope, assert outside it: a failing assertion inside would try to format its
+        // message with the bare options, which have no operations to format with.
+        const seen = useHost(bare, () => ({
+            verbose: assertConfig.isVerbose,
+            formatMgr: assertConfig.$ops.formatMgr
+        }));
 
-        assert.equal(assertConfig.isVerbose, gblVerbose);
+        assert.equal(seen.verbose, !activeVerbose, "values are read from the installed host's options");
+        assert.equal(seen.formatMgr, gblFormatMgr, "operations come from the global default host");
+        assert.equal(assertConfig.isVerbose, activeVerbose);
     });
 
     it("a host without a notification manager registers listeners on the global one", () => {
@@ -108,10 +112,14 @@ describe("assertConfig scoped values", () => {
         assert.isFalse(_gblConfigHost().notifyMgr.hasListeners());
     });
 
-    it("is a facade distinct from the global host's own configuration", () => {
+    it("is a facade distinct from any host's own configuration", () => {
+        // Under the tripwire runner every test already executes inside the runner's own host scope, so the
+        // "ambient" host is whatever getCurrentHost() answers, which is only the global default host when
+        // nothing has installed one.
         assert.notEqual(assertConfig, _gblConfigHost().opts.v);
-        assert.notEqual(assertConfig.$ops, _gblConfigHost().opts.v.$ops);
-        assert.equal(assertConfig.$ops.formatMgr, _gblConfigHost().opts.v.$ops.formatMgr, "outside a scope it reaches the global operations");
+        assert.notEqual(assertConfig, getCurrentHost().opts.v);
+        assert.notEqual(assertConfig.$ops, getCurrentHost().opts.v.$ops);
+        assert.equal(assertConfig.$ops.formatMgr, getCurrentHost().opts.v.$ops.formatMgr, "it reaches the active host's operations");
     });
 
     it("cloning the global host while another host is active copies the global values, not the active ones", () => {
@@ -130,15 +138,32 @@ describe("assertConfig scoped values", () => {
         });
     });
 
-    it("writes outside any scope go to the global config", () => {
+    it("writes outside any explicit scope go to the active host's config", () => {
         const before = assertConfig.isVerbose;
 
         try {
             assertConfig.isVerbose = !before;
-            assert.equal(_gblConfigHost().opts.v.isVerbose, !before);
+            assert.equal(getCurrentHost().opts.v.isVerbose, !before);
         } finally {
             assertConfig.isVerbose = before;
         }
+    });
+
+    it("writes go to the global default host's config when it is the installed host", () => {
+        const gbl = _gblConfigHost();
+        const before = gbl.opts.v.isVerbose;
+
+        useHost(gbl, () => {
+            try {
+                assertConfig.isVerbose = !before;
+                assert.equal(gbl.opts.v.isVerbose, !before);
+                assert.equal(assertConfig.isVerbose, !before);
+            } finally {
+                assertConfig.isVerbose = before;
+            }
+        });
+
+        assert.equal(gbl.opts.v.isVerbose, before);
     });
 });
 
@@ -148,30 +173,52 @@ describe("assertConfig listeners", () => {
 
         assert.isObject(gbl.notifyMgr, "notifyMgr");
         assert.isObject(gbl.serverMgr, "serverMgr");
-        assert.equal(getCurrentHost(), gbl, "no scope is active for this test");
     });
 
-    it("addAssertionListener outside any scope registers on the global host", () => {
+    it("addAssertionListener outside any explicit scope registers on the active host", () => {
         let starts = 0;
         const listener: IListener = {
             onStart: () => {
                 starts++;
             }
         };
+        const activeMgr = getCurrentHost().notifyMgr;
 
         const removable = addAssertionListener(listener);
         try {
-            _gblConfigHost().notifyMgr.notifyStart(eListenerEvent.Run, runCtx());
-            assert.equal(starts, 1, "the global manager notifies the listener");
+            activeMgr.notifyStart(eListenerEvent.Run, runCtx());
+            assert.equal(starts, 1, "the active host's manager notifies the listener");
         } finally {
             removable.rm();
         }
 
-        _gblConfigHost().notifyMgr.notifyStart(eListenerEvent.Run, runCtx());
+        activeMgr.notifyStart(eListenerEvent.Run, runCtx());
         assert.equal(starts, 1, "a removed listener is no longer notified");
     });
 
-    it("removeAssertionListener outside any scope removes from the global host", () => {
+    it("addAssertionListener registers on the global default host when it is the installed host", () => {
+        let starts = 0;
+        const gbl = _gblConfigHost();
+
+        useHost(gbl, () => {
+            const removable = addAssertionListener({
+                onStart: () => {
+                    starts++;
+                }
+            });
+
+            try {
+                gbl.notifyMgr.notifyStart(eListenerEvent.Run, runCtx());
+                assert.equal(starts, 1, "the global manager notifies the listener");
+            } finally {
+                removable.rm();
+            }
+        });
+
+        assert.isFalse(gbl.notifyMgr.hasListeners());
+    });
+
+    it("removeAssertionListener outside any explicit scope removes from the active host", () => {
         let starts = 0;
         const listener: IListener = {
             onStart: () => {
@@ -181,38 +228,40 @@ describe("assertConfig listeners", () => {
 
         addAssertionListener(listener);
         removeAssertionListener(listener);
-        _gblConfigHost().notifyMgr.notifyStart(eListenerEvent.Run, runCtx());
+        getCurrentHost().notifyMgr.notifyStart(eListenerEvent.Run, runCtx());
 
         assert.equal(starts, 0);
     });
 
-    it("a host cloned from the global host inherits globally registered listeners", () => {
+    it("a host cloned from the global default host inherits its listeners", () => {
         let starts = 0;
-        const removable = addAssertionListener({
+        const gbl = _gblConfigHost();
+        const removable = gbl.notifyMgr.addListener({
             onStart: () => {
                 starts++;
             }
         });
 
         try {
-            withHost((host) => {
-                assert.notEqual(host.notifyMgr, _gblConfigHost().notifyMgr, "the scoped host has its own manager");
+            useHost(gbl.clone(), (host) => {
+                assert.notEqual(host.notifyMgr, gbl.notifyMgr, "the clone has its own manager");
                 host.notifyMgr.notifyStart(eListenerEvent.Run, runCtx());
             });
 
-            assert.equal(starts, 1, "the scoped manager delegates to the global one");
+            assert.equal(starts, 1, "the clone's manager delegates to the global one");
         } finally {
             removable.rm();
         }
     });
 
-    it("a host cloned from the global host chains its server manager to the global one", () => {
-        const gblServerMgr = _gblConfigHost().serverMgr;
+    it("a host cloned from the global default host chains its server manager to the global one", () => {
+        const gbl = _gblConfigHost();
+        const gblServerMgr = gbl.serverMgr;
         const server: any = { url: "", port: 0, isRunning: true, start: (): any => server, stop: (): any => null };
         gblServerMgr.setProvider({ canProvideServer: true, getServer: () => server });
 
         try {
-            withHost((host) => {
+            useHost(gbl.clone(), (host) => {
                 assert.isObject(host.serverMgr, "the clone has a server manager of its own");
                 assert.notEqual(host.serverMgr, gblServerMgr);
                 assert.equal(host.serverMgr.server, server, "with no provider of its own it defers to the global manager");

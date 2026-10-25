@@ -11,3 +11,9 @@
 !core/dist/**
 !core/bundle/**
 !core/types/**
+
+# The source masters behind the icon/logo artwork -- 800x800 and 1024x1024 originals, ~2.6 MB in
+# total, kept only so the small derived favicons can be regenerated. The allowlist above already
+# excludes all of `docs/`, so this is a guard rather than the rule doing the work today: if
+# anything under `docs/` is ever published, the masters must not go with it.
+docs/images/master/**

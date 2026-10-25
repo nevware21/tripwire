@@ -10,6 +10,8 @@ import { createPromise, IPromise } from "@nevware21/ts-async";
 import { scheduleTimeout } from "@nevware21/ts-utils";
 import { assert } from "../../../src/assert/assertClass";
 import { assertConfig } from "../../../src/config/assertConfig";
+import { useHost } from "../../../src/config/configHost";
+import { _gblConfigHost } from "../../../src/internal/_configHost";
 import { ISuiteContext } from "../../../src/interfaces/suite/ISuiteContext";
 import { it as selfIt } from "../../../src/suite/it";
 import { _getCurrentSuite, createSuite, describe as selfDescribe, getRootSuite, resetSuite, useSuite } from "../../../src/suite/suite";
@@ -82,8 +84,12 @@ describe("suite definition context", () => {
         const root = createSuite();
         let server: any = "unset";
 
-        useSuite(root, function (this: ISuiteContext) {
-            server = this.server;
+        // Under the tripwire runner the active host is the runner's own, which does provide a server, so the
+        // global default host is installed explicitly: it has no provider and therefore no server.
+        useHost(_gblConfigHost(), () => {
+            useSuite(root, function (this: ISuiteContext) {
+                server = this.server;
+            });
         });
 
         assert.isNull(server, "no provider is configured, so there is no server");
