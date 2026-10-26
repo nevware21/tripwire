@@ -1,0 +1,21 @@
+{
+    "compilerOptions": {
+        "sourceMap": true,
+        "noImplicitAny": true,
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "target": "es2018",
+        "forceConsistentCasingInFileNames": true,
+        "alwaysStrict": true,
+        "esModuleInterop": true,
+        // "@nevware21/tripwire/globals" opts this project in to the bare describe/it/assert
+        // global names -- importing @nevware21/tripwire alone declares no globals.
+        "types": [ "node", "@nevware21/tripwire/globals" ]
+    },
+    "include": [
+        "./*.ts"
+    ],
+    "exclude": [
+        "node_modules/"
+    ]
+}

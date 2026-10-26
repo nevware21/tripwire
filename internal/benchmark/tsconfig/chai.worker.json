@@ -1,0 +1,33 @@
+{
+    // Karma-only project for the `shim/chai` worker arm of the benchmark. See core.browser.json
+    // for why this is separate from the shim's own test project, and core.worker.json for why the
+    // node and browser test trees are excluded.
+    "compilerOptions": {
+        "sourceMap": true,
+        "inlineSources": true,
+        "noImplicitAny": true,
+        "skipLibCheck": true,
+        "module": "es6",
+        "moduleResolution": "node",
+        "target": "es2018",
+        "forceConsistentCasingInFileNames": true,
+        "importHelpers": false,
+        "noEmitHelpers": false,
+        "alwaysStrict": true,
+        "declaration": false,
+        "allowSyntheticDefaultImports": true,
+        "removeComments": true,
+        "esModuleInterop": true,
+        // See chai.browser.json.
+        "types": [ "node", "@nevware21/tripwire/globals" ]
+    },
+    "include": [
+        "../../../shim/chai/src/**/*.ts",
+        "../../../shim/chai/test/src/**/*.ts"
+    ],
+    "exclude": [
+        "../../../shim/chai/node_modules/",
+        "../../../shim/chai/test/src/node/**/*.ts",
+        "../../../shim/chai/test/src/browser/**/*.ts"
+    ]
+}

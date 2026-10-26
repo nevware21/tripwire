@@ -68,7 +68,7 @@ Error messages differ from Chai. Use regex instead of exact strings:
 - **Properties**: `property`, `deepProperty`, `nestedProperty`, `ownProperty` with value validation
 - **Collections**: `include`, `deepInclude`, `nestedInclude`, `ownInclude`, `deepOwnInclude`, `members`, `sameMembers`, `keys`
 - **Deep Keys**: `hasAnyDeepKeys`, `hasAllDeepKeys`, `containsAllDeepKeys`, `doesNotHaveAnyDeepKeys`, `doesNotHaveAllDeepKeys` for Maps/Sets with object keys
-- **Size**: `lengthOf`, `sizeOf`
+- **Size**: `lengthOf` (also accepts `size`-based collections such as `Map` and `Set`)
 - **Changes**: `changes`, `increases`, `decreases` with delta tracking
 - **Errors**: `throws`, `doesNotThrow`, `ifError`
 - **State**: `isExtensible`, `isSealed`, `isFrozen`, `isEmpty`

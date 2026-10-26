@@ -1,0 +1,25 @@
+{
+    // The benchmark harness's own unit tests, run through the tripwire CLI by `npm test`. The harness
+    // itself is plain node JavaScript, so the tests reach it with require() rather than imports.
+    "compilerOptions": {
+        "sourceMap": true,
+        "inlineSources": true,
+        "noImplicitAny": true,
+        "skipLibCheck": true,
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "target": "es2018",
+        "forceConsistentCasingInFileNames": true,
+        "alwaysStrict": true,
+        "esModuleInterop": true,
+        // @nevware21/tripwire declares no ambient globals, so the bare describe/it/assert names
+        // these tests use are opted into here.
+        "types": [ "node", "@nevware21/tripwire/globals" ]
+    },
+    "include": [
+        "./src/**/*.ts"
+    ],
+    "exclude": [
+        "node_modules/"
+    ]
+}

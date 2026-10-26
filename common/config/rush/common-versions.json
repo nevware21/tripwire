@@ -1,0 +1,46 @@
+/**
+ * This configuration file specifies NPM dependency version selections that affect all projects
+ * in a Rush repo.  For full documentation, please see https://rushjs.io
+ */
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/rush/v5/common-versions.schema.json",
+
+  /**
+   * A table that specifies a "preferred version" for a given NPM package.  This feature is typically
+   * used to hold back an indirect dependency to a specific older version, or to reduce duplication
+   * of indirect dependencies.
+   */
+  "preferredVersions": {
+    /**
+     * mocha reaches the repo only as a peer of `ts-mocha` and `karma-mocha`, both of which are
+     * declared by `internal/benchmark` alone.  It is pinned here rather than as a dependency of
+     * that project because Rush's npm linker cannot build mocha's nested dependency tree as a
+     * direct dependency (it fails with `Child already exists: string-width` on a clean install),
+     * and because this is what `preferredVersions` is for: holding an indirect dependency at a
+     * known version.
+     */
+    "mocha": "11.8.0"
+  },
+
+  /**
+   * The "rush check" command can be used to enforce that every project in the repo must specify
+   * the same SemVer range for a given dependency.  However, sometimes exceptions are needed.
+   *
+   * `internal/benchmark` is the exception here.  It is the only project that configures karma and
+   * ts-mocha, and karma 6's dependency tree does not tolerate the newer versions of these packages
+   * that the rest of the repo tracks -- so the benchmark harness pins its toolchain to exact
+   * versions and is deliberately left behind while everything else moves forward.  The pins live in
+   * `internal/benchmark/package.json`; the entries below are what let `rush check` accept them.
+   *
+   * Each entry must match the version range string *exactly* as it appears in the package.json, so
+   * changing a pin means changing the matching entry here as well.
+   */
+  "allowedAlternativeVersions": {
+    /**
+     * Pinned by `internal/benchmark` because karma-typescript 5.x fails to compile against the
+     * newer @types/node that the other projects are free to move to.  Everything else in the repo
+     * shares one range for this package; only the benchmark is allowed to differ.
+     */
+    "@types/node": [ "25.9.5" ]
+  }
+}

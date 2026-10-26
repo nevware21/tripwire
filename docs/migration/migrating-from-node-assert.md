@@ -136,9 +136,11 @@ Most Node.js assert methods are supported in Tripwire with the same or similar b
 | `assert.deepEqual(actual, expected)` | `assert.deepEqual(actual, expected)` | Identical |
 | `assert.notDeepEqual(actual, expected)` | `assert.notDeepEqual(actual, expected)` | Identical |
 | `assert.deepStrictEqual(actual, expected)` | `assert.deepStrictEqual(actual, expected)` | ✅ **Identical in v0.1.7+** (structural + strict type check) |
-| `assert.notDeepStrictEqual(actual, expected)` | `assert.notDeepStrictEqual(actual, expected)` | ✅ **Identical in v0.1.7+** |
+| `assert.notDeepStrictEqual(actual, expected)` | `assert.notDeepStrictEqual(actual, expected)` | ✅ **Identical in v0.2.0+** |
 | `assert.throws(fn, error?)` | `assert.throws(fn, error?)` | Similar (error messages may differ) |
 | `assert.doesNotThrow(fn)` | `assert.doesNotThrow(fn)` | Similar |
+| `assert.match(string, regexp)` | `assert.match(string, regexp)` | Identical |
+| `assert.doesNotMatch(string, regexp)` | `assert.notMatch(string, regexp)` | Renamed |
 | `assert.fail(message)` | `assert.fail(message)` | Similar |
 | `assert.ifError(value)` | `assert.ifError(value)` | Supported |
 
@@ -166,8 +168,7 @@ assert.isFinite(100);
 
 The following Node.js assert methods are not currently available in Tripwire:
 
-- `assert.match(string, regexp)` - Use `expect(string).to.match(regexp)` instead
-- `assert.doesNotMatch(string, regexp)` - Use `expect(string).to.not.match(regexp)` instead
+- `assert.doesNotMatch(string, regexp)` - Use `assert.notMatch(string, regexp)` or `expect(string).to.not.match(regexp)` instead (`assert.match` itself carries over unchanged)
 - `assert.rejects(asyncFn)` - Tripwire does not currently provide a direct equivalent for asserting Promise rejections; use `async`/`await` with `try`/`catch` and normal assertions on the caught error.
 - `assert.doesNotReject(asyncFn)` - Tripwire does not currently provide a direct equivalent; `await` the Promise and let the test fail if it rejects, or use `try`/`catch` and call `assert.fail` on rejection.
 
@@ -539,11 +540,19 @@ assert.throws(() => fn(), /error pattern/);
 
 **Solution:** Use Tripwire's `assert`/`expect` APIs or custom assertions:
 ```js
-// Use assert.match() for regex matching
+// Use assert.match() / assert.notMatch() for regex matching
 assert.match(string, /pattern/);
+assert.notMatch(string, /other/);
 
-// For async failures, use assert.rejects() with async/await
-await assert.rejects(async () => fn(), /error pattern/);
+// There is no assert.rejects(): await the promise and assert on the caught error
+let caught;
+try {
+    await fn();
+} catch (e) {
+    caught = e;
+}
+assert.isDefined(caught, "expected fn() to reject");
+assert.match(caught.message, /error pattern/);
 ```
 
 ---
