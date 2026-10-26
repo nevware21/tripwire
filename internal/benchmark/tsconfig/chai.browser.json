@@ -1,0 +1,32 @@
+{
+    // Karma-only project for the `shim/chai` browser arm of the benchmark. See core.browser.json
+    // for why this is separate from the shim's own test project.
+    "compilerOptions": {
+        "sourceMap": true,
+        "inlineSources": true,
+        "noImplicitAny": true,
+        "skipLibCheck": true,
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "target": "es2018",
+        "forceConsistentCasingInFileNames": true,
+        "importHelpers": false,
+        "noEmitHelpers": false,
+        "alwaysStrict": true,
+        "allowSyntheticDefaultImports": true,
+        "removeComments": true,
+        "esModuleInterop": true,
+        // @nevware21/tripwire declares no ambient globals, so the bare describe/it/assert names
+        // these tests use are opted into here. See docs/runner-troubleshooting.md. Both entries
+        // resolve from this package's own node_modules, which is why `benchmark` depends on
+        // @nevware21/tripwire and @types/node.
+        "types": [ "node", "@nevware21/tripwire/globals" ]
+    },
+    "include": [
+        "../../../shim/chai/src/**/*.ts",
+        "../../../shim/chai/test/src/**/*.ts"
+    ],
+    "exclude": [
+        "../../../shim/chai/node_modules/"
+    ]
+}

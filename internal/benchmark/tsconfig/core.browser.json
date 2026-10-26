@@ -1,0 +1,35 @@
+{
+    // Karma-only project for the `core` browser arm of the benchmark.
+    //
+    // This is not core's own test project (`core/test/tsconfig.test.json`) -- karma-typescript's
+    // bundler requires `module: commonjs`, and its coverage instrumentation needs the source and
+    // test trees in one program. Relative paths are resolved from *this* file, so everything
+    // reaches back into `../../../core`.
+    "compilerOptions": {
+        "sourceMap": true,
+        "inlineSources": true,
+        "noImplicitAny": true,
+        "skipLibCheck": true,
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "target": "es5",
+        "forceConsistentCasingInFileNames": true,
+        "importHelpers": false,
+        "noEmitHelpers": false,
+        "alwaysStrict": true,
+        "allowSyntheticDefaultImports": true,
+        "removeComments": true,
+        "esModuleInterop": true,
+        "baseUrl": ".",
+        "paths": {
+            "@nevware21/tripwire": [ "../../../core/src/index.ts" ]
+        }
+    },
+    "include": [
+        "../../../core/src/**/*.ts",
+        "../../../core/test/src/**/*.ts"
+    ],
+    "exclude": [
+        "../../../core/node_modules/"
+    ]
+}

@@ -6,14 +6,21 @@
 [![downloads](https://img.shields.io/npm/dt/%40nevware21/tripwire.svg)](https://www.npmjs.com/package/%40nevware21/tripwire)
 [![downloads](https://img.shields.io/npm/dm/%40nevware21/tripwire.svg)](https://www.npmjs.com/package/%40nevware21/tripwire)
 
-Modern assertion library for testing JavaScript and TypeScript packages across Node.js, Browser, and Web Worker environments.
+Assertion library **and** test runner for JavaScript and TypeScript: the same `describe`/`it`
+files run on Node.js, in a real headless browser, and inside a Web Worker, from one command.
 
 ## Why Tripwire?
 
-**Cross-Environment Testing**
-- Works seamlessly in Node.js, browsers, and Web Workers
-- Comprehensive support from ES5+ for broad compatibility
-- Tested across all three environments
+**One suite, three targets, nothing to assemble**
+- `npx tripwire` compiles your TypeScript, builds and serves the browser module graph, runs the
+  same files on `node`, `browser` and `worker`, and installs the `describe`/`it` globals --
+  no Karma, ts-node, webpack, adapters or plugins
+- Repeat runs skip compiling and type-checking; `--type-check` costs about nothing extra
+- 14 reporters, coverage, watch mode, one `.tripwirerc` for every setting
+
+**Cross-Environment Assertions**
+- Works in Node.js, browsers, and Web Workers; ES5 output for broad compatibility
+- Tested across all three environments on every commit
 
 **Dual API Design**
 - Use familiar `assert.*` functions for quick checks
@@ -52,14 +59,34 @@ assert.deepEqual({ a: 1 }, { a: 1 });
 
 // Expect style
 expect(1 + 1).to.equal(2);
-expect("hello").to.be.a.string;
+expect("hello").to.be.a.string();
 expect({ a: 1 }).to.deep.equal({ a: 1 });
 ```
+
+## Running Tests
+
+The package also ships the `tripwire` test runner. It compiles TypeScript itself and runs the same
+test files in Node.js, a browser, or a Web Worker:
+
+```bash
+npx tripwire "test/**/*.test.ts"                     # node (default)
+npx tripwire --target browser "test/**/*.test.ts"    # headless Chrome via puppeteer
+npx tripwire --target worker "test/**/*.test.ts"     # inside a Web Worker
+```
+
+`describe`, `it`, the hooks, `assert` and `expect` are available as globals during a run. To have
+TypeScript know about the bare names, add
+[@nevware21/tripwire-globals](https://www.npmjs.com/package/@nevware21/tripwire-globals), or import
+them from `@nevware21/tripwire` in each file.
+
+Every flag and config field is documented in the
+[Test Runner guide](https://nevware21.github.io/tripwire/test-runner); `npx tripwire --help` prints
+the same list.
 
 ## Key Features
 
 - **Type Checking** - `isObject`, `isArray`, `isString`, `isNumber`, `isBoolean`, `isFunction`, `isNull`, `isUndefined`, `isNaN`, `isFinite`, `typeOf`, `instanceOf`, `exists`
-- **Equality** - `equal`, `strictEqual`, `deepEqual`, `closeTo` (approximate equality)
+- **Equality** - `equal`, `strictEqual`, `deepEqual`, `deepStrictEqual` and their `not` forms, `closeTo` (approximate equality)
 - **Comparisons** - `above`, `below`, `within`, `atLeast`, `atMost`, `operator` (generic comparison)
 - **Properties** - `property`, `ownProperty`, `deepProperty`, `nestedProperty` with value validation
 - **Collections** - `include`, `keys`, `members` with deep equality and ordered comparison
@@ -69,6 +96,7 @@ expect({ a: 1 }).to.deep.equal({ a: 1 });
 - **Change Tracking** - Monitor value `changes`, `increases`, `decreases` with delta validation
 - **Error Testing** - `throw`, `throws`, `doesNotThrow`, `ifError` with type and message validation
 - **Object State** - `isExtensible`, `isSealed`, `isFrozen`, `isEmpty`
+- **Chaining** - every assertion returns the instance, so `expect(5).is.number().and.is.above(1)` reads as two checks on one value; `or(...)` passes when any of several clauses does
 
 ## Documentation
 
@@ -77,19 +105,28 @@ expect({ a: 1 }).to.deep.equal({ a: 1 });
 **API Reference**: [TypeDoc Documentation](https://nevware21.github.io/tripwire/typedoc/core/index.html)
 
 **Guides**:
+- [Why tripwire](https://nevware21.github.io/tripwire/why-tripwire) - what is automatic, what is fast, comparison with Mocha, Karma, Jest and Vitest, when not to use it
+- [Test Runner, CLI & Configuration](https://nevware21.github.io/tripwire/test-runner) - every flag and config field
+- [Performance](https://nevware21.github.io/tripwire/performance) - mechanisms and measured benchmark results
 - [Change/Increase/Decrease Assertions](https://nevware21.github.io/tripwire/change-assertions)
 - [Expression Adapter Guide](https://nevware21.github.io/tripwire/expression-adapter)
 
 **Migration Guides**:
 - [Migrating from Node.js Native Assert](https://nevware21.github.io/tripwire/migration/migrating-from-node-assert)
 - [Migrating from Chai](https://nevware21.github.io/tripwire/migration/migrating-from-chai)
+- [Migrating from Mocha](https://nevware21.github.io/tripwire/migration/migrating-from-mocha)
+- [Migrating from Karma](https://nevware21.github.io/tripwire/migration/migrating-from-karma)
+- [Migrating from Jest or Vitest](https://nevware21.github.io/tripwire/migration/migrating-from-jest)
+
+**For AI agents**: [AGENTS.md](https://github.com/nevware21/tripwire/blob/main/AGENTS.md) and
+[llms.txt](https://nevware21.github.io/tripwire/llms.txt)
 
 **Repository**: [github.com/nevware21/tripwire](https://github.com/nevware21/tripwire)
 
 ## Browser Support
 
 - Comprehensive support from ES5+ for broad browser compatibility, from IE9+
-- Tested in Node.js, Chrome, Firefox, Safari, Edge
+- Tested in Node.js and headless Chrome (browser and Web Worker)
 - Full Web Worker support
 
 ## Related Packages

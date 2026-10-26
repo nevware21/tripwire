@@ -1,0 +1,278 @@
+{
+  "schemaVersion": 1,
+  "recordedAt": "2026-10-18T19:39:47.115Z",
+  "git": {
+    "commit": "256efc4",
+    "dirty": true
+  },
+  "machine": {
+    "os": "Windows",
+    "arch": "x64",
+    "cpu": "AMD Ryzen 9 5900X 12-Core Processor",
+    "logicalProcessors": 24,
+    "memoryGB": 128
+  },
+  "versions": {
+    "node": "v20.19.5",
+    "tripwire": "0.1.8",
+    "puppeteer": "25.14.0",
+    "chrome": "155.0.8059.79",
+    "chromeSource": "puppeteer cache",
+    "typescript": "5.2.2",
+    "karma": "6.4.4",
+    "karma-typescript": "5.5.4",
+    "ts-mocha": "10.1.0",
+    "mocha": "11.8.0",
+    "nyc": "18.0.0"
+  },
+  "options": {
+    "runs": 3,
+    "warmup": true,
+    "coverage": true,
+    "typeCheck": true,
+    "suites": [
+      "core",
+      "chai"
+    ],
+    "targets": [
+      "node",
+      "browser",
+      "worker"
+    ],
+    "runners": [
+      "tripwire",
+      "mocha",
+      "karma"
+    ]
+  },
+  "results": [
+    {
+      "key": "core-node-tripwire",
+      "suite": "core",
+      "target": "node",
+      "runner": "tripwire",
+      "coverage": true,
+      "typeCheck": true,
+      "measured": 3,
+      "failures": 0,
+      "durationsMs": [
+        9769.5191,
+        9509.8503,
+        9405.7764
+      ],
+      "avgMs": 9561.715266666666,
+      "medianMs": 9509.8503,
+      "minMs": 9405.7764,
+      "maxMs": 9769.5191
+    },
+    {
+      "key": "core-node-mocha",
+      "suite": "core",
+      "target": "node",
+      "runner": "mocha",
+      "coverage": true,
+      "typeCheck": true,
+      "measured": 3,
+      "failures": 0,
+      "durationsMs": [
+        14249.9928,
+        13492.4224,
+        13458.4374
+      ],
+      "avgMs": 13733.617533333332,
+      "medianMs": 13492.4224,
+      "minMs": 13458.4374,
+      "maxMs": 14249.9928
+    },
+    {
+      "key": "core-browser-tripwire",
+      "suite": "core",
+      "target": "browser",
+      "runner": "tripwire",
+      "coverage": true,
+      "typeCheck": true,
+      "measured": 3,
+      "failures": 0,
+      "durationsMs": [
+        17499.8537,
+        17485.3971,
+        17306.2972
+      ],
+      "avgMs": 17430.516,
+      "medianMs": 17485.3971,
+      "minMs": 17306.2972,
+      "maxMs": 17499.8537
+    },
+    {
+      "key": "core-browser-karma",
+      "suite": "core",
+      "target": "browser",
+      "runner": "karma",
+      "coverage": true,
+      "typeCheck": true,
+      "measured": 3,
+      "failures": 0,
+      "durationsMs": [
+        21285.1134,
+        20723.7807,
+        18984.8407
+      ],
+      "avgMs": 20331.24493333333,
+      "medianMs": 20723.7807,
+      "minMs": 18984.8407,
+      "maxMs": 21285.1134
+    },
+    {
+      "key": "core-worker-tripwire",
+      "suite": "core",
+      "target": "worker",
+      "runner": "tripwire",
+      "coverage": true,
+      "typeCheck": true,
+      "measured": 3,
+      "failures": 0,
+      "durationsMs": [
+        14710.7132,
+        16108.3458,
+        15892.653
+      ],
+      "avgMs": 15570.570666666667,
+      "medianMs": 15892.653,
+      "minMs": 14710.7132,
+      "maxMs": 16108.3458
+    },
+    {
+      "key": "core-worker-karma",
+      "suite": "core",
+      "target": "worker",
+      "runner": "karma",
+      "coverage": true,
+      "typeCheck": true,
+      "measured": 3,
+      "failures": 0,
+      "durationsMs": [
+        20470.2096,
+        21324.9148,
+        20635.4273
+      ],
+      "avgMs": 20810.1839,
+      "medianMs": 20635.4273,
+      "minMs": 20470.2096,
+      "maxMs": 21324.9148
+    },
+    {
+      "key": "chai-node-tripwire",
+      "suite": "chai",
+      "target": "node",
+      "runner": "tripwire",
+      "coverage": true,
+      "typeCheck": true,
+      "measured": 3,
+      "failures": 0,
+      "durationsMs": [
+        1958.3741,
+        2005.4838,
+        1978.3848
+      ],
+      "avgMs": 1980.7475666666667,
+      "medianMs": 1978.3848,
+      "minMs": 1958.3741,
+      "maxMs": 2005.4838
+    },
+    {
+      "key": "chai-node-mocha",
+      "suite": "chai",
+      "target": "node",
+      "runner": "mocha",
+      "coverage": true,
+      "typeCheck": true,
+      "measured": 3,
+      "failures": 0,
+      "durationsMs": [
+        4030.7844,
+        4294.449,
+        4194.4703
+      ],
+      "avgMs": 4173.234566666666,
+      "medianMs": 4194.4703,
+      "minMs": 4030.7844,
+      "maxMs": 4294.449
+    },
+    {
+      "key": "chai-browser-tripwire",
+      "suite": "chai",
+      "target": "browser",
+      "runner": "tripwire",
+      "coverage": true,
+      "typeCheck": true,
+      "measured": 3,
+      "failures": 0,
+      "durationsMs": [
+        9160.0443,
+        9547.7666,
+        9746.0326
+      ],
+      "avgMs": 9484.614500000001,
+      "medianMs": 9547.7666,
+      "minMs": 9160.0443,
+      "maxMs": 9746.0326
+    },
+    {
+      "key": "chai-browser-karma",
+      "suite": "chai",
+      "target": "browser",
+      "runner": "karma",
+      "coverage": true,
+      "typeCheck": true,
+      "measured": 3,
+      "failures": 0,
+      "durationsMs": [
+        11234.8439,
+        11446.2778,
+        11943.8869
+      ],
+      "avgMs": 11541.669533333334,
+      "medianMs": 11446.2778,
+      "minMs": 11234.8439,
+      "maxMs": 11943.8869
+    },
+    {
+      "key": "chai-worker-tripwire",
+      "suite": "chai",
+      "target": "worker",
+      "runner": "tripwire",
+      "coverage": true,
+      "typeCheck": true,
+      "measured": 3,
+      "failures": 0,
+      "durationsMs": [
+        9660.3752,
+        10944.458,
+        10169.7521
+      ],
+      "avgMs": 10258.195099999999,
+      "medianMs": 10169.7521,
+      "minMs": 9660.3752,
+      "maxMs": 10944.458
+    },
+    {
+      "key": "chai-worker-karma",
+      "suite": "chai",
+      "target": "worker",
+      "runner": "karma",
+      "coverage": true,
+      "typeCheck": true,
+      "measured": 3,
+      "failures": 0,
+      "durationsMs": [
+        10958.0229,
+        11443.6998,
+        11425.142
+      ],
+      "avgMs": 11275.621566666667,
+      "medianMs": 11425.142,
+      "minMs": 10958.0229,
+      "maxMs": 11443.6998
+    }
+  ]
+}

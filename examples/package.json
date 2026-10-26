@@ -1,0 +1,19 @@
+{
+    "name": "@nevware21/tripwire-examples",
+    "description": "Standalone, compiled-checked usage examples for @nevware21/tripwire",
+    "version": "0.1.8",
+    "private": true,
+    "license": "MIT",
+    "scripts": {
+        "build": "tsc -p ./tsconfig.json --noEmit",
+        "rebuild": "npm run build",
+        "test": "npm run build && node ../core/bin/tripwire.js --type-check -p ./tsconfig.json ./cli-example.ts"
+    },
+    "dependencies": {
+        "@nevware21/tripwire": "0.1.8"
+    },
+    "devDependencies": {
+        "@types/node": "^25.9.5",
+        "typescript": "~5.2.2"
+    }
+}

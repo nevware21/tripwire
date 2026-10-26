@@ -1,0 +1,35 @@
+{
+    // Karma-only project for the `core` worker arm of the benchmark. See core.browser.json for
+    // why this is separate from core's own test project.
+    //
+    // The node and browser test trees are excluded because the worker arm never loads them; the
+    // karma `files` list already filters them out, and leaving them in the program only made
+    // karma compile files it then threw away. (The original config in `core/` excluded
+    // "./src/browsser/**" -- a typo that silently excluded nothing.)
+    "compilerOptions": {
+        "sourceMap": true,
+        "inlineSources": true,
+        "noImplicitAny": true,
+        "skipLibCheck": true,
+        "module": "es6",
+        "moduleResolution": "node",
+        "target": "es5",
+        "forceConsistentCasingInFileNames": true,
+        "importHelpers": false,
+        "noEmitHelpers": false,
+        "alwaysStrict": true,
+        "declaration": false,
+        "allowSyntheticDefaultImports": true,
+        "removeComments": true,
+        "esModuleInterop": true
+    },
+    "include": [
+        "../../../core/src/**/*.ts",
+        "../../../core/test/src/**/*.ts"
+    ],
+    "exclude": [
+        "../../../core/node_modules/",
+        "../../../core/test/src/node/**/*.ts",
+        "../../../core/test/src/browser/**/*.ts"
+    ]
+}

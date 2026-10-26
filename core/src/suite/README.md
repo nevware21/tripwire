@@ -291,9 +291,9 @@ A hook that throws or times out is recorded on the run summary as an `IHookFailu
   cannot run, so its un-run tests are reported as **skipped**, its `after` hooks still run,
   sibling suites carry on, and `run()` still **resolves** rather than rejects
 
-See [Test Execution Flow](https://github.com/nevware21/tripwire/blob/main/docs/test-execution-flow.md#hook-failure-handling) for the
+See [Test Execution Flow](https://nevware21.github.io/tripwire/test-execution-flow.html#hook-failure-handling) for the
 full behavior, and the CLI's `--fail-on-hook` in
-[Test Runner, CLI & Configuration](https://github.com/nevware21/tripwire/blob/main/docs/test-runner.md#hook-failures) for turning hook
+[Test Runner, CLI & Configuration](https://nevware21.github.io/tripwire/test-runner.html#hook-failures) for turning hook
 failures into a failed run.
 
 ### Test Runner

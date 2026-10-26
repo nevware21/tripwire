@@ -1,0 +1,42 @@
+# @nevware21/tripwire
+
+> A TypeScript/JavaScript assertion library and test runner. The same `describe`/`it` test files run on node, in a real headless Chrome browser, and inside a web worker, from one CLI (`npx tripwire "test/**/*.test.ts"`), with TypeScript compiled on the fly, optional type-checking, a compile cache, 14 reporters, coverage and watch mode. No Karma, ts-node, webpack or plugins. Assertions are `assert.*` and Chai-style `expect(x).to...` chains; a Chai compatibility shim is published separately.
+
+Conventions worth knowing before reading the rest: `expect(x).to.be.true()` terminates with parentheses (Jest/Chai property form does not apply); tripwire has no mocking, spies or snapshots; runs are single-process; the browser launcher drives Chrome, other browsers run through `--browser-launch manual`. The Mocha, Karma and Jest migration guides each end with a machine-readable ```json block that is checked against the CLI parser by tests -- read that block rather than inferring mappings from prose.
+
+## Start here
+
+- [Why tripwire](https://nevware21.github.io/tripwire/why-tripwire.html): what is automatic across node/browser/worker, what is fast, comparison with Mocha, Karma, Jest and Vitest, and when not to use it
+- [AGENTS.md](https://github.com/nevware21/tripwire/blob/main/AGENTS.md): entry points for agents -- migrating a project, using the runner, changing the repository
+- [Documentation index](https://nevware21.github.io/tripwire/): every guide, feature table and quick start
+
+## Using the runner
+
+- [Test Runner, CLI & Configuration](https://nevware21.github.io/tripwire/test-runner.html): every CLI flag and every `.tripwirerc` field in two tables, targets, the interactive browser page (scope box, run again, Failed only, Auto-reload, actions menu, URL-hash scope), file discovery, coverage, compile caching, hook failures
+- [Reporters](https://nevware21.github.io/tripwire/reporters.html): the 14 built-in reporters with sample output, selecting and combining them, custom reporter modules
+- [Test Execution Flow](https://nevware21.github.io/tripwire/test-execution-flow.html): execution order, timeouts, hook failure handling, runner metrics
+- [Runner Troubleshooting](https://nevware21.github.io/tripwire/runner-troubleshooting.html): known issues, opting in to the global `describe`/`it` names, the `@types/mocha` / `@types/jest` global type clash
+- [Performance](https://nevware21.github.io/tripwire/performance.html): what the runner does to be fast, measured benchmark results, how to reproduce them
+- [Performance history](https://nevware21.github.io/tripwire/performance/history.html): every recorded benchmark run charted over time; the raw records are JSON under `performance/results/` (index at `performance/results/index.json`), each naming the commit, options, tool versions and machine class
+
+## Migrating from another framework
+
+- [From Mocha / ts-mocha](https://nevware21.github.io/tripwire/migration/migrating-from-mocha.html): flag, config and API mapping; §10 is the machine-readable JSON block
+- [From Karma](https://nevware21.github.io/tripwire/migration/migrating-from-karma.html): `karma.conf.js` field mapping, browser and worker targets, coverage, launch modes; §9 is the JSON block
+- [From Jest or Vitest](https://nevware21.github.io/tripwire/migration/migrating-from-jest.html): matcher mapping, config mapping, what has no equivalent (mocking, snapshots); ends with a JSON block
+- [From Chai](https://nevware21.github.io/tripwire/migration/migrating-from-chai.html): assertion mapping and the `@nevware21/tripwire-chai` shim
+- [From node's assert](https://nevware21.github.io/tripwire/migration/migrating-from-node-assert.html): assertion mapping, including `deepStrictEqual` semantics
+
+## Writing tests and assertions
+
+- [Test Suite API](https://github.com/nevware21/tripwire/blob/main/core/src/suite/README.md): `describe`/`it`/hooks, `.only`/`.skip`, Mocha, Jasmine and TDD styles, filters, deterministic test IDs
+- [Core API reference (TypeDoc)](https://nevware21.github.io/tripwire/typedoc/core/index.html): every exported function, interface and chain word, with `@since` tags and examples
+- [Change/Increase/Decrease assertions](https://nevware21.github.io/tripwire/change-assertions.html)
+- [Expression adapter](https://nevware21.github.io/tripwire/expression-adapter.html): defining custom assertions from expressions, argument forms, chain structure
+- [Global names package](https://github.com/nevware21/tripwire/blob/main/globals/README.md): `@nevware21/tripwire-globals`, the opt-in ambient `describe`/`it`/`assert`/`expect` declarations
+
+## Optional
+
+- [Chai shim](https://github.com/nevware21/tripwire/blob/main/shim/chai/README.md): `@nevware21/tripwire-chai`, a drop-in for Chai's `assert` API
+- [Changelog](https://github.com/nevware21/tripwire/blob/main/CHANGELIST.md)
+- [Contributor guide](https://github.com/nevware21/tripwire/blob/main/.github/copilot-instructions.md): repository layout, build and test commands, release process
