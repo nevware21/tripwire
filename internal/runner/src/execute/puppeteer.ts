@@ -175,6 +175,15 @@ export async function _runPuppeteerOnce(session: IBrowserRunnerSession, target: 
     // Armed *before* navigating -- the page's own "ready" -> run -> report round trip can only
     // ever report back to whichever completion is currently live.
     const completion = session.nextCompletion();
+
+    // Nothing awaits this until the browser is up and `page.goto` has returned. A page that fails
+    // fast can report its error inside that window, and the rejection was then an
+    // unhandledRejection, killing the process with a raw stack. Marking it handled changes nothing
+    // about the error: the await below still sees the same rejection and reports it the normal way.
+    completion.catch(() => {
+        // Reported by the await below.
+    });
+
     const browser = await (browserPromise || _launchPuppeteerBrowser(process.cwd()));
 
     try {

@@ -186,6 +186,24 @@ describe("compile cacheStore", () => {
             assert.isNull(readEmitCache(null, "key"));
         });
 
+        it("should give up quietly when the cache directory cannot be created", () => {
+            const dir = _tempDir("blocked");
+            try {
+                // A file where the cache directory would go
+                const blocked = path.join(dir, "cache");
+                fs.writeFileSync(blocked, "not a directory", "utf8");
+                const key = emitCacheKey("/p/a.ts", "let a = 1;", "fp");
+
+                writeEmitCache(blocked, key, "var a = 1;");
+                writeProgramManifest(blocked, "/p/tsconfig.json", createProgramManifest("fp", [], [], [], false));
+
+                assert.isNull(readEmitCache(blocked, key));
+                assert.equal(fs.readFileSync(blocked, "utf8"), "not a directory");
+            } finally {
+                _rm(dir);
+            }
+        });
+
         it("should not leave temporary files behind", () => {
             const dir = _tempDir("notemp");
             try {
@@ -434,6 +452,15 @@ describe("compile cacheStore", () => {
             const locks = lockSignatures(dir).concat([ [ "package-lock.json", "123:456" ] ]);
 
             assert.isFalse(checkProgramManifest(manifest, "fp", roots, locks).current);
+        });
+
+        it("should name the lock file whose install changed", () => {
+            const recorded = createProgramManifest("fp", roots, roots, [ [ "package-lock.json", "1:1" ] ], true);
+
+            const check = checkProgramManifest(recorded, "fp", roots, [ [ "package-lock.json", "2:2" ] ]);
+
+            assert.isFalse(check.current);
+            assert.equal(check.reason, "an install changed how imports resolve (package-lock.json)");
         });
 
         it("should reject a null or unrecognised manifest", () => {

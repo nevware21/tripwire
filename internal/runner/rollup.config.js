@@ -401,4 +401,18 @@ const mainBundle = {
     ]
 };
 
-module.exports = [clientBundle, workerBundle, mainBundle];
+// A circular import between this repository's own modules fails the build: which module's exports
+// exist when another reads them then depends on which file happens to load first. A cycle entirely
+// inside a third-party package is left as a warning, since it is not ours to fix.
+function failOnCircularImport(warning, warn) {
+    if (warning.code === "CIRCULAR_DEPENDENCY") {
+        const ids = warning.ids || [];
+        if (!ids.some((id) => /[\\/]node_modules[\\/]/.test(id))) {
+            throw new Error("Circular import: " + (ids.length ? ids.join(" -> ") : warning.message));
+        }
+    }
+
+    warn(warning);
+}
+
+module.exports = [clientBundle, workerBundle, mainBundle].map((config) => Object.assign(config, { onwarn: failOnCircularImport }));

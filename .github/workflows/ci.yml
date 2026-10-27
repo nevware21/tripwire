@@ -40,9 +40,23 @@ jobs:
       run: npm run build --verbose
       timeout-minutes: 15
 
+    # Runs every project's `test` script. The benchmark harness's `test` is deliberately its
+    # validate.js check and its unit tests, a few seconds, and NOT the benchmark itself, so this
+    # step stays fast on all four Node versions -- the karma arms run once, in the step below.
+    # `npm run test:full` at the repo root is the two combined, for anyone who wants everything in
+    # one command.
     - name: Unit tests
       run: node common/scripts/install-run-rush.js test --verbose
       timeout-minutes: 20
+
+    # The benchmark harness is the only project that configures karma and ts-mocha, and karma 6's
+    # dependency tree does not tolerate every Node version in the matrix above, so it is measured on
+    # one version only. Its toolchain is pinned to exact versions -- see internal/benchmark's README,
+    # "Pinned toolchain". Changing the version here means changing that README too.
+    - name: Benchmark
+      if: matrix.node == 22
+      run: npm run test:bench
+      timeout-minutes: 30
 
     - name: Docs link check
       run: npm run readme-link-check
@@ -65,3 +79,12 @@ jobs:
         files: ./shim/chai/coverage/coverage-final.json
         token: ${{ secrets.CODECOV_TOKEN }}
         flags: chai_shim
+
+    - name: Upload Runner Coverage
+      if: matrix.node == 22
+      uses: codecov/codecov-action@v5
+      with:
+        slug: ${{ github.repository }}
+        files: ./internal/runner/coverage/coverage-final.json
+        token: ${{ secrets.CODECOV_TOKEN }}
+        flags: runner

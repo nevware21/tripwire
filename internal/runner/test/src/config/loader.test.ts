@@ -9,6 +9,7 @@
 import * as fs from "fs";
 import * as os from "os";
 import * as path from "path";
+import { createRequire } from "module";
 import { assert, afterAll as selfAfterAll, beforeAll as selfBeforeAll } from "@nevware21/tripwire";
 import { DefaultConfigLoader, loadConfig, mergeConfigs } from "../../../src/config/loader";
 import { ILoadedConfig } from "../../../src/interfaces/ILoadedConfig";
@@ -170,6 +171,75 @@ describe("config loader", () => {
             } finally {
                 fs.rmSync(dir, { recursive: true, force: true });
             }
+        });
+
+        it("should load a config written as JavaScript, in a .js file or in an rc file", () => {
+            const dir = fs.mkdtempSync(path.join(os.tmpdir(), "tripwire-cfg-js-"));
+            try {
+                fs.mkdirSync(path.join(dir, "inner"));
+                fs.writeFileSync(path.join(dir, "tripwire.config.js"), "module.exports = { timeout: 7 };\n", "utf8");
+                fs.writeFileSync(path.join(dir, "inner", ".tripwirerc"), "module.exports = { default: { slow: 9 } };\n", "utf8");
+
+                const found = new DefaultConfigLoader().load(path.join(dir, "inner")).filter((entry) => entry.filePath.indexOf(dir) === 0);
+
+                assert.deepEqual(found.map((entry) => entry.config), [ { timeout: 7 }, { slow: 9 } ]);
+            } finally {
+                fs.rmSync(dir, { recursive: true, force: true });
+            }
+        });
+
+        it("should throw a message naming the file when a JavaScript config fails to load", () => {
+            const dir = fs.mkdtempSync(path.join(os.tmpdir(), "tripwire-cfg-jsbad-"));
+            try {
+                const filePath = path.join(dir, "tripwire.config.js");
+                fs.writeFileSync(filePath, "throw new Error(\"bad config\");\n", "utf8");
+
+                assert.throws(() => {
+                    new DefaultConfigLoader().load(dir);
+                }, "Failed to load tripwire config file '" + filePath + "': bad config");
+            } finally {
+                fs.rmSync(dir, { recursive: true, force: true });
+            }
+        });
+
+        describe("home directory", () => {
+            const realOs = createRequire(__filename)("os");
+            const orgHomedir = realOs.homedir;
+            let home = "";
+
+            selfBeforeAll(() => {
+                home = fs.mkdtempSync(path.join(os.tmpdir(), "tripwire-cfg-home-"));
+            });
+
+            selfAfterAll(() => {
+                realOs.homedir = orgHomedir;
+                fs.rmSync(home, { recursive: true, force: true });
+            });
+
+            it("should read the first config in the user's home, ahead of the project's", () => {
+                fs.mkdirSync(path.join(home, ".config", "tripwire"), { recursive: true });
+                fs.writeFileSync(path.join(home, ".config", "tripwire", "tripwire.config.json"), JSON.stringify({ timeout: 11 }), "utf8");
+                realOs.homedir = () => home;
+                try {
+                    const found = new DefaultConfigLoader().load(root);
+
+                    assert.equal(found[0].filePath, path.join(home, ".config", "tripwire", "tripwire.config.json"));
+                    assert.deepEqual(found[0].config, { timeout: 11 });
+                } finally {
+                    realOs.homedir = orgHomedir;
+                }
+            });
+
+            it("should look in no home when there is none", () => {
+                realOs.homedir = () => "";
+                try {
+                    const found = new DefaultConfigLoader().load(root);
+
+                    assert.isTrue(found.every((entry) => entry.filePath.indexOf(home) !== 0));
+                } finally {
+                    realOs.homedir = orgHomedir;
+                }
+            });
         });
 
         it("should prefer the higher-priority file name when several sit in one directory", () => {

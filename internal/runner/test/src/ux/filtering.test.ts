@@ -9,6 +9,7 @@
 import { assert } from "@nevware21/tripwire";
 import { clearAllState, suiteState, testState } from "../../../src/ux/browser/ui/state";
 import { getSuiteKeyChain, makeSuiteKey, makeTestKey } from "../../../src/shared/suiteNames";
+import { uxDom } from "../support/uxDom";
 
 /**
  * The interactive page's "Failed only" view filter.
@@ -23,94 +24,7 @@ import { getSuiteKeyChain, makeSuiteKey, makeTestKey } from "../../../src/shared
  * view no longer changes the result").
  */
 
-/**
- * `./dom` looks every element it exports up from `document` once, as it loads, and node has no
- * `document`. This hands it the smallest stand-in that lets it load -- one plain object per id,
- * created on demand -- and takes `document` away again straight afterwards so nothing else in the
- * process can mistake this for a browser. The objects live in a registry on `globalThis` because
- * `./dom` loads once per process, for whichever test file gets there first: every file that needs
- * them has to read the same objects back, whoever created them.
- */
-function _uxDom(): { [id: string]: any } {
-    const g = globalThis as any;
-    const registry = g.__tripwireUxDomStub || (g.__tripwireUxDomStub = {});
-    const hadDocument = !!g.document;
-
-    if (!hadDocument) {
-        g.document = {
-            body: null,
-            getElementById: (id: string) => registry[id] || (registry[id] = _stubElement(id))
-        };
-    }
-
-    try {
-        // eslint-disable-next-line @typescript-eslint/no-var-requires
-        require("../../../src/ux/browser/ui/dom");
-    } finally {
-        if (!hadDocument) {
-            delete g.document;
-        }
-    }
-
-    return registry;
-}
-
-/** A plain object with the handful of element members the ui modules under test touch. */
-function _stubElement(id: string): any {
-    const attrs: { [name: string]: string } = {};
-    const classes: string[] = [];
-    let text = "";
-    const el: any = {
-        id: id,
-        value: "",
-        checked: false,
-        disabled: false,
-        style: {},
-        attrs: attrs,
-        kids: [] as any[],
-        setAttribute: (name: string, value: any) => {
-            attrs[name] = String(value);
-        },
-        getAttribute: (name: string) => (name in attrs ? attrs[name] : null),
-        removeAttribute: (name: string) => {
-            delete attrs[name];
-        },
-        classList: {
-            add: (cls: string) => {
-                if (classes.indexOf(cls) === -1) {
-                    classes.push(cls);
-                }
-            },
-            remove: (cls: string) => {
-                const idx = classes.indexOf(cls);
-                if (idx !== -1) {
-                    classes.splice(idx, 1);
-                }
-            },
-            contains: (cls: string) => classes.indexOf(cls) !== -1
-        },
-        appendChild: (child: any) => {
-            el.kids.push.apply(el.kids, child && child.fragment ? child.kids : [child]);
-        },
-        removeChild: (child: any) => {
-            el.kids.splice(el.kids.indexOf(child), 1);
-        }
-    };
-
-    Object.defineProperty(el, "textContent", {
-        get: () => text,
-        set: (value: string) => {
-            text = value;
-            el.kids.length = 0;
-        }
-    });
-    Object.defineProperty(el, "childElementCount", { get: () => el.kids.length });
-    Object.defineProperty(el, "firstElementChild", { get: () => el.kids[0] || null });
-
-    return el;
-}
-
-const dom = _uxDom();
+const dom = uxDom();
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const filtering: typeof import("../../../src/ux/browser/ui/filtering") = require("../../../src/ux/browser/ui/filtering");
 

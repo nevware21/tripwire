@@ -6,7 +6,7 @@
  * Licensed under the MIT license.
  */
 
-import path from "path/win32";
+import * as path from "path";
 import { _loadUxProvider } from "../client/loadUxProvider";
 import { IServerContext } from "../interfaces/IServerContext";
 import { logApiHandler } from "../server/handlers/api/logMsg";
