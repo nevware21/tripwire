@@ -53,6 +53,30 @@ export interface ITargetSessionCacheOptions {
 }
 
 /**
+ * The spelling of `filePath` to watch it by: absolute, with the platform's separators, every 8.3
+ * short name expanded and any link resolved -- the file system's own name for it. On Windows the
+ * libuv in Node 24 aborts the whole process (an assertion in src/win/fs-event.c) when a change is
+ * reported under a watched directory spelled any other way, as with forward slashes (the browser
+ * and worker module graph's ids) or a short name (a temp folder such as C:\Users\BUILDA~1\...).
+ * A file that no longer exists keeps its own name, in its resolved directory if that still exists.
+ */
+export function _watchPath(filePath: string): string {
+    const resolved = path.resolve(filePath);
+
+    try {
+        // eslint-disable-next-line security/detect-non-literal-fs-filename
+        return fs.realpathSync.native(resolved);
+    } catch (e) {
+        try {
+            // eslint-disable-next-line security/detect-non-literal-fs-filename
+            return path.join(fs.realpathSync.native(path.dirname(resolved)), path.basename(resolved));
+        } catch (e2) {
+            return resolved;
+        }
+    }
+}
+
+/**
  * Watches `filePaths` for changes and calls `onChange` (debounced ~200ms, so a single save
  * that fires multiple fs events only triggers one call) until `close()` is called. Watches each
  * file's *containing directory* (non-recursively) rather than the file handle directly, and
@@ -97,8 +121,9 @@ export function watchFiles(filePaths: string[], onChange: () => void): { close()
 
     const filesByDir: Record<string, string[]> = {};
     filePaths.forEach((filePath) => {
-        const dir = path.dirname(filePath);
-        (filesByDir[dir] = filesByDir[dir] || []).push(path.basename(filePath));
+        const watched = _watchPath(filePath);
+        const dir = path.dirname(watched);
+        (filesByDir[dir] = filesByDir[dir] || []).push(path.basename(watched));
     });
 
     try {

@@ -47,6 +47,25 @@ describe("CLI argument parsing", () => {
         it("should treat a following flag as a missing value rather than consuming it", () => {
             assert.includes(parse(["spec.ts", "--timeout", "--bail"]).error, "Missing value for --timeout");
         });
+
+        it("should report the missing value of every option that takes one, by its long name", () => {
+            const options: { [flag: string]: string } = {
+                "--slow": "slow", "-s": "slow", "--retries": "retries", "--grep": "grep", "-g": "grep", "--fgrep": "fgrep",
+                "-f": "fgrep", "--ignore": "ignore", "--coverage-instrumenter": "coverage-instrumenter",
+                "--erased-coverage-mode": "erased-coverage-mode", "--coverage-reporter": "coverage-reporter",
+                "--coverage-src": "coverage-src", "--reporter": "reporter", "--server-root": "server-root", "--target": "target",
+                "--env": "env", "--browser-launch": "browser-launch", "--browser-style": "browser-style", "--ux-provider": "ux-provider",
+                "--project": "project", "-p": "project", "--tsProject": "project", "--ts-project": "project",
+                "--type-check-scope": "type-check-scope", "--spec": "spec", "--file": "file", "--require": "require", "-r": "require"
+            };
+
+            Object.keys(options).forEach((flag) => {
+                assert.includes(parse(["spec.ts", flag]).error, "Missing value for --" + options[flag], flag);
+                if (flag.indexOf("--") === 0) {
+                    assert.includes(parse(["spec.ts", flag + "="]).error, "Missing value for --" + options[flag], flag + "= with nothing after it");
+                }
+            });
+        });
     });
 
     describe("file patterns", () => {
@@ -392,6 +411,11 @@ describe("CLI argument parsing", () => {
             assert.equal(parsed.browserStyle, "classic");
         });
 
+        it("should take the style from --browser-style, case-insensitively", () => {
+            assert.equal(parse(["spec.ts", "--browser-style", "SLATE"]).browserStyle, "slate");
+            assert.equal(parse(["spec.ts", "--browser-style=classic"]).browserStyle, "classic");
+        });
+
         it("should accept each launch mode", () => {
             assert.equal(parse(["spec.ts", "--browser-launch", "open"]).browserLaunch, "open");
             assert.equal(parse(["spec.ts", "--browser-launch=manual"]).browserLaunch, "manual");
@@ -499,6 +523,18 @@ describe("CLI argument parsing", () => {
         it("should take bindAddress from a config file and let the CLI override it", () => {
             assert.equal(parse(["spec.ts"], { bindAddress: "0.0.0.0" } as ITripwireConfig).bindAddress, "0.0.0.0");
             assert.equal(parse(["spec.ts", "--bind-address=127.0.0.1"], { bindAddress: "0.0.0.0" } as ITripwireConfig).bindAddress, "127.0.0.1");
+        });
+
+        it("should carry the coverage instrumenter, the UX provider and the source map choice through", () => {
+            const parsed = parse(["spec.ts", "--coverage-instrumenter", "none", "--ux-provider=./ux.js", "--source-maps", "--no-source-maps"]);
+
+            assert.equal(parsed.coverageInstrumenter, "none");
+            assert.equal(parsed.uxProvider, "./ux.js");
+            assert.isFalse(parsed.sourceMaps, "the last of --source-maps and --no-source-maps wins");
+        });
+
+        it("should reject a --grep pattern that is not a valid regular expression", () => {
+            assert.includes(parse(["spec.ts", "--grep", "(unclosed"]).error, "Invalid value for --grep: (unclosed");
         });
 
         it("should report a missing --bind-address value", () => {

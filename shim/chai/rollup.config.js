@@ -176,6 +176,20 @@ const rollupConfigMainEntry = (srcPath, destPath, path, format = "umd") => {
     return taskRollupConfig;
 };
 
+// A circular import between this repository's own modules fails the build: which module's exports
+// exist when another reads them then depends on which file happens to load first. A cycle entirely
+// inside a third-party package is left as a warning, since it is not ours to fix.
+function failOnCircularImport(warning, warn) {
+    if (warning.code === "CIRCULAR_DEPENDENCY") {
+        const ids = warning.ids || [];
+        if (!ids.some((id) => /[\\/]node_modules[\\/]/.test(id))) {
+            throw new Error("Circular import: " + (ids.length ? ids.join(" -> ") : warning.message));
+        }
+    }
+
+    warn(warning);
+}
+
 export default [
     rollupConfigMainEntry("build/es5/mod", "dist/es5", "main", "umd"),
     rollupConfigMainEntry("build/es6/mod", "dist/es6", "main", "umd"),
@@ -196,4 +210,4 @@ export default [
     rollupConfigFactory("build/es6/mod", "bundle/es6", true, "iife", "iife"),
     rollupConfigFactory("build/es6/mod", "bundle/es6", false, "umd", "umd"),
     rollupConfigFactory("build/es6/mod", "bundle/es6", true, "umd", "umd")
-];
+].map((config) => Object.assign(config, { onwarn: failOnCircularImport }));

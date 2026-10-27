@@ -70,29 +70,56 @@ function copyRecursive(src, dest) {
     }
 }
 
-function ensureLocalLinks() {
-    const coreDir = path.resolve(__dirname, "..");
-    const nevware21Dir = path.join(coreDir, "node_modules", "@nevware21");
-    const linkType = process.platform === "win32" ? "junction" : "dir";
-
-    if (!fs.existsSync(nevware21Dir)) {
-        fs.mkdirSync(nevware21Dir, { recursive: true });
+// Removes the link an older build put at `linkPath` -- only the link, never the folder it points to.
+function _removeLink(linkPath) {
+    let stat = null;
+    try {
+        stat = fs.lstatSync(linkPath);
+    } catch (e) {
+        return;
     }
 
-    // Self-link so the copied runner binary can dynamically resolve "@nevware21/tripwire"
-    // (the package under test) when run against core's own dogfood test suite from within
-    // core/ -- the default UX/compile providers are bundled directly into the binary now
-    // (internal/runner/src/ux, internal/runner/src/compile), so no other local links are needed here.
-    const localLinks = {
-        "tripwire": coreDir
-    };
+    if (stat.isSymbolicLink()) {
+        // A Windows junction is reported as a link too, and unlink removes just the junction
+        fs.unlinkSync(linkPath);
+        console.log("\x1b[36mRemoved the old self-link: core/node_modules/@nevware21/tripwire\x1b[0m");
+    }
+}
 
-    for (const [name, target] of Object.entries(localLinks)) {
-        const linkPath = path.join(nevware21Dir, name);
-        if (!fs.existsSync(linkPath)) {
-            fs.symlinkSync(target, linkPath, linkType);
-            console.log("\x1b[36mCreated local link: core/node_modules/@nevware21/" + name + "\x1b[0m");
-        }
+function ensureSelfPackage() {
+    const coreDir = path.resolve(__dirname, "..");
+    const packageDir = path.join(coreDir, "node_modules", "@nevware21", "tripwire");
+
+    // Lets the copied runner binary, and core's own test files, resolve "@nevware21/tripwire" (the
+    // package under test) when core's dogfood test suite runs from within core/ -- the default
+    // UX/compile providers are bundled directly into the binary now (internal/runner/src/ux,
+    // internal/runner/src/compile), so nothing else needs resolving here.
+    //
+    // It is a folder holding just a package.json whose entry points lead back to core's build, and
+    // not a link to core itself: core contains this very folder, so such a link was a loop. Anything
+    // walking ignored folders through it -- `git clean -xdf` (the clean build), `git status --ignored`
+    // -- went round core/node_modules/@nevware21/tripwire/node_modules/... until the paths grew too
+    // long for the file system. Node resolves `main` to the real file under core/dist, so the module
+    // loaded is the same one either way.
+    _removeLink(packageDir);
+    fs.mkdirSync(packageDir, { recursive: true });
+
+    const corePackage = JSON.parse(fs.readFileSync(path.join(coreDir, "package.json"), "utf8"));
+    const redirect = {
+        name: corePackage.name,
+        version: corePackage.version,
+        private: true,
+        description: "Points back to this checkout's core build. Written by core/scripts/copyRunnerBin.js.",
+        main: "../../../" + corePackage.main,
+        module: "../../../" + corePackage.module,
+        types: "../../../" + corePackage.types
+    };
+    const text = JSON.stringify(redirect, null, 4) + "\n";
+    const target = path.join(packageDir, "package.json");
+
+    if (!fs.existsSync(target) || fs.readFileSync(target, "utf8") !== text) {
+        fs.writeFileSync(target, text, "utf8");
+        console.log("\x1b[36mWrote local package: core/node_modules/@nevware21/tripwire\x1b[0m");
     }
 }
 
@@ -105,7 +132,7 @@ function main() {
 
     console.log("\x1b[36mCopying runner bin artifacts...\x1b[0m");
     copyRecursive(srcDir, dstDir);
-    ensureLocalLinks();
+    ensureSelfPackage();
 
     console.log("\x1b[32mDone copying runner bin artifacts to core/bin\x1b[0m");
 }

@@ -157,7 +157,7 @@ export function getProjectFileNames(projectPath: string, cwd: string): string[] 
     }
 
     const ts = loadTypescript(cwd);
-    const loadedConfig = ts.readConfigFile(fullProjectPath, ts.sys.readFile);
+    const loadedConfig = _readTsConfig(ts, fullProjectPath);
     if (loadedConfig.error) {
         return null;
     }
@@ -198,6 +198,15 @@ function _findNearestTsConfig(filePath: string): string | null {
 function _normCasePath(filePath: string, caseSensitive: boolean): string {
     const normalized = filePath.replace(/\\/g, "/");
     return caseSensitive ? normalized : normalized.toLowerCase();
+}
+
+/**
+ * Reads a tsconfig, passing its path with forward slashes the way TypeScript keeps its own file
+ * names. Given a Windows path with backslashes, a syntax error in the config fails TypeScript's
+ * internal path assertion ("Debug Failure") rather than coming back as the config's `error`.
+ */
+function _readTsConfig(ts: any, configPath: string): any {
+    return ts.readConfigFile(_normCasePath(configPath, true), ts.sys.readFile);
 }
 
 /**
@@ -320,7 +329,7 @@ function _getOrCreateTsProgramEntry(ts: any, configPath: string, includeSourceMa
         return _tsProgCache[cacheKey];
     }
 
-    const loadedConfig = ts.readConfigFile(configPath, ts.sys.readFile);
+    const loadedConfig = _readTsConfig(ts, configPath);
     if (loadedConfig.error) {
         return null;
     }
@@ -773,7 +782,7 @@ export function registerTypeScriptHook(projectPath: string, cwd: string, checkDi
 
     // eslint-disable-next-line security/detect-non-literal-fs-filename
     if (fs.existsSync(fullProjectPath)) {
-        const loadedConfig = ts.readConfigFile(fullProjectPath, ts.sys.readFile);
+        const loadedConfig = _readTsConfig(ts, fullProjectPath);
         if (!loadedConfig.error) {
             const parsed = ts.parseJsonConfigFileContent(loadedConfig.config, ts.sys, path.dirname(fullProjectPath));
             if (!parsed.errors || !parsed.errors.length) {

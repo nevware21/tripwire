@@ -7,14 +7,20 @@
  */
 
 import { assert } from "../../../src/assert/assertClass";
-import { assertStatusResponse } from "../support/statusEndpoint";
+import { ITestContext } from "../../../src/interfaces/suite/ITestContext";
+import { assertStatusResponse, isServedByTripwire } from "../support/statusEndpoint";
 
 describe("/api/status server endpoint", () => {
-    // it("returns running status from the browser server", async () => {
-    //     const response = await fetch("/api/status");
-    //     const body = await response.json();
+    it("returns running status from the browser server", async function (this: ITestContext) {
+        if (!isServedByTripwire()) {
+            // Another runner's page, with nothing serving /api/status (see isServedByTripwire)
+            this.skip();
+        }
 
-    //     assert.equal(typeof response.status, "number", "Validate that fetch returned a numeric status code");
-    //     assertStatusResponse(response.status, response.headers.get("content-type"), body);
-    // });
+        const response = await fetch("/api/status");
+        const body = await response.json();
+
+        assert.equal(typeof response.status, "number", "Validate that fetch returned a numeric status code");
+        assertStatusResponse(response.status, response.headers.get("content-type"), body);
+    });
 });

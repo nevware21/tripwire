@@ -7,6 +7,8 @@
  */
 
 import { spawnSync } from "child_process";
+import * as fs from "fs";
+import * as path from "path";
 
 /**
  * Builds one `--reporter <name>` pair per configured reporter (nyc's own convention for
@@ -21,6 +23,33 @@ export function _buildReporterArgs(reporters?: string[]): string[] {
     }
 
     return args;
+}
+
+/**
+ * The project folder `nyc report` should work in: the nearest folder at or above `cwd` holding a
+ * package.json, or `cwd` itself when there is none -- the same folder nyc picks on its own.
+ *
+ * It is passed to nyc explicitly as `--cwd` because nyc otherwise starts that search from `NYC_CWD`
+ * when it is set, and an nyc run *above* this process sets it for every child (re-adding it to each
+ * spawn even if it is removed from the environment). The report would then resolve its paths and load
+ * its `.nycrc` include and exclude patterns from that outer project, and report none of this one's files.
+ */
+export function _nycCwd(cwd: string): string {
+    let dir = path.resolve(cwd);
+
+    for (;;) {
+        // eslint-disable-next-line security/detect-non-literal-fs-filename
+        if (fs.existsSync(path.join(dir, "package.json"))) {
+            return dir;
+        }
+
+        const parent = path.dirname(dir);
+        if (parent === dir) {
+            return path.resolve(cwd);
+        }
+
+        dir = parent;
+    }
 }
 
 /**
@@ -42,7 +71,7 @@ export function _spawnNycReport(cwd: string, reportArgs: string[], label: string
 
         const result = spawnSync(
             process.execPath,
-            [nycPath, "report", ...reportArgs],
+            [nycPath, "report", "--cwd", _nycCwd(cwd), ...reportArgs],
             { cwd, stdio: "inherit" }
         );
 
