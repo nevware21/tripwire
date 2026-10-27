@@ -139,6 +139,8 @@ Most Node.js assert methods are supported in Tripwire with the same or similar b
 | `assert.notDeepStrictEqual(actual, expected)` | `assert.notDeepStrictEqual(actual, expected)` | ✅ **Identical in v0.2.0+** |
 | `assert.throws(fn, error?)` | `assert.throws(fn, error?)` | Similar (error messages may differ) |
 | `assert.doesNotThrow(fn)` | `assert.doesNotThrow(fn)` | Similar |
+| `await assert.rejects(asyncFn, error?)` | `await assert.rejects(asyncFn, error?)` | ✅ **Available in v0.2.0+** (same error matching as `throws`) |
+| `await assert.doesNotReject(asyncFn, error?)` | `await assert.doesNotReject(asyncFn, error?)` | ✅ **Available in v0.2.0+** |
 | `assert.match(string, regexp)` | `assert.match(string, regexp)` | Identical |
 | `assert.doesNotMatch(string, regexp)` | `assert.notMatch(string, regexp)` | Renamed |
 | `assert.fail(message)` | `assert.fail(message)` | Similar |
@@ -169,8 +171,6 @@ assert.isFinite(100);
 The following Node.js assert methods are not currently available in Tripwire:
 
 - `assert.doesNotMatch(string, regexp)` - Use `assert.notMatch(string, regexp)` or `expect(string).to.not.match(regexp)` instead (`assert.match` itself carries over unchanged)
-- `assert.rejects(asyncFn)` - Tripwire does not currently provide a direct equivalent for asserting Promise rejections; use `async`/`await` with `try`/`catch` and normal assertions on the caught error.
-- `assert.doesNotReject(asyncFn)` - Tripwire does not currently provide a direct equivalent; `await` the Promise and let the test fail if it rejects, or use `try`/`catch` and call `assert.fail` on rejection.
 
 ---
 
@@ -544,15 +544,8 @@ assert.throws(() => fn(), /error pattern/);
 assert.match(string, /pattern/);
 assert.notMatch(string, /other/);
 
-// There is no assert.rejects(): await the promise and assert on the caught error
-let caught;
-try {
-    await fn();
-} catch (e) {
-    caught = e;
-}
-assert.isDefined(caught, "expected fn() to reject");
-assert.match(caught.message, /error pattern/);
+// Use assert.rejects() / assert.doesNotReject() and await the result
+await assert.rejects(fn, /error pattern/);
 ```
 
 ---
