@@ -1558,6 +1558,43 @@ export interface IAssertClass<AssertInst extends IAssertInst = IAssertInst> {
     doesNotThrow(fn: () => void, msgMatch?: string | RegExp | null, initMsg?: MsgSource): AssertInst;
 
     /**
+     * Awaits the promise (or calls the function and awaits the returned promise) and asserts that it
+     * is rejected. Optionally checks the rejection reason using the same criteria as {@link throws}.
+     * The returned promise must be awaited (or returned) for the assertion to be observed.
+     * @param asyncFn - A promise, or a function returning a promise.
+     * @param errorLike - Optional. The error constructor, error instance, message string or RegExp the rejection must match.
+     * @param msgMatch - Optional. The partial message or pattern the rejection must match.
+     * @param initMsg - The message to display if the assertion fails.
+     * @since 0.2.0
+     * @example
+     * ```typescript
+     * await assert.rejects(Promise.reject(new Error("test"))); // Passes
+     * await assert.rejects(async () => { throw new TypeError("bad"); }, TypeError); // Passes
+     * await assert.rejects(async () => { throw new Error("bad"); }, /bad/); // Passes
+     * await assert.rejects(Promise.resolve(1)); // Rejects with AssertionFailure
+     * ```
+     */
+    rejects(asyncFn: (() => PromiseLike<any>) | PromiseLike<any>, errorLike?: ErrorConstructor | Error | string | RegExp | null, msgMatch?: string | RegExp | null, initMsg?: MsgSource): PromiseLike<AssertInst>;
+
+    /**
+     * Awaits the promise (or calls the function and awaits the returned promise) and asserts that it
+     * is NOT rejected (or, if criteria are given, not rejected with a matching error). This is the
+     * inverse of {@link rejects}. The returned promise must be awaited (or returned).
+     * @param asyncFn - A promise, or a function returning a promise.
+     * @param errorLike - Optional. The error constructor, error instance, message string or RegExp that must NOT match the rejection.
+     * @param msgMatch - Optional. The partial message or pattern that must NOT match the rejection.
+     * @param initMsg - The message to display if the assertion fails.
+     * @since 0.2.0
+     * @example
+     * ```typescript
+     * await assert.doesNotReject(Promise.resolve(1)); // Passes
+     * await assert.doesNotReject(async () => 42); // Passes
+     * await assert.doesNotReject(Promise.reject(new Error("test"))); // Rejects with AssertionFailure
+     * ```
+     */
+    doesNotReject(asyncFn: (() => PromiseLike<any>) | PromiseLike<any>, errorLike?: ErrorConstructor | Error | string | RegExp | null, msgMatch?: string | RegExp | null, initMsg?: MsgSource): PromiseLike<AssertInst>;
+
+    /**
      * Asserts that the provided value matches the specified regular expression.
      * If the value does not match the regular expression, it throws an {@link AssertionFailure}
      * with the given message.

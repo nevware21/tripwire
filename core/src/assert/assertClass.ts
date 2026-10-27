@@ -18,6 +18,7 @@ import {
 import { isEmptyFunc } from "./funcs/isEmpty";
 import { matchFunc } from "./funcs/match";
 import { isErrorFunc, throwsFunc } from "./funcs/throws";
+import { rejectsFunc } from "./funcs/rejects";
 import { hasPropertyFunc, hasOwnPropertyFunc, hasDeepPropertyFunc, hasDeepOwnPropertyFunc } from "./funcs/hasProperty";
 import { hasNestedPropertyFunc, hasDeepNestedPropertyFunc, nestedIncludeFunc, deepNestedIncludeFunc } from "./funcs/nested";
 import { createContext } from "./scopeContext";
@@ -255,6 +256,9 @@ export function createAssert(): IAssertClass {
 
         throws: { scopeFn: throwsFunc, nArgs: 3 },
         doesNotThrow: { scopeFn: createNotAdapter(throwsFunc), nArgs: 3 },
+
+        rejects: { scopeFn: rejectsFunc, nArgs: 3 },
+        doesNotReject: { scopeFn: createNotAdapter(rejectsFunc), nArgs: 3 },
 
         match: { scopeFn: matchFunc, nArgs: 2 },
         notMatch: { scopeFn: createNotAdapter(matchFunc), nArgs: 2 },

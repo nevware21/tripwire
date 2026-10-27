@@ -26,6 +26,9 @@
 
 ## New Features
 
+- **`assert.rejects` / `assert.doesNotReject`**, matching Node's `assert` API. Each takes a promise or a
+  function returning one, accepts the same error criteria as `throws`, and returns a promise that
+  must be awaited.
 - **`assert.notDeepStrictEqual` / `notDeepStrictEquals`**, the negation of `deepStrictEqual`, so
   Node's `assert` API maps across completely for equality checks. Values differing only in type
   (`{ a: 1 }` vs `{ a: "1" }`) are not strictly equal, so they pass.

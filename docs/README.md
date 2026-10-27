@@ -32,7 +32,7 @@
 | **Property Assertions** | [`hasProperty`](https://nevware21.github.io/tripwire/typedoc/core/interfaces/IAssertClass.html#hasproperty), [`hasOwnProperty`](https://nevware21.github.io/tripwire/typedoc/core/interfaces/IAssertClass.html#hasownproperty), [`hasDeepProperty`](https://nevware21.github.io/tripwire/typedoc/core/interfaces/IAssertClass.html#hasdeepproperty), [`nestedProperty`](https://nevware21.github.io/tripwire/typedoc/core/interfaces/IAssertClass.html#nestedproperty), [`deepNestedProperty`](https://nevware21.github.io/tripwire/typedoc/core/interfaces/IAssertClass.html#deepnestedproperty) |
 | **Collection Operations** | [`includes`](https://nevware21.github.io/tripwire/typedoc/core/interfaces/IAssertClass.html#includes), [`sameMembers`](https://nevware21.github.io/tripwire/typedoc/core/interfaces/IAssertClass.html#samemembers), [`includeMembers`](https://nevware21.github.io/tripwire/typedoc/core/interfaces/IAssertClass.html#includemembers), [`lengthOf`](https://nevware21.github.io/tripwire/typedoc/core/interfaces/IAssertClass.html#lengthof), [`sizeOf`](https://nevware21.github.io/tripwire/typedoc/core/interfaces/IAssertClass.html#sizeof) |
 | **Change Tracking** | [`changes`](https://nevware21.github.io/tripwire/typedoc/core/interfaces/IAssertClass.html#changes), [`increases`](https://nevware21.github.io/tripwire/typedoc/core/interfaces/IAssertClass.html#increases), [`decreases`](https://nevware21.github.io/tripwire/typedoc/core/interfaces/IAssertClass.html#decreases) - See [Change/Increase/Decrease Assertions Guide](change-assertions.md) |
-| **Error Testing** | [`throws`](https://nevware21.github.io/tripwire/typedoc/core/interfaces/IAssertClass.html#throws), [`doesNotThrow`](https://nevware21.github.io/tripwire/typedoc/core/interfaces/IAssertClass.html#doesnotthrow) |
+| **Error Testing** | [`throws`](https://nevware21.github.io/tripwire/typedoc/core/interfaces/IAssertClass.html#throws), [`doesNotThrow`](https://nevware21.github.io/tripwire/typedoc/core/interfaces/IAssertClass.html#doesnotthrow), [`rejects`](https://nevware21.github.io/tripwire/typedoc/core/interfaces/IAssertClass.html#rejects), [`doesNotReject`](https://nevware21.github.io/tripwire/typedoc/core/interfaces/IAssertClass.html#doesnotreject) |
 | **Chaining** | [`and`](https://nevware21.github.io/tripwire/typedoc/core/interfaces/IAssertInst.html#and) continues a chain after a called assertion (`expect(5).is.number().and.is.above(1)`); [`or`](https://nevware21.github.io/tripwire/typedoc/core/interfaces/IAssertInst.html#or) passes when any of the given clause functions passes (`expect(5).or(e => e.is.string(), e => e.is.number())`) |
 | **Extensibility** | [`createExprAdapter`](https://nevware21.github.io/tripwire/typedoc/core/functions/createExprAdapter.html), [`addAssertFunc`](https://nevware21.github.io/tripwire/typedoc/core/functions/addAssertFunc.html) - See [Expression Adapter Guide](expression-adapter.md) |
 
@@ -95,8 +95,7 @@ unchanged. Two methods differ:
 - assert.doesNotMatch(text, /pattern/);
 + assert.notMatch(text, /pattern/);
 
-- await assert.rejects(fn, /error pattern/);
-+ // no rejects()/doesNotReject(): await the promise and assert on the caught error
+  await assert.rejects(fn, /error pattern/);  // unchanged
 ```
 
 See the [full migration guide](migration/migrating-from-node-assert.md) for complete details and examples.
@@ -193,7 +192,7 @@ The shim implements the Chai v5.x `assert` API including:
 - Properties: `property`, `deepProperty`, `nestedProperty`, `ownProperty` with value checks
 - Collections: `include`, `deepInclude`, `members`, `sameMembers`, `keys`
 - Changes: `changes`, `increases`, `decreases` with delta tracking
-- Errors: `throws`, `doesNotThrow`
+- Errors: `throws`, `doesNotThrow`, `rejects`, `doesNotReject`
 - Object state: `isExtensible`, `isSealed`, `isFrozen`, `isEmpty`
 
 ### What's NOT Supported
