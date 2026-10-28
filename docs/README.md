@@ -14,6 +14,9 @@
 
 ### Documentation
 
+- [Tripwire in action](tour.md) - tripwire's own suite run once on node, in Chrome and in a web
+  worker, coverage from the command line, and the interactive browser page, with screenshots of
+  each
 - [Why tripwire](why-tripwire.md) - what is automatic across node, browser and worker, what is
   fast, how it compares with Mocha, Karma, Jest and Vitest, and when not to use it
 - [Performance](performance.md) - the runner's mechanisms, measured benchmark results against

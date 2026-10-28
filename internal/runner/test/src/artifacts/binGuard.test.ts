@@ -9,11 +9,12 @@
 import * as fs from "fs";
 import * as path from "path";
 import * as nodeModule from "module";
+import * as ts from "typescript";
 import { assert } from "@nevware21/tripwire";
 import { TraceMap, originalPositionFor } from "@jridgewell/trace-mapping";
 
 /*
- * BIN-GUARD. Three properties of the shipped `bin` artifacts that were each broken once and
+ * BIN-GUARD. Five properties of the shipped `bin` artifacts that were each broken once and
  * that nothing else asserts:
  *
  *  1. BIN-DEPS -- the bundles must be self-contained. Everything statically imported is
@@ -33,6 +34,16 @@ import { TraceMap, originalPositionFor } from "@jridgewell/trace-mapping";
  *     `npx tripwire` fails with a shell syntax error. Windows' `.cmd` shim and every in-repo
  *     script run `node` explicitly, which is how the first release to declare `bin` nearly
  *     shipped without one.
+ *
+ *  4. BIN-SCOPE -- the browser and worker bundles must declare nothing in the global scope they
+ *     share with the tests. Minified with uglify's `toplevel`, each iife became a bare block
+ *     whose `var`s were globals under two-letter names; ts-utils' "call" landed on `it`, the
+ *     test frame's own global `it` replaced it, and every run in the page stopped at its first
+ *     hasOwnProperty check.
+ *
+ *  5. BIN-STRING -- the minifier must leave `String(x)` alone. Its `unsafe` option rewrote every
+ *     one as `""+x`, which throws for a Symbol, so each assertion about a symbol failed with
+ *     "Cannot convert a Symbol value to a string" once the interactive page described its values.
  *
  * These run against the built artifacts in `core/bin`, which are necessarily present -- the
  * runner suite is itself executed by `core/bin/tripwire.js`.
@@ -141,6 +152,34 @@ describe("bin guard", () => {
                 const code = fs.readFileSync(bundle.code, "utf8");
 
                 assert.isFalse(code.indexOf("#!") === 0, bundle.name + " must not start with a shebang");
+            }
+        });
+    });
+
+    describe("BIN-SCOPE -- the browser and worker bundles keep their names to themselves", () => {
+        it("should hold nothing at the top level but expressions, so every name is inside a function", () => {
+            for (let lp = 1; lp < BUNDLES.length; lp++) {
+                const bundle = BUNDLES[lp];
+                const source = ts.createSourceFile(bundle.name, fs.readFileSync(bundle.code, "utf8"), ts.ScriptTarget.Latest, false, ts.ScriptKind.JS);
+                const declaring = source.statements
+                    .filter((statement) => !ts.isExpressionStatement(statement))
+                    .map((statement) => ts.SyntaxKind[statement.kind]);
+
+                assert.isTrue(source.statements.length > 0, bundle.name + " has code");
+                assert.deepEqual(declaring, [], bundle.name + "'s top level: a block, `var` or function there is a global the tests can replace");
+            }
+        });
+    });
+
+    describe("BIN-STRING -- the bundles convert values to text as their source does", () => {
+        it("should keep String(x) rather than rewrite it as \"\"+x, which throws for a Symbol", () => {
+            for (let lp = 0; lp < BUNDLES.length; lp++) {
+                const bundle = BUNDLES[lp];
+                const code = fs.readFileSync(bundle.code, "utf8");
+                const calls = (code.match(/\bString\(/g) || []).length;
+                const concats = (code.match(/""\+/g) || []).length;
+
+                assert.isTrue(calls > concats, bundle.name + " has " + calls + " String( calls and " + concats + " \"\"+ conversions: is uglify's `unsafe` back on?");
             }
         });
     });

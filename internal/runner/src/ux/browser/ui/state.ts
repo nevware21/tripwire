@@ -31,6 +31,16 @@ export const testState: { [key: string]: TestNode } = {};
 export let currentExecutingTestKey = "";
 export let lastObservedTestKey = "";
 
+// How many of the drawn tests have finished, by outcome -- kept as each one finishes, so the run
+// summary never has to recount every test (see updateRunSummary in ui-rendering.ts).
+export const runCounts = { passed: 0, failed: 0, skipped: 0 };
+
+export function resetRunCounts() {
+    runCounts.passed = 0;
+    runCounts.failed = 0;
+    runCounts.skipped = 0;
+}
+
 // User preference, not per-run state -- deliberately left out of clearAllState() below so a
 // frame/worker reload (including one triggered by this same setting) doesn't reset it.
 export let autoReloadEnabled = true;
@@ -135,6 +145,7 @@ export function clearAllState() {
     assertionCount = 0;
     Object.keys(suiteState).forEach(key => delete suiteState[key]);
     Object.keys(testState).forEach(key => delete testState[key]);
+    resetRunCounts();
     currentExecutingTestKey = "";
     lastObservedTestKey = "";
     highlightSuiteTitle = "";

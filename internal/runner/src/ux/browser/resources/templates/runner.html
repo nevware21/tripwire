@@ -1,5 +1,5 @@
 <!doctype html>
-<html>
+<html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -8,66 +8,165 @@
 __RUNNER_CSS__
   </style>
 </head>
-<body class="__RUNNER_STYLE_CLASS__" data-runner-target="__RUNNER_TARGET__">
+<body class="__RUNNER_STYLE_CLASS__" data-runner-target="__RUNNER_TARGET__"__RUNNER_THEME_ATTRS__>
+  <script>
+    // The theme, colours and zoom -- the choice made in this page's Appearance panel, else the run's
+    // --browser-theme -- applied before the page first paints, so it never flashes (see ui/theme.ts)
+    (function() {
+      var body = document.body;
+      function choose(key, attr, isValue) {
+        var saved = null;
+        try {
+          saved = localStorage.getItem(key);
+        } catch (e) {
+          // Storage blocked: the run's setting, or the default, still applies
+        }
+        if (isValue(saved)) {
+          return saved;
+        }
+        return isValue(body.getAttribute(attr)) ? body.getAttribute(attr) : "";
+      }
+      function oneOf(values) {
+        return function(value) {
+          return values.indexOf(value) !== -1;
+        };
+      }
+      function isZoom(value) {
+        return /^\d+$/.test(value || "") && +value >= 50 && +value <= 300;
+      }
+      var scheme = choose("tripwire.theme", "data-default-theme", oneOf([ "system", "light", "dark", "dim" ]));
+      var vision = choose("tripwire.vision", "data-default-vision", oneOf([ "standard", "colorblind" ]));
+      var zoom = +choose("tripwire.zoom", "data-default-zoom", isZoom) || 100;
+      if (scheme && scheme !== "system") {
+        body.setAttribute("data-theme", scheme);
+      }
+      if (vision === "colorblind") {
+        body.setAttribute("data-vision", vision);
+      }
+      if (zoom !== 100) {
+        body.style.setProperty("--ui-zoom", String(zoom / 100));
+      }
+      // The compact layout, while the window is small for the page at its zoom (fitLayout in ui/theme.ts)
+      if (window.innerWidth * 100 / zoom <= 600) {
+        body.classList.add("layout-narrow");
+      }
+      if (window.innerHeight * 100 / zoom <= 500) {
+        body.classList.add("layout-short");
+      }
+    })();
+  </script>
+  <a id="skipLink" class="skip-link" href="#results">Skip to the results</a>
   <div class="app-shell">
-    <header class="app-header">
-      <h1>__RUNNER_TITLE__</h1>
-      <p>__RUNNER_DESCRIPTION__</p>
-    </header>
-
-    <section class="controls">
-      <div class="controls-row">
-        <div class="filter-inline">
-          <label class="filter-label" for="scopeSelect">Scope</label>
-          <div class="filter-input-wrap">
-            <input id="scopeSelect" class="filter-input" type="text" autocomplete="off" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="scopeSelectList" placeholder="All tests (type to search suites and tests)" title="What to run -- type to search every suite and test, or leave blank to run them all" />
-            <div id="scopeSelectList" class="autocomplete-list" role="listbox"></div>
-          </div>
-          <button id="clearScopeBtn" class="ghost scope-clear" type="button" disabled title="Clear the scope, so the next run covers every test again">All tests</button>
-        </div>
-        <div class="control-inline">
+    <header id="appHeader" class="app-header">
+      <div class="app-title">
+        <h1>__RUNNER_TITLE__</h1>
+        <p id="appMeta" class="app-meta">__RUNNER_DESCRIPTION__</p>
+      </div>
+      <!-- The Target picker and the actions menu, at the top right -->
+      <div class="app-actions">
+        <div id="targetControl" class="control-inline">
           <label class="filter-label" for="targetSelect">Target</label>
-          <select id="targetSelect" class="control-select" title="Where the tests run -- switching reloads this page for the other target and keeps the current scope">
+          <select id="targetSelect" class="control-select" aria-label="Target" title="Where the tests run -- switching reloads this page for the other target and keeps the current scope">
             <option value="browser">Browser</option>
             <option value="worker">Worker</option>
           </select>
         </div>
-        <label class="control-check" title="Show only failed tests (running tests stay visible until they pass)">
-          <input id="failedOnlyToggle" type="checkbox" />
-          <span>Failed only</span>
-        </label>
-        <label class="control-check" title="Automatically reload and re-run when a watched test file changes on disk">
-          <input id="autoReloadToggle" type="checkbox" checked />
-          <span>Auto-reload</span>
-        </label>
-        <button id="runBtn">Run</button>
         <div class="menu-wrap">
           <button id="actionsBtn" class="ghost icon-btn" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="actionsMenu" aria-label="More actions" title="More actions">
             <span aria-hidden="true">&#8942;</span>
           </button>
           <div id="actionsMenu" class="menu-list" role="menu" aria-labelledby="actionsBtn" hidden>
+            <!-- Stand-ins for the controls folded away when the window is too narrow (see ui/overflow.ts) -->
+            <div id="foldedControls" role="none" hidden>
+              <button id="failedOnlyItem" class="menu-item menu-check" type="button" role="menuitemcheckbox" aria-checked="false" tabindex="-1" hidden>Failed only</button>
+              <div id="targetMenuGroup" class="menu-group" role="group" aria-label="Target" hidden>
+                <div id="targetGroupLabel" class="menu-group-label" aria-hidden="true">Target</div>
+                <button class="menu-item menu-radio" type="button" role="menuitemradio" aria-checked="false" tabindex="-1" data-target-choice="browser">Browser</button>
+                <button class="menu-item menu-radio" type="button" role="menuitemradio" aria-checked="false" tabindex="-1" data-target-choice="worker">Worker</button>
+              </div>
+              <div class="menu-separator" role="separator"></div>
+            </div>
             <button id="reloadBtn" class="menu-item" type="button" role="menuitem" tabindex="-1" title="Discard and reload the test frame, then re-run">Reload Tests</button>
-            <button id="clearResultsBtn" class="menu-item" type="button" role="menuitem" tabindex="-1">Clear Results</button>
+            <button id="autoReloadItem" class="menu-item menu-check" type="button" role="menuitemcheckbox" aria-checked="true" tabindex="-1" title="Reload and re-run when a watched test file changes on disk">Auto-reload</button>
             <button id="clearLogsBtn" class="menu-item" type="button" role="menuitem" tabindex="-1">Clear Logs</button>
+            <div class="menu-separator" role="separator"></div>
+            <button id="appearanceItem" class="menu-item" type="button" role="menuitem" tabindex="-1" aria-haspopup="dialog" aria-expanded="false" aria-controls="appearancePanel" title="The theme, color-blind safe colors and zoom">Appearance&hellip;</button>
             <div class="menu-separator" role="separator"></div>
             <button id="finishBtn" class="menu-item" type="button" role="menuitem" tabindex="-1" aria-disabled="true" title="Send the final result back to the CLI and shut down this server">Finish &amp; Stop Server</button>
           </div>
+          <!--
+            The theme, colours and zoom: a dialog of its own rather than menu entries, as a menu may
+            hold only menu items and the theme is a searchable combobox (see ui/appearance.ts)
+          -->
+          <div id="appearancePanel" class="appearance-panel" role="dialog" aria-label="Appearance" tabindex="-1" hidden>
+            <div class="menu-group-label" aria-hidden="true">Appearance</div>
+            <div class="appearance-field">
+              <label class="filter-label" for="themeInput">Theme</label>
+              <div class="filter-input-wrap">
+                <input id="themeInput" class="filter-input" type="text" aria-label="Theme" autocomplete="off" spellcheck="false" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="themeList" title="Type to search the themes, or press the down arrow to list them" />
+                <div id="themeList" class="autocomplete-list" role="listbox" aria-label="Themes"></div>
+              </div>
+            </div>
+            <label class="control-check appearance-check" title="Show passed and failed in blue and orange, which every kind of color blindness tells apart">
+              <input id="colorblindToggle" type="checkbox" />
+              <span>Color-blind safe</span>
+            </label>
+            <div class="appearance-field" role="group" aria-label="Zoom">
+              <span class="filter-label" aria-hidden="true">Zoom</span>
+              <div class="zoom-control">
+                <button id="zoomOutBtn" class="ghost icon-btn" type="button" aria-label="Zoom out" title="Zoom out" aria-disabled="false"><span aria-hidden="true">&minus;</span></button>
+                <output id="zoomValue" class="zoom-value" aria-live="polite">100%</output>
+                <button id="zoomInBtn" class="ghost icon-btn" type="button" aria-label="Zoom in" title="Zoom in" aria-disabled="false"><span aria-hidden="true">+</span></button>
+                <button id="zoomResetBtn" class="ghost zoom-reset" type="button" title="Back to 100%" aria-disabled="true">Reset</button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-    </section>
+    </header>
 
-    <div class="status-row">
-      <span id="status">Initializing...</span>
-      <span id="assertCount">0 assertions</span>
+    <div class="toolbar">
+      <section class="controls" aria-label="Run controls">
+        <div id="controlsRow" class="controls-row">
+          <div class="filter-inline">
+            <label class="filter-label" for="scopeSelect">Scope</label>
+            <div class="filter-input-wrap">
+              <input id="scopeSelect" class="filter-input" type="text" aria-label="Scope" autocomplete="off" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="scopeSelectList" placeholder="All tests (type to search)" title="What to run -- type to search every suite and test, or leave blank to run them all" />
+              <button id="clearScopeBtn" class="scope-clear" type="button" disabled aria-label="Clear scope" title="Clear the scope, so the next run covers every test again">
+                <svg aria-hidden="true" focusable="false" viewBox="0 0 16 16" width="12" height="12"><path d="M3.5 3.5l9 9M12.5 3.5l-9 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/></svg>
+              </button>
+              <div id="scopeSelectList" class="autocomplete-list" role="listbox"></div>
+            </div>
+          </div>
+          <label id="failedOnlyControl" class="control-check" title="Show only failed tests (running tests stay visible until they pass)">
+            <input id="failedOnlyToggle" type="checkbox" />
+            <span>Failed only</span>
+          </label>
+          <button id="runBtn">Run</button>
+        </div>
+      </section>
+
+      <div class="status-row">
+        <span id="status" role="status" aria-live="polite">Initializing...</span>
+        <!-- The run's totals, the assertion count and Clear Results: kept together, on the right -->
+        <div class="status-meta">
+          <div id="runSummary" class="run-summary" role="group" aria-label="Run totals" hidden></div>
+          <span id="assertCount">0 assertions</span>
+          <button id="clearResultsBtn" class="ghost icon-btn status-clear" type="button" aria-label="Clear results" title="Clear the results">
+            <svg aria-hidden="true" focusable="false" viewBox="0 0 16 16" width="16" height="16"><path d="M2 4h10M2 8h7M2 12h4M9.5 10l4 4M13.5 10l-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" fill="none"/></svg>
+          </button>
+        </div>
+      </div>
     </div>
 
-    <main class="results-main">
-      <div id="results" class="results-tree"></div>
+    <main class="results-main" aria-label="Test results">
+      <p id="filterNote" class="filter-note" hidden></p>
+      <div id="results" class="results-tree" tabindex="-1"></div>
     </main>
 
     <details id="logPanel" class="log-panel">
       <summary>Runner Log</summary>
-      <div id="logs"></div>
+      <div id="logs" role="log" aria-live="off" aria-label="Runner log" tabindex="0"></div>
     </details>
   </div>
   <div id="testFrameContainer" style="display:none" aria-hidden="true"></div>

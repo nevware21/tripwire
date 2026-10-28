@@ -11,7 +11,7 @@ import {
     assertionDomQueue, assertionFlushScheduled, clearAllState, setAssertionFlushScheduled, setHighlightSelection, suiteState, testState
 } from "../../../src/ux/browser/ui/state";
 import { MAX_ASSERTIONS_PER_TEST } from "../../../src/ux/browser/ui/shared";
-import { textOf, useStubDocument, uxDom } from "../support/uxDom";
+import { shownTextOf, textOf, useStubDocument, uxDom } from "../support/uxDom";
 
 /**
  * How the interactive page draws a run: a collapsible node per suite and per test under the results
@@ -47,15 +47,17 @@ function find(el: any, cls: string): any {
 
 describe("ux rendering", () => {
     let restoreDocument: () => void;
+    // The results scroll with the page, so this is what is kept pinned to the bottom
+    let page: any;
 
     beforeEach(() => {
-        restoreDocument = useStubDocument(dom).restore;
+        const installed = useStubDocument(dom);
+        restoreDocument = installed.restore;
+        page = installed.document.scrollingElement;
+        dom.failedOnlyToggle.checked = false;
         rendering.clearResults(dom.assertCount);
         clearAllState();
         setHighlightSelection("", "");
-        dom.results.scrollTop = 0;
-        dom.results.clientHeight = 0;
-        dom.results.scrollHeight = 0;
     });
 
     afterEach(() => {
@@ -70,7 +72,8 @@ describe("ux rendering", () => {
             assert.isTrue(suite.details.open);
             assert.isTrue(suite.details.classList.contains("suite-running"));
             assert.equal(textOf(find(suite.details, "suite-name")), "outer");
-            assert.equal(suite.meta.textContent, "0/0 tests");
+            assert.equal(suite.meta.textContent, "", "nothing to count yet");
+            assert.equal(suite.meta.style.display, "none");
             assert.equal(suite.chip.textContent, "running");
             assert.equal(suite.marker.getAttribute("aria-hidden"), "true");
             assert.equal(find(suite.details, "rerun-btn").getAttribute("data-rerun-suite"), "outer");
@@ -83,10 +86,33 @@ describe("ux rendering", () => {
 
             assert.equal(kids(outer.children)[0], inner.details);
             assert.equal(outer.childSuiteCount, 1);
-            assert.equal(outer.meta.textContent, "0/0 tests • 1 child suite");
+            assert.equal(outer.meta.textContent, "1 child suite");
+            assert.equal(outer.meta.style.display, "");
 
             rendering.ensureSuiteNode([ "outer", "second" ]);
-            assert.equal(outer.meta.textContent, "0/0 tests • 2 child suites");
+            assert.equal(outer.meta.textContent, "2 child suites");
+        });
+
+        it("words a suite's counts: how far along while it runs, then what happened", () => {
+            const suite = rendering.ensureSuiteNode([ "counted" ]);
+            const meta = (total: number, done: number, failed: number, skipped: number) => {
+                suite.total = total;
+                suite.done = done;
+                suite.failed = failed;
+                suite.skipped = skipped;
+                rendering.updateSuiteMeta(suite);
+
+                return suite.meta.textContent;
+            };
+
+            assert.equal(meta(3, 1, 0, 0), "1 of 3 done");
+            assert.equal(meta(3, 3, 0, 0), "3 passed");
+            assert.equal(meta(3, 3, 1, 1), "1 passed · 1 failed · 1 skipped");
+            assert.equal(meta(2, 2, 2, 0), "2 failed", "no \"0 passed\"");
+            assert.equal(meta(2, 2, 0, 2), "2 skipped");
+
+            rendering.ensureSuiteNode([ "counted", "child" ]);
+            assert.equal(meta(2, 2, 1, 0), "1 passed · 1 failed · 1 child suite");
         });
 
         it("draws the default suite without a rerun button", () => {
@@ -100,7 +126,7 @@ describe("ux rendering", () => {
             const suite = rendering.ensureSuiteNode([ "marked" ]);
             const marks: any = {};
 
-            [ "passed", "failed", "pending", "running" ].forEach((status) => {
+            [ "passed", "failed", "pending", "skipped", "running" ].forEach((status) => {
                 rendering.setSuiteMarker(suite, status);
                 marks[status] = [ suite.marker.className, suite.marker.textContent ];
             });
@@ -109,6 +135,7 @@ describe("ux rendering", () => {
                 passed: [ "suite-marker marker-passed", "✓" ],
                 failed: [ "suite-marker marker-failed", "✗" ],
                 pending: [ "suite-marker marker-pending", "○" ],
+                skipped: [ "suite-marker marker-skipped", "○" ],
                 running: [ "suite-marker marker-running", "" ]
             });
 
@@ -122,11 +149,14 @@ describe("ux rendering", () => {
             const test = rendering.ensureTestNode([ "outer", "inner" ], "works");
 
             assert.equal(kids(suiteState["outer > inner"].children)[0], test.details);
-            assert.equal(test.label.textContent, "… works");
+            assert.deepEqual(kids(test.label).map(textOf), [ "…", "works" ], "the marker, then the name");
+            assert.equal(test.marker.className, "test-marker marker-running", "its own element, to take the status colour");
+            assert.equal(test.marker.getAttribute("aria-hidden"), "true");
             assert.equal(test.chip.textContent, "running");
             assert.equal(find(test.details, "rerun-btn").getAttribute("data-rerun-test"), "outer > inner > works");
+            assert.equal(find(test.details, "test-statuses"), test.chip.parentNode, "the statuses wrap together");
             assert.equal(suiteState["outer"].total, 1);
-            assert.equal(suiteState["outer > inner"].meta.textContent, "0/1 tests");
+            assert.equal(suiteState["outer > inner"].meta.textContent, "0 of 1 done");
             assert.equal(rendering.ensureTestNode([ "outer", "inner" ], "works"), test, "drawn once");
         });
 
@@ -144,7 +174,9 @@ describe("ux rendering", () => {
             rendering.setTestStatus(failed, "failed", (node) => filtered.push(node));
 
             assert.isFalse(passed.details.open);
-            assert.equal(passed.label.textContent, "✓ passes");
+            assert.deepEqual(kids(passed.label).map(textOf), [ "✓", "passes" ]);
+            assert.equal(passed.marker.className, "test-marker marker-passed");
+            assert.equal(failed.marker.className, "test-marker marker-failed");
             assert.equal(passed.chip.className, "status-chip status-passed");
             assert.isTrue(passed.details.classList.contains("test-passed"));
             assert.isFalse(passed.details.classList.contains("test-running"));
@@ -153,6 +185,18 @@ describe("ux rendering", () => {
             assert.isTrue(failed.details.open);
             assert.equal(failed.duration.style.display, "none");
             assert.deepEqual(filtered, [ passed, failed ]);
+        });
+
+        it("collapses a skipped test, marked as skipped rather than passed", () => {
+            const skipped = rendering.ensureTestNode([ "s" ], "later");
+
+            rendering.setTestStatus(skipped, "skipped", noFilter);
+
+            assert.isFalse(skipped.details.open);
+            assert.deepEqual(kids(skipped.label).map(textOf), [ "○", "later" ]);
+            assert.equal(skipped.marker.className, "test-marker marker-skipped");
+            assert.equal(skipped.chip.className, "status-chip status-skipped");
+            assert.isTrue(skipped.details.classList.contains("test-skipped"));
         });
 
         it("keeps the highlighted test open and scrolls to it", () => {
@@ -195,6 +239,21 @@ describe("ux rendering", () => {
             assert.equal(passing.duration.textContent, "5ms");
         });
 
+        it("shows a suite whose tests were all skipped as skipped", () => {
+            const suite = rendering.ensureSuiteNode([ "later" ]);
+            suite.total = 2;
+            suite.done = 2;
+            suite.skipped = 2;
+
+            rendering.updateSuiteStatus("later");
+
+            assert.equal(suite.chip.className, "status-chip status-skipped");
+            assert.equal(suite.chip.textContent, "skipped");
+            assert.equal(suite.marker.className, "suite-marker marker-skipped");
+            assert.isTrue(suite.details.classList.contains("suite-skipped"));
+            assert.isFalse(suite.details.open);
+        });
+
         it("keeps a passed suite open on the way to the highlighted test, and scrolls to a highlighted suite", () => {
             setHighlightSelection("outer > inner", "");
             const outer = rendering.ensureSuiteNode([ "outer" ]);
@@ -232,7 +291,7 @@ describe("ux rendering", () => {
 
             rendering.flushAssertionDomQueue(dom.assertCount);
 
-            assert.deepEqual(kids(test.assertions).map((item: any) => [ item.className, item.textContent ]), [
+            assert.deepEqual(kids(test.assertions).map((item: any) => [ item.className, shownTextOf(item) ]), [
                 [ "assert-item assert-pass", "✓ equal(1, 1)" ],
                 [ "assert-item assert-fail", "✗ equal(1, 2) -> expected 1 to equal 2" ]
             ]);
@@ -240,6 +299,74 @@ describe("ux rendering", () => {
             assert.equal(dom.assertCount.textContent, "2 assertions");
             assert.equal(assertionDomQueue.length, 0);
             assert.isFalse(assertionFlushScheduled);
+        });
+
+        it("says passed or failed to a screen reader, in place of the ✓ or ✗", () => {
+            const test = rendering.ensureTestNode([ "s" ], "t");
+            assertionDomQueue.push(
+                { testKey: test.key, passed: true, label: "equal(1, 1)", errorText: "" },
+                { testKey: test.key, passed: false, label: "equal", errorText: "no ::: detail", expected: "1" }
+            );
+
+            rendering.flushAssertionDomQueue(null);
+
+            const [ pass, fail ] = kids(test.assertions);
+            assert.deepEqual(kids(pass).map((part: any) => [ part.className || "text", part.getAttribute ? part.getAttribute("aria-hidden") : null, part.textContent ]), [
+                [ "assert-mark", "true", "✓ " ],
+                [ "sr-only", null, "Passed: " ],
+                [ "text", null, "equal(1, 1)" ]
+            ]);
+            assert.equal(textOf(find(fail, "assert-message")), "✗ Failed: equal -> no");
+            assert.equal(find(fail, "assert-details").kids[1].getAttribute("tabindex"), "0", "a long description scrolls, so the keyboard can reach it");
+        });
+
+        it("shows a failure's expected and actual values, and folds the rest of its description away", () => {
+            const test = rendering.ensureTestNode([ "s" ], "t");
+            assertionDomQueue.push({
+                testKey: test.key,
+                passed: false,
+                label: "equal",
+                errorText: "expected 1 to equal 2 ::: running \"equal()\" with (1)",
+                expected: "2",
+                actual: "1"
+            });
+
+            rendering.flushAssertionDomQueue(null);
+
+            const item = kids(test.assertions)[0];
+            assert.equal(item.className, "assert-item assert-fail");
+            assert.equal(shownTextOf(find(item, "assert-message")), "✗ expected 1 to equal 2", "the message already names the assertion");
+            assert.deepEqual(kids(find(item, "assert-values")).map((part: any) => part.className + "=" + part.textContent), [
+                "assert-key=Expected",
+                "assert-value=2",
+                "assert-key=Actual",
+                "assert-value=1"
+            ]);
+
+            const more = find(item, "assert-details");
+            assert.equal(more.tagName, "DETAILS");
+            assert.isFalse(more.open, "folded away");
+            assert.deepEqual(kids(more).map(textOf), [ "Details", "running \"equal()\" with (1)" ]);
+        });
+
+        it("shows only the values a failure has, and no Details without a description", () => {
+            const test = rendering.ensureTestNode([ "s" ], "t");
+            assertionDomQueue.push(
+                { testKey: test.key, passed: false, label: "isOk(value)", errorText: "expected undefined to be truthy", actual: "undefined" },
+                { testKey: test.key, passed: false, label: "fail", errorText: " ::: thrown by fail()" }
+            );
+
+            rendering.flushAssertionDomQueue(null);
+
+            const withValue = kids(test.assertions)[0];
+            assert.equal(shownTextOf(find(withValue, "assert-message")), "✗ isOk(value) -> expected undefined to be truthy");
+            assert.deepEqual(kids(find(withValue, "assert-values")).map(textOf), [ "Actual", "undefined" ]);
+            assert.isNull(find(withValue, "assert-details"));
+
+            const detailOnly = kids(test.assertions)[1];
+            assert.equal(shownTextOf(find(detailOnly, "assert-message")), "✗ fail");
+            assert.isNull(find(detailOnly, "assert-values"));
+            assert.equal(textOf(find(detailOnly, "assert-details")), "Detailsthrown by fail()");
         });
 
         it("keeps only the latest assertions of a very long test", () => {
@@ -251,7 +378,7 @@ describe("ux rendering", () => {
             rendering.flushAssertionDomQueue(null);
 
             assert.equal(test.assertions.childElementCount, MAX_ASSERTIONS_PER_TEST);
-            assert.equal(kids(test.assertions)[0].textContent, "✓ check 1", "the first was dropped");
+            assert.equal(shownTextOf(kids(test.assertions)[0]), "✓ check 1", "the first was dropped");
             assert.equal(test.assertionCount, MAX_ASSERTIONS_PER_TEST + 1);
         });
 
@@ -268,7 +395,7 @@ describe("ux rendering", () => {
 
             rendering.appendSyntheticAssertion(test, false, "", "boom", dom.assertCount);
 
-            assert.equal(kids(test.assertions)[0].textContent, "✗ (assertion) -> boom");
+            assert.equal(shownTextOf(kids(test.assertions)[0]), "✗ boom", "the error's message, not a placeholder name");
             assert.equal(dom.assertCount.textContent, "1 assertion");
             rendering.appendSyntheticAssertion(null as any, true, "x", "", dom.assertCount);
         });
@@ -284,27 +411,98 @@ describe("ux rendering", () => {
     });
 
     describe("scrolling", () => {
-        it("follows new results while the panel is scrolled to the bottom, for a whole batch", () => {
-            dom.results.clientHeight = 100;
-            dom.results.scrollHeight = 100;
+        it("follows new results while the page is scrolled to the bottom, for a whole batch", () => {
+            page.clientHeight = 100;
+            page.scrollHeight = 100;
 
             rendering.beginRenderBatch();
             rendering.ensureSuiteNode([ "a" ]);
-            dom.results.scrollHeight = 400;
+            page.scrollHeight = 400;
             rendering.ensureTestNode([ "a" ], "t");
             rendering.endRenderBatch();
 
-            assert.equal(dom.results.scrollTop, 400);
+            assert.equal(page.scrollTop, 400);
+            assert.equal(dom.results.scrollTop, 0, "the results panel does not scroll on its own");
         });
 
-        it("leaves the panel where it is when it was scrolled up", () => {
-            dom.results.clientHeight = 100;
-            dom.results.scrollHeight = 1000;
+        it("leaves the page where it is when it was scrolled up", () => {
+            page.clientHeight = 100;
+            page.scrollHeight = 1000;
 
             rendering.ensureSuiteNode([ "a" ]);
 
-            assert.equal(dom.results.scrollTop, 0);
+            assert.equal(page.scrollTop, 0);
             rendering.endRenderBatch();
+        });
+
+        it("falls back to the document element without a scrolling element, and to nothing without a document", () => {
+            const doc = (globalThis as any).document;
+            const root = doc.documentElement = page;
+            doc.scrollingElement = null;
+            root.clientHeight = 100;
+            root.scrollHeight = 100;
+
+            rendering.beginRenderBatch();
+            root.scrollHeight = 300;
+            rendering.endRenderBatch();
+            assert.equal(root.scrollTop, 300);
+
+            restoreDocument();
+            restoreDocument = () => undefined;
+            rendering.beginRenderBatch();
+            rendering.endRenderBatch();
+        });
+    });
+
+    describe("run summary", () => {
+        function chips(): string[] {
+            return kids(dom.runSummary).map((chip: any) => chip.tagName + "." + chip.className.replace("summary-chip ", "") + "=" + chip.textContent);
+        }
+
+        it("is hidden until a test has finished", () => {
+            rendering.updateRunSummary();
+
+            assert.isTrue(dom.runSummary.hidden);
+            assert.deepEqual(chips(), []);
+        });
+
+        it("counts the tests as they finish, the failed count a button for Failed only", () => {
+            execution._handleTestDone([ "s" ], "a", "passed", 1, "", noFilter);
+            execution._handleTestDone([ "s" ], "b", "failed", 1, "boom", noFilter);
+            execution._handleTestDone([ "s" ], "c", "skipped", 0, "", noFilter);
+
+            assert.isFalse(dom.runSummary.hidden);
+            assert.deepEqual(chips(), [ "SPAN.summary-passed=1 passed", "BUTTON.summary-failed=1 failed", "SPAN.summary-skipped=1 skipped" ]);
+
+            const failedChip = find(dom.runSummary, "summary-failed");
+            assert.equal(failedChip.getAttribute("type"), "button");
+            assert.equal(failedChip.getAttribute("aria-pressed"), "false");
+
+            dom.failedOnlyToggle.checked = true;
+            rendering.updateRunSummary();
+            assert.equal(find(dom.runSummary, "summary-failed").getAttribute("aria-pressed"), "true");
+            assert.isFalse(dom.filterNote.hidden);
+            assert.equal(dom.filterNote.textContent, "2 passed or skipped tests hidden by Failed only");
+        });
+
+        it("shows the run's own summary once it is over, with how long it took", () => {
+            execution._handleTestDone([ "s" ], "a", "passed", 1, "", noFilter);
+
+            rendering.updateRunSummary({ passed: 4, failed: 0, skipped: 1, pending: 1, duration: 1534 });
+
+            assert.deepEqual(chips(), [ "SPAN.summary-passed=4 passed", "SPAN.summary-skipped=2 skipped", "SPAN.summary-duration=1.53s" ]);
+
+            rendering.updateRunSummary({ passed: 1 });
+            assert.deepEqual(chips(), [ "SPAN.summary-passed=1 passed" ], "no duration to show");
+        });
+
+        it("is emptied and hidden again when the results are cleared", () => {
+            execution._handleTestDone([ "s" ], "a", "passed", 1, "", noFilter);
+
+            rendering.clearResults(null);
+
+            assert.isTrue(dom.runSummary.hidden);
+            assert.deepEqual(chips(), []);
         });
     });
 
@@ -358,13 +556,16 @@ describe("ux rendering", () => {
             assert.equal(suiteState["outer > inner"].chip.textContent, "failed");
         });
 
-        it("treats skipped and pending tests as passed", () => {
+        it("shows skipped and pending tests as skipped: not failed, and not claimed to have passed", () => {
             const skipped = execution._handleTestDone([ "s" ], "skipped", "skipped", 0, "", noFilter);
             const pending = execution._handleTestDone([ "s" ], "pending", "", 0, "", noFilter);
 
-            assert.equal(skipped.status, "passed");
-            assert.equal(pending.status, "passed");
+            assert.equal(skipped.status, "skipped");
+            assert.equal(pending.status, "skipped");
             assert.equal(suiteState["s"].failed, 0);
+            assert.equal(suiteState["s"].skipped, 2);
+            assert.equal(suiteState["s"].chip.textContent, "skipped");
+            assert.equal(suiteState["s"].meta.textContent, "2 skipped");
         });
 
         it("adds a failure of its own to a failed test that reported no assertion", () => {
@@ -372,9 +573,9 @@ describe("ux rendering", () => {
             const timedOut = execution._handleTestDone([ "s" ], "slow", "failed", 0, "Timeout of 2000ms exceeded", noFilter);
             const silent = execution._handleTestDone([ "s" ], "silent", "failed", 0, null, noFilter);
 
-            assert.equal(kids(failed.assertions)[0].textContent, "✗ Test failed -> expected true");
-            assert.equal(kids(timedOut.assertions)[0].textContent, "✗ Test timed out -> Timeout of 2000ms exceeded");
-            assert.equal(kids(silent.assertions)[0].textContent, "✗ Test failed");
+            assert.equal(shownTextOf(kids(failed.assertions)[0]), "✗ Test failed -> expected true");
+            assert.equal(shownTextOf(kids(timedOut.assertions)[0]), "✗ Test timed out -> Timeout of 2000ms exceeded");
+            assert.equal(shownTextOf(kids(silent.assertions)[0]), "✗ Test failed");
         });
 
         it("leaves a failed test's own assertions, drawn or still queued, to explain it", () => {

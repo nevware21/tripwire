@@ -12,6 +12,7 @@ import { installDefineRegistry, createRequire, getBrowserLoaderContext, buildSui
 import { createSettingsGrepFilter, createSelectionFilter, applyFilters } from "../../../shared/filters";
 import { createBailListener } from "../../../shared/bailListener";
 import { getSuitePartsFromNode, createAssertionLabel } from "../../../shared/suiteNames";
+import { addAssertionValues } from "../../../shared/assertionValues";
 import { collectSuiteAndTests, createEmptyDiscovery } from "../../../shared/discovery";
 import { resolveUrl, safeToString } from "./utils";
 import { AUTO_FINISH } from "./dom";
@@ -206,12 +207,12 @@ async function _runBrowserInFrame(payloadObj: any, selection: any) {
             onAssert: function(context: any) {
                 var actx = context && context.v ? context.v : context;
                 var errorText = (actx && actx.error) ? safeToString(actx.error && actx.error.message ? actx.error.message : actx.error) : "";
-                _queueLifecycleEvent({
+                _queueLifecycleEvent(addAssertionValues({
                     kind: "assert",
                     passed: !!(actx && actx.passed),
                     label: createAssertionLabel(actx),
                     errorText: errorText
-                });
+                }, actx && actx.error));
             }
         });
     }
