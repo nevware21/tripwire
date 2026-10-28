@@ -37,6 +37,7 @@
 
 export { IFsEntry } from "./ux/interfaces/IFsEntry";
 export { BrowserUiStyle } from "./ux/types/BrowserUiStyle";
+export { BrowserUiColorScheme, BrowserUiVision, IBrowserUiTheme } from "./ux/types/BrowserUiTheme";
 export { IRunnerUxProvider } from "./interfaces/IRunnerUxProvider";
 export { ITripwireModule } from "./interfaces/ITripwireModule";
 export { IParsedArgs } from "./interfaces/IParsedArgs";

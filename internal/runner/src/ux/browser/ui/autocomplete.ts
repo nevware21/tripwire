@@ -23,6 +23,63 @@ export interface IAutocompleteItem {
     kind?: string;
 }
 
+/** How a {@link createAutocomplete} list behaves. */
+export interface IAutocompleteOptions {
+    // Open the list as soon as the input takes focus (the default), rather than only on a click,
+    // ArrowDown or typing -- false for an input that takes focus as a dialog opens
+    openOnFocus?: boolean;
+}
+
+/** A {@link createAutocomplete} list, for its owner to close -- when the dialog holding it closes, say. */
+export interface IAutocomplete {
+    close: () => void;
+}
+
+/**
+ * Fills `target` with `label`, marking (in `<mark>` elements) every place a term of `query` appears
+ * in it, so a row shows why it matched. The picker matches terms in any order, so each term is marked
+ * wherever it occurs. Without a match, or a query, the label is plain text.
+ */
+export function _fillHighlighted(target: HTMLElement, label: string, query: string): void {
+    const terms = String(query || "").toLowerCase().split(/\s+/).filter((term) => !!term);
+    const lower = label.toLowerCase();
+    const marked: boolean[] = [];
+    let any = false;
+
+    terms.forEach((term) => {
+        let at = lower.indexOf(term);
+        while (at !== -1) {
+            for (let lp = at; lp < at + term.length; lp++) {
+                marked[lp] = true;
+            }
+
+            // From the next character, not the end of this match, so an overlapping one is marked too
+            any = true;
+            at = lower.indexOf(term, at + 1);
+        }
+    });
+
+    if (!any) {
+        target.textContent = label;
+        return;
+    }
+
+    target.textContent = "";
+    let start = 0;
+    while (start < label.length) {
+        const on = !!marked[start];
+        let end = start;
+        while (end < label.length && !!marked[end] === on) {
+            end++;
+        }
+
+        const part = document.createElement(on ? "mark" : "span");
+        part.textContent = label.substring(start, end);
+        target.appendChild(part);
+        start = end;
+    }
+}
+
 /**
  * Wires a plain text input up to a custom, in-page suggestion dropdown -- deliberately not
  * `<input list>` + `<datalist>`, whose suggestion popup is OS-native chrome with no CSS hook in
@@ -38,8 +95,11 @@ export interface IAutocompleteItem {
  * {@link AUTOCOMPLETE_KIND_ATTR}) and dispatches a real "change" event so existing "change"
  * listeners on `input` keep working unchanged -- deliberately not "input" too, since that would
  * immediately re-trigger this module's own input listener and reopen the list it just closed.
+ *
+ * A closed list opens again on a click in the input or on ArrowDown, as the WAI-ARIA combobox
+ * pattern has it, so Escape never leaves the keyboard without a way back to the suggestions.
  */
-export function createAutocomplete(input: HTMLInputElement, listEl: HTMLElement, getCandidates: (query: string) => IAutocompleteItem[]): void {
+export function createAutocomplete(input: HTMLInputElement, listEl: HTMLElement, getCandidates: (query: string) => IAutocompleteItem[], options?: IAutocompleteOptions): IAutocomplete {
     let items: IAutocompleteItem[] = [];
     let activeIndex = -1;
 
@@ -48,9 +108,16 @@ export function createAutocomplete(input: HTMLInputElement, listEl: HTMLElement,
         activeIndex = -1;
         listEl.textContent = "";
 
+        // A value picked from the list is a choice rather than a search: the list reopened on it
+        // offers the other rows too, and marking the choice's words in them would read as a match
+        const query = candidates.some((item) => item.value === input.value) ? "" : input.value;
+
         if (!candidates.length) {
             const empty = document.createElement("div");
             empty.className = "autocomplete-empty";
+            // An option that cannot be chosen, so the listbox holds only options and says why it is empty
+            empty.setAttribute("role", "option");
+            empty.setAttribute("aria-disabled", "true");
             empty.textContent = "No matches";
             listEl.appendChild(empty);
             return;
@@ -60,11 +127,12 @@ export function createAutocomplete(input: HTMLInputElement, listEl: HTMLElement,
             const item = items[i];
             const row = document.createElement("div");
             row.className = "autocomplete-item";
+            row.id = (listEl.id || "autocomplete") + "-option-" + i;
             row.setAttribute("role", "option");
 
             const text = document.createElement("span");
             text.className = "autocomplete-text";
-            text.textContent = item.label;
+            _fillHighlighted(text, item.label, query);
             row.appendChild(text);
 
             if (item.kind) {
@@ -87,6 +155,8 @@ export function createAutocomplete(input: HTMLInputElement, listEl: HTMLElement,
         if (candidates.length > items.length) {
             const more = document.createElement("div");
             more.className = "autocomplete-more";
+            more.setAttribute("role", "option");
+            more.setAttribute("aria-disabled", "true");
             more.textContent = (candidates.length - items.length) + " more -- keep typing to narrow";
             listEl.appendChild(more);
         }
@@ -116,11 +186,16 @@ export function createAutocomplete(input: HTMLInputElement, listEl: HTMLElement,
         const rows = listEl.querySelectorAll(".autocomplete-item");
         for (let i = 0; i < rows.length; i++) {
             rows[i].classList.toggle("active", i === index);
+            rows[i].setAttribute("aria-selected", i === index ? "true" : "false");
         }
         activeIndex = index;
         const activeRow = rows[index];
         if (activeRow) {
             (activeRow as HTMLElement).scrollIntoView({ block: "nearest" });
+            // Focus stays in the input, so this is how a screen reader learns which row is highlighted
+            input.setAttribute("aria-activedescendant", (activeRow as HTMLElement).id);
+        } else {
+            input.removeAttribute("aria-activedescendant");
         }
     }
 
@@ -139,6 +214,7 @@ export function createAutocomplete(input: HTMLInputElement, listEl: HTMLElement,
     function close() {
         _setOpen(false);
         activeIndex = -1;
+        input.removeAttribute("aria-activedescendant");
     }
 
     function select(item: IAutocompleteItem) {
@@ -161,10 +237,23 @@ export function createAutocomplete(input: HTMLInputElement, listEl: HTMLElement,
         _setOpen(true);
     });
 
-    input.addEventListener("focus", open);
+    if (!options || options.openOnFocus !== false) {
+        input.addEventListener("focus", open);
+    }
+
+    input.addEventListener("click", () => {
+        if (!listEl.classList.contains("open")) {
+            open();
+        }
+    });
 
     input.addEventListener("keydown", (evt) => {
         if (!listEl.classList.contains("open")) {
+            if (evt.key === "ArrowDown") {
+                evt.preventDefault();
+                open();
+            }
+
             return;
         }
 
@@ -192,4 +281,6 @@ export function createAutocomplete(input: HTMLInputElement, listEl: HTMLElement,
             close();
         }
     });
+
+    return { close: close };
 }

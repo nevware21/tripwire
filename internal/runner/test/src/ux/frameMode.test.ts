@@ -170,7 +170,11 @@ describe("ux frame mode", function () {
 
         const asserts = events.filter((evt) => evt.kind === "assert");
         assert.isTrue(asserts[0].passed);
-        assert.includes(asserts.filter((evt) => !evt.passed)[0].errorText, "expected 1 to equal 2");
+        const failed = asserts.filter((evt) => !evt.passed)[0];
+        assert.includes(failed.errorText, "expected 1 to equal 2");
+        assert.equal(failed.expected, "2", "the values go with the failure, for the page to show");
+        assert.equal(failed.actual, "1");
+        assert.isFalse("expected" in asserts[0], "a pass has none");
     });
 
     it("sends the reporter's console output to the page", async () => {

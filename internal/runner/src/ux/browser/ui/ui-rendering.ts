@@ -6,16 +6,20 @@
  * Licensed under the MIT license.
  */
 
-import { resultsEl } from "./dom";
+import { failedOnlyToggle, resultsEl, runSummaryEl } from "./dom";
 import { SuiteNode, TestNode, MAX_ASSERTIONS_PER_TEST } from "./shared";
-import { suiteState, testState, setLastObservedTestKey, incrementAssertionCount, setAssertionCount, assertionCount, setAssertionFlushScheduled, highlightSuiteTitle, highlightTestTitle } from "./state";
+import {
+    suiteState, testState, setLastObservedTestKey, incrementAssertionCount, setAssertionCount, assertionCount, setAssertionFlushScheduled,
+    highlightSuiteTitle, highlightTestTitle, runCounts, resetRunCounts
+} from "./state";
 import { getSuiteDisplayName, makeSuiteKey, getSuiteKeyChain, makeTestKey } from "../../../shared/suiteNames";
-import { _wasAtBottom, _stickToBottom, _setDurationText, _setStatusClass, getStatusMarker, formatCount, createRerunButton } from "./utils";
+import { _wasAtBottom, _stickToBottom, _setDurationText, _setStatusClass, getStatusMarker, formatCount, formatDuration, createRerunButton } from "./utils";
 import { assertionDomQueue } from "./state";
+import { updateFilterNote } from "./filtering";
 
 /*
- * Keeping the results list pinned to the bottom means reading its scroll position before a node
- * is added and writing it back afterwards. The read is a forced synchronous layout of the whole
+ * Keeping the results pinned to the bottom means reading the scroll position before a node is
+ * added and writing it back afterwards. The read is a forced synchronous layout of the whole
  * results list, and the list is dirty by then -- so doing it per node is quadratic: every one of
  * ~2700 tests pays a full layout of a tree that ends up at ~38,000 elements.
  *
@@ -27,25 +31,35 @@ import { assertionDomQueue } from "./state";
 var _batchDepth = 0;
 var _batchPinned = false;
 
+/*
+ * The results scroll with the page rather than inside a panel of their own (a second scrollbar
+ * inside the page's), so the position kept pinned to the bottom is the page's.
+ */
+function _scrollHost(): any {
+    var doc: any = typeof document !== "undefined" ? document : null;
+
+    return doc ? (doc.scrollingElement || doc.documentElement || null) : null;
+}
+
 export function beginRenderBatch() {
     if (_batchDepth++ === 0) {
-        _batchPinned = _wasAtBottom(resultsEl);
+        _batchPinned = _wasAtBottom(_scrollHost());
     }
 }
 
 export function endRenderBatch() {
     if (_batchDepth > 0 && --_batchDepth === 0) {
-        _stickToBottom(resultsEl, _batchPinned);
+        _stickToBottom(_scrollHost(), _batchPinned);
     }
 }
 
 function _pinStart(): boolean {
-    return _batchDepth > 0 ? _batchPinned : _wasAtBottom(resultsEl);
+    return _batchDepth > 0 ? _batchPinned : _wasAtBottom(_scrollHost());
 }
 
 function _pinEnd(pinned: boolean) {
     if (_batchDepth === 0) {
-        _stickToBottom(resultsEl, pinned);
+        _stickToBottom(_scrollHost(), pinned);
     }
 }
 
@@ -71,17 +85,43 @@ function _isExactHighlightTarget(nodeTitle: string): boolean {
     return !!nodeTitle && !!target && target === nodeTitle;
 }
 
+/**
+ * A suite's counts, worded: how far along it is while it runs, and what happened once it is done --
+ * "2 passed · 1 failed" rather than "3/3 tests", which read as all passed next to a failed suite.
+ */
 export function updateSuiteMeta(suite: SuiteNode) {
     if (!suite || !suite.meta) {
         return;
     }
 
-    var text = suite.done + "/" + suite.total + " tests";
-    if (suite.childSuiteCount > 0) {
-        text += " \u2022 " + formatCount(suite.childSuiteCount, "child suite", "child suites");
+    var parts: string[] = [];
+    if (suite.total > 0) {
+        if (suite.done < suite.total) {
+            parts.push(suite.done + " of " + suite.total + " done");
+        } else {
+            var skipped = suite.skipped || 0;
+            var passed = suite.done - suite.failed - skipped;
+            if (passed > 0 || (!suite.failed && !skipped)) {
+                parts.push(passed + " passed");
+            }
+
+            if (suite.failed > 0) {
+                parts.push(suite.failed + " failed");
+            }
+
+            if (skipped > 0) {
+                parts.push(skipped + " skipped");
+            }
+        }
     }
 
-    suite.meta.textContent = text;
+    if (suite.childSuiteCount > 0) {
+        parts.push(formatCount(suite.childSuiteCount, "child suite", "child suites"));
+    }
+
+    // A suite whose tests have not been drawn yet has nothing to count
+    suite.meta.textContent = parts.join(" · ");
+    suite.meta.style.display = parts.length ? "" : "none";
 }
 
 export function setSuiteMarker(suite: SuiteNode, status: any) {
@@ -91,11 +131,11 @@ export function setSuiteMarker(suite: SuiteNode, status: any) {
 
     suite.marker.className = "suite-marker marker-" + status;
     if (status === "passed") {
-        suite.marker.textContent = "\u2713";
+        suite.marker.textContent = "✓";
     } else if (status === "failed") {
-        suite.marker.textContent = "\u2717";
-    } else if (status === "pending") {
-        suite.marker.textContent = "\u25cb";
+        suite.marker.textContent = "✗";
+    } else if (status === "pending" || status === "skipped") {
+        suite.marker.textContent = "○";
     } else {
         suite.marker.textContent = "";
     }
@@ -109,7 +149,7 @@ export function ensureSuiteNode(parts: any): SuiteNode {
     }
 
     var details = document.createElement("details");
-    details.className = "suite-node suite-running suite-tone-" + ((parts.length % 3) + 1);
+    details.className = "suite-node suite-running";
     details.open = true;
 
     var summary = document.createElement("summary");
@@ -139,7 +179,6 @@ export function ensureSuiteNode(parts: any): SuiteNode {
 
     var meta = document.createElement("span");
     meta.className = "status-chip status-pending";
-    meta.textContent = "0/0 tests";
 
     var duration = document.createElement("span");
     duration.className = "duration-label";
@@ -194,6 +233,7 @@ export function ensureSuiteNode(parts: any): SuiteNode {
         total: 0,
         done: 0,
         failed: 0,
+        skipped: 0,
         childSuiteCount: 0
     };
 
@@ -226,15 +266,27 @@ export function ensureTestNode(suiteParts: any, testName: any): TestNode {
     var wasPinned = _pinStart();
 
     var details = document.createElement("details");
-    details.className = "test-node test-running test-tone-" + (((suite.total % 3) + 1));
+    details.className = "test-node test-running";
     details.open = true;
 
     var summary = document.createElement("summary");
     summary.className = "test-summary";
 
+    // The status glyph is its own element, so it takes the status colour the way a suite's does
     var label = document.createElement("span");
     label.className = "test-label";
-    label.textContent = getStatusMarker("running") + " " + (testName || "(unnamed test)");
+
+    var marker = document.createElement("span");
+    marker.className = "test-marker marker-running";
+    marker.setAttribute("aria-hidden", "true");
+    marker.textContent = getStatusMarker("running");
+
+    var name = document.createElement("span");
+    name.className = "test-name";
+    name.textContent = testName || "(unnamed test)";
+
+    label.appendChild(marker);
+    label.appendChild(name);
 
     var chip = document.createElement("span");
     chip.className = "status-chip status-running";
@@ -249,10 +301,14 @@ export function ensureTestNode(suiteParts: any, testName: any): TestNode {
     var testFullTitle = testSuiteTitle ? testSuiteTitle + " > " + resolvedTestName : resolvedTestName;
     var testRerunBtn = createRerunButton(testSuiteTitle, testFullTitle, "Run only this test again");
 
+    var statusWrap = document.createElement("span");
+    statusWrap.className = "test-statuses";
+    statusWrap.appendChild(duration);
+    statusWrap.appendChild(chip);
+    statusWrap.appendChild(testRerunBtn);
+
     summary.appendChild(label);
-    summary.appendChild(duration);
-    summary.appendChild(chip);
-    summary.appendChild(testRerunBtn);
+    summary.appendChild(statusWrap);
 
     var body = document.createElement("div");
     body.className = "test-body";
@@ -280,6 +336,7 @@ export function ensureTestNode(suiteParts: any, testName: any): TestNode {
         suiteKey: suite.key,
         details: details,
         label: label,
+        marker: marker,
         testName: testName || "(unnamed test)",
         suiteParts: suiteParts.slice(0),
         duration: duration,
@@ -299,8 +356,9 @@ export function setTestStatus(testNode: TestNode, status: any, updateFilter: (no
     testNode.status = status;
     testNode.chip.className = "status-chip status-" + status;
     testNode.chip.textContent = status;
-    if (testNode.label) {
-        testNode.label.textContent = getStatusMarker(status) + " " + testNode.testName;
+    if (testNode.marker) {
+        testNode.marker.className = "test-marker marker-" + status;
+        testNode.marker.textContent = getStatusMarker(status);
     }
     _setDurationText(testNode.duration, testNode.durationMs);
     _setStatusClass(testNode.details, "test", status);
@@ -309,19 +367,26 @@ export function setTestStatus(testNode: TestNode, status: any, updateFilter: (no
     var fullTitle = suiteTitle ? suiteTitle + " > " + testNode.testName : testNode.testName;
     var isHighlighted = _isExactHighlightTarget(fullTitle);
 
-    // Collapse on pass so a healthy run reads as a short list of closed rows; failed/running
-    // tests stay expanded since that's exactly when you want the assertion trail visible
-    // without an extra click. Assertions are still recorded into the DOM either way (see
+    // Collapse on pass (or skip) so a healthy run reads as a short list of closed rows;
+    // failed/running tests stay expanded since that's exactly when you want the assertion trail
+    // visible without an extra click. Assertions are still recorded into the DOM either way (see
     // flushAssertionDomQueue) -- collapsing here only affects visibility, not data. The test the
     // current run was specifically scoped to (a "run again" click, or a URL hash a page load
     // restored) stays expanded regardless -- the user asked to see this exact one.
-    testNode.details.open = status !== "passed" || isHighlighted;
+    testNode.details.open = (status !== "passed" && status !== "skipped") || isHighlighted;
 
     if (isHighlighted) {
         testNode.details.scrollIntoView({ block: "center" });
     }
 
     updateFilter(testNode);
+}
+
+function _setSuiteState(suite: SuiteNode, status: string, chipText: string) {
+    suite.chip.className = "status-chip status-" + status;
+    suite.chip.textContent = chipText;
+    setSuiteMarker(suite, status);
+    _setStatusClass(suite.details, "suite", status);
 }
 
 export function updateSuiteStatus(suiteKey: any) {
@@ -333,25 +398,17 @@ export function updateSuiteStatus(suiteKey: any) {
     updateSuiteMeta(suite);
 
     if (suite.done < suite.total) {
-        suite.chip.className = "status-chip status-running";
-        suite.chip.textContent = "running " + suite.done + "/" + suite.total;
-        setSuiteMarker(suite, "running");
-        _setStatusClass(suite.details, "suite", "running");
+        _setSuiteState(suite, "running", "running " + suite.done + "/" + suite.total);
         suite.details.open = true;
         return;
     }
 
     if (suite.failed > 0) {
-        suite.chip.className = "status-chip status-failed";
-        suite.chip.textContent = "failed";
-        setSuiteMarker(suite, "failed");
-        _setStatusClass(suite.details, "suite", "failed");
+        _setSuiteState(suite, "failed", "failed");
         suite.details.open = true;
     } else {
-        suite.chip.className = "status-chip status-passed";
-        suite.chip.textContent = "passed";
-        setSuiteMarker(suite, "passed");
-        _setStatusClass(suite.details, "suite", "passed");
+        var allSkipped = suite.done > 0 && (suite.skipped || 0) === suite.done;
+        _setSuiteState(suite, allSkipped ? "skipped" : "passed", allSkipped ? "skipped" : "passed");
 
         var suiteSelectionTitle = suite.parts.join(" > ");
         // The synthetic root pseudo-suite (parts.length === 0, "(default suite)") has no
@@ -377,6 +434,114 @@ export function updateSuiteStatus(suiteKey: any) {
     _setDurationText(suite.duration, suite.durationMs);
 }
 
+/**
+ * An assertion's outcome and message: the ✓ or ✗ everyone sees, and the word a screen reader reads
+ * in its place -- "check mark" and "ballot x" do not say passed and failed.
+ */
+function _appendOutcome(target: HTMLElement, passed: boolean, message: string) {
+    var mark = document.createElement("span");
+    mark.className = "assert-mark";
+    mark.setAttribute("aria-hidden", "true");
+    mark.textContent = passed ? "✓ " : "✗ ";
+
+    var outcome = document.createElement("span");
+    outcome.className = "sr-only";
+    outcome.textContent = passed ? "Passed: " : "Failed: ";
+
+    target.appendChild(mark);
+    target.appendChild(outcome);
+    target.appendChild(document.createTextNode(message));
+}
+
+/**
+ * One assertion's row. A passing one, or a failure with nothing more to show, is a single line. A
+ * failure's message is the error's own -- which already carries the assertion's message, so it is
+ * not repeated -- with the expected and actual values side by side when the error has them, and the
+ * rest of tripwire's description of the failure (after its " ::: " marker) folded away under
+ * "Details".
+ */
+function _createAssertItem(passed: boolean, label: string, errorText: string, expected?: string, actual?: string): HTMLElement {
+    var item = document.createElement("li");
+    item.className = "assert-item " + (passed ? "assert-pass" : "assert-fail");
+
+    var text = errorText || "";
+    var split = text.indexOf(" ::: ");
+    var errorMessage = split === -1 ? text : text.substring(0, split);
+    var detail = split === -1 ? "" : text.substring(split + 5);
+    var message = label || "(assertion)";
+    if (errorMessage) {
+        message = (message === "(assertion)" || errorMessage.indexOf(message) !== -1) ? errorMessage : message + " -> " + errorMessage;
+    }
+
+    var hasValues = expected !== undefined || actual !== undefined;
+    if (!hasValues && !detail) {
+        _appendOutcome(item, passed, message);
+        return item;
+    }
+
+    var line = document.createElement("div");
+    line.className = "assert-message";
+    _appendOutcome(line, passed, message);
+    item.appendChild(line);
+
+    if (hasValues) {
+        var values = document.createElement("div");
+        values.className = "assert-values";
+        [ [ "Expected", expected ], [ "Actual", actual ] ].forEach(function(pair) {
+            if (pair[1] === undefined) {
+                return;
+            }
+
+            var key = document.createElement("span");
+            key.className = "assert-key";
+            key.textContent = pair[0];
+            var value = document.createElement("code");
+            value.className = "assert-value";
+            value.textContent = String(pair[1]);
+            values.appendChild(key);
+            values.appendChild(value);
+        });
+        item.appendChild(values);
+    }
+
+    if (detail) {
+        var more = document.createElement("details");
+        more.className = "assert-details";
+        var summary = document.createElement("summary");
+        summary.textContent = "Details";
+        var pre = document.createElement("pre");
+        // It scrolls when long, so it takes focus: the keyboard can scroll it too
+        pre.setAttribute("tabindex", "0");
+        pre.textContent = detail;
+        more.appendChild(summary);
+        more.appendChild(pre);
+        item.appendChild(more);
+    }
+
+    return item;
+}
+
+function _appendAssertItem(testNode: TestNode, item: HTMLElement) {
+    testNode.assertions.appendChild(item);
+    testNode.assertionCount++;
+
+    while (testNode.assertions.childElementCount > MAX_ASSERTIONS_PER_TEST) {
+        var firstChild = testNode.assertions.firstElementChild;
+        if (firstChild) {
+            testNode.assertions.removeChild(firstChild);
+        }
+    }
+
+    incrementAssertionCount();
+}
+
+function _showAssertionCount(assertCountEl: HTMLElement | null) {
+    if (assertCountEl) {
+        var count = assertionCount;
+        assertCountEl.textContent = count + " assertion" + (count === 1 ? "" : "s");
+    }
+}
+
 export function flushAssertionDomQueue(assertCountEl: HTMLElement | null) {
     if (!assertionDomQueue.length) {
         // Still a flush: the frame that was asked for has now run, so the next addAssertion()
@@ -400,28 +565,11 @@ export function flushAssertionDomQueue(assertCountEl: HTMLElement | null) {
             continue;
         }
 
-        var item = document.createElement("li");
-        item.className = "assert-item " + (entry.passed ? "assert-pass" : "assert-fail");
-        item.textContent = (entry.passed ? "\u2713 " : "\u2717 ") + entry.label + (entry.errorText ? " -> " + entry.errorText : "");
-        node.assertions.appendChild(item);
-        node.assertionCount++;
-
-        while (node.assertions.childElementCount > MAX_ASSERTIONS_PER_TEST) {
-            var firstChild = node.assertions.firstElementChild;
-            if (firstChild) {
-                node.assertions.removeChild(firstChild);
-            }
-        }
-
-        incrementAssertionCount();
+        _appendAssertItem(node, _createAssertItem(entry.passed, entry.label, entry.errorText, entry.expected, entry.actual));
     }
 
     _pinEnd(wasPinned);
-
-    if (assertCountEl) {
-        var count = assertionCount;
-        assertCountEl.textContent = count + " assertion" + (count === 1 ? "" : "s");
-    }
+    _showAssertionCount(assertCountEl);
 
     // Allow the next addAssertion() call to schedule another flush -- without this, only the
     // assertions queued before this very first rAF callback fired would ever get rendered;
@@ -435,25 +583,57 @@ export function appendSyntheticAssertion(testNode: TestNode, passed: boolean, la
     }
 
     var wasPinned = _pinStart();
-    var item = document.createElement("li");
-    item.className = "assert-item " + (passed ? "assert-pass" : "assert-fail");
-    item.textContent = (passed ? "\u2713 " : "\u2717 ") + (label || "(assertion)") + (errorText ? " -> " + errorText : "");
-    testNode.assertions.appendChild(item);
-    testNode.assertionCount++;
+    _appendAssertItem(testNode, _createAssertItem(passed, label, errorText));
+    _pinEnd(wasPinned);
+    _showAssertionCount(assertCountEl);
+}
 
-    while (testNode.assertions.childElementCount > MAX_ASSERTIONS_PER_TEST) {
-        var firstChild = testNode.assertions.firstElementChild;
-        if (firstChild) {
-            testNode.assertions.removeChild(firstChild);
-        }
+function _summaryChip(className: string, text: string, tagName?: string): HTMLElement {
+    var chip = document.createElement(tagName || "span");
+    chip.className = "summary-chip " + className;
+    chip.textContent = text;
+    (runSummaryEl as HTMLElement).appendChild(chip);
+
+    return chip;
+}
+
+/**
+ * The run's totals beside the status line: passed, failed and skipped, and once the run is over how
+ * long it took. While it runs the counts are the page's own, kept as each test finishes; `final` is
+ * the summary the run reported at the end, which is authoritative. The failed count is a button that
+ * turns "Failed only" on and off (see client.ts).
+ */
+export function updateRunSummary(final?: any) {
+    updateFilterNote();
+    if (!runSummaryEl) {
+        return;
     }
 
-    incrementAssertionCount();
-    _pinEnd(wasPinned);
+    var passed = final ? (final.passed || 0) : runCounts.passed;
+    var failed = final ? (final.failed || 0) : runCounts.failed;
+    var skipped = final ? (final.skipped || 0) + (final.pending || 0) : runCounts.skipped;
 
-    if (assertCountEl) {
-        var count = assertionCount;
-        assertCountEl.textContent = count + " assertion" + (count === 1 ? "" : "s");
+    runSummaryEl.textContent = "";
+    if (!passed && !failed && !skipped) {
+        runSummaryEl.hidden = true;
+        return;
+    }
+
+    runSummaryEl.hidden = false;
+    _summaryChip("summary-passed", passed + " passed");
+    if (failed) {
+        var failedChip = _summaryChip("summary-failed", failed + " failed", "button");
+        failedChip.setAttribute("type", "button");
+        failedChip.setAttribute("title", "Show only the failed tests");
+        failedChip.setAttribute("aria-pressed", failedOnlyToggle && failedOnlyToggle.checked ? "true" : "false");
+    }
+
+    if (skipped) {
+        _summaryChip("summary-skipped", skipped + " skipped");
+    }
+
+    if (final && typeof final.duration === "number") {
+        _summaryChip("summary-duration", formatDuration(final.duration));
     }
 }
 
@@ -465,6 +645,7 @@ export function clearResults(assertCountEl: HTMLElement | null) {
     Object.keys(suiteState).forEach(key => delete suiteState[key]);
     Object.keys(testState).forEach(key => delete testState[key]);
     setAssertionCount(0);
+    resetRunCounts();
     assertionDomQueue.length = 0;
     // The queue is gone, so a frame already requested for it has nothing to do and the flag it
     // guards must not outlive the entries -- see flushAssertionDomQueue.
@@ -473,4 +654,6 @@ export function clearResults(assertCountEl: HTMLElement | null) {
     if (assertCountEl) {
         assertCountEl.textContent = "0 assertions";
     }
+
+    updateRunSummary();
 }

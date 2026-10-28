@@ -14,14 +14,29 @@ import { ensureTestNode } from "./ui-rendering";
 import { assertCountEl } from "./dom";
 import { safeToString } from "./utils";
 import { createAssertionLabel } from "../../../shared/suiteNames";
+import { addAssertionValues, IAssertionValues } from "../../../shared/assertionValues";
 
-export function addAssertion(testKey: any, passed: any, label: any, errorText: any) {
-    assertionDomQueue.push({
+/**
+ * Queues one assertion for drawing. `values` holds a failure's expected and actual values, as the
+ * test frame or worker formatted them (see getAssertionValues); only the ones present are kept.
+ */
+export function addAssertion(testKey: any, passed: any, label: any, errorText: any, values?: IAssertionValues | null) {
+    var entry: any = {
         testKey: testKey,
         passed: !!passed,
         label: label || "(assertion)",
         errorText: errorText || ""
-    });
+    };
+
+    if (values && values.expected !== undefined) {
+        entry.expected = values.expected;
+    }
+
+    if (values && values.actual !== undefined) {
+        entry.actual = values.actual;
+    }
+
+    assertionDomQueue.push(entry);
 
     if (!assertionFlushScheduled) {
         setAssertionFlushScheduled(true);
@@ -50,15 +65,15 @@ export function _handleAssertionEvent(payload: any) {
         return;
     }
 
-    addAssertion(testKey, !!payload.passed, payload.label || "(assertion)", payload.errorText || "");
+    addAssertion(testKey, !!payload.passed, payload.label || "(assertion)", payload.errorText || "", payload);
 }
 
 export function handleAssertion(contextLike: any) {
     var actx = contextLike && contextLike.v ? contextLike.v : contextLike;
     var errorText = (actx && actx.error) ? safeToString(actx.error && actx.error.message ? actx.error.message : actx.error) : "";
-    _handleAssertionEvent({
+    _handleAssertionEvent(addAssertionValues({
         passed: !!(actx && actx.passed),
         label: createAssertionLabel(actx),
         errorText: errorText
-    });
+    }, actx && actx.error));
 }

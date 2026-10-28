@@ -60,34 +60,69 @@ opened (default: `puppeteer`):
 | `open` | Starts the embedded server and opens it in the OS's default browser (`start`/`open`/`xdg-open`). Requires the server to stay running, so `--no-server` is ignored (with a warning) in this mode. |
 | `manual` | Starts the server and prints its URL; you open it yourself. Useful for switching between the `browser`/`worker` tabs from the same session: nothing is built up front -- each target's module graph is built the first time that target is requested from the page, and rebuilt on a later request if its sources have changed. |
 
-An optional `:style` suffix (`classic` or `slate`, default `classic`) picks the UI theme for
-`open`/`manual` sessions -- `--browser-style` sets the same thing independently.
+An optional `:style` suffix (`classic` or `slate`, default `classic`) picks the UI style for
+`open`/`manual` sessions -- `--browser-style` sets the same thing independently. Both styles come
+in every theme -- light, dark, low light and color-blind safe, at any zoom from 50% to 300% --
+which `--browser-theme` picks and the page's own Appearance panel changes: see
+[Themes and accessibility](#themes-and-accessibility).
 
 ### The interactive page
 
 `open` and `manual` launches serve a page from which you run and re-run tests without restarting
 the CLI. One session serves both targets -- `/browser` and `/worker` -- and the page is the same
-on each. Everything on it is keyboard-reachable; the controls, left to right:
+on each. Everything on it is keyboard-reachable; the **Target** picker and the **…** (More actions)
+menu sit at the top right, beside the title, and the controls below them are, left to right:
 
 | Control | What it does |
 |---|---|
-| **Scope** box | Type to search every suite and test at once; terms match in any order, and each row says whether it is a suite or a test. Pick a row (click, or ArrowUp/ArrowDown then Enter; Escape closes the list) to stage it as the scope for the next run. Blank, or text naming no suite or test, means run everything. |
-| **All tests** | Clears the scope without running, then moves focus to Run. Disabled when there is nothing to clear. |
 | **Target** | Switches the page between the browser and worker targets. It is a navigation to the other target's page, not a CLI restart, and the current scope travels with it. |
-| **Failed only** | Hides passing results. A test that is running stays visible until it passes; a suite stays visible while anything inside it does. |
-| **Auto-reload** | On by default. The page asks the server whether the current target's test modules have changed on disk and, when they have, reloads the test frame and re-runs with the current scope. Turn it off to run on demand only; it is a per-page setting, not saved. (`--watch` has no effect on these launches -- this is what replaces it.) |
-| **Run** | Runs the staged scope. The status line reports progress and the assertion count updates live. |
-| **…** (More actions) | A menu: **Reload Tests** discards and reloads the test frame, then re-runs; **Clear Results**; **Clear Logs**; **Finish & Stop Server** sends the last run's result back to the CLI, which prints its report, exits with that run's exit code and stops the server (the page then says it can be closed). Finish is disabled until a run has produced a result. Keyboard: ArrowUp/ArrowDown move and wrap, Home/End jump to the ends, Escape closes and returns focus to the button, and the whole menu is one tab stop. |
+| **…** (More actions) | A menu: **Reload Tests** discards and reloads the test frame, then re-runs; **Auto-reload**, ticked while it is on (by default): the page asks the server whether the current target's test modules have changed on disk and, when they have, reloads the test frame and re-runs with the current scope -- untick it to run on demand only; it is a per-page setting, not saved (`--watch` has no effect on these launches -- this is what replaces it); **Clear Logs**; **Appearance…** opens the panel for the theme, color-blind safe colors and zoom (see [Themes and accessibility](#themes-and-accessibility)); **Finish & Stop Server** sends the last run's result back to the CLI, which prints its report, exits with that run's exit code and stops the server (the page then says it can be closed). Finish is disabled until a run has produced a result. Keyboard: ArrowUp/ArrowDown move and wrap, Home/End jump to the ends, Escape closes and returns focus to the button, and the whole menu is one tab stop. |
+| **Scope** box | Type to search every suite and test at once; terms match in any order, and each row says whether it is a suite or a test. Pick a row (click, or ArrowUp/ArrowDown then Enter; Escape closes the list) to stage it as the scope for the next run. Blank, or text naming no suite or test, means run everything. |
+| **✕** (Clear scope) | At the end of the Scope box while there is a scope: clears it without running, then moves focus to Run. |
+| **Failed only** | Hides passing and skipped results, and says above the results how many it is hiding. A test that is running stays visible until it passes; a suite stays visible while anything inside it does. The failed count in the run summary turns it on and off too. |
+| **Run** | Runs the staged scope. The status line reports progress, the run summary beside it counts the passed, failed and skipped tests as they finish (and adds the run's duration once it ends), and the assertion count updates live. The icon at the end of the status line clears the results. |
 
-Below the controls: the status line and assertion count, the results tree, and a collapsible
-**Runner Log** panel. Every suite and test row in the results has a **run again** control that
-scopes the page to that node and runs it immediately -- the quickest way to iterate on one failing
-test. To get back, use **All tests**.
+When the window is too narrow for a row, its controls fold into the **…** menu rather than the row
+wrapping: **Failed only** from the Scope row, and **Target** from the title row. Each comes back as
+the window widens. In the menu they work as they do on the page -- **Failed only** as a ticked
+entry, **Target** as a choice of the two targets.
+
+The Scope row and the status line stay at the top of the window as the results scroll. Below them:
+the results tree and a collapsible **Runner Log** panel, which shows the reporter's output in the
+colours the CLI's terminal shows it in. Each suite says how many of its tests
+passed, failed and were skipped; a failed assertion shows its message with the expected and actual
+values it compared, and the rest of its description folded under **Details**. Every suite and test
+row in the results has a **run again** control that scopes the page to that node and runs it
+immediately -- the quickest way to iterate on one failing test. To get back, use the **✕** in the Scope box.
 
 The scope lives in the URL hash (`#suite=<id>&test=<id>`, as short hashed ids rather than the
 titles), so a scoped page can be bookmarked, shared, or simply reloaded, and the scope is restored
 once the page has discovered the suite. The hash is replaced in place rather than pushed, so
 picking scopes does not fill the browser's history.
+
+#### Themes and accessibility
+
+The page works from the keyboard alone and with a screen reader. **Tab** moves through everything
+in the order it appears -- the first stop is a **Skip to the results** link -- and results rows open
+and close with **Enter** or **Space**. Every icon button is named; the Scope box announces each
+suggestion as the arrow keys highlight it; the status line announces each change; and an
+assertion is announced as passed or failed, not by its ✓ or ✗.
+
+How the page looks is three settings, in the **Appearance** panel that **…** › **Appearance…**
+opens. The panel is a small dialog rather than more menu entries, so that the theme can be a box
+you search: it opens with focus on the theme, Tab moves through the rest, and Escape (or a click
+outside it) closes it, putting focus back on the **…** button.
+
+| Setting | Choices | `--browser-theme` words |
+|---|---|---|
+| **Theme** | A searchable box: type any part of a theme's name, in any order, or press ArrowDown to list them all, then pick one with Enter or a click. **System** follows the operating system's light or dark setting; **Light**; **Dark**; **Low light** is dark and dimmer, with lower contrast and warmer colors, for a dark room. | `system`, `light`, `dark`, `dim` |
+| **Color-blind safe** | A checkbox: shows passed and failed in blue and orange -- a pair every kind of color blindness tells apart -- in place of green and red: in the results, the run summary and the log. Works with every theme. | `colorblind` (on), `standard` (off) |
+| **Zoom** | **−** and **+** step through 50, 67, 75, 80, 90, 100, 110, 125, 150, 175, 200, 250 and 300%, and **Reset** goes back to the run's zoom. It scales the page's own controls, results and log, and nothing else: it is not the browser's zoom, and never scales a test's own frame or content. A page zoomed past what the window holds takes its narrow layout, as a smaller window would. | Any whole percentage from `50%` to `300%`, eg. `125%` |
+
+`--browser-theme` (or `browserTheme` in a config file) sets how the page opens -- eg.
+`tripwire --target browser --manual-browser --browser-theme dim,colorblind,125%` -- naming any of
+the three settings it wants to change. A choice made in the panel is remembered in that browser and
+wins over the run's setting from then on; choosing what the run set forgets it again.
 
 ## CLI Reference
 
@@ -116,6 +151,7 @@ argument before a `--`, prints the help text and exits 0.
 | `--target <node\|browser\|worker>`, `--env` | Runtime target. Default: `node`. |
 | `--browser-launch <mode[:style]>` | Browser launch mode + optional style for `browser`/`worker` targets. See [Test Targets](#test-targets). |
 | `--browser-style <classic\|slate>` | Browser UI style for interactive sessions. Default: `classic`. |
+| `--browser-theme <list>` | How the interactive page opens: a comma separated list of a color scheme (`system`, `light`, `dark`, or `dim` for low light), a color vision setting (`standard`, `colorblind`) and a zoom, as a whole percentage from `50%` to `300%`, eg. `dim,colorblind,125%`. Replaces only the parts of the config file's `browserTheme` it names. See [Themes and accessibility](#themes-and-accessibility). |
 | `--open-browser` | Alias for `--browser-launch open`. |
 | `--manual-browser` | Alias for `--browser-launch manual`. |
 | `--ux-provider <module>` | Custom browser UX provider module, overriding the built-in one. |
@@ -555,6 +591,7 @@ All fields are optional; every default matches the CLI defaults documented above
 | `target` | `"node" \| "browser" \| "worker"` | Default runtime target. |
 | `browserLaunch` | `"puppeteer" \| "open" \| "manual"` | Default browser launch mode. |
 | `browserStyle` | `"classic" \| "slate"` | Default browser UI style. |
+| `browserTheme` | `string \| string[]` | How the interactive page opens, in the words `--browser-theme` takes: `"dim,colorblind,125%"` or `["dim", "colorblind", "125%"]`. An unknown word, or a zoom outside 50% to 300%, is an error. |
 | `uxProvider` | `string` | Browser UX provider module name. |
 | `project` | `string` | Path to the TypeScript project file. |
 | `tsconfig` | `string \| object` | As a string: an alternate way to set `project` from config (still loses to an explicit CLI `--project`). As an object: compiler-option overrides layered on top of whichever project loads, applied even when `project` came from the CLI. |

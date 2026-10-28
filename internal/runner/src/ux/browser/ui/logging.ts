@@ -10,6 +10,7 @@ import { logsEl } from "./dom";
 import { MAX_LOG_LINES } from "./shared";
 import { logDomQueue, logSendQueue } from "./state";
 import { safeToString, resolveUrl, _wasAtBottom, _stickToBottom } from "./utils";
+import { appendAnsiSegments, toAnsiSegments } from "./ansi";
 
 let logFlushScheduled = false;
 let sendFlushScheduled = false;
@@ -55,8 +56,18 @@ function flushLogDomQueue() {
     while (logDomQueue.length) {
         var entry = logDomQueue.shift() as any;
         var line = document.createElement("div");
+        // In the colours the CLI's terminal shows the same line in. A reporter's blank spacing
+        // line -- which may still carry a colour reset -- stays blank, without the level tag.
+        var segments = toAnsiSegments(String(entry.message));
+        var blank = !segments.some(function(segment) {
+            return !!segment.text.trim();
+        });
         line.className = "log-line log-" + entry.level;
-        line.textContent = "[" + entry.level + "] " + entry.message;
+        line.textContent = blank ? "" : "[" + entry.level + "] ";
+        if (!blank) {
+            appendAnsiSegments(line, segments);
+        }
+
         fragment.appendChild(line);
     }
 

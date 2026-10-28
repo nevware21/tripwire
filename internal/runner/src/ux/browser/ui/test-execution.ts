@@ -6,8 +6,8 @@
  * Licensed under the MIT license.
  */
 
-import { testState, suiteState, setCurrentExecutingTestKey, setLastObservedTestKey, assertionDomQueue } from "./state";
-import { ensureTestNode, ensureSuiteNode, setTestStatus, updateSuiteStatus, appendSyntheticAssertion } from "./ui-rendering";
+import { testState, suiteState, setCurrentExecutingTestKey, setLastObservedTestKey, assertionDomQueue, runCounts } from "./state";
+import { ensureTestNode, ensureSuiteNode, setTestStatus, updateSuiteStatus, appendSyntheticAssertion, updateRunSummary } from "./ui-rendering";
 import { getSuiteKeyChain } from "../../../shared/suiteNames";
 import { assertCountEl } from "./dom";
 import { TestNode } from "./shared";
@@ -55,7 +55,8 @@ function _hasQueuedAssertion(testKey: string): boolean {
 export function _handleTestDone(suiteParts: any, testName: any, endStatus: any, durationMs: any, endErrorText: any, updateFilter: (node: TestNode) => void) {
     var node = ensureTestNode(suiteParts || [], testName || "(unnamed test)");
     var statusText = endStatus ? String(endStatus) : "pending";
-    var status = (statusText === "passed" || statusText === "skipped" || statusText === "pending") ? "passed" : "failed";
+    // A skipped or pending test is shown as skipped: drawing it as passed claimed it had run
+    var status = statusText === "passed" ? "passed" : ((statusText === "skipped" || statusText === "pending") ? "skipped" : "failed");
     var suiteNode = suiteState[node.suiteKey];
 
     setLastObservedTestKey(node.key);
@@ -74,17 +75,23 @@ export function _handleTestDone(suiteParts: any, testName: any, endStatus: any, 
 
     if (!node.doneCounted && suiteNode) {
         node.doneCounted = true;
+        runCounts[status as "passed" | "failed" | "skipped"]++;
+
         var suiteChain = getSuiteKeyChain(node.suiteParts || []);
         for (var sc = 0; sc < suiteChain.length; sc++) {
             var aggSuite = suiteState[suiteChain[sc]];
             if (aggSuite) {
                 aggSuite.done++;
-                if (status !== "passed") {
+                if (status === "failed") {
                     aggSuite.failed++;
+                } else if (status === "skipped") {
+                    aggSuite.skipped = (aggSuite.skipped || 0) + 1;
                 }
                 updateSuiteStatus(aggSuite.key);
             }
         }
+
+        updateRunSummary();
     }
 
     setCurrentExecutingTestKey("");

@@ -9,7 +9,7 @@
 import { assert } from "@nevware21/tripwire";
 import {
     _setDurationText, _setNodeHidden, _setStatusClass, _stickToBottom, _wasAtBottom,
-    createRerunButton, formatCount, getStatusMarker, resolveUrl, safeToString
+    createRerunButton, formatCount, formatDuration, getStatusMarker, resolveUrl, safeToString
 } from "../../../src/ux/browser/ui/utils";
 
 /**
@@ -135,6 +135,17 @@ describe("ux utils", () => {
         });
     });
 
+    describe("formatDuration", () => {
+        it("should give under a second in whole ms, and longer in seconds", () => {
+            assert.equal(formatDuration(0), "0ms");
+            assert.equal(formatDuration(12.6), "13ms");
+            assert.equal(formatDuration(999), "999ms");
+            assert.equal(formatDuration(1000), "1.00s");
+            assert.equal(formatDuration(1534), "1.53s");
+            assert.equal(formatDuration(12345), "12.3s", "one decimal from ten seconds");
+        });
+    });
+
     describe("getStatusMarker", () => {
         it("should give each status its glyph and a hollow circle to anything else", () => {
             assert.equal(getStatusMarker("passed"), "✓");
@@ -166,11 +177,14 @@ describe("ux utils", () => {
     });
 
     describe("_setDurationText", () => {
-        it("should show a positive duration in ms and hide anything else", () => {
+        it("should show a positive duration and hide anything else", () => {
             const el = _element();
             _setDurationText(el, 125);
             assert.equal(el.textContent, "125ms");
             assert.equal(el.style.display, "inline-flex");
+
+            _setDurationText(el, 12345);
+            assert.equal(el.textContent, "12.3s", "a long one in seconds");
 
             _setDurationText(el, 0);
             assert.equal(el.textContent, "");
@@ -191,6 +205,10 @@ describe("ux utils", () => {
             _setStatusClass(el, "chip", "failed");
 
             assert.deepEqual(el.classes, ["chip", "chip-failed"]);
+
+            _setStatusClass(el, "chip", "skipped");
+            _setStatusClass(el, "chip", "passed");
+            assert.deepEqual(el.classes, ["chip", "chip-passed"], "skipped is swapped out too");
         });
     });
 
