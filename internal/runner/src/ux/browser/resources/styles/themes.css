@@ -1,0 +1,109 @@
+/*
+ * The accessibility themes, layered over either style (classic or slate) and loaded after it, so
+ * each of these overrides the style's own colours. The page applies them as attributes, from the
+ * run's --browser-theme or the choice made in its Appearance panel (see ui/theme.ts):
+ *
+ *  - data-theme="dim" on the body: low light -- dark, dimmer and warmer, with lower contrast;
+ *  - data-vision="colorblind" on the body: passed and failed in blue and orange (the Okabe-Ito
+ *    pair, which every kind of color blindness tells apart) in place of green and red, in light
+ *    and dark.
+ *
+ * The panel's zoom is not a theme: it is the body's --ui-zoom, which .app-shell in base.css follows.
+ */
+
+body[data-theme="dim"] {
+  color-scheme: dark;
+  --bg: #121110;
+  --ink: #b8b1a6;
+  --muted: #8c867c;
+  --panel: #1b1a18;
+  --panel-soft: #1f1e1b;
+  --toolbar-bg: rgba(18, 17, 16, 0.95);
+  --border: #36332e;
+  --border-subtle: #2a2824;
+  --accent: #c39a5c;
+  --on-accent: #17140f;
+  --running: #c39a5c;
+  --ok: #8fae7c;
+  --bad: #d48b7b;
+  --on-bad: #17140f;
+  --state-running-bg: #221f1a;
+  --state-passed-bg: #1d211a;
+  --state-failed-bg: #281e1b;
+  --suite-state-passed-bg: #1d211a;
+  --suite-state-failed-bg: #281e1b;
+  --test-state-passed-bg: #1b1a18;
+  --test-state-failed-bg: #30221e;
+  --assert-bg: #171614;
+  --mark-bg: rgba(195, 154, 92, 0.3);
+  --log-bg: #141311;
+  --log-ink: #b8b1a6;
+  --log-error: #dca596;
+  --log-warn: #d4b679;
+}
+
+/* The log's terminal colours, toned down to match */
+body[data-theme="dim"] #logs [class*="ansi-fg-"],
+body[data-theme="dim"] #logs [class*="ansi-bg-"] {
+  filter: saturate(0.6) brightness(0.85);
+}
+
+body[data-vision="colorblind"] {
+  --running: #9e4f86;
+  --ok: #0072b2;
+  --bad: #b34a00;
+  --on-bad: #ffffff;
+  --state-running-bg: #f7eef4;
+  --state-passed-bg: #eaf3fa;
+  --state-failed-bg: #fdf0e6;
+  --suite-state-passed-bg: #eaf3fa;
+  --suite-state-failed-bg: #fdf0e6;
+  --test-state-passed-bg: #ffffff;
+  --test-state-failed-bg: #fbe3d1;
+}
+
+/*
+ * The same, on a dark or low-light page -- chosen in the menu, or by the system setting while the
+ * choice is System. The two rule sets are the same colours: CSS has no way to share them between a
+ * media query and an attribute selector.
+ */
+body[data-vision="colorblind"][data-theme="dark"],
+body[data-vision="colorblind"][data-theme="dim"] {
+  --running: #cc79a7;
+  --ok: #56b4e9;
+  --bad: #e69f00;
+  --on-bad: #1a1206;
+  --state-running-bg: #271a24;
+  --state-passed-bg: #0f2230;
+  --state-failed-bg: #2b2210;
+  --suite-state-passed-bg: #0f2230;
+  --suite-state-failed-bg: #2b2210;
+  --test-state-passed-bg: var(--panel);
+  --test-state-failed-bg: #3a2b0e;
+}
+
+@media (prefers-color-scheme: dark) {
+  body[data-vision="colorblind"]:not([data-theme]) {
+    --running: #cc79a7;
+    --ok: #56b4e9;
+    --bad: #e69f00;
+    --on-bad: #1a1206;
+    --state-running-bg: #271a24;
+    --state-passed-bg: #0f2230;
+    --state-failed-bg: #2b2210;
+    --suite-state-passed-bg: #0f2230;
+    --suite-state-failed-bg: #2b2210;
+    --test-state-passed-bg: var(--panel);
+    --test-state-failed-bg: #3a2b0e;
+  }
+}
+
+/* The log panel is dark in every theme, so its red and green have one replacement each */
+body[data-vision="colorblind"] #logs .ansi-fg-31,
+body[data-vision="colorblind"] #logs .ansi-fg-91 { color: #e69f00; }
+body[data-vision="colorblind"] #logs .ansi-fg-32,
+body[data-vision="colorblind"] #logs .ansi-fg-92 { color: #56b4e9; }
+body[data-vision="colorblind"] #logs .ansi-bg-41,
+body[data-vision="colorblind"] #logs .ansi-bg-101 { background-color: #e69f00; }
+body[data-vision="colorblind"] #logs .ansi-bg-42,
+body[data-vision="colorblind"] #logs .ansi-bg-102 { background-color: #56b4e9; }

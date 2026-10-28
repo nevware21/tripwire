@@ -15,13 +15,34 @@
  * with the node and worker targets.
  */
 
-import { failedOnlyToggle } from "./dom";
-import { testState, suiteState } from "./state";
-import { _setNodeHidden } from "./utils";
+import { failedOnlyToggle, filterNoteEl } from "./dom";
+import { testState, suiteState, runCounts } from "./state";
+import { _setNodeHidden, formatCount } from "./utils";
 import { getSuiteKeyChain } from "../../../shared/suiteNames";
 
 export function _isFailedOnlyEnabled() {
     return !!(failedOnlyToggle && failedOnlyToggle.checked);
+}
+
+/**
+ * Says how many finished tests "Failed only" is hiding, so a nearly empty results panel reads as
+ * filtered rather than broken. It reads the run's counts rather than walking the results: with the
+ * filter on, every finished test that did not fail is hidden.
+ */
+export function updateFilterNote() {
+    if (!filterNoteEl) {
+        return;
+    }
+
+    var hidden = _isFailedOnlyEnabled() ? runCounts.passed + runCounts.skipped : 0;
+    if (hidden > 0) {
+        var kind = runCounts.skipped ? ["passed or skipped test", "passed or skipped tests"] : ["passing test", "passing tests"];
+        filterNoteEl.textContent = formatCount(hidden, kind[0], kind[1]) + " hidden by Failed only";
+        filterNoteEl.hidden = false;
+    } else {
+        filterNoteEl.textContent = "";
+        filterNoteEl.hidden = true;
+    }
 }
 
 export function _shouldShowTestNode(node: any) {
@@ -85,6 +106,8 @@ export function applyFailedOnlyFilter() {
 
         _refreshSuiteVisibility(suiteNode);
     }
+
+    updateFilterNote();
 }
 
 /**

@@ -1,21 +1,19 @@
 body.style-slate {
+  color-scheme: light;
   --bg: linear-gradient(140deg, #edf2f7 0%, #dbe4ee 100%);
   --ink: #111827;
   --muted: #4b5563;
   --panel: #f9fbff;
   --panel-soft: #f3f6fb;
+  --toolbar-bg: rgba(237, 242, 247, 0.94);
   --border: #c7d2df;
   --border-subtle: #d9e1eb;
   --accent: #0f766e;
+  --on-accent: #ffffff;
   --running: #0f766e;
   --ok: #047857;
   --bad: #b91c1c;
-  --suite-tone-1: #0f766e;
-  --suite-tone-2: #1d4ed8;
-  --suite-tone-3: #7c3aed;
-  --test-tone-1: #0284c7;
-  --test-tone-2: #059669;
-  --test-tone-3: #9333ea;
+  --on-bad: #ffffff;
   --state-running-bg: #f0f9ff;
   --state-passed-bg: #ecfdf5;
   --state-failed-bg: #fef2f2;
@@ -23,8 +21,79 @@ body.style-slate {
   --suite-state-failed-bg: #fef2f2;
   --test-state-passed-bg: #ffffff;
   --test-state-failed-bg: #fee2e2;
+  --assert-bg: #ffffff;
+  --mark-bg: rgba(250, 204, 21, 0.45);
   --log-bg: #111827;
   --log-ink: #d1d5db;
   --log-error: #fecaca;
   --log-warn: #fde68a;
+}
+
+/*
+ * Dark, chosen in the page's menu (Theme > Dark), or by the system setting while the choice is
+ * System. The two rule sets are the same colours: CSS has no way to share them between a media
+ * query and an attribute selector.
+ */
+body.style-slate[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: linear-gradient(140deg, #0f1418 0%, #151d24 100%);
+  --ink: #e2e8f0;
+  --muted: #94a3b8;
+  --panel: #161f27;
+  --panel-soft: #1a242d;
+  --toolbar-bg: rgba(15, 20, 24, 0.94);
+  --border: #2d3b47;
+  --border-subtle: #24313b;
+  --accent: #2dd4bf;
+  --on-accent: #0b1014;
+  --running: #2dd4bf;
+  --ok: #34d399;
+  --bad: #f87171;
+  --on-bad: #1a0b0b;
+  --state-running-bg: #10262a;
+  --state-passed-bg: #0f2620;
+  --state-failed-bg: #2a1618;
+  --suite-state-passed-bg: #0f2620;
+  --suite-state-failed-bg: #2a1618;
+  --test-state-passed-bg: #161f27;
+  --test-state-failed-bg: #3a1a1e;
+  --assert-bg: #111a21;
+  --mark-bg: rgba(250, 204, 21, 0.3);
+  --log-bg: #0b1014;
+  --log-ink: #d1d5db;
+  --log-error: #fecaca;
+  --log-warn: #fde68a;
+}
+
+@media (prefers-color-scheme: dark) {
+  body.style-slate:not([data-theme]) {
+    color-scheme: dark;
+    --bg: linear-gradient(140deg, #0f1418 0%, #151d24 100%);
+    --ink: #e2e8f0;
+    --muted: #94a3b8;
+    --panel: #161f27;
+    --panel-soft: #1a242d;
+    --toolbar-bg: rgba(15, 20, 24, 0.94);
+    --border: #2d3b47;
+    --border-subtle: #24313b;
+    --accent: #2dd4bf;
+    --on-accent: #0b1014;
+    --running: #2dd4bf;
+    --ok: #34d399;
+    --bad: #f87171;
+    --on-bad: #1a0b0b;
+    --state-running-bg: #10262a;
+    --state-passed-bg: #0f2620;
+    --state-failed-bg: #2a1618;
+    --suite-state-passed-bg: #0f2620;
+    --suite-state-failed-bg: #2a1618;
+    --test-state-passed-bg: #161f27;
+    --test-state-failed-bg: #3a1a1e;
+    --assert-bg: #111a21;
+    --mark-bg: rgba(250, 204, 21, 0.3);
+    --log-bg: #0b1014;
+    --log-ink: #d1d5db;
+    --log-error: #fecaca;
+    --log-warn: #fde68a;
+  }
 }

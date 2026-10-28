@@ -136,6 +136,8 @@ describe("client worker runner", function () {
         const failed = asserts.filter((msg) => !msg.passed)[0];
         assert.equal(failed.testName, "fails");
         assert.includes(failed.errorText, "expected 1 to equal 2");
+        assert.equal(failed.expected, "2", "the values go with the failure, for the page to show");
+        assert.equal(failed.actual, "1");
     });
 
     it("sends the reporter's console output to the page", async () => {

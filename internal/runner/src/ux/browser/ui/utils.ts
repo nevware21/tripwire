@@ -38,6 +38,16 @@ export function formatCount(value: any, singular: any, plural: any) {
     return value + " " + (value === 1 ? singular : plural);
 }
 
+/** A run's or a test's duration for reading: milliseconds under a second, seconds above. */
+export function formatDuration(ms: number) {
+    return ms < 1000 ? Math.round(ms) + "ms" : (ms / 1000).toFixed(ms < 10000 ? 2 : 1) + "s";
+}
+
+/** Fires a bubbling `type` event at `el`, as the browser does when the user changes it. */
+export function fireEvent(el: HTMLElement, type: string) {
+    el.dispatchEvent(new Event(type, { bubbles: true }));
+}
+
 export function _wasAtBottom(element: any) {
     if (!element) {
         return false;
@@ -58,7 +68,7 @@ export function _setDurationText(element: any, duration: any) {
     }
 
     if (typeof duration === "number" && duration > 0) {
-        element.textContent = duration + "ms";
+        element.textContent = formatDuration(duration);
         element.style.display = "inline-flex";
     } else {
         element.textContent = "";
@@ -67,7 +77,7 @@ export function _setDurationText(element: any, duration: any) {
 }
 
 export function _setStatusClass(element: any, baseName: any, status: any) {
-    element.classList.remove(baseName + "-running", baseName + "-passed", baseName + "-failed", baseName + "-pending");
+    element.classList.remove(baseName + "-running", baseName + "-passed", baseName + "-failed", baseName + "-pending", baseName + "-skipped");
     element.classList.add(baseName + "-" + status);
 }
 

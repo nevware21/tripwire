@@ -28,6 +28,7 @@ export interface SuiteNode {
     total: number;
     done: number;
     failed: number;
+    skipped: number;
     childSuiteCount: number;
     durationMs?: number;
 }
@@ -37,6 +38,7 @@ export interface TestNode {
     suiteKey: string;
     details: HTMLDetailsElement;
     label: HTMLElement;
+    marker: HTMLElement;
     testName: string;
     suiteParts: string[];
     duration: HTMLElement;
@@ -53,6 +55,8 @@ export interface AssertionEntry {
     passed: boolean;
     label: string;
     errorText: string;
+    expected?: string;
+    actual?: string;
 }
 
 export interface Selection {

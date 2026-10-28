@@ -9,7 +9,7 @@
 import * as state from "./state";
 import * as dom from "./dom";
 import { queueLog, clearLogs, installConsoleBridge, flushLogsNow } from "./logging";
-import { clearResults, beginRenderBatch, endRenderBatch } from "./ui-rendering";
+import { clearResults, beginRenderBatch, endRenderBatch, updateRunSummary } from "./ui-rendering";
 import { setStatus, setButtonsState } from "./ui-control";
 import { applyFailedOnlyFilter, updateFailedOnlyForTest } from "./filtering";
 import { getSelectionFromUi, populateAndRestoreSelection, getScopeCandidates, setUiSelection } from "./selection";
@@ -17,7 +17,9 @@ import { createAutocomplete } from "./autocomplete";
 import { createMenu } from "./menu";
 import { buildTargetUrl } from "./target";
 import { readSelectionIdsFromHash, resolveSelectionFromHashIds, writeSelectionToHash, HashSelectionIds } from "./urlState";
-import { resolveUrl, safeToString } from "./utils";
+import { fireEvent, formatCount, resolveUrl, safeToString } from "./utils";
+import { fitToolbar, initToolbarOverflow } from "./overflow";
+import { createAppearancePanel } from "./appearance";
 import { _handleSuiteStart, _handleSuiteDone, _handleTestStart, _handleTestDone } from "./test-execution";
 import { _handleAssertionEvent } from "./assertions";
 import { frameInitialize } from "./frame-mode";
@@ -278,11 +280,43 @@ async function _initWorkerHost() {
     }
 
     state.setDiscovery(discovery);
+    _updateAppMeta();
     populateAndRestoreSelection(state.discovery, _resolvePendingSelection(state.discovery));
     setButtonsState();
     setStatus("Ready. Starting run...");
 
     _runSelection(getSelectionFromUi(state.discovery), false);
+}
+
+/**
+ * The line under the title: which target this is, the server it was loaded from and how many tests
+ * the run found -- in place of a description of the page itself.
+ */
+function _updateAppMeta() {
+    if (!dom.appMetaEl) {
+        return;
+    }
+
+    var parts = [ dom.TARGET === "worker" ? "Worker target" : "Browser target" ];
+    var loc = globalThis.location;
+    if (loc && loc.host) {
+        parts.push(loc.host);
+    }
+
+    var tests = state.discovery && state.discovery.tests ? state.discovery.tests.length : 0;
+    if (tests) {
+        parts.push(formatCount(tests, "test", "tests"));
+    }
+
+    dom.appMetaEl.textContent = parts.join(" · ");
+}
+
+/** Keeps the run summary's failed count, which also toggles the filter, showing whether it is on. */
+function _syncFailedOnlyChip() {
+    var chip = dom.runSummaryEl ? dom.runSummaryEl.querySelector(".summary-failed") : null;
+    if (chip) {
+        chip.setAttribute("aria-pressed", dom.failedOnlyToggle && dom.failedOnlyToggle.checked ? "true" : "false");
+    }
 }
 
 function _onFrameMessage(evt: MessageEvent) {
@@ -294,6 +328,7 @@ function _onFrameMessage(evt: MessageEvent) {
     if (data.kind === "ready") {
         state.setPayload({ ready: true });
         state.setDiscovery(data.discovery || { suites: [], tests: [] });
+        _updateAppMeta();
         populateAndRestoreSelection(state.discovery, _resolvePendingSelection(state.discovery));
         setButtonsState();
         setStatus("Ready. Starting run...");
@@ -408,10 +443,14 @@ async function _runSelection(selection: any, preserveResults: any) {
         }
 
         state.setLastResult(result || {});
+        if (result && result.summary) {
+            updateRunSummary(result.summary);
+        }
+
         if (state.stopRequested) {
-            setStatus("Run stopped. You can run again or finish.");
+            setStatus("Run stopped. Run again, or choose Finish & Stop Server from the ⋮ menu to send the result to the CLI.");
         } else {
-            setStatus("Run complete. You can run again or click Finish to return to CLI.");
+            setStatus("Run complete. Run again, or choose Finish & Stop Server from the ⋮ menu to send the result to the CLI.");
         }
 
         if (dom.AUTO_FINISH && !state.stopRequested) {
@@ -472,7 +511,7 @@ async function _finishRun() {
 // have been rebuilt since this page loaded (see targetSessionCache.ts's per-target build
 // "generation" counter and the /__tripwire__/check-fresh endpoint) and, if so, reloads and
 // re-runs automatically via the same path the manual "Reload Tests" button uses. Gated behind
-// the autoReloadToggle checkbox (state.autoReloadEnabled, default on) and skipped entirely for
+// the menu's Auto-reload setting (state.autoReloadEnabled, default on) and skipped entirely for
 // AUTO_FINISH (headless/puppeteer) runs, which have no user to reload for and exit shortly
 // after their one run completes anyway.
 // -----------------------------------------------------------------
@@ -671,6 +710,20 @@ function _hostInitialize() {
         dom.finishBtn.addEventListener("click", _finishRun);
     }
 
+    // The summary's failed count is a shortcut for the "Failed only" checkbox
+    if (dom.runSummaryEl) {
+        dom.runSummaryEl.addEventListener("click", function(evt: MouseEvent) {
+            var target = evt.target as HTMLElement | null;
+            if (!dom.failedOnlyToggle || !target || !target.closest || !target.closest(".summary-failed")) {
+                return;
+            }
+
+            // As a click on the checkbox would: its own "change" handler below does the rest
+            dom.failedOnlyToggle.checked = !dom.failedOnlyToggle.checked;
+            fireEvent(dom.failedOnlyToggle, "change");
+        });
+    }
+
     if (dom.reloadBtn) {
         dom.reloadBtn.addEventListener("click", _reloadFrame);
     }
@@ -682,6 +735,21 @@ function _hostInitialize() {
     if (dom.actionsBtn && dom.actionsMenu) {
         createMenu(dom.actionsBtn, dom.actionsMenu);
     }
+
+    createAppearancePanel({
+        item: dom.appearanceItem,
+        button: dom.actionsBtn,
+        panel: dom.appearancePanel,
+        themeInput: dom.themeInput,
+        themeList: dom.themeList,
+        colorblindToggle: dom.colorblindToggle,
+        zoomOut: dom.zoomOutBtn,
+        zoomIn: dom.zoomInBtn,
+        zoomReset: dom.zoomResetBtn,
+        zoomValue: dom.zoomValueEl,
+        // A zoomed page holds fewer controls on a row
+        onZoom: fitToolbar
+    });
 
     // Target switch. Both targets are served by this same session (see ui/target.ts), so moving
     // between them is a plain navigation -- the CLI keeps running and the scope in the hash comes
@@ -709,16 +777,34 @@ function _hostInitialize() {
     }
 
     if (dom.failedOnlyToggle) {
-        dom.failedOnlyToggle.addEventListener("change", applyFailedOnlyFilter);
-    }
-
-    if (dom.autoReloadToggle) {
-        dom.autoReloadToggle.checked = state.autoReloadEnabled;
-        dom.autoReloadToggle.addEventListener("change", function() {
-            state.setAutoReloadEnabled(!!(dom.autoReloadToggle && dom.autoReloadToggle.checked));
+        dom.failedOnlyToggle.addEventListener("change", function() {
+            applyFailedOnlyFilter();
+            _syncFailedOnlyChip();
         });
     }
 
+    // Auto-reload is a setting in the actions menu, ticked while it is on
+    const autoReloadItem = dom.autoReloadItem;
+    if (autoReloadItem) {
+        autoReloadItem.setAttribute("aria-checked", state.autoReloadEnabled ? "true" : "false");
+        autoReloadItem.addEventListener("click", function() {
+            state.setAutoReloadEnabled(!state.autoReloadEnabled);
+            autoReloadItem.setAttribute("aria-checked", state.autoReloadEnabled ? "true" : "false");
+        });
+    }
+
+    // The skip link moves focus to the results without following its href: the hash holds the scope
+    if (dom.skipLink && dom.resultsEl) {
+        dom.skipLink.addEventListener("click", function(evt: MouseEvent) {
+            evt.preventDefault();
+            if (dom.resultsEl) {
+                dom.resultsEl.focus();
+            }
+        });
+    }
+
+    // Last, once every control it may fold is set up and showing its state
+    initToolbarOverflow();
     _startAutoReloadPolling();
 }
 

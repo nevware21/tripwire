@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="982" height="648" viewBox="0 0 982 648" role="img" aria-label="The same test file on node, in Chrome and in a web worker">
+  <title>The same test file on node, in Chrome and in a web worker</title>
+  <rect width="982" height="648" rx="8" fill="#0d1117"/>
+  <text font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="14" xml:space="preserve">
+    <tspan x="16.0" y="28" fill="#8b949e">$</tspan><tspan x="24.4" y="28" fill="#c9d1d9"> npx tripwire -p test/tsconfig.test.json --reporter dot test/src/assert/assert.isString.test.ts</tspan>
+    <tspan x="16.0" y="48" fill="#3fb950">.</tspan><tspan x="24.4" y="48" fill="#3fb950">.</tspan><tspan x="32.8" y="48" fill="#3fb950">.</tspan><tspan x="41.2" y="48" fill="#3fb950">.</tspan><tspan x="49.6" y="48" fill="#3fb950">.</tspan>
+    <tspan x="16.0" y="68" fill="#3fb950">.</tspan><tspan x="24.4" y="68" fill="#3fb950">.</tspan><tspan x="32.8" y="68" fill="#3fb950">.</tspan><tspan x="41.2" y="68" fill="#3fb950">.</tspan><tspan x="49.6" y="68" fill="#3fb950">.</tspan>
+    <tspan x="16.0" y="88" fill="#3fb950">.</tspan><tspan x="24.4" y="88" fill="#3fb950">.</tspan><tspan x="32.8" y="88" fill="#3fb950">.</tspan><tspan x="41.2" y="88" fill="#3fb950">.</tspan><tspan x="49.6" y="88" fill="#3fb950">.</tspan>
+    <tspan x="16.0" y="108" fill="#3fb950">.</tspan><tspan x="24.4" y="108" fill="#3fb950">.</tspan>
+    <tspan x="16" y="128"> </tspan>
+    <tspan x="16.0" y="148" fill="#c9d1d9">  </tspan><tspan x="32.8" y="148" fill="#3fb950">17 passing</tspan><tspan x="116.8" y="148" fill="#c9d1d9">  </tspan><tspan x="133.6" y="148" fill="#8b949e">(32ms)</tspan>
+    <tspan x="16" y="168"> </tspan>
+    <tspan x="16.0" y="188" fill="#8b949e">Total elapsed: </tspan><tspan x="142.0" y="188" fill="#56d4dd">366ms</tspan><tspan x="184.0" y="188" fill="#8b949e"> (</tspan><tspan x="200.8" y="188" fill="#8b949e">prep: </tspan><tspan x="251.2" y="188" fill="#56d4dd">240ms</tspan><tspan x="293.2" y="188" fill="#8b949e">, </tspan><tspan x="310.0" y="188" fill="#8b949e">compile: </tspan><tspan x="385.6" y="188" fill="#56d4dd">91ms</tspan><tspan x="419.2" y="188" fill="#8b949e">, </tspan><tspan x="436.0" y="188" fill="#8b949e">tests: </tspan><tspan x="494.8" y="188" fill="#56d4dd">33ms</tspan><tspan x="528.4" y="188" fill="#8b949e">)</tspan>
+    <tspan x="16" y="208"> </tspan>
+    <tspan x="16.0" y="228" fill="#8b949e">$</tspan><tspan x="24.4" y="228" fill="#c9d1d9"> npx tripwire --target browser -p test/tsconfig.test.json --reporter dot test/src/assert/assert.isString.test.ts</tspan>
+    <tspan x="16.0" y="248" fill="#39c5cf">Launching </tspan><tspan x="100.0" y="248" fill="#56d4dd">browser</tspan><tspan x="158.8" y="248" fill="#39c5cf"> target via Puppeteer...</tspan>
+    <tspan x="16.0" y="268" fill="#3fb950">.</tspan><tspan x="24.4" y="268" fill="#3fb950">.</tspan><tspan x="32.8" y="268" fill="#3fb950">.</tspan><tspan x="41.2" y="268" fill="#3fb950">.</tspan><tspan x="49.6" y="268" fill="#3fb950">.</tspan>
+    <tspan x="16.0" y="288" fill="#3fb950">.</tspan><tspan x="24.4" y="288" fill="#3fb950">.</tspan><tspan x="32.8" y="288" fill="#3fb950">.</tspan><tspan x="41.2" y="288" fill="#3fb950">.</tspan><tspan x="49.6" y="288" fill="#3fb950">.</tspan>
+    <tspan x="16.0" y="308" fill="#3fb950">.</tspan><tspan x="24.4" y="308" fill="#3fb950">.</tspan><tspan x="32.8" y="308" fill="#3fb950">.</tspan><tspan x="41.2" y="308" fill="#3fb950">.</tspan><tspan x="49.6" y="308" fill="#3fb950">.</tspan>
+    <tspan x="16.0" y="328" fill="#3fb950">.</tspan><tspan x="24.4" y="328" fill="#3fb950">.</tspan>
+    <tspan x="16" y="348"> </tspan>
+    <tspan x="16.0" y="368" fill="#c9d1d9">  </tspan><tspan x="32.8" y="368" fill="#3fb950">17 passing</tspan><tspan x="116.8" y="368" fill="#c9d1d9">  </tspan><tspan x="133.6" y="368" fill="#8b949e">(48ms)</tspan>
+    <tspan x="16" y="388"> </tspan>
+    <tspan x="16.0" y="408" fill="#8b949e">Total elapsed: </tspan><tspan x="142.0" y="408" fill="#56d4dd">6967ms</tspan><tspan x="192.4" y="408" fill="#8b949e"> (</tspan><tspan x="209.2" y="408" fill="#8b949e">prep: </tspan><tspan x="259.6" y="408" fill="#56d4dd">716ms</tspan><tspan x="301.6" y="408" fill="#8b949e">, </tspan><tspan x="318.4" y="408" fill="#8b949e">compile: </tspan><tspan x="394.0" y="408" fill="#56d4dd">2655ms</tspan><tspan x="444.4" y="408" fill="#8b949e">, </tspan><tspan x="461.2" y="408" fill="#8b949e">tests: </tspan><tspan x="520.0" y="408" fill="#56d4dd">3165ms</tspan><tspan x="570.4" y="408" fill="#8b949e">)</tspan>
+    <tspan x="16" y="428"> </tspan>
+    <tspan x="16.0" y="448" fill="#8b949e">$</tspan><tspan x="24.4" y="448" fill="#c9d1d9"> npx tripwire --target worker -p test/tsconfig.test.json --reporter dot test/src/assert/assert.isString.test.ts</tspan>
+    <tspan x="16.0" y="468" fill="#39c5cf">Launching </tspan><tspan x="100.0" y="468" fill="#56d4dd">worker</tspan><tspan x="150.4" y="468" fill="#39c5cf"> target via Puppeteer...</tspan>
+    <tspan x="16.0" y="488" fill="#3fb950">.</tspan><tspan x="24.4" y="488" fill="#3fb950">.</tspan><tspan x="32.8" y="488" fill="#3fb950">.</tspan><tspan x="41.2" y="488" fill="#3fb950">.</tspan><tspan x="49.6" y="488" fill="#3fb950">.</tspan>
+    <tspan x="16.0" y="508" fill="#3fb950">.</tspan><tspan x="24.4" y="508" fill="#3fb950">.</tspan><tspan x="32.8" y="508" fill="#3fb950">.</tspan><tspan x="41.2" y="508" fill="#3fb950">.</tspan><tspan x="49.6" y="508" fill="#3fb950">.</tspan>
+    <tspan x="16.0" y="528" fill="#3fb950">.</tspan><tspan x="24.4" y="528" fill="#3fb950">.</tspan><tspan x="32.8" y="528" fill="#3fb950">.</tspan><tspan x="41.2" y="528" fill="#3fb950">.</tspan><tspan x="49.6" y="528" fill="#3fb950">.</tspan>
+    <tspan x="16.0" y="548" fill="#3fb950">.</tspan><tspan x="24.4" y="548" fill="#3fb950">.</tspan>
+    <tspan x="16" y="568"> </tspan>
+    <tspan x="16.0" y="588" fill="#c9d1d9">  </tspan><tspan x="32.8" y="588" fill="#3fb950">17 passing</tspan><tspan x="116.8" y="588" fill="#c9d1d9">  </tspan><tspan x="133.6" y="588" fill="#8b949e">(25ms)</tspan>
+    <tspan x="16" y="608"> </tspan>
+    <tspan x="16.0" y="628" fill="#8b949e">Total elapsed: </tspan><tspan x="142.0" y="628" fill="#56d4dd">6794ms</tspan><tspan x="192.4" y="628" fill="#8b949e"> (</tspan><tspan x="209.2" y="628" fill="#8b949e">prep: </tspan><tspan x="259.6" y="628" fill="#56d4dd">629ms</tspan><tspan x="301.6" y="628" fill="#8b949e">, </tspan><tspan x="318.4" y="628" fill="#8b949e">compile: </tspan><tspan x="394.0" y="628" fill="#56d4dd">2851ms</tspan><tspan x="444.4" y="628" fill="#8b949e">, </tspan><tspan x="461.2" y="628" fill="#8b949e">tests: </tspan><tspan x="520.0" y="628" fill="#56d4dd">3164ms</tspan><tspan x="570.4" y="628" fill="#8b949e">)</tspan>
+  </text>
+</svg>

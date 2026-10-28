@@ -10,7 +10,7 @@ import { assert } from "@nevware21/tripwire";
 import { logDomQueue, logSendQueue } from "../../../src/ux/browser/ui/state";
 import { MAX_LOG_LINES } from "../../../src/ux/browser/ui/shared";
 import { safeToString } from "../../../src/ux/browser/ui/utils";
-import { stubElement, uxDom } from "../support/uxDom";
+import { stubElement, stubTextNode, textOf, uxDom } from "../support/uxDom";
 
 /**
  * The interactive page's log panel and its mirror to the node console: every entry is queued
@@ -88,7 +88,8 @@ function _drainFrames(): void {
     frames = [];
 
     g.document = {
-        createElement: (tag: string) => stubElement(tag),
+        createElement: (tag: string) => stubElement("", tag),
+        createTextNode: stubTextNode,
         createDocumentFragment: () => {
             const fragment: any = { fragment: true, kids: [] as any[] };
             fragment.appendChild = (child: any) => {
@@ -114,7 +115,7 @@ function _sleep(ms: number): Promise<void> {
 }
 
 function _lines(): string[] {
-    return dom.logs.kids.map((line: any) => line.className + " | " + line.textContent);
+    return dom.logs.kids.map((line: any) => line.className + " | " + textOf(line));
 }
 
 describe("ux logging", () => {
@@ -186,6 +187,22 @@ describe("ux logging", () => {
             assert.equal(logSendQueue.length, 2, "the server queue is not: it has its own schedule");
         });
 
+        it("should show a line in the colours the terminal shows it in, and a blank one as blank", () => {
+            logging.queueLog("log", "\u001b[32m  ✓ passes\u001b[39m \u001b[90m(3ms)\u001b[0m");
+            logging.queueLog("log", "\u001b[0m");
+            logging.queueLog("log", "");
+            _drainFrames();
+
+            assert.deepEqual(_lines(), [ "log-line log-log | [log]   ✓ passes (3ms)", "log-line log-log | ", "log-line log-log | " ]);
+            assert.deepEqual(dom.logs.kids[0].kids.map((part: any) => (part.className || "text") + "=" + textOf(part)), [
+                "ansi-fg-32=  ✓ passes",
+                "text= ",
+                "ansi-fg-90=(3ms)"
+            ]);
+            assert.equal(dom.logs.kids[1].kids.length, 0, "a blank line carries no tag and no parts");
+            assert.equal(logSendQueue[0].message, "\u001b[32m  ✓ passes\u001b[39m \u001b[90m(3ms)\u001b[0m", "the CLI gets the same colours");
+        });
+
         it("should keep only the newest MAX_LOG_LINES lines", () => {
             for (let lp = 0; lp < MAX_LOG_LINES + 3; lp++) {
                 logging.queueLog("log", "m" + lp);
@@ -193,8 +210,8 @@ describe("ux logging", () => {
             _drainFrames();
 
             assert.equal(dom.logs.kids.length, MAX_LOG_LINES);
-            assert.equal(dom.logs.kids[0].textContent, "[log] m3", "the three oldest went");
-            assert.equal(dom.logs.kids[MAX_LOG_LINES - 1].textContent, "[log] m" + (MAX_LOG_LINES + 2));
+            assert.equal(textOf(dom.logs.kids[0]), "[log] m3", "the three oldest went");
+            assert.equal(textOf(dom.logs.kids[MAX_LOG_LINES - 1]), "[log] m" + (MAX_LOG_LINES + 2));
         });
 
         it("should keep the panel pinned to the bottom only if it already was", () => {

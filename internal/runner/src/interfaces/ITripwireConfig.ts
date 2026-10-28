@@ -50,6 +50,15 @@ export interface ITripwireConfig {
     browserStyle?: BrowserUiStyle;
 
     /**
+     * How the interactive browser page looks when it opens: a comma separated list (or an array) of
+     * words, each naming one part -- a color scheme (`system`, `light`, `dark`, `dim`), a color
+     * vision setting (`standard`, `colorblind`) or the page's zoom, as a whole percentage from 50% to
+     * 300% -- eg. `"dim,colorblind,125%"`. `--browser-theme` replaces the parts it names. A choice
+     * made in the page's own Appearance panel takes precedence in that browser.
+     */
+    browserTheme?: string | string[];
+
+    /**
      * Path to the TypeScript project file (default: "tsconfig.json").
      */
     project?: string;

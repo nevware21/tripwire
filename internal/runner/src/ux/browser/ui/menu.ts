@@ -56,22 +56,41 @@ export function nextMenuIndex(count: number, current: number, key: string): numb
     return -1;
 }
 
+// The menu's entries: plain actions, the radio entries of a choice such as the target, and the
+// checkbox entries of a setting
+const _ITEM_SELECTOR = "[role='menuitem'], [role='menuitemradio'], [role='menuitemcheckbox']";
+
 function _isDisabled(item: HTMLElement): boolean {
     return item.getAttribute("aria-disabled") === "true";
 }
 
+/** Whether `item` is showing: neither it nor anything between it and `menu` is `hidden`. */
+function _isShown(item: HTMLElement, menu: HTMLElement): boolean {
+    for (let node: any = item; node && node !== menu; node = node.parentNode) {
+        if (node.hasAttribute && node.hasAttribute("hidden")) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
 /**
- * Wires `button` up as the menu button for `menu`, whose children carry `role="menuitem"`.
+ * Wires `button` up as the menu button for `menu`, whose entries carry `role="menuitem"` (or
+ * `menuitemradio`, for one of a set of choices, or `menuitemcheckbox`, for a setting).
  * The menu is shown and hidden with the `hidden` attribute, so it is removed from the
- * accessibility tree while closed rather than merely painted out of sight.
+ * accessibility tree while closed rather than merely painted out of sight. Entries can be hidden
+ * the same way, alone or in a group, and the keys then pass over them.
  */
 export function createMenu(button: HTMLElement, menu: HTMLElement): void {
     function items(): HTMLElement[] {
-        const found = menu.querySelectorAll("[role='menuitem']");
+        const found = menu.querySelectorAll(_ITEM_SELECTOR);
         const result: HTMLElement[] = [];
 
         for (let lp = 0; lp < found.length; lp++) {
-            result.push(found[lp] as HTMLElement);
+            if (_isShown(found[lp] as HTMLElement, menu)) {
+                result.push(found[lp] as HTMLElement);
+            }
         }
 
         return result;
@@ -171,7 +190,7 @@ export function createMenu(button: HTMLElement, menu: HTMLElement): void {
     // page registered on that button sits in the bubble phase, on the button itself.
     menu.addEventListener("click", (evt) => {
         const target = evt.target as HTMLElement;
-        const item = target && target.closest ? (target.closest("[role='menuitem']") as HTMLElement) : null;
+        const item = target && target.closest ? (target.closest(_ITEM_SELECTOR) as HTMLElement) : null;
 
         if (item && _isDisabled(item)) {
             evt.preventDefault();
@@ -182,7 +201,7 @@ export function createMenu(button: HTMLElement, menu: HTMLElement): void {
     // Bubble, so this runs *after* the item's own handler has done its work.
     menu.addEventListener("click", (evt) => {
         const target = evt.target as HTMLElement;
-        if (target && target.closest && target.closest("[role='menuitem']")) {
+        if (target && target.closest && target.closest(_ITEM_SELECTOR)) {
             close(true);
         }
     });

@@ -147,6 +147,7 @@ function _printUsage() {
     console.log("  --env <node|browser|worker> Alias for --target");
     console.log("  --browser-launch <mode[:style]> Browser launch mode for browser/worker targets (mode: puppeteer|open|manual; style: classic|slate)");
     console.log("  --browser-style <classic|slate> Browser UI style for interactive mode (default: classic)");
+    console.log("  --browser-theme <list>     How the interactive page opens: any of system|light|dark|dim, standard|colorblind, and a zoom from 50% to 300% (eg. 125%), comma separated");
     console.log("  --ux-provider <module>     Custom browser UX provider module, overriding the built-in one");
     console.log("  --open-browser              Alias for --browser-launch open");
     console.log("  --manual-browser            Alias for --browser-launch manual");
