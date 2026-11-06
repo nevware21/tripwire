@@ -98,8 +98,8 @@ describe("execute assets", () => {
         it("serves the runner's UX sources with a content type from their extension", () => {
             const types: { [name: string]: string } = {
                 "browser/ui/client.ts": "application/typescript; charset=utf-8",
-                "browser/resources/runner.css": "text/css; charset=utf-8",
-                "browser/resources/runner.html": "text/html; charset=utf-8"
+                "browser/resources/styles/base.css": "text/css; charset=utf-8",
+                "browser/resources/templates/runner.html": "text/html; charset=utf-8"
             };
 
             Object.keys(types).forEach((name) => {

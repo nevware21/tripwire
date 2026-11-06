@@ -7,7 +7,7 @@
  */
 
 import { assert } from "@nevware21/tripwire";
-import { AUTOCOMPLETE_KIND_ATTR, createAutocomplete, IAutocompleteItem } from "../../../src/ux/browser/ui/autocomplete";
+import { _fillHighlighted, AUTOCOMPLETE_KIND_ATTR, createAutocomplete, IAutocompleteItem, IAutocompleteOptions } from "../../../src/ux/browser/ui/autocomplete";
 
 /**
  * The Scope picker's suggestion dropdown. Which rows match is decided by the caller's
@@ -114,7 +114,7 @@ function _matching(query: string): IAutocompleteItem[] {
 }
 
 /** A wired-up input + list, with the gestures a user makes on them. */
-function _setup(getCandidates: (query: string) => IAutocompleteItem[] = _matching) {
+function _setup(getCandidates: (query: string) => IAutocompleteItem[] = _matching, options?: IAutocompleteOptions) {
     const input = _el();
     const list = _el();
     const queries: string[] = [];
@@ -123,25 +123,31 @@ function _setup(getCandidates: (query: string) => IAutocompleteItem[] = _matchin
         changes.push(evt);
     });
 
-    createAutocomplete(input, list, (query) => {
+    const handle = createAutocomplete(input, list, (query) => {
         queries.push(query);
         return getCandidates(query);
-    });
+    }, options);
 
     const rows = () => list.querySelectorAll(".autocomplete-item");
     const texts = (cls: string) => list.kids.filter((kid: any) => kid.className.split(" ").indexOf(cls) !== -1).map((kid: any) => kid.textContent);
+    // A row's label is split into marked and unmarked pieces once a query matches it
+    const textOf = (node: any): string => (node.textContent || "") + (node.kids || []).map(textOf).join("");
 
     return {
         input: input,
         list: list,
+        handle: handle,
         queries: queries,
         changes: changes,
         rows: rows,
         /** Each row as "label [kind]", with a "*" in front of the highlighted one. */
-        view: () => rows().map((row: any) => (row.classList.contains("active") ? "*" : "") + row.kids.map((part: any) => part.textContent).join(" [") + (row.kids.length > 1 ? "]" : "")),
+        view: () => rows().map((row: any) => (row.classList.contains("active") ? "*" : "") + row.kids.map(textOf).join(" [") + (row.kids.length > 1 ? "]" : "")),
+        /** The marked pieces of each row's label. */
+        marks: () => rows().map((row: any) => row.kids[0].kids.filter((part: any) => part.tagName === "MARK").map((part: any) => part.textContent)),
         notes: (cls: string) => texts(cls),
         isOpen: () => list.classList.contains("open"),
         focus: () => input.fire("focus"),
+        click: () => input.fire("click"),
         type: (value: string) => {
             input.value = value;
             input.fire("input");
@@ -164,7 +170,7 @@ describe("ux autocomplete", () => {
     beforeEach(() => {
         documentClicks = [];
         g.document = {
-            createElement: () => _el(),
+            createElement: (tag: string) => Object.assign(_el(), { tagName: String(tag).toUpperCase() }),
             addEventListener: (type: string, fn: (evt: any) => void) => {
                 assert.equal(type, "click");
                 documentClicks.push(fn);
@@ -351,15 +357,98 @@ describe("ux autocomplete", () => {
         assert.isFalse(ui.isOpen());
     });
 
-    it("should ignore the keyboard while closed", () => {
+    it("should mark each typed word wherever it occurs in a row's label, ignoring case", () => {
+        const ui = _setup(() => ITEMS.slice(1, 3));
+        ui.focus();
+        ui.type("OUT al");
+
+        assert.deepEqual(ui.view(), [ "*outer [suite]", "outer > alpha [test]" ], "the labels still read the same");
+        assert.deepEqual(ui.marks(), [ [ "out" ], [ "out", "al" ] ]);
+    });
+
+    it("should leave a label as plain text when there is no query or nothing in it matches", () => {
+        const ui = _setup(() => ITEMS.slice(1, 3));
+        ui.focus();
+        assert.deepEqual(ui.marks(), [ [], [] ], "no query");
+        assert.equal(ui.rows()[0].kids[0].kids.length, 0);
+
+        ui.type("zzz");
+        assert.deepEqual(ui.marks(), [ [], [] ], "no match");
+        assert.equal(ui.rows()[1].kids[0].textContent, "outer > alpha");
+    });
+
+    it("should mark overlapping words as one piece, and a repeated one each time", () => {
+        const target = _el();
+        _fillHighlighted(target, "alpha > banana", "ana an");
+
+        assert.deepEqual(target.kids.map((part: any) => part.tagName + ":" + part.textContent), [
+            "SPAN:alpha > b",
+            "MARK:anana"
+        ]);
+
+        const repeated = _el();
+        _fillHighlighted(repeated, "alpha", "a");
+        assert.deepEqual(repeated.kids.map((part: any) => part.tagName + ":" + part.textContent), [ "MARK:a", "SPAN:lph", "MARK:a" ]);
+    });
+
+    it("should ignore every key but ArrowDown while closed", () => {
         const ui = _setup();
         ui.input.value = "outer";
 
-        assert.isFalse(ui.key("ArrowDown").defaultPrevented);
         assert.isFalse(ui.key("Enter").defaultPrevented);
+        assert.isFalse(ui.key("ArrowUp").defaultPrevented);
+        assert.isFalse(ui.key("Escape").defaultPrevented);
 
         assert.equal(ui.input.value, "outer");
         assert.equal(ui.changes.length, 0);
         assert.deepEqual(ui.queries, [], "never even asked for candidates");
+    });
+
+    it("should open again on ArrowDown, or a click in the input, after Escape closed it", () => {
+        const ui = _setup();
+        ui.focus();
+        ui.key("Escape");
+        assert.isFalse(ui.isOpen());
+
+        assert.isTrue(ui.key("ArrowDown").defaultPrevented, "the page does not scroll");
+        assert.isTrue(ui.isOpen());
+        assert.equal(ui.input.getAttribute("aria-expanded"), "true");
+
+        ui.key("Escape");
+        ui.click();
+        assert.isTrue(ui.isOpen(), "a click opens it too");
+        ui.click();
+        assert.isTrue(ui.isOpen(), "and a second leaves it open");
+    });
+
+    it("should wait to be asked with openOnFocus off, for an input that takes focus as its dialog opens", () => {
+        const ui = _setup(_matching, { openOnFocus: false });
+
+        ui.focus();
+        assert.isFalse(ui.isOpen());
+        assert.deepEqual(ui.queries, []);
+
+        ui.key("ArrowDown");
+        assert.isTrue(ui.isOpen());
+    });
+
+    it("should hand its owner a close, for when the dialog holding it closes", () => {
+        const ui = _setup();
+        ui.focus();
+
+        ui.handle.close();
+
+        assert.isFalse(ui.isOpen());
+        assert.equal(ui.input.getAttribute("aria-expanded"), "false");
+        assert.isNull(ui.input.getAttribute("aria-activedescendant"));
+    });
+
+    it("should mark nothing while the input holds a row's value, which is a choice rather than a search", () => {
+        const ui = _setup();
+        ui.input.value = "outer";
+        ui.focus();
+
+        assert.deepEqual(ui.view(), [ "All tests", "*outer [suite]", "outer > alpha [test]", "other [suite]" ]);
+        assert.deepEqual(ui.marks(), [ [], [], [], [] ]);
     });
 });

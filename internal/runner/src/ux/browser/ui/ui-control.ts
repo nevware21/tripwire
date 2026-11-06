@@ -7,6 +7,7 @@
  */
 
 import { statusEl, runBtn, finishBtn, scopeSelect, targetSelect, clearScopeBtn } from "./dom";
+import { fitToolbar } from "./overflow";
 import { payload as getPayload, running as getRunning, lastResult as getLastResult, completed as getCompleted } from "./state";
 
 export function setStatus(value: any) {
@@ -59,4 +60,7 @@ export function setButtonsState() {
         // whether this run is scoped to something or covers everything.
         clearScopeBtn.disabled = running || !(scopeSelect && scopeSelect.value);
     }
+
+    // Run's label just changed width, and Target's lock is shown on its stand-in in the menu
+    fitToolbar();
 }

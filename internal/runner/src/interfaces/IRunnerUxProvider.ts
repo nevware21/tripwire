@@ -8,13 +8,15 @@
 
 import { TestTarget } from "@nevware21/tripwire";
 import { BrowserUiStyle } from "../ux/types/BrowserUiStyle";
+import { IBrowserUiTheme } from "../ux/types/BrowserUiTheme";
 import { IFsEntry } from "../ux/interfaces/IFsEntry";
 
 /**
  * Browser UX provider contract consumed by the runner package.
  */
 export interface IRunnerUxProvider {
-    createBrowserRunnerHtml(target: TestTarget, style: BrowserUiStyle): string;
+    // `theme` is how the page looks when it opens (`--browser-theme`); a provider may ignore it
+    createBrowserRunnerHtml(target: TestTarget, style: BrowserUiStyle, theme?: IBrowserUiTheme): string;
     createFsDirListingHtml(style: BrowserUiStyle, relativePath: string, entries: IFsEntry[], extraHtml?: string): string;
     createTestFrameHtml?: (target: TestTarget, style: BrowserUiStyle, moduleScriptUrls: string[]) => string;
     faviconIco?: string;

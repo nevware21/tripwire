@@ -17,8 +17,10 @@ import frameHtmlTemplate from "../resources/templates/frame.html";
 import cssBase from "../resources/styles/base.css";
 import cssClassic from "../resources/styles/classic.css";
 import cssSlate from "../resources/styles/slate.css";
+import cssThemes from "../resources/styles/themes.css";
 import { TestTarget } from "@nevware21/tripwire";
 import { BrowserUiStyle } from "../../types/BrowserUiStyle";
+import { IBrowserUiTheme } from "../../types/BrowserUiTheme";
 import { IFsEntry } from "../../interfaces/IFsEntry";
 
 const _cssMap: Record<string, string> = {
@@ -46,20 +48,40 @@ export function createTestFrameHtml(target: TestTarget, _style: BrowserUiStyle, 
         .replace(/__FRAME_SCRIPT_URL__/g, scriptUrl);
 }
 
-export function createBrowserRunnerHtml(target: TestTarget, style: BrowserUiStyle): string {
+/**
+ * The body attributes that carry `theme` to the page, which applies them before it first paints
+ * unless the page's own menu has saved a choice in this browser (see the template's inline script).
+ */
+function _themeAttrs(theme: IBrowserUiTheme | undefined): string {
+    const parts: Array<[ keyof IBrowserUiTheme, string ]> = [
+        [ "scheme", "data-default-theme" ],
+        [ "vision", "data-default-vision" ],
+        [ "zoom", "data-default-zoom" ]
+    ];
+
+    return parts.map((part) => {
+        const value = theme ? theme[part[0]] : undefined;
+        return value ? " " + part[1] + "=\"" + _escapeHtmlAttr(String(value)) + "\"" : "";
+    }).join("");
+}
+
+export function createBrowserRunnerHtml(target: TestTarget, style: BrowserUiStyle, theme?: IBrowserUiTheme): string {
     const title = target === "worker" ? "Tripwire Worker Runner" : "Tripwire Browser Runner";
-    const description = "This page runs tests using tripwire's native runner and reporter pipeline, with suite/test filtering and assertion timeline UI.";
+    // The page fills in the server and the test count once it knows them (client.ts's _updateAppMeta)
+    const description = target === "worker" ? "Worker target" : "Browser target";
     const scriptUrl = "/__tripwire__/runner-client.js";
     const styleClassName = "style-" + style;
 
     const cssStyle = _cssMap[style] || cssClassic;
-    const css = cssBase + "\n\n" + cssStyle;
+    // The themes come last: each overrides the style's colours
+    const css = cssBase + "\n\n" + cssStyle + "\n\n" + cssThemes;
 
     return htmlTemplate
         .replace(/__RUNNER_TITLE__/g, title)
         .replace(/__RUNNER_DESCRIPTION__/g, description)
         .replace(/__RUNNER_STYLE_CLASS__/g, styleClassName)
         .replace(/__RUNNER_TARGET__/g, target)
+        .replace(/__RUNNER_THEME_ATTRS__/g, _themeAttrs(theme))
         .replace(/__RUNNER_CSS__/g, css)
         .replace(/__RUNNER_SCRIPT_URL__/g, scriptUrl);
 }

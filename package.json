@@ -27,6 +27,7 @@
         "cleanBuild": "npm run clean && npm run rebuild && npm run readme-link-check",
         "docs": "npm run docs-core && npm run docs-chai",
         "docs-reporter-images": "node docs/scripts/genReporterImages.js",
+        "docs-tour-images": "node docs/scripts/genTourImages.js",
         "docs-core": "cd core && npm run docs",
         "docs-chai": "cd shim/chai && npm run docs",
         "lint": "grunt lint lint-fix",

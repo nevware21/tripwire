@@ -157,6 +157,14 @@ describe("execute browserRunner", function () {
             });
         });
 
+        it("opens the runner page as --browser-theme says", async () => {
+            await withSession({ browserTheme: { scheme: "dim", zoom: 150 } }, builders(makeGraph()), async (session) => {
+                const browser = await send(session.server, "GET", "/__tripwire__/browser");
+
+                assert.includes(browser.body, "data-default-theme=\"dim\" data-default-zoom=\"150\">");
+            });
+        });
+
         it("serves the test frame, loading the bundle only for the browser target", async () => {
             await withSession({}, builders(makeGraph()), async (session) => {
                 const browser = await send(session.server, "GET", "/__tripwire__/test-frame");

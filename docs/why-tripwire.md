@@ -11,6 +11,8 @@ npx tripwire --target worker  "test/**/*.test.ts"     # a real Worker inside Chr
 ```
 
 This page says what that buys you, what it costs, and when another tool is the better choice.
+[Tripwire in action](tour.md) shows it on tripwire's own suite, with screenshots of each target,
+coverage and the interactive browser page.
 
 ## What is automatic
 
@@ -89,6 +91,8 @@ dependencies, and can be used under any runner.
 
 ## Where to go next
 
+- See it run: [Tripwire in action](tour.md) -- tripwire's own suite on all three targets, coverage
+  and the interactive page, with screenshots.
 - Coming from somewhere else: [Mocha](migration/migrating-from-mocha.md),
   [Karma](migration/migrating-from-karma.md), [Jest or Vitest](migration/migrating-from-jest.md),
   [Chai](migration/migrating-from-chai.md), [node's `assert`](migration/migrating-from-node-assert.md).

@@ -9,6 +9,7 @@
 import { isNumber } from "@nevware21/ts-utils";
 import { createReporter } from "../reporters";
 import { getSuitePartsFromNode, createAssertionLabel } from "../shared/suiteNames";
+import { addAssertionValues } from "../shared/assertionValues";
 import { installDefineRegistry, createRequire, getWorkerLoaderContext, setTripwireGlobals, buildSuite } from "../shared/moduleLoader";
 import { createSettingsGrepFilter, createSelectionFilter, applyFilters } from "../shared/filters";
 import { createBailListener } from "../shared/bailListener";
@@ -204,14 +205,14 @@ export function startWorkerRunner(): void {
                         },
                         onAssert: function(context: any) {
                             const actx = context && context.v;
-                            (self as any).postMessage({
+                            (self as any).postMessage(addAssertionValues({
                                 kind: "assert",
                                 suiteParts: currentTestRef ? currentTestRef.suiteParts : [],
                                 testName: currentTestRef ? currentTestRef.testName : "",
                                 passed: !!(actx && actx.passed),
                                 label: createAssertionLabel(actx),
                                 errorText: actx && actx.error ? String(actx.error.message || actx.error) : ""
-                            });
+                            }, actx && actx.error));
                         }
                     });
                 }

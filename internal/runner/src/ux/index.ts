@@ -12,4 +12,5 @@ export { createBrowserRunnerHtml, createFsDirListingHtml, createTestFrameHtml } 
 // inlined HTML/CSS/favicon graph along with it into that bundle.
 export { IFsEntry } from "./interfaces/IFsEntry";
 export { BrowserUiStyle } from "./types/BrowserUiStyle";
+export { BrowserUiColorScheme, BrowserUiVision, IBrowserUiTheme } from "./types/BrowserUiTheme";
 export { default as faviconIco } from "./images/favicon.ico";

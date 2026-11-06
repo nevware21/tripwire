@@ -101,10 +101,16 @@ function _doMinify(code, filename, outputOptions, inputMap, preamble) {
 
     var minifyOptions = {
         ie8: false,
-        toplevel: true,
+        // Only a CommonJS bundle's top level is its own, as node wraps each module in a function.
+        // An iife bundle is a classic script in a page or a worker, sharing the global scope with
+        // the tests: with toplevel, uglify unwraps the iife into a bare block, whose `var`s and
+        // functions are globals under two-letter names -- such as `it`, which the tests' own `it`
+        // then replaces.
+        toplevel: !outputOptions || outputOptions.format !== "iife",
+        // Not `unsafe`: among other things it writes String(x) as ""+x, which throws for a Symbol --
+        // and these bundles turn the tests' own values into text, symbols included
         compress: {
-            passes: 3,
-            unsafe: true
+            passes: 3
         },
         output: {
             // Must go through uglify rather than being concatenated onto the result: uglify

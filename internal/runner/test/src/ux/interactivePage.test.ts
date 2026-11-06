@@ -66,7 +66,10 @@ const SCOPED_SUITE_TESTS = [
 const RERUN_TEST = "Math > multiplication > multiplies by zero";
 const PASSING_COUNT = FIXTURE_TESTS.length - 1;
 
-const MENU_ITEMS = [ "Reload Tests", "Clear Results", "Clear Logs", "Finish & Stop Server" ];
+const MENU_ITEMS = [ "Reload Tests", "Clear Logs", "Appearance…", "Finish & Stop Server" ];
+
+// The window the page is driven in; WIDE_VIEWPORT holds every control on its row
+const WIDE_VIEWPORT = { width: 1280, height: 900 };
 
 // Every browser-driving step gets this rather than the 2000ms default.
 const STEP_TIMEOUT_MS = 60000;
@@ -328,6 +331,39 @@ async function _clickMenuItem(id: string): Promise<void> {
     await _page.click("#" + id);
 }
 
+async function _appearanceIsOpen(): Promise<boolean> {
+    return _page.$eval("#appearancePanel", (el: Element) => !el.hasAttribute("hidden"));
+}
+
+/** Opens the Appearance panel from the actions menu, which closes behind it, with focus on the theme. */
+async function _openAppearance(): Promise<void> {
+    if (!(await _appearanceIsOpen())) {
+        await _clickMenuItem("appearanceItem");
+        await _waitFor(() => {
+            const panel = document.getElementById("appearancePanel");
+            return !!panel && !panel.hasAttribute("hidden") && !!document.activeElement && document.activeElement.id === "themeInput";
+        }, "the Appearance panel to open on the theme");
+    }
+}
+
+/** Searches the Appearance panel's theme box for `search`, and picks the top match with Enter. */
+async function _pickTheme(search: string): Promise<void> {
+    await _openAppearance();
+    await _page.focus("#themeInput");
+    await _page.$eval("#themeInput", (el: Element) => (el as HTMLInputElement).select());
+    await _page.keyboard.type(search);
+    await _waitFor(() => {
+        const list = document.getElementById("themeList");
+        return !!list && list.classList.contains("open") && list.querySelectorAll(".autocomplete-item").length > 0;
+    }, "the theme list to show a match for \"" + search + "\"");
+    await _page.keyboard.press("Enter");
+}
+
+/** The theme list's rows, with a "*" in front of the highlighted one. */
+function _themeRows(): Promise<string[]> {
+    return _page.$$eval("#themeList.open .autocomplete-item", (els: Element[]) => els.map((el) => (el.classList.contains("active") ? "*" : "") + (el.textContent || "")));
+}
+
 async function _clearScopeIfSet(): Promise<void> {
     if (!(await _isDisabled("#clearScopeBtn"))) {
         await _page.click("#clearScopeBtn");
@@ -493,20 +529,33 @@ function _sharedScenarios(target: "browser" | "worker") {
         suites.forEach((suite) => {
             byName[suite.name] = suite;
         });
-        assert.equal(byName["Math"].meta, "4/4 tests • 2 child suites");
+        assert.equal(byName["Math"].meta, "4 passed · 2 child suites");
         assert.equal(byName["Math"].status, "passed");
-        assert.equal(byName["Strings"].meta, "3/3 tests • 1 child suite");
+        assert.equal(byName["Strings"].meta, "2 passed · 1 failed · 1 child suite");
         assert.equal(byName["Strings"].status, "failed");
         assert.equal(byName["casing"].status, "failed");
-        assert.equal(byName["Arrays"].meta, "2/2 tests");
+        assert.equal(byName["Arrays"].meta, "2 passed");
         assert.equal(byName["Arrays"].status, "passed");
-        assert.equal(byName["Async"].meta, "1/1 tests");
+        assert.equal(byName["Async"].meta, "1 passed");
         assert.equal(byName["Async"].status, "passed");
 
+        // Each suite's worded counts ("2 passed · 1 failed"), added up across the top-level suites
         const total = suites
             .filter((suite) => [ "Math", "Strings", "Arrays", "Async" ].indexOf(suite.name) !== -1)
-            .reduce((sum, suite) => sum + parseInt(suite.meta.split("/")[1], 10), 0);
+            .reduce((sum, suite) => sum + suite.meta.split(" · ")
+                .filter((part) => /^\d+ (passed|failed|skipped)$/.test(part))
+                .reduce((count, part) => count + parseInt(part, 10), 0), 0);
         assert.equal(total, FIXTURE_TESTS.length, "the top-level suite counts add up to the fixture");
+
+        // The failure shows the values it compared, beside its message
+        const values: string[] = await _page.$$eval("#results .test-node.test-failed .assert-item.assert-fail .assert-values > *", (els: Element[]) => els.map((el) => el.textContent || ""));
+        assert.deepEqual(values, [ "Expected", "\"Word\"", "Actual", "\"word\"" ]);
+
+        // The run's totals sit beside the status
+        await _waitFor(() => !!document.querySelector("#runSummary .summary-duration"), "the run summary to show the run's own totals");
+        const chips: string[] = await _page.$$eval("#runSummary .summary-chip", (els: Element[]) => els.map((el) => el.textContent || ""));
+        assert.deepEqual(chips.slice(0, 2), [ PASSING_COUNT + " passed", "1 failed" ]);
+        assert.match(chips[2], /^\d+(ms|\.\d+s)$/, "and how long it took");
 
         // Assertions are flushed on an animation frame, so wait for the counter rather than read it.
         await _waitFor((expected: number) => {
@@ -517,7 +566,7 @@ function _sharedScenarios(target: "browser" | "worker") {
         assert.notEqual(await _text("#assertCount"), "0 assertions");
 
         assert.equal(await _attr("#finishBtn", "aria-disabled"), "false", "Finish is enabled once a result exists");
-        assert.isTrue(await _isDisabled("#clearScopeBtn"), "All tests is disabled when there is no scope to clear");
+        assert.isTrue(await _isDisabled("#clearScopeBtn"), "Clear scope is disabled when there is no scope to clear");
     });
 
     step("should scope to one suite from the Scope picker, carry it in the URL hash and restore it on reload", async () => {
@@ -544,7 +593,7 @@ function _sharedScenarios(target: "browser" | "worker") {
         assert.equal(await _scopeValue(), SCOPED_SUITE);
         assert.equal(await _attr("#scopeSelect", "data-autocomplete-kind"), "suite", "the picked row's kind is recorded");
         assert.equal(await _hash(), "#suite=" + hashSelectionValue(SCOPED_SUITE), "the scope is mirrored into the hash");
-        assert.isFalse(await _isDisabled("#clearScopeBtn"), "All tests is enabled once a scope is set");
+        assert.isFalse(await _isDisabled("#clearScopeBtn"), "Clear scope is enabled once a scope is set");
 
         await _clickRunAndWait();
         assert.deepEqual(_titles(await _readResults()), SCOPED_SUITE_TESTS, "only the scoped suite ran");
@@ -564,7 +613,7 @@ function _sharedScenarios(target: "browser" | "worker") {
         assert.deepEqual(_titles(await _readResults()), SCOPED_SUITE_TESTS, "re-running respects the restored scope");
     });
 
-    step("should rerun one test from its row, then clear the scope with All tests without running", async () => {
+    step("should rerun one test from its row, then clear the scope with Clear scope without running", async () => {
         const selector = "#results .test-node .rerun-btn[data-rerun-test=\"" + RERUN_TEST + "\"]";
         await _page.waitForSelector(selector);
         await _page.click(selector);
@@ -582,7 +631,7 @@ function _sharedScenarios(target: "browser" | "worker") {
         assert.isFalse(await _isDisabled("#clearScopeBtn"));
         await _page.click("#clearScopeBtn");
 
-        assert.equal(await _scopeValue(), "", "All tests clears the box");
+        assert.equal(await _scopeValue(), "", "Clear scope clears the box");
         assert.isNull(await _attr("#scopeSelect", "data-autocomplete-kind"));
         assert.equal(await _hash(), "", "and the hash");
         assert.isTrue(await _isDisabled("#clearScopeBtn"), "and disables itself once there is nothing to clear");
@@ -605,6 +654,7 @@ function _sharedScenarios(target: "browser" | "worker") {
             assert.equal(row.hidden, row.status !== "failed", row.title + " hidden=" + row.hidden + " status=" + row.status);
         });
         assert.equal(results.filter((row) => !row.hidden).length, 1, "only the failing test is visible");
+        assert.equal(await _text("#filterNote"), PASSING_COUNT + " passing tests hidden by Failed only", "the page says what it is hiding");
 
         let suites = await _readSuites();
         suites.forEach((suite) => {
@@ -614,11 +664,22 @@ function _sharedScenarios(target: "browser" | "worker") {
 
         await _page.click("#failedOnlyToggle");
         assert.isFalse(await _isChecked("#failedOnlyToggle"));
+        assert.isTrue(await _page.$eval("#filterNote", (el: Element) => (el as HTMLElement).hidden), "nothing hidden, nothing to say");
 
         results = await _readResults();
         assert.equal(results.filter((row) => row.hidden).length, 0, "every test row is visible again");
         suites = await _readSuites();
         assert.equal(suites.filter((suite) => suite.hidden).length, 0, "every suite is visible again");
+
+        // The failed count beside the status is the same switch, and shows whether it is on
+        await _page.click("#runSummary .summary-failed");
+        assert.isTrue(await _isChecked("#failedOnlyToggle"), "the failed count turns Failed only on");
+        assert.equal(await _attr("#runSummary .summary-failed", "aria-pressed"), "true");
+        assert.equal((await _readResults()).filter((row) => !row.hidden).length, 1);
+
+        await _page.click("#runSummary .summary-failed");
+        assert.isFalse(await _isChecked("#failedOnlyToggle"), "and off again");
+        assert.equal(await _attr("#runSummary .summary-failed", "aria-pressed"), "false");
     });
 
     step("should expose the actions menu as a keyboard-operable WAI-ARIA menu button", async () => {
@@ -647,15 +708,18 @@ function _sharedScenarios(target: "browser" | "worker") {
             tabindex: el.getAttribute("tabindex")
         })));
         assert.deepEqual(items.map((item) => item.text), MENU_ITEMS, "the items, in order");
-        assert.deepEqual(items.map((item) => item.id), [ "reloadBtn", "clearResultsBtn", "clearLogsBtn", "finishBtn" ]);
+        assert.deepEqual(items.map((item) => item.id), [ "reloadBtn", "clearLogsBtn", "appearanceItem", "finishBtn" ]);
         assert.deepEqual(items.map((item) => item.tabindex), [ "0", "-1", "-1", "-1" ], "roving tabindex: only the focused item is tabbable");
         assert.equal(await _activeElementId(), "reloadBtn", "opening focuses the first item");
         assert.equal(await _attr("#actionsMenu .menu-separator", "role"), "separator");
 
         // Arrow keys move and wrap; Home/End jump.
         await _page.keyboard.press("ArrowDown");
-        assert.equal(await _activeElementId(), "clearResultsBtn");
+        assert.equal(await _activeElementId(), "autoReloadItem", "the Auto-reload setting is an item too");
         await _page.keyboard.press("ArrowDown");
+        assert.equal(await _activeElementId(), "clearLogsBtn");
+        await _page.keyboard.press("ArrowDown");
+        assert.equal(await _activeElementId(), "appearanceItem", "then the entry that opens the Appearance panel");
         await _page.keyboard.press("ArrowDown");
         assert.equal(await _activeElementId(), "finishBtn");
         await _page.keyboard.press("ArrowDown");
@@ -695,23 +759,321 @@ function _sharedScenarios(target: "browser" | "worker") {
         assert.isFalse(await _isDisabled("#finishBtn"), "a menu item is never natively disabled, so it stays focusable");
     });
 
-    step("should clear the results list and the log panel from the actions menu", async () => {
+    step("should pick the theme by searching for it in the Appearance panel, remembering the choice", async () => {
+        const theme = () => _page.evaluate(() => ({
+            attr: document.body.getAttribute("data-theme"),
+            saved: localStorage.getItem("tripwire.theme"),
+            background: getComputedStyle(document.body).backgroundImage,
+            shown: (document.getElementById("themeInput") as HTMLInputElement).value
+        }));
+
+        await _page.emulateMediaFeatures([ { name: "prefers-color-scheme", value: "light" } ]);
+        const system = await theme();
+        assert.isNull(system.attr, "System sets no theme of its own");
+        assert.isNull(system.saved);
+        assert.equal(system.shown, "System");
+
+        // A dialog of its own, as a menu may hold only menu items: the menu closes behind it, and
+        // focus lands on the theme with its list still closed
+        await _openAppearance();
+        assert.isFalse(await _menuIsOpen(), "the menu closes behind it");
+        assert.equal(await _attr("#appearancePanel", "role"), "dialog");
+        assert.equal(await _attr("#appearanceItem", "aria-haspopup"), "dialog");
+        assert.equal(await _attr("#appearanceItem", "aria-expanded"), "true");
+        assert.notEqual(await _attr("#themeInput", "aria-expanded"), "true", "the list waits to be asked for");
+
+        // Named for a screen reader: the dialog, the combobox and each setting
+        const tree = await _page.accessibility.snapshot({ interestingOnly: false });
+        const names: string[] = [];
+        const walk = (node: any) => {
+            if (node) {
+                names.push(node.role + ":" + (node.name || ""));
+                (node.children || []).forEach(walk);
+            }
+        };
+        walk(tree);
+        [ "dialog:Appearance", "combobox:Theme", "checkbox:Color-blind safe", "group:Zoom", "button:Zoom out", "button:Zoom in", "button:Reset" ].forEach((expected) => {
+            assert.isTrue(names.indexOf(expected) !== -1, expected + " in the accessibility tree");
+        });
+
+        // ArrowDown lists every theme, the one in use highlighted
+        await _page.keyboard.press("ArrowDown");
+        assert.deepEqual(await _themeRows(), [ "*System", "Light", "Dark", "Low light" ]);
+        assert.equal(await _attr("#themeInput", "aria-expanded"), "true");
+
+        // Typing searches, and Enter picks the top match
+        await _pickTheme("dar");
+        const dark = await theme();
+        assert.equal(dark.attr, "dark");
+        assert.equal(dark.saved, "dark", "kept for the next page load");
+        assert.equal(dark.shown, "Dark");
+        assert.notEqual(dark.background, system.background, "the page is drawn dark");
+        assert.deepEqual(await _themeRows(), [], "picking closes the list");
+        assert.isTrue(await _appearanceIsOpen(), "but not the panel");
+
+        // Escape closes the list first, then the panel, putting focus back on the menu button
+        await _page.keyboard.press("ArrowDown");
+        assert.deepEqual(await _themeRows(), [ "System", "Light", "*Dark", "Low light" ]);
+        await _page.keyboard.press("Escape");
+        assert.deepEqual(await _themeRows(), []);
+        assert.isTrue(await _appearanceIsOpen(), "the first Escape closes only the list");
+        await _page.keyboard.press("Escape");
+        assert.isFalse(await _appearanceIsOpen());
+        assert.equal(await _activeElementId(), "actionsBtn");
+        assert.equal(await _attr("#appearanceItem", "aria-expanded"), "false");
+
+        // System follows the operating system's setting again
+        await _pickTheme("system");
+        const followed = await theme();
+        assert.isNull(followed.attr);
+        assert.isNull(followed.saved, "nothing kept");
+        assert.equal(followed.background, system.background);
+
+        await _page.emulateMediaFeatures([ { name: "prefers-color-scheme", value: "dark" } ]);
+        assert.equal((await theme()).background, dark.background, "a dark system setting draws it dark");
+
+        await _pickTheme("light");
+        const light = await theme();
+        assert.equal(light.attr, "light", "the top match for \"light\", ahead of Low light");
+        assert.equal(light.background, system.background, "Light overrides a dark system setting");
+
+        await _pickTheme("system");
+        await _page.emulateMediaFeatures([ { name: "prefers-color-scheme", value: "light" } ]);
+
+        // A click outside closes the panel
+        await _page.click("#results");
+        assert.isFalse(await _appearanceIsOpen());
+    });
+
+    step("should switch to low light, color-blind safe colors and a zoom of the page alone from the Appearance panel", async () => {
+        const look = () => _page.evaluate(() => {
+            const passed = document.querySelector("#runSummary .summary-passed") as Element;
+            return {
+                theme: document.body.getAttribute("data-theme"),
+                vision: document.body.getAttribute("data-vision"),
+                zoom: document.body.style.getPropertyValue("--ui-zoom"),
+                shellZoom: getComputedStyle(document.querySelector(".app-shell") as Element).getPropertyValue("zoom"),
+                frameZoom: getComputedStyle(document.getElementById("testFrameContainer") as Element).getPropertyValue("zoom"),
+                rootSize: getComputedStyle(document.documentElement).fontSize,
+                shown: (document.getElementById("zoomValue") as Element).textContent,
+                layout: [ "layout-narrow", "layout-short" ].filter((cls) => document.body.classList.contains(cls)),
+                overflows: document.documentElement.scrollWidth > window.innerWidth,
+                background: getComputedStyle(document.body).backgroundImage + " " + getComputedStyle(document.body).backgroundColor,
+                passedColor: passed ? getComputedStyle(passed).color : "",
+                saved: [ "tripwire.theme", "tripwire.vision", "tripwire.zoom" ].map((key) => localStorage.getItem(key))
+            };
+        });
+        const before = await look();
+        assert.deepEqual([ before.theme, before.vision, before.zoom ], [ null, null, "" ], "the defaults set nothing");
+        assert.equal(before.shown, "100%");
+        assert.equal(before.rootSize, "16px");
+        assert.deepEqual(before.layout, [], "a wide window takes the full layout");
+
+        await _pickTheme("low");
+        const dim = await look();
+        assert.equal(dim.theme, "dim");
+        assert.notEqual(dim.background, before.background, "low light draws the page differently");
+
+        await _page.click("#colorblindToggle");
+        const colorblind = await look();
+        assert.equal(colorblind.vision, "colorblind");
+        assert.isTrue(await _isChecked("#colorblindToggle"));
+        assert.equal(colorblind.passedColor, "rgb(86, 180, 233)", "passed is sky blue on a dark page, not green");
+
+        // The zoom scales the page's own controls, results and log -- never the browser's zoom, the
+        // tests' own frame, or the root size a test's content would share
+        for (let lp = 0; lp < 3; lp++) {
+            await _page.click("#zoomInBtn");
+        }
+        const zoomed = await look();
+        assert.equal(zoomed.shown, "150%");
+        assert.deepEqual([ zoomed.zoom, zoomed.shellZoom ], [ "1.5", "1.5" ]);
+        assert.equal(zoomed.frameZoom, "1", "the tests' frame is not zoomed");
+        assert.equal(zoomed.rootSize, "16px", "nor is the root");
+        assert.deepEqual(zoomed.saved, [ "dim", "colorblind", "150" ], "each choice is kept for the next page load");
+
+        // Zoomed far enough, a wide window holds only a narrow page, which takes its compact layout
+        for (let lp = 0; lp < 3; lp++) {
+            await _page.click("#zoomInBtn");
+        }
+        const far = await look();
+        assert.equal(far.shown, "250%");
+        assert.deepEqual(far.layout, [ "layout-narrow", "layout-short" ], "512 by 360 of the page's own pixels");
+        assert.isFalse(far.overflows, "and still fits across the window");
+
+        // A reload opens the page as it was left, before it first paints
+        await _page.reload({ waitUntil: "load" });
+        await _waitForRunComplete();
+        const reloaded = await look();
+        assert.deepEqual([ reloaded.theme, reloaded.vision, reloaded.zoom, reloaded.shown ], [ "dim", "colorblind", "2.5", "250%" ]);
+        assert.deepEqual(reloaded.layout, [ "layout-narrow", "layout-short" ]);
+
+        // Back to the defaults, which keeps nothing
+        await _pickTheme("system");
+        await _page.click("#colorblindToggle");
+        await _page.click("#zoomResetBtn");
+        const after = await look();
+        assert.deepEqual([ after.theme, after.vision, after.zoom, after.shown ], [ null, null, "", "100%" ]);
+        assert.deepEqual(after.saved, [ null, null, null ]);
+        assert.deepEqual(after.layout, []);
+        assert.equal(after.passedColor, before.passedColor);
+        assert.equal(await _attr("#zoomResetBtn", "aria-disabled"), "true", "nothing left to reset");
+
+        await _page.focus("#themeInput");
+        await _page.keyboard.press("Escape");
+        assert.isFalse(await _appearanceIsOpen());
+    });
+
+    step("should be usable from the keyboard alone, with every control named for a screen reader", async () => {
+        // The first Tab stop on the page skips the header and the controls, and leaves the hash alone
+        const firstStop = await _page.evaluate(() => {
+            const stop = document.querySelector("a[href], button:not([disabled]), input, select, summary, [tabindex]:not([tabindex='-1'])");
+            return stop ? stop.id : "";
+        });
+        assert.equal(firstStop, "skipLink");
+        const hash = await _hash();
+        await _page.focus("#skipLink");
+        await _page.keyboard.press("Enter");
+        assert.equal(await _activeElementId(), "results", "the skip link lands on the results");
+        assert.equal(await _hash(), hash, "the hash still holds the scope");
+
+        // Every control a keyboard can reach has a name a screen reader can say
+        const unnamed: string[] = await _page.evaluate(() => {
+            const found: string[] = [];
+            document.querySelectorAll("a[href], button, input, select, summary, [tabindex]").forEach((el) => {
+                const html = el as HTMLElement;
+                if (html.offsetParent === null || html.getAttribute("tabindex") === "-1" && html.id !== "results") {
+                    return;
+                }
+
+                const labelled = html.getAttribute("aria-label") || html.getAttribute("aria-labelledby") ||
+                    (html.id && document.querySelector("label[for='" + html.id + "']")) || html.closest("label") ||
+                    (html.textContent || "").trim();
+                if (!labelled) {
+                    found.push(html.outerHTML.substring(0, 80));
+                }
+            });
+
+            return found;
+        });
+        assert.deepEqual(unnamed, [], "unnamed controls");
+
+        // The accessibility tree Chrome gives a screen reader -- with the log panel open, as a closed
+        // one is not in it: the regions and the icon buttons by name, and the failure as a failure
+        await _page.click("#logPanel > summary");
+        const tree = await _page.accessibility.snapshot({ interestingOnly: false });
+        await _page.click("#logPanel > summary");
+        const names: string[] = [];
+        const inResults: string[] = [];
+        const walk = (node: any, results: boolean) => {
+            if (node) {
+                const name = node.role + ":" + (node.name || "");
+                names.push(name);
+                if (results) {
+                    inResults.push(name);
+                }
+
+                (node.children || []).forEach((kid: any) => walk(kid, results || name === "main:Test results"));
+            }
+        };
+        walk(tree, false);
+        [ "main:Test results", "button:More actions", "button:Clear results", "combobox:Scope", "log:Runner log" ].forEach((expected) => {
+            assert.isTrue(names.indexOf(expected) !== -1, expected + " in the accessibility tree");
+        });
+        assert.isTrue(inResults.indexOf("StaticText:Failed:") !== -1, "a failed assertion is announced as failed");
+        assert.isFalse(inResults.some((name) => name.indexOf("StaticText:✗") === 0), "and not as its glyph");
+    });
+
+    step("should fold Failed only, then Target into the actions menu as the window narrows", async () => {
+        // Which controls are folded, whether the toolbar is on one line, and the menu's entries
+        const layout = () => _page.evaluate(() => {
+            const folded = (id: string) => getComputedStyle(document.getElementById(id) as Element).display === "none";
+            const row = document.getElementById("controlsRow") as HTMLElement;
+            const shown = Array.prototype.filter.call(row.children, (el: HTMLElement) => el.offsetWidth > 0) as HTMLElement[];
+            const last = shown[shown.length - 1];
+            const entries = Array.prototype.filter.call(document.querySelectorAll("#actionsMenu [role^='menuitem']"), (el: HTMLElement) => {
+                for (let node: HTMLElement | null = el; node && node.id !== "actionsMenu"; node = node.parentElement) {
+                    if (node.hasAttribute("hidden")) {
+                        return false;
+                    }
+                }
+
+                return true;
+            }) as HTMLElement[];
+
+            return {
+                folded: [ "failedOnlyControl", "targetControl" ].filter(folded),
+                oneLine: last.offsetTop <= shown[0].offsetTop + shown[0].offsetHeight / 2,
+                menu: entries.map((el) => (el.textContent || "").trim() + (el.getAttribute("aria-checked") === "true" ? " ✓" : ""))
+            };
+        });
+        const resize = async (width: number, folded: string[]) => {
+            await _page.setViewport({ width: width, height: WIDE_VIEWPORT.height });
+            // The compact layout follows the window from its resize event, and the folding from the
+            // frame after that: wait for both, as neither has happened when setViewport returns
+            await _waitFor((narrow: boolean) => document.body.classList.contains("layout-narrow") === narrow,
+                "the compact layout to follow the window to " + width + "px", width <= 600);
+            await _page.evaluate(() => new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve))));
+            await _waitFor((expected: string) => [ "failedOnlyControl", "targetControl" ]
+                .filter((id) => getComputedStyle(document.getElementById(id) as Element).display === "none").join() === expected,
+            "the controls to fold to fit " + width + "px", folded.join());
+
+            return layout();
+        };
+        const fixed = [ "Reload Tests", "Auto-reload ✓", "Clear Logs", "Appearance…", "Finish & Stop Server" ];
+        const targets = target === "browser" ? [ "Browser ✓", "Worker" ] : [ "Browser", "Worker ✓" ];
+
+        let now = await layout();
+        assert.deepEqual(now.folded, [], "a wide window holds every control");
+        assert.isTrue(now.oneLine);
+        assert.deepEqual(now.menu, fixed, "and the menu holds only its own entries");
+
+        now = await resize(520, []);
+        assert.isTrue(now.oneLine, "520px still holds every control");
+        assert.deepEqual(now.menu, fixed);
+
+        now = await resize(390, [ "failedOnlyControl", "targetControl" ]);
+        assert.isTrue(now.oneLine, "a phone folds Failed only to keep Scope and Run on one line");
+        assert.deepEqual(now.menu, [ "Failed only" ].concat(targets, fixed), "and Target from the title row, each ticked as its control is");
+
+        // A stand-in drives the real control
+        await _clickMenuItem("failedOnlyItem");
+        assert.isTrue(await _isChecked("#failedOnlyToggle"), "choosing Failed only in the menu turns the filter on");
+        assert.equal((await _readResults()).filter((row) => !row.hidden).length, 1);
+        assert.isTrue((await layout()).menu.indexOf("Failed only ✓") !== -1, "and ticks its stand-in");
+        await _clickMenuItem("failedOnlyItem");
+        assert.isFalse(await _isChecked("#failedOnlyToggle"));
+
+        now = await resize(WIDE_VIEWPORT.width, []);
+        assert.isTrue(now.oneLine, "and widening the window brings them all back");
+        assert.deepEqual(now.menu, fixed);
+    });
+
+    step("should clear the results from the status line and the log panel from the actions menu", async () => {
         assert.isTrue((await _readResults()).length > 0, "there are results to clear");
         await _waitFor(() => {
             const logs = document.getElementById("logs");
             return !!logs && logs.children.length > 0;
         }, "the run's log lines to render");
 
-        await _clickMenuItem("clearResultsBtn");
-        assert.isFalse(await _menuIsOpen(), "choosing an item closes the menu");
-        assert.equal(await _activeElementId(), "actionsBtn", "and returns focus to the button");
+        // The reporter's lines are in the colours the CLI's terminal shows them in, with no codes left over
+        const logs: { coloured: number, codes: boolean } = await _page.$eval("#logs", (el: Element) => ({
+            coloured: el.querySelectorAll("span[class*='ansi-fg-']").length,
+            codes: (el.textContent || "").indexOf("\u001b") !== -1
+        }));
+        assert.isTrue(logs.coloured > 0, "the log draws the reporter's colours");
+        assert.isFalse(logs.codes, "and shows none of the codes themselves");
+
+        assert.equal(await _attr("#clearResultsBtn", "aria-label"), "Clear results", "an icon, named for a screen reader");
+        await _page.click("#clearResultsBtn");
         assert.equal(await _page.$eval("#results", (el: Element) => el.children.length), 0, "Clear Results empties the results list");
         assert.equal(await _text("#assertCount"), "0 assertions", "and resets the assertion counter");
         assert.isTrue(await _page.$eval("#logs", (el: Element) => el.children.length > 0), "Clear Results leaves the logs alone");
 
         await _clickMenuItem("clearLogsBtn");
         assert.equal(await _page.$eval("#logs", (el: Element) => el.children.length), 0, "Clear Logs empties the log panel");
-        assert.isFalse(await _menuIsOpen());
+        assert.isFalse(await _menuIsOpen(), "choosing an item closes the menu");
+        assert.equal(await _activeElementId(), "actionsBtn", "and returns focus to the button");
     });
 }
 
@@ -906,6 +1268,8 @@ describe("interactive runner page (puppeteer)", function() {
         try {
             await warmed;
             _page = await _browser.newPage();
+            // Wide enough for every control on its row: the narrow-window step folds them on purpose
+            await _page.setViewport({ width: WIDE_VIEWPORT.width, height: WIDE_VIEWPORT.height });
             _page.on("pageerror", (err: any) => {
                 _pageErrors.push(err && err.message ? err.message : String(err));
             });
@@ -931,11 +1295,11 @@ describe("interactive runner page (puppeteer)", function() {
             // The states the page went through on its way here -- see _TRACE_SCRIPT.
             await _assertFirstRunTrace("browser");
 
-            assert.equal(await _statusText(), "Run complete. You can run again or click Finish to return to CLI.");
+            assert.equal(await _statusText(), "Run complete. Run again, or choose Finish & Stop Server from the ⋮ menu to send the result to the CLI.");
             assert.equal(await _text("#runBtn"), "Run Again");
             assert.equal(await _pathname(), "/__tripwire__/browser");
             assert.equal(await _attr("#finishBtn", "aria-disabled"), "false", "Finish is enabled once a result exists");
-            assert.isTrue(await _isChecked("#autoReloadToggle"), "Auto-reload defaults to on");
+            assert.equal(await _attr("#autoReloadItem", "aria-checked"), "true", "Auto-reload defaults to on");
             assert.equal((await _readResults()).length, FIXTURE_TESTS.length, "the first run rendered every fixture test");
         });
 
@@ -963,7 +1327,7 @@ describe("interactive runner page (puppeteer)", function() {
             await _assertFirstRunTrace("worker");
             assert.equal(await _scopeValue(), SCOPED_SUITE, "the worker page restored the scope");
             assert.deepEqual(_titles(await _readResults()), SCOPED_SUITE_TESTS, "the first worker run honoured it");
-            assert.equal(await _statusText(), "Run complete. You can run again or click Finish to return to CLI.");
+            assert.equal(await _statusText(), "Run complete. Run again, or choose Finish & Stop Server from the ⋮ menu to send the result to the CLI.");
 
             await _page.click("#clearScopeBtn");
             await _clickRunAndWait();
@@ -981,21 +1345,21 @@ describe("interactive runner page (puppeteer)", function() {
         step("should default on, survive Reload Tests when toggled off, and reset on a full page load", async () => {
             // Preference lives in memory (state.ts's autoReloadEnabled): not the hash, not storage.
             await _clearScopeIfSet();
-            assert.isTrue(await _isChecked("#autoReloadToggle"), "Auto-reload defaults to on");
+            assert.equal(await _attr("#autoReloadItem", "aria-checked"), "true", "Auto-reload defaults to on");
 
-            await _page.click("#autoReloadToggle");
-            assert.isFalse(await _isChecked("#autoReloadToggle"));
+            await _clickMenuItem("autoReloadItem");
+            assert.equal(await _attr("#autoReloadItem", "aria-checked"), "false");
 
             // Reload Tests tears down the run state but deliberately keeps this preference.
             await _clickMenuItem("reloadBtn");
             await _waitForRunComplete();
-            assert.isFalse(await _isChecked("#autoReloadToggle"), "an in-page reload keeps the toggle off");
+            assert.equal(await _attr("#autoReloadItem", "aria-checked"), "false", "an in-page reload keeps the setting off");
             assert.equal((await _readResults()).length, FIXTURE_TESTS.length, "Reload Tests re-ran the suite");
 
             // A full page load starts from the default again: nothing persists it.
             await _page.reload({ waitUntil: "load" });
             await _waitForRunComplete();
-            assert.isTrue(await _isChecked("#autoReloadToggle"), "a page reload is back to the default");
+            assert.equal(await _attr("#autoReloadItem", "aria-checked"), "true", "a page reload is back to the default");
             assert.equal(await _hash(), "", "the preference is not carried in the hash");
             assert.equal(await _page.evaluate(() => {
                 try {

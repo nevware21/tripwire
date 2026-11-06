@@ -425,6 +425,7 @@ For automated migrations. Every entry is derived from the tables above.
   "configPrecedence": {
     "listValuedFlagsAppendToConfig": ["--spec", "--ignore", "--grep", "--fgrep", "--require", "--file", "--coverage-reporter", "--coverage-src"],
     "replacesConfigList": ["--reporter"],
+    "replacesOnlyTheConfigPartsItNames": ["--browser-theme"],
     "configKeysConcatenatedAcrossDirectories": ["grep", "ignore", "spec", "require"],
     "otherSettings": "the CLI flag replaces the config value; a config file closer to the cwd replaces one higher up"
   },

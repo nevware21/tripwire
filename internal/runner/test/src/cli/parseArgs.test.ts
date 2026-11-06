@@ -54,7 +54,7 @@ describe("CLI argument parsing", () => {
                 "-f": "fgrep", "--ignore": "ignore", "--coverage-instrumenter": "coverage-instrumenter",
                 "--erased-coverage-mode": "erased-coverage-mode", "--coverage-reporter": "coverage-reporter",
                 "--coverage-src": "coverage-src", "--reporter": "reporter", "--server-root": "server-root", "--target": "target",
-                "--env": "env", "--browser-launch": "browser-launch", "--browser-style": "browser-style", "--ux-provider": "ux-provider",
+                "--env": "env", "--browser-launch": "browser-launch", "--browser-style": "browser-style", "--browser-theme": "browser-theme", "--ux-provider": "ux-provider",
                 "--project": "project", "-p": "project", "--tsProject": "project", "--ts-project": "project",
                 "--type-check-scope": "type-check-scope", "--spec": "spec", "--file": "file", "--require": "require", "-r": "require"
             };
@@ -434,6 +434,37 @@ describe("CLI argument parsing", () => {
             assert.includes(parse(["spec.ts", "--browser-launch", "firefox"]).error, "Invalid value for --browser-launch");
             assert.includes(parse(["spec.ts", "--browser-launch", "open:neon"]).error, "Invalid style in --browser-launch: neon");
             assert.includes(parse(["spec.ts", "--browser-style", "neon"]).error, "Invalid value for --browser-style");
+        });
+    });
+
+    describe("--browser-theme and browserTheme", () => {
+        it("should leave the page's own defaults when neither is given", () => {
+            assert.isUndefined(parse(["spec.ts"]).browserTheme);
+        });
+
+        it("should read each part from a comma separated list, ignoring case and spaces", () => {
+            assert.deepEqual(parse(["spec.ts", "--browser-theme", "Dim, COLORBLIND ,125%"]).browserTheme, { scheme: "dim", vision: "colorblind", zoom: 125 });
+            assert.deepEqual(parse(["spec.ts", "--browser-theme=150%"]).browserTheme, { zoom: 150 });
+        });
+
+        it("should take the config file's, as a list or an array", () => {
+            assert.deepEqual(parse(["spec.ts"], { browserTheme: "dark,80%" }).browserTheme, { scheme: "dark", zoom: 80 });
+            assert.deepEqual(parse(["spec.ts"], { browserTheme: [ "light", "colorblind" ] }).browserTheme, { scheme: "light", vision: "colorblind" });
+        });
+
+        it("should replace only the parts of the config file's that the flag names", () => {
+            const parsed = parse(["spec.ts", "--browser-theme", "light"], { browserTheme: "dark,colorblind,125%" });
+
+            assert.deepEqual(parsed.browserTheme, { scheme: "light", vision: "colorblind", zoom: 125 });
+        });
+
+        it("should reject an unknown word, a zoom out of range, or two words for the same part, from either", () => {
+            assert.includes(parse(["spec.ts", "--browser-theme", "dark,neon"]).error, "Invalid value for --browser-theme: unknown word \"neon\"");
+            assert.includes(parse(["spec.ts", "--browser-theme", "dark,400%"]).error, "Invalid value for --browser-theme: zoom \"400%\" is outside 50% to 300%");
+            assert.includes(parse(["spec.ts", "--browser-theme", "dark,light"]).error, "\"dark\" and \"light\" are both a color scheme");
+            assert.includes(parse(["spec.ts"], { browserTheme: "huge" }).error, "Invalid browserTheme value in the config file: unknown word \"huge\"");
+            assert.includes(parse(["spec.ts"], { browserTheme: [ "dim", "25%" ] }).error, "Invalid browserTheme value in the config file: zoom \"25%\" is outside 50% to 300%");
+            assert.includes(parse(["spec.ts", "--browser-theme"]).error, "Missing value for --browser-theme");
         });
     });
 

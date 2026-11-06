@@ -175,6 +175,51 @@ describe("ux menu", () => {
             await new Promise((resolve) => setTimeout(resolve, 5));
             assert.isFalse(isOpen());
         });
+
+        it("counts radio items in a group as items, moving through them and closing when one is chosen", () => {
+            const group = stubElement("", "div");
+            group.setAttribute("role", "group");
+            const radio = stubElement("", "button");
+            radio.setAttribute("role", "menuitemradio");
+            group.appendChild(radio);
+            menu.insertBefore(group, items[2]);
+
+            button.click();
+            key(menu, "End");
+            key(menu, "ArrowUp");
+            assert.equal(doc.activeElement, radio, "between Finish and Reload");
+            assert.equal(radio.getAttribute("tabindex"), "0", "it holds the roving tabindex");
+
+            radio.click();
+            assert.isFalse(isOpen());
+            assert.equal(doc.activeElement, button);
+        });
+
+        it("passes over hidden items, alone or in a hidden group, and counts checkbox items", () => {
+            const group = stubElement("", "div");
+            const inGroup = stubElement("", "button");
+            inGroup.setAttribute("role", "menuitemcheckbox");
+            group.appendChild(inGroup);
+            const alone = stubElement("", "button");
+            alone.setAttribute("role", "menuitemcheckbox");
+            menu.insertBefore(group, items[0]);
+            menu.insertBefore(alone, items[0]);
+
+            group.setAttribute("hidden", "");
+            alone.setAttribute("hidden", "");
+            button.click();
+            assert.equal(doc.activeElement, items[0], "opens on the first item showing");
+            key(menu, "ArrowUp");
+            assert.equal(doc.activeElement, items[2], "and wraps past the hidden ones");
+            key(button, "Escape");
+
+            group.removeAttribute("hidden");
+            alone.removeAttribute("hidden");
+            button.click();
+            assert.equal(doc.activeElement, inGroup, "shown again, they lead the menu");
+            key(menu, "ArrowDown");
+            assert.equal(doc.activeElement, alone);
+        });
     });
 
     describe("nextMenuIndex", () => {

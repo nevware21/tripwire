@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1082" height="388" viewBox="0 0 1082 388" role="img" aria-label="tripwire&#39;s core suite on node, in Chrome and in a web worker">
+  <title>tripwire&#39;s core suite on node, in Chrome and in a web worker</title>
+  <rect width="1082" height="388" rx="8" fill="#0d1117"/>
+  <text font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="14" xml:space="preserve">
+    <tspan x="16.0" y="28" fill="#8b949e">$</tspan><tspan x="24.4" y="28" fill="#c9d1d9"> npx tripwire --type-check -p test/tsconfig.test.json --reporter min &quot;test/src/!(browser|worker)/**/*.test.ts&quot;</tspan>
+    <tspan x="16.0" y="48" fill="#c9d1d9">  </tspan><tspan x="32.8" y="48" fill="#3fb950">2921 passing</tspan><tspan x="133.6" y="48" fill="#c9d1d9">  </tspan><tspan x="150.4" y="48" fill="#d29922">2 skipped</tspan><tspan x="226.0" y="48" fill="#c9d1d9">  </tspan><tspan x="242.8" y="48" fill="#8b949e">(4.89s)</tspan>
+    <tspan x="16" y="68"> </tspan>
+    <tspan x="16.0" y="88" fill="#8b949e">Total elapsed: </tspan><tspan x="142.0" y="88" fill="#56d4dd">5440ms</tspan><tspan x="192.4" y="88" fill="#8b949e"> (</tspan><tspan x="209.2" y="88" fill="#8b949e">prep: </tspan><tspan x="259.6" y="88" fill="#56d4dd">258ms</tspan><tspan x="301.6" y="88" fill="#8b949e">, </tspan><tspan x="318.4" y="88" fill="#8b949e">compile: </tspan><tspan x="394.0" y="88" fill="#56d4dd">286ms</tspan><tspan x="436.0" y="88" fill="#8b949e">, </tspan><tspan x="452.8" y="88" fill="#8b949e">tests: </tspan><tspan x="511.6" y="88" fill="#56d4dd">4893ms</tspan><tspan x="562.0" y="88" fill="#8b949e">)</tspan>
+    <tspan x="16" y="108"> </tspan>
+    <tspan x="16.0" y="128" fill="#8b949e">$</tspan><tspan x="24.4" y="128" fill="#c9d1d9"> npx tripwire --target browser --type-check -p test/tsconfig.test.json --reporter min &quot;test/src/!(node|worker)/**/*.test.ts&quot;</tspan>
+    <tspan x="16.0" y="148" fill="#39c5cf">Launching </tspan><tspan x="100.0" y="148" fill="#56d4dd">browser</tspan><tspan x="158.8" y="148" fill="#39c5cf"> target via Puppeteer...</tspan>
+    <tspan x="16" y="168"> </tspan>
+    <tspan x="16.0" y="188" fill="#c9d1d9">  </tspan><tspan x="32.8" y="188" fill="#3fb950">2921 passing</tspan><tspan x="133.6" y="188" fill="#c9d1d9">  </tspan><tspan x="150.4" y="188" fill="#d29922">1 skipped</tspan><tspan x="226.0" y="188" fill="#c9d1d9">  </tspan><tspan x="242.8" y="188" fill="#8b949e">(3.57s)</tspan>
+    <tspan x="16" y="208"> </tspan>
+    <tspan x="16.0" y="228" fill="#8b949e">Total elapsed: </tspan><tspan x="142.0" y="228" fill="#56d4dd">12421ms</tspan><tspan x="200.8" y="228" fill="#8b949e"> (</tspan><tspan x="217.6" y="228" fill="#8b949e">prep: </tspan><tspan x="268.0" y="228" fill="#56d4dd">855ms</tspan><tspan x="310.0" y="228" fill="#8b949e">, </tspan><tspan x="326.8" y="228" fill="#8b949e">compile: </tspan><tspan x="402.4" y="228" fill="#56d4dd">4723ms</tspan><tspan x="452.8" y="228" fill="#8b949e">, </tspan><tspan x="469.6" y="228" fill="#8b949e">tests: </tspan><tspan x="528.4" y="228" fill="#56d4dd">6788ms</tspan><tspan x="578.8" y="228" fill="#8b949e">)</tspan>
+    <tspan x="16" y="248"> </tspan>
+    <tspan x="16.0" y="268" fill="#8b949e">$</tspan><tspan x="24.4" y="268" fill="#c9d1d9"> npx tripwire --target worker --type-check -p test/tsconfig.test.json --reporter min &quot;test/src/!(node|browser)/**/*.test.ts&quot;</tspan>
+    <tspan x="16.0" y="288" fill="#39c5cf">Launching </tspan><tspan x="100.0" y="288" fill="#56d4dd">worker</tspan><tspan x="150.4" y="288" fill="#39c5cf"> target via Puppeteer...</tspan>
+    <tspan x="16" y="308"> </tspan>
+    <tspan x="16.0" y="328" fill="#c9d1d9">  </tspan><tspan x="32.8" y="328" fill="#3fb950">2921 passing</tspan><tspan x="133.6" y="328" fill="#c9d1d9">  </tspan><tspan x="150.4" y="328" fill="#d29922">1 skipped</tspan><tspan x="226.0" y="328" fill="#c9d1d9">  </tspan><tspan x="242.8" y="328" fill="#8b949e">(3.09s)</tspan>
+    <tspan x="16" y="348"> </tspan>
+    <tspan x="16.0" y="368" fill="#8b949e">Total elapsed: </tspan><tspan x="142.0" y="368" fill="#56d4dd">12578ms</tspan><tspan x="200.8" y="368" fill="#8b949e"> (</tspan><tspan x="217.6" y="368" fill="#8b949e">prep: </tspan><tspan x="268.0" y="368" fill="#56d4dd">2237ms</tspan><tspan x="318.4" y="368" fill="#8b949e">, </tspan><tspan x="335.2" y="368" fill="#8b949e">compile: </tspan><tspan x="410.8" y="368" fill="#56d4dd">5137ms</tspan><tspan x="461.2" y="368" fill="#8b949e">, </tspan><tspan x="478.0" y="368" fill="#8b949e">tests: </tspan><tspan x="536.8" y="368" fill="#56d4dd">5149ms</tspan><tspan x="587.2" y="368" fill="#8b949e">)</tspan>
+  </text>
+</svg>

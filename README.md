@@ -20,7 +20,9 @@ The assertion side offers both `assert.*` functions and a Chai-style `expect(x).
 dependencies to a minimum so that a dependency update elsewhere cannot break your test run -- which
 is how the project started, when the frameworks we tested Worker code with stopped working.
 
-**New here?** Read [Why tripwire](https://nevware21.github.io/tripwire/why-tripwire.html) for what is automatic, what is fast, how it
+**New here?** See [Tripwire in action](https://nevware21.github.io/tripwire/tour.html) -- tripwire's own suite run once on node, in
+Chrome and in a web worker, with coverage and the interactive browser page -- then read
+[Why tripwire](https://nevware21.github.io/tripwire/why-tripwire.html) for what is automatic, what is fast, how it
 compares with Mocha, Karma, Jest and Vitest, and when it is not the right tool. Coming from one of
 those? There is a [migration guide](#documentation) for each.
 

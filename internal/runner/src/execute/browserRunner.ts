@@ -164,7 +164,7 @@ export async function _startBrowserRunnerSession(graphBuilders: IGraphBuilders, 
         }
         payload.settings.server = server ? { url: server.url, port: server.port, isRunning: !!server.isRunning } : undefined;
 
-        const html = uxProvider.createBrowserRunnerHtml(target as any, parsed.browserStyle || "classic");
+        const html = uxProvider.createBrowserRunnerHtml(target as any, parsed.browserStyle || "classic", parsed.browserTheme);
 
         // Only the "browser" target's frame executes test modules directly in its own document
         // -- the "worker" target's frame just hosts the postMessage bridge to a real Worker,

@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1343" height="568" viewBox="0 0 1343 568" role="img" aria-label="Coverage of tripwire&#39;s core: --coverage in Chrome, nyc on node">
+  <title>Coverage of tripwire&#39;s core: --coverage in Chrome, nyc on node</title>
+  <rect width="1343" height="568" rx="8" fill="#0d1117"/>
+  <text font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="14" xml:space="preserve">
+    <tspan x="16.0" y="28" fill="#8b949e">$</tspan><tspan x="24.4" y="28" fill="#c9d1d9"> npx tripwire --target browser --coverage --coverage-reporter text-summary -p test/tsconfig.test.json --reporter min &quot;test/src/!(node|worker)/**/*.test.ts&quot;</tspan>
+    <tspan x="16.0" y="48" fill="#39c5cf">Launching </tspan><tspan x="100.0" y="48" fill="#56d4dd">browser</tspan><tspan x="158.8" y="48" fill="#39c5cf"> target via Puppeteer...</tspan>
+    <tspan x="16" y="68"> </tspan>
+    <tspan x="16.0" y="88" fill="#c9d1d9">  </tspan><tspan x="32.8" y="88" fill="#3fb950">2921 passing</tspan><tspan x="133.6" y="88" fill="#c9d1d9">  </tspan><tspan x="150.4" y="88" fill="#d29922">1 skipped</tspan><tspan x="226.0" y="88" fill="#c9d1d9">  </tspan><tspan x="242.8" y="88" fill="#8b949e">(4.93s)</tspan>
+    <tspan x="16" y="108"> </tspan>
+    <tspan x="16.0" y="128" fill="#8b949e">Wrote coverage:</tspan><tspan x="142.0" y="128" fill="#c9d1d9"> </tspan><tspan x="150.4" y="128" fill="#56d4dd">./coverage/browser/coverage-final.json</tspan>
+    <tspan x="16" y="148"> </tspan>
+    <tspan x="16.0" y="168" fill="#c9d1d9">=============================== Coverage summary ===============================</tspan>
+    <tspan x="16.0" y="188" fill="#3fb950" font-weight="bold">Statements   : 96.01% ( 5087/5298 )</tspan>
+    <tspan x="16.0" y="208" fill="#3fb950" font-weight="bold">Branches     : 87.14% ( 2209/2535 )</tspan>
+    <tspan x="16.0" y="228" fill="#3fb950" font-weight="bold">Functions    : 97.1% ( 805/829 )</tspan>
+    <tspan x="16.0" y="248" fill="#3fb950" font-weight="bold">Lines        : 96% ( 5001/5209 )</tspan>
+    <tspan x="16.0" y="268" fill="#c9d1d9">================================================================================</tspan>
+    <tspan x="16" y="288"> </tspan>
+    <tspan x="16.0" y="308" fill="#8b949e">Total elapsed: </tspan><tspan x="142.0" y="308" fill="#56d4dd">17967ms</tspan><tspan x="200.8" y="308" fill="#8b949e"> (</tspan><tspan x="217.6" y="308" fill="#8b949e">prep: </tspan><tspan x="268.0" y="308" fill="#56d4dd">2008ms</tspan><tspan x="318.4" y="308" fill="#8b949e">, </tspan><tspan x="335.2" y="308" fill="#8b949e">compile: </tspan><tspan x="410.8" y="308" fill="#56d4dd">6567ms</tspan><tspan x="461.2" y="308" fill="#8b949e">, </tspan><tspan x="478.0" y="308" fill="#8b949e">tests: </tspan><tspan x="536.8" y="308" fill="#56d4dd">8564ms</tspan><tspan x="587.2" y="308" fill="#8b949e">, </tspan><tspan x="604.0" y="308" fill="#8b949e">reporting: </tspan><tspan x="696.4" y="308" fill="#56d4dd">775ms</tspan><tspan x="738.4" y="308" fill="#8b949e">)</tspan>
+    <tspan x="16" y="328"> </tspan>
+    <tspan x="16.0" y="348" fill="#8b949e">$</tspan><tspan x="24.4" y="348" fill="#c9d1d9"> npx nyc --reporter=text-summary tripwire -p test/tsconfig.test.json --reporter min &quot;test/src/!(browser|worker)/**/*.test.ts&quot;</tspan>
+    <tspan x="16.0" y="368" fill="#c9d1d9">  </tspan><tspan x="32.8" y="368" fill="#3fb950">2921 passing</tspan><tspan x="133.6" y="368" fill="#c9d1d9">  </tspan><tspan x="150.4" y="368" fill="#d29922">2 skipped</tspan><tspan x="226.0" y="368" fill="#c9d1d9">  </tspan><tspan x="242.8" y="368" fill="#8b949e">(7.03s)</tspan>
+    <tspan x="16" y="388"> </tspan>
+    <tspan x="16.0" y="408" fill="#8b949e">Total elapsed: </tspan><tspan x="142.0" y="408" fill="#56d4dd">8917ms</tspan><tspan x="192.4" y="408" fill="#8b949e"> (</tspan><tspan x="209.2" y="408" fill="#8b949e">prep: </tspan><tspan x="259.6" y="408" fill="#56d4dd">256ms</tspan><tspan x="301.6" y="408" fill="#8b949e">, </tspan><tspan x="318.4" y="408" fill="#8b949e">compile: </tspan><tspan x="394.0" y="408" fill="#56d4dd">1630ms</tspan><tspan x="444.4" y="408" fill="#8b949e">, </tspan><tspan x="461.2" y="408" fill="#8b949e">tests: </tspan><tspan x="520.0" y="408" fill="#56d4dd">7028ms</tspan><tspan x="570.4" y="408" fill="#8b949e">)</tspan>
+    <tspan x="16" y="428"> </tspan>
+    <tspan x="16.0" y="448" fill="#c9d1d9">=============================== Coverage summary ===============================</tspan>
+    <tspan x="16.0" y="468" fill="#3fb950" font-weight="bold">Statements   : 92.63% ( 4820/5203 )</tspan>
+    <tspan x="16.0" y="488" fill="#3fb950" font-weight="bold">Branches     : 83.19% ( 2114/2541 )</tspan>
+    <tspan x="16.0" y="508" fill="#3fb950" font-weight="bold">Functions    : 93.03% ( 775/833 )</tspan>
+    <tspan x="16.0" y="528" fill="#3fb950" font-weight="bold">Lines        : 92.61% ( 4728/5105 )</tspan>
+    <tspan x="16.0" y="548" fill="#c9d1d9">================================================================================</tspan>
+  </text>
+</svg>

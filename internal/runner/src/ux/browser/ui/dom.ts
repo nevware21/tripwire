@@ -34,7 +34,31 @@ export const scopeSelect = document.getElementById("scopeSelect") as HTMLInputEl
 export const scopeSelectList = document.getElementById("scopeSelectList") as HTMLElement | null;
 export const clearScopeBtn = document.getElementById("clearScopeBtn") as HTMLButtonElement | null;
 export const failedOnlyToggle = document.getElementById("failedOnlyToggle") as HTMLInputElement | null;
-export const autoReloadToggle = document.getElementById("autoReloadToggle") as HTMLInputElement | null;
 export const resultsEl = document.getElementById("results") as HTMLElement | null;
 export const assertCountEl = document.getElementById("assertCount") as HTMLElement | null;
+export const runSummaryEl = document.getElementById("runSummary") as HTMLElement | null;
+export const filterNoteEl = document.getElementById("filterNote") as HTMLElement | null;
+export const appMetaEl = document.getElementById("appMeta") as HTMLElement | null;
+export const skipLink = document.getElementById("skipLink") as HTMLElement | null;
+// The rows whose controls fold into the actions menu when the window is too narrow, those controls,
+// and what stands in for them in the menu (see overflow.ts)
+export const appHeaderEl = document.getElementById("appHeader") as HTMLElement | null;
+export const controlsRowEl = document.getElementById("controlsRow") as HTMLElement | null;
+export const targetControl = document.getElementById("targetControl") as HTMLElement | null;
+export const failedOnlyControl = document.getElementById("failedOnlyControl") as HTMLElement | null;
+export const foldedControlsEl = document.getElementById("foldedControls") as HTMLElement | null;
+export const targetMenuGroup = document.getElementById("targetMenuGroup") as HTMLElement | null;
+export const failedOnlyItem = document.getElementById("failedOnlyItem") as HTMLElement | null;
+// Auto-reload has no control on the page: it is always this entry in the actions menu
+export const autoReloadItem = document.getElementById("autoReloadItem") as HTMLElement | null;
+// The Appearance panel, which the actions menu opens (see appearance.ts)
+export const appearanceItem = document.getElementById("appearanceItem") as HTMLElement | null;
+export const appearancePanel = document.getElementById("appearancePanel") as HTMLElement | null;
+export const themeInput = document.getElementById("themeInput") as HTMLInputElement | null;
+export const themeList = document.getElementById("themeList") as HTMLElement | null;
+export const colorblindToggle = document.getElementById("colorblindToggle") as HTMLInputElement | null;
+export const zoomOutBtn = document.getElementById("zoomOutBtn") as HTMLElement | null;
+export const zoomInBtn = document.getElementById("zoomInBtn") as HTMLElement | null;
+export const zoomResetBtn = document.getElementById("zoomResetBtn") as HTMLElement | null;
+export const zoomValueEl = document.getElementById("zoomValue") as HTMLElement | null;
 export const testFrameContainer = document.getElementById("testFrameContainer") as HTMLElement | null;

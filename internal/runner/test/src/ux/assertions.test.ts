@@ -104,6 +104,19 @@ describe("ux assertions", () => {
             ]);
         });
 
+        it("should keep only the values a failure has", () => {
+            assertions.addAssertion("k", false, "equal", "no", { expected: "2", actual: "1" });
+            assertions.addAssertion("k", false, "isTrue", "no", { actual: "false" });
+            assertions.addAssertion("k", false, "fail", "no", null);
+
+            assert.deepEqual(assertionDomQueue.map((entry) => [ entry.expected, entry.actual ]), [
+                [ "2", "1" ],
+                [ undefined, "false" ],
+                [ undefined, undefined ]
+            ]);
+            assert.isFalse("expected" in assertionDomQueue[1], "not even as undefined");
+        });
+
         it("should ask for one animation frame per burst and mark it as pending", () => {
             assertions.addAssertion("k", true, "a", "");
             assertions.addAssertion("k", true, "b", "");
@@ -183,6 +196,14 @@ describe("ux assertions", () => {
 
             assert.deepEqual(queued, [{ testKey: "outer :: named", passed: true, label: "equal", errorText: "" }]);
         });
+
+        it("should keep the values the test frame or worker sent with a failure", () => {
+            setCurrentExecutingTestKey("outer :: alpha");
+
+            assertions._handleAssertionEvent({ passed: false, label: "equal", errorText: "no", expected: "2", actual: "1" });
+
+            assert.deepEqual(assertionDomQueue, [{ testKey: "outer :: alpha", passed: false, label: "equal", errorText: "no", expected: "2", actual: "1" }]);
+        });
     });
 
     describe("handleAssertion", () => {
@@ -217,6 +238,22 @@ describe("ux assertions", () => {
                 "false:{\"code\":7}",
                 "true:"
             ]);
+        });
+
+        it("should carry a failure's expected and actual values", () => {
+            let error: any;
+            try {
+                assert.equal(1, 2);
+            } catch (e) {
+                error = e;
+            }
+
+            assertions.handleAssertion({ passed: false, message: "equal", error: error });
+            assertions.handleAssertion({ passed: false, message: "thrown", error: new Error("no values") });
+
+            assert.equal(assertionDomQueue[0].expected, "2");
+            assert.equal(assertionDomQueue[0].actual, "1");
+            assert.isFalse("expected" in assertionDomQueue[1] || "actual" in assertionDomQueue[1], "an error without values adds none");
         });
 
         it("should coerce a missing passed flag to a failure", () => {

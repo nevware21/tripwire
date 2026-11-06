@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="738" height="508" viewBox="0 0 738 508" role="img" aria-label="One of tripwire&#39;s own test files, run on node">
+  <title>One of tripwire&#39;s own test files, run on node</title>
+  <rect width="738" height="508" rx="8" fill="#0d1117"/>
+  <text font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="14" xml:space="preserve">
+    <tspan x="16.0" y="28" fill="#8b949e">$</tspan><tspan x="24.4" y="28" fill="#c9d1d9"> npx tripwire -p test/tsconfig.test.json test/src/assert/assert.isString.test.ts</tspan>
+    <tspan x="16.0" y="48" fill="#c9d1d9">  </tspan><tspan x="32.8" y="48" fill="#c9d1d9" font-weight="bold">isString</tspan>
+    <tspan x="16.0" y="68" fill="#c9d1d9">    </tspan><tspan x="49.6" y="68" fill="#3fb950">✓</tspan><tspan x="58.0" y="68" fill="#c9d1d9"> should pass when the value is a string </tspan><tspan x="394.0" y="68" fill="#8b949e">4ms</tspan>
+    <tspan x="16.0" y="88" fill="#c9d1d9">    </tspan><tspan x="49.6" y="88" fill="#3fb950">✓</tspan><tspan x="58.0" y="88" fill="#c9d1d9"> should throw an error when the value is not a string </tspan><tspan x="511.6" y="88" fill="#8b949e">7ms</tspan>
+    <tspan x="16.0" y="108" fill="#c9d1d9">    </tspan><tspan x="49.6" y="108" fill="#3fb950">✓</tspan><tspan x="58.0" y="108" fill="#c9d1d9"> should throw an error with a custom message when the value is not a string </tspan><tspan x="696.4" y="108" fill="#8b949e">4ms</tspan>
+    <tspan x="16.0" y="128" fill="#c9d1d9">    </tspan><tspan x="49.6" y="128" fill="#3fb950">✓</tspan><tspan x="58.0" y="128" fill="#c9d1d9"> should pass when the value is an empty string </tspan><tspan x="452.8" y="128" fill="#8b949e">1ms</tspan>
+    <tspan x="16.0" y="148" fill="#c9d1d9">    </tspan><tspan x="49.6" y="148" fill="#3fb950">✓</tspan><tspan x="58.0" y="148" fill="#c9d1d9"> should throw an error when the value is an object </tspan><tspan x="486.4" y="148" fill="#8b949e">3ms</tspan>
+    <tspan x="16.0" y="168" fill="#c9d1d9">    </tspan><tspan x="49.6" y="168" fill="#3fb950">✓</tspan><tspan x="58.0" y="168" fill="#c9d1d9"> should throw an error when the value is an array </tspan><tspan x="478.0" y="168" fill="#8b949e">3ms</tspan>
+    <tspan x="16.0" y="188" fill="#c9d1d9">    </tspan><tspan x="49.6" y="188" fill="#3fb950">✓</tspan><tspan x="58.0" y="188" fill="#c9d1d9"> should throw an error when the value is null </tspan><tspan x="444.4" y="188" fill="#8b949e">2ms</tspan>
+    <tspan x="16.0" y="208" fill="#c9d1d9">    </tspan><tspan x="49.6" y="208" fill="#3fb950">✓</tspan><tspan x="58.0" y="208" fill="#c9d1d9"> should throw an error when the value is undefined </tspan><tspan x="486.4" y="208" fill="#8b949e">4ms</tspan>
+    <tspan x="16.0" y="228" fill="#c9d1d9">  </tspan><tspan x="32.8" y="228" fill="#c9d1d9" font-weight="bold">isNotString</tspan>
+    <tspan x="16.0" y="248" fill="#c9d1d9">    </tspan><tspan x="49.6" y="248" fill="#3fb950">✓</tspan><tspan x="58.0" y="248" fill="#c9d1d9"> should pass when the value is a number </tspan><tspan x="394.0" y="248" fill="#8b949e">1ms</tspan>
+    <tspan x="16.0" y="268" fill="#c9d1d9">    </tspan><tspan x="49.6" y="268" fill="#3fb950">✓</tspan><tspan x="58.0" y="268" fill="#c9d1d9"> should pass when the value is an object</tspan>
+    <tspan x="16.0" y="288" fill="#c9d1d9">    </tspan><tspan x="49.6" y="288" fill="#3fb950">✓</tspan><tspan x="58.0" y="288" fill="#c9d1d9"> should throw an error when the value is a string </tspan><tspan x="478.0" y="288" fill="#8b949e">4ms</tspan>
+    <tspan x="16.0" y="308" fill="#c9d1d9">    </tspan><tspan x="49.6" y="308" fill="#3fb950">✓</tspan><tspan x="58.0" y="308" fill="#c9d1d9"> should pass when the value is null</tspan>
+    <tspan x="16.0" y="328" fill="#c9d1d9">    </tspan><tspan x="49.6" y="328" fill="#3fb950">✓</tspan><tspan x="58.0" y="328" fill="#c9d1d9"> should pass when the value is undefined </tspan><tspan x="402.4" y="328" fill="#8b949e">1ms</tspan>
+    <tspan x="16.0" y="348" fill="#c9d1d9">    </tspan><tspan x="49.6" y="348" fill="#3fb950">✓</tspan><tspan x="58.0" y="348" fill="#c9d1d9"> should throw an error with a custom message when the value is a string </tspan><tspan x="662.8" y="348" fill="#8b949e">3ms</tspan>
+    <tspan x="16.0" y="368" fill="#c9d1d9">    </tspan><tspan x="49.6" y="368" fill="#3fb950">✓</tspan><tspan x="58.0" y="368" fill="#c9d1d9"> should pass when the value is a boolean</tspan>
+    <tspan x="16.0" y="388" fill="#c9d1d9">    </tspan><tspan x="49.6" y="388" fill="#3fb950">✓</tspan><tspan x="58.0" y="388" fill="#c9d1d9"> should pass when the value is an array</tspan>
+    <tspan x="16.0" y="408" fill="#c9d1d9">    </tspan><tspan x="49.6" y="408" fill="#3fb950">✓</tspan><tspan x="58.0" y="408" fill="#c9d1d9"> should pass when the value is a function </tspan><tspan x="410.8" y="408" fill="#8b949e">1ms</tspan>
+    <tspan x="16" y="428"> </tspan>
+    <tspan x="16.0" y="448" fill="#c9d1d9">  </tspan><tspan x="32.8" y="448" fill="#3fb950">17 passing</tspan><tspan x="116.8" y="448" fill="#c9d1d9">  </tspan><tspan x="133.6" y="448" fill="#8b949e">(45ms)</tspan>
+    <tspan x="16" y="468"> </tspan>
+    <tspan x="16.0" y="488" fill="#8b949e">Total elapsed: </tspan><tspan x="142.0" y="488" fill="#56d4dd">395ms</tspan><tspan x="184.0" y="488" fill="#8b949e"> (</tspan><tspan x="200.8" y="488" fill="#8b949e">prep: </tspan><tspan x="251.2" y="488" fill="#56d4dd">259ms</tspan><tspan x="293.2" y="488" fill="#8b949e">, </tspan><tspan x="310.0" y="488" fill="#8b949e">compile: </tspan><tspan x="385.6" y="488" fill="#56d4dd">88ms</tspan><tspan x="419.2" y="488" fill="#8b949e">, </tspan><tspan x="436.0" y="488" fill="#8b949e">tests: </tspan><tspan x="494.8" y="488" fill="#56d4dd">46ms</tspan><tspan x="528.4" y="488" fill="#8b949e">)</tspan>
+  </text>
+</svg>

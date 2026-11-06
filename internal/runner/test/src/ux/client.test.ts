@@ -111,7 +111,7 @@ describe("ux client", function () {
             message: (data: any) => page.listeners.message({ data: data })
         };
 
-        page.location = { href: "http://localhost:4321" + pathname + (search || "") + (opts.hash || ""), pathname: pathname, search: search || "", hash: opts.hash || "" };
+        page.location = { href: "http://localhost:4321" + pathname + (search || "") + (opts.hash || ""), host: "localhost:4321", pathname: pathname, search: search || "", hash: opts.hash || "" };
         page.document = stubDocument(page.registry, true);
         const getElementById = page.document.getElementById;
         page.document.getElementById = (id: string) => ((opts.omit || []).indexOf(id) !== -1 ? null : getElementById(id));
@@ -281,7 +281,7 @@ describe("ux client", function () {
 
             page.message({ kind: "runDone", summary: { total: 2 }, coverage: { a: 1 } });
             await settle();
-            assert.equal(page.status(), "Run complete. You can run again or click Finish to return to CLI.");
+            assert.equal(page.status(), "Run complete. Run again, or choose Finish & Stop Server from the ⋮ menu to send the result to the CLI.");
             assert.deepEqual(page.state.lastResult, { summary: { total: 2 }, coverage: { a: 1 } });
 
             page.registry.finishBtn.click();
@@ -304,7 +304,7 @@ describe("ux client", function () {
 
             page.message({ kind: "runDone", summary: {} });
             await settle();
-            assert.equal(page.status(), "Run stopped. You can run again or finish.");
+            assert.equal(page.status(), "Run stopped. Run again, or choose Finish & Stop Server from the ⋮ menu to send the result to the CLI.");
 
             page.registry.runBtn.click();
             assert.deepEqual(page.framePosts[2], { kind: "run", selection: { suiteTitle: "", testTitle: "" } });
@@ -423,16 +423,16 @@ describe("ux client", function () {
             await settle();
             assert.equal(page.frame(), firstFrame);
 
-            page.registry.autoReloadToggle.checked = false;
-            page.registry.autoReloadToggle.dispatchEvent(stubEvent("change"));
+            page.registry.autoReloadItem.click();
+            assert.equal(page.registry.autoReloadItem.getAttribute("aria-checked"), "false", "the menu entry is ticked while it is on");
             page.generation = 2;
             poll();
             await settle();
             assert.isFalse(page.state.autoReloadEnabled);
             assert.equal(page.frame(), firstFrame, "auto reload is off");
 
-            page.registry.autoReloadToggle.checked = true;
-            page.registry.autoReloadToggle.dispatchEvent(stubEvent("change"));
+            page.registry.autoReloadItem.click();
+            assert.equal(page.registry.autoReloadItem.getAttribute("aria-checked"), "true");
             poll();
             await settle();
             assert.notEqual(page.frame(), firstFrame);
@@ -463,6 +463,59 @@ describe("ux client", function () {
 
             assert.equal(page.registry.results.kids.length, 0);
             assert.equal(page.registry.assertCount.textContent, "0 assertions");
+        });
+
+        it("shows the run's totals, the failed count turning Failed only on and off", async () => {
+            const page = loadPage("/__tripwire__/browser");
+            await readyAndRun(page);
+            const summary = page.registry.runSummary;
+            const failedChip = () => summary.querySelector(".summary-failed");
+
+            assert.isFalse(summary.hidden);
+            assert.deepEqual(summary.kids.map(textOf), [ "1 passed", "1 failed" ]);
+            assert.equal(failedChip().getAttribute("aria-pressed"), "false");
+
+            summary.kids[0].click();
+            assert.isFalse(page.registry.failedOnlyToggle.checked, "only the failed count is a toggle");
+
+            failedChip().click();
+            assert.isTrue(page.registry.failedOnlyToggle.checked);
+            assert.equal(failedChip().getAttribute("aria-pressed"), "true");
+            assert.equal(page.registry.filterNote.textContent, "1 passing test hidden by Failed only");
+            assert.isFalse(page.registry.filterNote.hidden);
+
+            failedChip().click();
+            assert.isFalse(page.registry.failedOnlyToggle.checked);
+            assert.equal(failedChip().getAttribute("aria-pressed"), "false");
+            assert.isTrue(page.registry.filterNote.hidden);
+
+            page.registry.failedOnlyToggle.checked = true;
+            page.registry.failedOnlyToggle.dispatchEvent(stubEvent("change"));
+            assert.equal(failedChip().getAttribute("aria-pressed"), "true", "the checkbox keeps the chip in step");
+        });
+
+        it("lets Failed only's stand-in in the actions menu change it, as its checkbox would", async () => {
+            const page = loadPage("/__tripwire__/browser");
+            await readyAndRun(page);
+            assert.isFunction(page.listeners.resize, "the controls are fitted again as the window is resized");
+            assert.equal(page.registry.failedOnlyItem.getAttribute("aria-checked"), "false");
+
+            page.registry.failedOnlyItem.click();
+            assert.isTrue(page.registry.failedOnlyToggle.checked);
+            assert.equal(page.registry.failedOnlyItem.getAttribute("aria-checked"), "true");
+            assert.equal(page.registry.filterNote.textContent, "1 passing test hidden by Failed only");
+            assert.equal(page.registry.runSummary.querySelector(".summary-failed").getAttribute("aria-pressed"), "true");
+
+            page.registry.runSummary.querySelector(".summary-failed").click();
+            assert.equal(page.registry.failedOnlyItem.getAttribute("aria-checked"), "false", "the failed count keeps the stand-in in step too");
+        });
+
+        it("says under the title which target and server this is, and how many tests it found", () => {
+            const page = loadPage("/__tripwire__/browser");
+
+            page.message({ kind: "ready", discovery: DISCOVERY });
+
+            assert.equal(page.registry.appMeta.textContent, "Browser target · localhost:4321 · 2 tests");
         });
 
         it("switches to the other target, keeping the rest of the URL", () => {
@@ -561,8 +614,9 @@ describe("ux client", function () {
             assert.includes(textOf(page.registry.results), "frame suite");
             assert.includes(textOf(page.registry.logs), "from the worker");
             assert.includes(textOf(page.registry.logs), "discovering");
+            assert.equal(page.registry.appMeta.textContent, "Worker target · localhost:4321 · 2 tests");
             assert.isNull(page.state.activeWorker);
-            assert.equal(page.status(), "Run complete. You can run again or click Finish to return to CLI.");
+            assert.equal(page.status(), "Run complete. Run again, or choose Finish & Stop Server from the ⋮ menu to send the result to the CLI.");
         });
 
         it("warns when discovery fails, and reports a worker that crashes", async () => {

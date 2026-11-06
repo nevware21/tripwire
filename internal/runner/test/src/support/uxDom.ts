@@ -59,10 +59,14 @@ function _fire(owner: any, evt: any, capture: boolean): void {
 }
 
 /**
- * Whether `el` matches one simple selector: a tag name, `.class`, `#id`, or an attribute test such as
- * `[role='menuitem']` or `[hidden]`.
+ * Whether `el` matches a simple selector -- a tag name, `.class`, `#id`, or an attribute test such as
+ * `[role='menuitem']` or `[hidden]` -- or any one of a comma separated list of them.
  */
 function _matches(el: any, selector: string): boolean {
+    if (selector.indexOf(",") !== -1) {
+        return selector.split(",").some((part) => _matches(el, part));
+    }
+
     const sel = selector.trim();
     const attr = /^\[([\w-]+)(?:=['"]?([^'"\]]*)['"]?)?\]$/.exec(sel);
     if (attr) {
@@ -78,6 +82,31 @@ function _matches(el: any, selector: string): boolean {
     }
 
     return String(el.tagName || "").toLowerCase() === sel.toLowerCase();
+}
+
+/**
+ * An element's `style`: plain properties, as the page sets `style.display`, and the custom ones it
+ * sets through `setProperty` (`--ui-zoom`), kept in `props`. The methods are not enumerable, so a
+ * deep comparison of a style sees only what the page set on it directly.
+ */
+function _stubStyle(): any {
+    const style: any = {};
+    const props: { [name: string]: string } = {};
+    const hidden = (name: string, value: any) => Object.defineProperty(style, name, { value: value, enumerable: false });
+
+    hidden("props", props);
+    hidden("setProperty", (name: string, value: any) => {
+        props[name] = String(value);
+    });
+    hidden("getPropertyValue", (name: string) => (name in props ? props[name] : ""));
+    hidden("removeProperty", (name: string) => {
+        const was = name in props ? props[name] : "";
+        delete props[name];
+
+        return was;
+    });
+
+    return style;
 }
 
 /**
@@ -109,7 +138,7 @@ export function stubElement(id: string, tagName?: string): any {
         checked: false,
         disabled: false,
         open: false,
-        style: {},
+        style: _stubStyle(),
         attrs: attrs,
         kids: [] as any[],
         listeners: listeners,
@@ -190,7 +219,10 @@ export function stubElement(id: string, tagName?: string): any {
                 path.push(node);
             }
 
-            evt.target = evt.target || el;
+            if (!evt.target) {
+                // A real Event (as the page fires with `new Event`) has a read-only target until dispatched
+                Object.defineProperty(evt, "target", { value: el, configurable: true, writable: true });
+            }
             for (let lp = path.length - 1; lp >= 0 && !evt.propagationStopped; lp--) {
                 _fire(path[lp], evt, true);
             }
@@ -284,6 +316,23 @@ export function stubElement(id: string, tagName?: string): any {
     return el;
 }
 
+/** A text node: just its text, read the way {@link textOf} reads an element's. */
+export function stubTextNode(text: string): any {
+    return { nodeType: 3, textContent: String(text), kids: [] as any[] };
+}
+
+/**
+ * The text of an element and everything under it that the page shows on screen: without the text
+ * that is there for a screen reader only (`.sr-only`).
+ */
+export function shownTextOf(el: any): string {
+    if (!el || (el.classList && el.classList.contains("sr-only"))) {
+        return "";
+    }
+
+    return (el.textContent || "") + (el.kids || []).map(shownTextOf).join("");
+}
+
 /** The text of an element and everything under it, the way a page would show it. */
 export function textOf(el: any): string {
     if (!el) {
@@ -301,11 +350,16 @@ export function textOf(el: any): string {
 export function stubDocument(registry?: { [id: string]: any }, createMissing?: boolean): any {
     const ids = registry || {};
     const listeners: { [type: string]: IListener[] } = {};
+    const root = stubElement("html", "html");
     const doc: any = {
         body: stubElement("body", "body"),
+        documentElement: root,
+        // What the results keep pinned to the bottom: they scroll with the page
+        scrollingElement: root,
         activeElement: null,
         listeners: listeners,
         createElement: (tag: string) => stubElement("", tag),
+        createTextNode: stubTextNode,
         createDocumentFragment: () => {
             const fragment: any = { fragment: true, kids: [] as any[] };
             fragment.appendChild = (child: any) => {

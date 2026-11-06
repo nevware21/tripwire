@@ -8,6 +8,7 @@
 
 import { BrowserLaunchMode, TestTarget } from "@nevware21/tripwire";
 import { BrowserUiStyle } from "../ux/types/BrowserUiStyle";
+import { IBrowserUiTheme } from "../ux/types/BrowserUiTheme";
 
 /**
  * The parsed command-line arguments for the runner.
@@ -54,6 +55,12 @@ export interface IParsedArgs {
      * The browser UI style.
      */
     browserStyle?: BrowserUiStyle;
+
+    /**
+     * How the interactive browser page looks when it opens (`--browser-theme`, over the config file's
+     * `browserTheme`).
+     */
+    browserTheme?: IBrowserUiTheme;
 
     /**
      * Whether to compile the tests before running.

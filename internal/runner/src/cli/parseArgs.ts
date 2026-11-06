@@ -15,6 +15,8 @@
 
 import { loadConfig } from "../config/loader";
 import { ITripwireConfig } from "../interfaces/ITripwireConfig";
+import { IBrowserUiTheme } from "../ux/types/BrowserUiTheme";
+import { mergeBrowserThemes, parseBrowserTheme } from "../shared/browserTheme";
 import { REPORTER_NAMES } from "../reporters";
 import { _REPORTER_MODULE_PREFIX, _isReporterModuleSpec } from "../internal/reporterSpec";
 
@@ -132,6 +134,20 @@ export function _parseArgs(args: string[], config?: ITripwireConfig) {
     let target = fileConfig.target || "node";
     let browserLaunch = fileConfig.browserLaunch || "puppeteer";
     let browserStyle = fileConfig.browserStyle || "classic";
+    // How the interactive page looks: the config file's, with --browser-theme's parts in place of
+    // the ones it names. An unknown word is an error rather than silently ignored.
+    let browserTheme: IBrowserUiTheme | undefined;
+    if (fileConfig.browserTheme !== undefined && fileConfig.browserTheme !== null) {
+        const configTheme = parseBrowserTheme(fileConfig.browserTheme);
+        if (configTheme.error) {
+            return {
+                error: "Invalid browserTheme value in the config file: " + configTheme.error
+            };
+        }
+
+        browserTheme = configTheme.theme;
+    }
+
     let uxProvider = fileConfig.uxProvider;
     let serverRoot = fileConfig.serverRoot || "";
     let bindAddress = fileConfig.bindAddress || "";
@@ -624,6 +640,26 @@ export function _parseArgs(args: string[], config?: ITripwireConfig) {
             continue;
         }
 
+        if (value === "--browser-theme" || value.indexOf("--browser-theme=") === 0) {
+            const consumed = _consumeValue("browser-theme", value, lp);
+            if (consumed.error) {
+                return {
+                    error: consumed.error
+                };
+            }
+
+            const cliTheme = parseBrowserTheme(consumed.value || "");
+            if (cliTheme.error) {
+                return {
+                    error: "Invalid value for --browser-theme: " + cliTheme.error
+                };
+            }
+
+            browserTheme = mergeBrowserThemes(browserTheme, cliTheme.theme);
+            lp = consumed.nextIndex;
+            continue;
+        }
+
         if (value === "--ux-provider" || value.indexOf("--ux-provider=") === 0) {
             const consumed = _consumeValue("ux-provider", value, lp);
             if (consumed.error) {
@@ -856,6 +892,7 @@ export function _parseArgs(args: string[], config?: ITripwireConfig) {
         target,
         browserLaunch,
         browserStyle,
+        browserTheme,
         uxProvider,
         compile: compile !== undefined ? compile : false,
         strictTypeCheck,
